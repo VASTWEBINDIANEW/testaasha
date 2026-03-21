@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model used when sending an OTP to confirm deletion of a user account.
+    /// </summary>
     public class DeleteUserSendOtp
     {
         //Delete Master Id send Otp by admin

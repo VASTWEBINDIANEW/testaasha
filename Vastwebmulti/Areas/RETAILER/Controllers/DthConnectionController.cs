@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Globalization;
@@ -11,6 +11,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
 
+    /// <summary>
+    /// RETAILER Area - Manages DTH connection plan browsing, booking, payment processing, and booking reports for retailers.
+    /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
     public class DthConnectionController : Controller
@@ -52,6 +55,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 _userManager = value;
             }
         }
+
+        /// <summary>
+        /// GET Returns the DTH connection index page with optional search and sort parameters.
+        /// </summary>
         // GET: RETAILER/DthConnection
         public ActionResult Index(string txtSearch, string SortBy)
         {
@@ -62,6 +69,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             model.itemsInCart = db.Carts.Count(a => a.BuyerId == userid);
             return View(model);
         }
+
+        /// <summary>
+        /// GET Renders the partial menu list of DTH operators and set-top box categories.
+        /// </summary>
         public PartialViewResult _MenuList()
         {
             DthConMenuVM model = new DthConMenuVM();
@@ -73,6 +84,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }).ToList();
             return PartialView(model);
         }
+
+        /// <summary>
+        /// GET Renders the filtered and sorted product list of DTH plans for the selected plan and set-top box.
+        /// </summary>
         public PartialViewResult _productlist(int? PlanId, int? SetTopBoxID, decimal? Price, string SortBy)
         {
             var RetailerID = User.Identity.GetUserId();
@@ -95,6 +110,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return PartialView(model);
         }
 
+        /// <summary>
+        /// GET Displays the product detail view for a specific DTH plan by id.
+        /// </summary>
         public ActionResult ProductView(int id, string type)
         {
             try
@@ -108,6 +126,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+
+        /// <summary>
+        /// GET Displays the payment processing page for a selected DTH plan; redirects if plan is not found.
+        /// </summary>
         [HttpGet]
         public ActionResult ProcessToPay(int? Dthid)
         {
@@ -118,7 +140,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     return RedirectToAction("Index");
                 }
                 ViewBag.state = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-                var Data = db.DthPlanAndSpecifications.Where(a => a.Id == Dthid).SingleOrDefault();
+                // Use FirstOrDefault directly to avoid loading all records into memory
+                var Data = db.DthPlanAndSpecifications.FirstOrDefault(a => a.Id == Dthid);
                 if (Data == null)
                 {
                     return RedirectToAction("Index");
@@ -131,27 +154,32 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         }
+
+        /// <summary>
+        /// POST Processes the final DTH booking payment and records balance backup info for retailer, dealer, and master.
+        /// </summary>
         [HttpPost]
         public ActionResult ProcessToPayFinal(int idno, string txtname, string txtEmail, string txtmobile, string txtpincode, string State1, string District1, string txtAddress)
         {
             try
             {
                 var userid = User.Identity.GetUserId();
-                var Data = db.DthPlanAndSpecifications.Where(a => a.Id == idno).ToList();
-                if (Data.Count > 0)
+                // Use FirstOrDefault to avoid loading entire table then filtering in memory
+                var DataRec = db.DthPlanAndSpecifications.FirstOrDefault(a => a.Id == idno);
+                if (DataRec != null)
                 {
                     System.Data.Entity.Core.Objects.ObjectParameter output = new
                        System.Data.Entity.Core.Objects.ObjectParameter("Output", typeof(string));
                     var ch = db.Proc_DthBookingPayment(userid, txtname, txtEmail, txtmobile, txtpincode, State1, District1, txtAddress, idno, output).Single().msg;
                     try
                     {
-                        var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                        var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                        var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                        var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                        var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
+                        var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
-                        var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
-                        var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                        var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                        var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
+                        var dlmdetails = db.Remain_dealer_balance.FirstOrDefault(aa => aa.DealerID == retailerdetails.DealerId);
+                        var Masterdetails = db.Remain_superstokist_balance.FirstOrDefault(aa => aa.SuperStokistID == dealerdetails.SSId);
 
                         var admininfo = db.Admin_details.SingleOrDefault();
                         Backupinfo back = new Backupinfo();
@@ -219,6 +247,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("ProcessToPay");
             }
         }
+
+        /// <summary>
+        /// GET Returns a JSON list of districts for a given state id, used for cascading dropdown population.
+        /// </summary>
         public JsonResult DistrictList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -231,6 +263,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// GET Displays the DTH booking report for today's date with success and failed amount totals.
+        /// </summary>
         public ActionResult DthBookingReport()
         {
             var userid = User.Identity.GetUserId();
@@ -243,6 +278,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             ViewData["Totalf"] = ch.Where(s => s.Status == "Failed").Sum(s => Convert.ToInt32(s.Amount));
             return View(ch);
         }
+
+        /// <summary>
+        /// POST Displays the DTH booking report filtered by date range, status, and top record count.
+        /// </summary>
         [HttpPost]
         public ActionResult DthBookingReport(string ddl_top, string ddl_status, string txt_frm_date, string txt_to_date)
         {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for managing PAN card service commission slab configurations.
+    /// </summary>
     public class PancardSlabModel
     {
         public List<Pancard_common_comm_new> common { get; set; }

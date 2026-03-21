@@ -1,4 +1,4 @@
-﻿using LinqToExcel;
+using LinqToExcel;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
@@ -23,6 +23,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.FeeCollector.Controllers
 {
 
+    /// <summary>
+    /// FeeCollector Area - Manages Fee Collector operations - fee collection, transaction tracking and reporting
+    /// </summary>
     public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -55,6 +58,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             db = new VastwebmultiEntities();
         }
         // GET: FeeCollector/Home
+        /// <summary>
+        /// [GET] - Renders the FeeCollector dashboard with admin contact details and news feed
+        /// </summary>
         public ActionResult Index()
         {
             var userid = User.Identity.GetUserId();
@@ -84,6 +90,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return View();
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays fixed fee charges configured for the current fee collector
+        /// </summary>
         public ActionResult FixedFeeCharges()
         {
             var userid = User.Identity.GetUserId();
@@ -92,6 +101,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Inserts a new fixed fee charge entry for the logged-in fee collector
+        /// </summary>
         public ActionResult insertFixedFeeCharges(FixedFeeChargeModel model)
         {
             if(!ModelState.IsValid)
@@ -130,6 +142,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
         //    }
         //    return Json(AcadmicSession);
         //}
+        /// <summary>
+        /// [GET] - Lists all students associated with the current fee collector with academic session options
+        /// </summary>
         public ActionResult Students()
         {
             var userid = User.Identity.GetUserId();
@@ -172,6 +187,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Inserts a new student record under the current fee collector after validation
+        /// </summary>
         public ActionResult insert_Std(StdModel model)
         {
             try
@@ -224,12 +242,18 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
                 return RedirectToAction("Students");
             }
         }
+        /// <summary>
+        /// [GET] - JSON lookup - searches and returns student details by roll number
+        /// </summary>
         public JsonResult RollNoSearch(string id)
         {
             var ch = db.Students.SingleOrDefault(ii => ii.RollNo == id);
             return Json(JsonConvert.SerializeObject(ch), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Updates an existing student record with provided details
+        /// </summary>
         public ActionResult EditStudent(string txtRollNo, string StdName1, string FName1, string Mb1,string Address1, string DOB1, string stdClass1,string Section1,string SchoolName1,decimal AnnualFee1,string remark1,string AcadmicSession1,int? Board1)
         {
             try
@@ -262,6 +286,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Bulk-uploads students from an Excel file, skipping duplicates
+        /// </summary>
         public ActionResult UploadExcel(User users, HttpPostedFileBase FileUpload)
         {
 
@@ -384,6 +411,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] - Downloads the student import Excel template file
+        /// </summary>
         public FileResult Download()
         {
             byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Doc/StudentBook1.xlsx"));
@@ -391,6 +421,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays today's fee deposit transactions for the current fee collector
+        /// </summary>
         public ActionResult FeeDeposit()
         {
             var userid = User.Identity.GetUserId();
@@ -403,6 +436,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters and displays fee deposit records by roll number and date range
+        /// </summary>
         public ActionResult FeeDeposit(string stdRollNO, string txt_frm_date, string txt_to_date)
         {
 
@@ -430,6 +466,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Records a fee installment payment for a student
+        /// </summary>
         public ActionResult InsertFeeDeposit(string txtRollNo, decimal InsAmount,decimal InsBusAmount)
         {
             var userid = User.Identity.GetUserId();
@@ -445,6 +484,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return RedirectToAction("FeeDeposit");
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Returns JSON with installment amount details for a given roll number
+        /// </summary>
         public ActionResult getInstallmentAmount(string rollno)
         {
             var userid = User.Identity.GetUserId();
@@ -482,6 +524,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             //return Json();
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays the fee collector logo upload page
+        /// </summary>
         public ActionResult Logo()
         {
             var userid = User.Identity.GetUserId();
@@ -490,6 +535,9 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return View(result);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Saves an uploaded logo image for the fee collector profile
+        /// </summary>
         public ActionResult Logo(string f)
         {
                 var userid = User.Identity.GetUserId();
@@ -513,11 +561,17 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
             return View(result);
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] - Generates and returns a PDF version of the fee invoice
+        /// </summary>
         public ActionResult InvoicePDF(int invoiceNo)
         {
             //Code to get content
             return new Rotativa.ActionAsPdf("FeeInvoicePDF", new { invc = invoiceNo}) { FileName = "InvoiceAsPdf.pdf" };
         }
+        /// <summary>
+        /// [GET] - Generates and returns a PDF version of the fee invoice
+        /// </summary>
         public ActionResult FeeInvoicePDF(int invc)
         {
             var model = new FeeInvoiceModel();

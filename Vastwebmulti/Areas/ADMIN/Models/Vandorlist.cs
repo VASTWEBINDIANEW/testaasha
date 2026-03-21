@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,6 +6,9 @@ using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Represents a vendor/operator entry in the admin vendor management list.
+    /// </summary>
     public class Vandorlist
     {
         public string userid { get; set; }

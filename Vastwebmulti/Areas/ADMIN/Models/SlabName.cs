@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Represents a named commission slab entry used in slab selection dropdowns.
+    /// </summary>
     public class SlabName
     {
         public int idno { set; get; }

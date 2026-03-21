@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -6,6 +6,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Form model for creating or editing a master distributor account with validation rules.
+    /// </summary>
     public class MasterDistributerModel
     {
 

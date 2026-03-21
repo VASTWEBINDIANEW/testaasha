@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,6 +6,9 @@ using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Represents an SMS template entry used for API-triggered notifications.
+    /// </summary>
     public partial class apismslist1
     {
         public int id { get; set; }

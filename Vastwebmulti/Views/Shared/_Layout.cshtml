@@ -52,33 +52,23 @@
             }
         }
         catch { }
-        var faviconlogo = db2.tblfavicons.Where(p => p.UserId == whitelabelid).ToList();
-        if (faviconlogo.Count() > 0)
+        // Single query instead of ToList() + SingleOrDefault()
+        var faviconRec2 = db2.tblfavicons.FirstOrDefault(p => p.UserId == whitelabelid);
+        if (faviconRec2 != null)
         {
-            //if (faviconlogo.SingleOrDefault().Role == "WHITELABEL")
-            //{
-            favimage = faviconlogo.SingleOrDefault().faviconimage;
-            //}
-        }
-        else
-        {
-            <link rel="icon" href="" type="image/x-icon" />
-        }
-        var image = db2.tblfooterImages.Where(p => p.UserId == whitelabelid).ToList();
-        if (image.Count > 0)
-        {
-            ViewBag.image = image.SingleOrDefault().ImageUrl;
-        }
-        else
-        {
-            ViewBag.image = "img42.png";
+            favimage = faviconRec2.faviconimage;
         }
 
+        var imageRec = db2.tblfooterImages.FirstOrDefault(p => p.UserId == whitelabelid);
+        ViewBag.image = imageRec != null ? imageRec.ImageUrl : "img42.png";
+
         ViewBag.Sate = db2.State_Desc.Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
-       
-        var NotShow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y").ToList();
-        var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS").FirstOrDefault().Status;
-        var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL").FirstOrDefault().Status;
+
+        var cardMenu2 = db2.tblMenus.FirstOrDefault(a => a.MenuName == "CARDS");
+        var travelMenu2 = db2.tblMenus.FirstOrDefault(a => a.MenuName == "TRAVEL");
+        var Card = cardMenu2 != null ? cardMenu2.Status : "N";
+        var Travel = travelMenu2 != null ? travelMenu2.Status : "N";
+        var NotShow = (Card == "Y" || Travel == "Y");
     }
     <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
     <style>

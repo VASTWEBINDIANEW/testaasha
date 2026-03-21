@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,6 +9,9 @@ using Vastwebmulti.Areas.ADMIN.ViewModel;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for composing and sending bulk or individual SMS messages.
+    /// </summary>
     public class SMSViewModel
     {
         public int id { get; set; }

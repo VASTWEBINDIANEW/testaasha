@@ -7,6 +7,9 @@ using System.Web;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// Model storing backup API configuration and endpoint information
+    /// </summary>
     public class Backupinfo
     {
         public void info(Addinfo Model) 

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using RestSharp;
@@ -20,6 +20,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.ADMIN.Controllers
 {
 
+    /// <summary>
+    /// ADMIN Area - Manages hotel booking operations - search, booking, cancellation and reports via TBO API
+    /// </summary>
     [Authorize(Roles = "Admin")]
     public class HotelController : Controller
     {
@@ -62,6 +65,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
+        /// <summary>
+        /// GET - Displays the hotel booking report for today's date with user filter dropdowns.
+        /// </summary>
         //[MenuAccessFilter] //used in paid and nonpaid services
         public ActionResult HotelReport()
         {
@@ -112,6 +118,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// POST - Filters and displays the hotel booking report by date range, status, and user.
+        /// </summary>
         [HttpPost]
         public ActionResult HotelReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
         {
@@ -182,6 +191,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
 
 
 
+        /// <summary>
+        /// GET - Exports the hotel booking report as an Excel file for download.
+        /// </summary>
         public ActionResult ExcelHotelBookingReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
         {
             try
@@ -253,7 +265,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                     dataTbl.Columns.Add("Booking Id", typeof(string));
 
 
-                    if (ch.Count > 0)
+                    if (ch.Any())
                     {
 
 
@@ -294,6 +306,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
+        /// <summary>
+        /// GET - Exports the hotel booking report as a PDF for download.
+        /// </summary>
         public ActionResult PDFHotelReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
         {
             try
@@ -362,6 +377,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
 
+        /// <summary>
+        /// GET - Displays today's hotel cancellation queue with user filter dropdowns.
+        /// </summary>
         [HttpGet]
         public ActionResult CancellationQueue()
         {
@@ -415,6 +433,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
+        /// <summary>
+        /// POST - Filters the hotel cancellation queue by date range, status, and user.
+        /// </summary>
         [HttpPost]
         public ActionResult CancellationQueue(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel, string BookingId)
         {
@@ -530,6 +551,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
+        /// <summary>
+        /// POST - Checks the hotel cancellation request status with the provider and processes the refund.
+        /// </summary>
         [HttpPost]
         public ActionResult CancellationStatus(string ChangeReqId, int idno)
         {
@@ -615,6 +639,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
+        /// <summary>
+        /// POST - Returns the hotel passenger guest list for a given transaction ID as a partial view.
+        /// </summary>
         [HttpPost]
         public ActionResult GuestDetails(string TXNID)
         {
@@ -631,6 +658,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return PartialView();
             }
         }
+        /// <summary>
+        /// POST - Returns the hotel price breakdown for a given transaction ID as a partial view.
+        /// </summary>
         [HttpPost]
         public ActionResult HotelPriceDetails(string TXNID)
         {
@@ -647,12 +677,15 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return PartialView();
             }
         }
+        /// <summary>
+        /// POST - Fetches live hotel booking status from the provider and updates the booking record.
+        /// </summary>
         [HttpPost]
         public ActionResult HotelBookingStatus(string TXNID)
         {
             try
             {
-                var userid = db.Hotel_info.Where(aa => aa.TraceId == TXNID).SingleOrDefault().retailerid;
+                var userid = db.Hotel_info.FirstOrDefault(aa => aa.TraceId == TXNID)?.retailerid;
                 if (!string.IsNullOrWhiteSpace(TXNID))
                 {
                     var token = string.Empty;
@@ -740,6 +773,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return Json(JsonConvert.SerializeObject(AjaxRespo));
             }
         }
+        /// <summary>
+        /// GET - Fetches and displays the full hotel booking details from the provider for a given transaction.
+        /// </summary>
         [HttpGet]
         public ActionResult HotelFullDetails(string TXNID)
         {
@@ -807,6 +843,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
+        /// <summary>
+        /// POST - Initiates a hotel booking cancellation request with the provider and saves the change request.
+        /// </summary>
         [HttpPost]
         public ActionResult BookingCancallation(int id, string BookingId)
         {

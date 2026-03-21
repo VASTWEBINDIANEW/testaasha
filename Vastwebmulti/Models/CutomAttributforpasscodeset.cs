@@ -6,6 +6,9 @@ using System.Web.Routing;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// Action filter enforcing passcode/security PIN verification for protected admin actions
+    /// </summary>
     public class CutomAttributforpasscodeset : ActionFilterAttribute, IActionFilter
     {
         public string userid { get; set; }

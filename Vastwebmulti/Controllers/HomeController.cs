@@ -368,114 +368,64 @@ namespace Vastwebmulti.Controllers
 
                 }
 
-                var show = DB.tblSilderIsStatus.ToList();
-                if (show.Count > 0)
-                {
-                    if (show.FirstOrDefault().Silder1Status == "Y")
-                    {
-                        ViewBag.silder1 = show.FirstOrDefault().Silder1Status;
-                    }
-                    else
-                    {
-                        ViewBag.silder1 = show.FirstOrDefault().Silder1Status;
-                    }
+                // Single query instead of ToList() + FirstOrDefault()
+                var showRec = DB.tblSilderIsStatus.FirstOrDefault();
+                ViewBag.silder1 = showRec != null ? showRec.Silder1Status : "";
 
-                }
                 ViewBag.showsilder1 = DB.tblSilders.Where(a => a.SilderType == "Silder1").ToList();
                 ViewBag.showsilder2 = DB.tblSilders.Where(a => a.SilderType == "Silder2").ToList();
-                var bus = DB.tblTravels.Where(p => p.Role == "ADMIN" && p.TravelType == "Bus").ToList();
-                ViewBag.bus = DB.tblTravels.Where(p => p.Role == "ADMIN").ToList();
-                ViewBag.buscontent = bus.Count == 0 ? "" : bus.Where(p => p.TravelType == "Bus").FirstOrDefault().Content;
-                ViewBag.image = bus.Count == 0 ? "" : bus.Where(p => p.TravelType == "Bus").FirstOrDefault().Image;
-                var hotel = DB.tblTravels.Where(p => p.Role == "ADMIN" && p.TravelType == "Hotel").ToList();
-                ViewBag.hotelcontent = hotel.Count == 0 ? "" : hotel.Where(p => p.TravelType == "Hotel").FirstOrDefault().Content;
-                ViewBag.hotelimg = hotel.Count == 0 ? "" : hotel.Where(p => p.TravelType == "Hotel").FirstOrDefault().Image;
-                var flight = DB.tblTravels.Where(p => p.Role == "ADMIN" && p.TravelType == "Flight").ToList();
-                ViewBag.flightcontent = flight.Count == 0 ? "" : flight.Where(p => p.TravelType == "Flight").FirstOrDefault().Content;
-                ViewBag.flightimg = flight.Count == 0 ? "" : flight.Where(p => p.TravelType == "Flight").FirstOrDefault().Image;
-                var travelcolor = DB.tblTravelColors.Where(p => p.Role == "ADMIN").ToList();
-                if (travelcolor.Count > 0)
-                {
-                    ViewBag.travelcolor = travelcolor.SingleOrDefault().TravelColor;
-                }
-                else
-                {
-                    ViewBag.travelcolor = "#9c99b7";
-                }
-                var about = DB.tblAboutUsContents.Where(p => p.Role == "ADMIN").ToList();
 
-                ViewBag.aboutimage = about.Count == 0 ? "" : about.Where(p => p.Role == "ADMIN").SingleOrDefault().AboutImage;
-                ViewBag.abouthead = about.Count == 0 ? "" : about.Where(p => p.Role == "ADMIN").SingleOrDefault().AboutHeading;
-                ViewBag.aboutcon = about.Count == 0 ? "" : about.Where(p => p.Role == "ADMIN").SingleOrDefault().AboutContent;
-                var dthcolor = DB.tblDTHColors.Where(p => p.Role == "ADMIN").ToList();
-                if (dthcolor.Count > 0)
-                {
-                    ViewBag.colordth = dthcolor.SingleOrDefault().DthBackColor;
-                }
-                else
-                {
-                    ViewBag.colordth = "Red";
-                }
+                // Load all ADMIN travel records once, then split in-memory
+                var allTravels = DB.tblTravels.Where(p => p.Role == "ADMIN").ToList();
+                ViewBag.bus = allTravels;
+                var bus = allTravels.FirstOrDefault(p => p.TravelType == "Bus");
+                ViewBag.buscontent = bus != null ? bus.Content : "";
+                ViewBag.image = bus != null ? bus.Image : "";
+                var hotel = allTravels.FirstOrDefault(p => p.TravelType == "Hotel");
+                ViewBag.hotelcontent = hotel != null ? hotel.Content : "";
+                ViewBag.hotelimg = hotel != null ? hotel.Image : "";
+                var flight = allTravels.FirstOrDefault(p => p.TravelType == "Flight");
+                ViewBag.flightcontent = flight != null ? flight.Content : "";
+                ViewBag.flightimg = flight != null ? flight.Image : "";
+
+                var travelcolorRec = DB.tblTravelColors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.travelcolor = travelcolorRec != null ? travelcolorRec.TravelColor : "#9c99b7";
+
+                var about = DB.tblAboutUsContents.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.aboutimage = about != null ? about.AboutImage : "";
+                ViewBag.abouthead = about != null ? about.AboutHeading : "";
+                ViewBag.aboutcon = about != null ? about.AboutContent : "";
+                var dthcolorRec = DB.tblDTHColors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.colordth = dthcolorRec != null ? dthcolorRec.DthBackColor : "Red";
+
                 ViewBag.dthplan = DB.tblDTHs.Where(p => p.Role == "ADMIN").ToList();
                 ViewBag.team = DB.tblteams.ToList();
-                var tcolor = DB.tblTeamBackColors.ToList();
-                if (tcolor.Count > 0)
-                {
-                    ViewBag.tcolor = tcolor.SingleOrDefault().TeamColor;
-                }
-                else
-                {
-                    ViewBag.tcolor = "Blue";
-                }
-                var content = DB.tblWhyChooseContents.ToList();
-                ViewBag.content = content.Count == 0 ? "" : content.SingleOrDefault().AllContent;
+                var tcolorRec = DB.tblTeamBackColors.FirstOrDefault();
+                ViewBag.tcolor = tcolorRec != null ? tcolorRec.TeamColor : "Blue";
+
+                var contentRec = DB.tblWhyChooseContents.FirstOrDefault();
+                ViewBag.content = contentRec != null ? contentRec.AllContent : "";
                 ViewBag.allcontent = DB.tblWhyChooseUsAllContents.ToList();
-                var whychoosecolor = DB.tblWhyChooseBackColors.ToList();
-                if (whychoosecolor.Count > 0)
-                {
-                    ViewBag.whychoosecolor = whychoosecolor.SingleOrDefault().WhyBackColor;
-                }
-                else
-                {
-                    ViewBag.whychoosecolor = "Green";
-                }
+                var whychoosecolorRec = DB.tblWhyChooseBackColors.FirstOrDefault();
+                ViewBag.whychoosecolor = whychoosecolorRec != null ? whychoosecolorRec.WhyBackColor : "Green";
 
                 ViewBag.newupdate = DB.tblNewUpdates.Where(p => p.Role == "ADMIN").ToList();
-                var backnewcolor = DB.tblNewUpdateColors.Where(p => p.Role == "ADMIN").ToList();
-                if (backnewcolor.Count > 0)
-                {
-                    ViewBag.newcolor = backnewcolor.SingleOrDefault().NewContentBackColor;
-                }
-                else
-                {
-                    ViewBag.newcolor = "Red";
-                }
-                //ViewBag.newcolor = backnewcolor.Count == 0 ? "" : backnewcolor.SingleOrDefault().NewContentBackColor;
-                var col = "";
-                var color = DB.changecolors.Where(p => p.Role == "ADMIN").ToList();
-                if (color.Count > 0)
-                {
-                    if (color.SingleOrDefault().Role == "ADMIN")
-                    {
-                        col = color.Where(p => p.Role == "ADMIN").SingleOrDefault().adminandouterheadercolor;
-                    }
-                }
-                else
-                {
-                    col = "Gray";
-                }
-                ViewBag.headcolor = col;
+                var backnewcolorRec = DB.tblNewUpdateColors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.newcolor = backnewcolorRec != null ? backnewcolorRec.NewContentBackColor : "Red";
 
+                var colorRec = DB.changecolors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.headcolor = (colorRec != null && !string.IsNullOrEmpty(colorRec.adminandouterheadercolor))
+                                    ? colorRec.adminandouterheadercolor : "Gray";
 
-                var contect = DB.tblContectBackColors.Where(p => p.Role == "ADMIN").ToList();
-                ViewBag.contect = contect.Count == 0 ? "" : contect.SingleOrDefault().ContectColor;
-                var address = DB.tblContects.ToList();
-                ViewBag.Headadd = address.Count == 0 ? "" : address.SingleOrDefault().HeadOfficeAddress;
-                ViewBag.branch = address.Count == 0 ? "" : address.SingleOrDefault().BranceOfficeAddress;
-                ViewBag.compnay = address.Count == 0 ? "" : address.SingleOrDefault().CompnayName;
-                ViewBag.landline = address.Count == 0 ? "" : address.SingleOrDefault().LandlineNo;
-                ViewBag.phone = address.Count == 0 ? "" : address.SingleOrDefault().phone;
-                ViewBag.emil = address.Count == 0 ? "" : address.SingleOrDefault().Email;
+                var contectRec = DB.tblContectBackColors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.contect = contectRec != null ? contectRec.ContectColor : "";
+                var addressRec = DB.tblContects.FirstOrDefault();
+                ViewBag.Headadd = addressRec != null ? addressRec.HeadOfficeAddress : "";
+                ViewBag.branch = addressRec != null ? addressRec.BranceOfficeAddress : "";
+                ViewBag.compnay = addressRec != null ? addressRec.CompnayName : "";
+                ViewBag.landline = addressRec != null ? addressRec.LandlineNo : "";
+                ViewBag.phone = addressRec != null ? addressRec.phone : "";
+                ViewBag.emil = addressRec != null ? addressRec.Email : "";
 
                 var sertype1 = DB.tblFooterServices.ToList();
                 if (sertype1.Count > 0)
@@ -643,79 +593,42 @@ namespace Vastwebmulti.Controllers
                 {
                     ViewBag.travelcolor = "#9c99b7";
                 }
-                var about = DB.tblAboutUsContents.Where(p => p.Role == "ADMIN").ToList();
-                ViewBag.aboutimage = about.Count == 0 ? "" : about.Where(p => p.Role == "ADMIN").SingleOrDefault().AboutImage;
-                ViewBag.abouthead = about.Count == 0 ? "" : about.Where(p => p.Role == "ADMIN").SingleOrDefault().AboutHeading;
-                ViewBag.aboutcon = about.Count == 0 ? "" : about.Where(p => p.Role == "ADMIN").SingleOrDefault().AboutContent;
-                var dthcolor = DB.tblDTHColors.Where(p => p.Role == "ADMIN").ToList();
-                if (dthcolor.Count > 0)
-                {
-                    ViewBag.colordth = dthcolor.SingleOrDefault().DthBackColor;
-                }
-                else
-                {
-                    ViewBag.colordth = "Red";
-                }
+                var about2 = DB.tblAboutUsContents.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.aboutimage = about2 != null ? about2.AboutImage : "";
+                ViewBag.abouthead = about2 != null ? about2.AboutHeading : "";
+                ViewBag.aboutcon = about2 != null ? about2.AboutContent : "";
+
+                var dthcolorRec2 = DB.tblDTHColors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.colordth = dthcolorRec2 != null ? dthcolorRec2.DthBackColor : "Red";
+
                 ViewBag.dthplan = DB.tblDTHs.Where(p => p.Role == "ADMIN").ToList();
                 ViewBag.team = DB.tblteams.ToList();
-                var tcolor = DB.tblTeamBackColors.ToList();
-                if (tcolor.Count > 0)
-                {
-                    ViewBag.tcolor = tcolor.SingleOrDefault().TeamColor;
-                }
-                else
-                {
-                    ViewBag.tcolor = "Blue";
-                }
-                var content = DB.tblWhyChooseContents.ToList();
-                ViewBag.content = content.Count == 0 ? "" : content.SingleOrDefault().AllContent;
+                var tcolorRec2 = DB.tblTeamBackColors.FirstOrDefault();
+                ViewBag.tcolor = tcolorRec2 != null ? tcolorRec2.TeamColor : "Blue";
+
+                var contentRec2 = DB.tblWhyChooseContents.FirstOrDefault();
+                ViewBag.content = contentRec2 != null ? contentRec2.AllContent : "";
                 ViewBag.allcontent = DB.tblWhyChooseUsAllContents.ToList();
-                var whychoosecolor = DB.tblWhyChooseBackColors.ToList();
-                if (whychoosecolor.Count > 0)
-                {
-                    ViewBag.whychoosecolor = whychoosecolor.SingleOrDefault().WhyBackColor;
-                }
-                else
-                {
-                    ViewBag.whychoosecolor = "Green";
-                }
+                var whychoosecolorRec2 = DB.tblWhyChooseBackColors.FirstOrDefault();
+                ViewBag.whychoosecolor = whychoosecolorRec2 != null ? whychoosecolorRec2.WhyBackColor : "Green";
 
                 ViewBag.newupdate = DB.tblNewUpdates.Where(p => p.Role == "ADMIN").ToList();
-                var backnewcolor = DB.tblNewUpdateColors.Where(p => p.Role == "ADMIN").ToList();
-                if (backnewcolor.Count > 0)
-                {
-                    ViewBag.newcolor = backnewcolor.SingleOrDefault().NewContentBackColor;
-                }
-                else
-                {
-                    ViewBag.newcolor = "Red";
-                }
-                //ViewBag.newcolor = backnewcolor.Count == 0 ? "" : backnewcolor.SingleOrDefault().NewContentBackColor;
-                var col = "";
-                var color = DB.changecolors.Where(p => p.Role == "ADMIN").ToList();
-                if (color.Count > 0)
-                {
-                    if (color.SingleOrDefault().Role == "ADMIN")
-                    {
-                        col = color.Where(p => p.Role == "ADMIN").SingleOrDefault().adminandouterheadercolor;
-                    }
-                }
-                else
-                {
-                    col = "Gray";
-                }
-                ViewBag.headcolor = col;
+                var backnewcolorRec2 = DB.tblNewUpdateColors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.newcolor = backnewcolorRec2 != null ? backnewcolorRec2.NewContentBackColor : "Red";
 
+                var colorRec2 = DB.changecolors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.headcolor = (colorRec2 != null && !string.IsNullOrEmpty(colorRec2.adminandouterheadercolor))
+                                    ? colorRec2.adminandouterheadercolor : "Gray";
 
-                var contect = DB.tblContectBackColors.Where(p => p.Role == "ADMIN").ToList();
-                ViewBag.contect = contect.Count == 0 ? "" : contect.SingleOrDefault().ContectColor;
-                var address = DB.tblContects.ToList();
-                ViewBag.Headadd = address.Count == 0 ? "" : address.SingleOrDefault().HeadOfficeAddress;
-                ViewBag.branch = address.Count == 0 ? "" : address.SingleOrDefault().BranceOfficeAddress;
-                ViewBag.compnay = address.Count == 0 ? "" : address.SingleOrDefault().CompnayName;
-                ViewBag.landline = address.Count == 0 ? "" : address.SingleOrDefault().LandlineNo;
-                ViewBag.phone = address.Count == 0 ? "" : address.SingleOrDefault().phone;
-                ViewBag.emil = address.Count == 0 ? "" : address.SingleOrDefault().Email;
+                var contectRec2 = DB.tblContectBackColors.FirstOrDefault(p => p.Role == "ADMIN");
+                ViewBag.contect = contectRec2 != null ? contectRec2.ContectColor : "";
+                var addressRec2 = DB.tblContects.FirstOrDefault();
+                ViewBag.Headadd = addressRec2 != null ? addressRec2.HeadOfficeAddress : "";
+                ViewBag.branch = addressRec2 != null ? addressRec2.BranceOfficeAddress : "";
+                ViewBag.compnay = addressRec2 != null ? addressRec2.CompnayName : "";
+                ViewBag.landline = addressRec2 != null ? addressRec2.LandlineNo : "";
+                ViewBag.phone = addressRec2 != null ? addressRec2.phone : "";
+                ViewBag.emil = addressRec2 != null ? addressRec2.Email : "";
 
                 var sertype1 = DB.tblFooterServices.ToList();
                 if (sertype1.Count > 0)

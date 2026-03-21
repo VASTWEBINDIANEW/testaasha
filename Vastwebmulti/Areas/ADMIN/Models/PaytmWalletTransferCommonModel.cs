@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Aggregate view model for managing Paytm wallet transfer commission settings.
+    /// </summary>
     public class PaytmWalletTransferCommonModel
     {
         public List<Paytm_Wallet_Transfer_comm_userwise> userWise { get; set; }

@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Represents a day-wise commission slab entry for time-based commission rules.
+    /// </summary>
     public class daywisecommslabclass
     {
         public int idno { get; set; }

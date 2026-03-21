@@ -8,39 +8,40 @@
     @{
         var favimage = "";
         VastwebmultiEntities db2 = new VastwebmultiEntities();
-        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
-        if (faviconlogo.Count() > 0)
-        {
-            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
-            {
-                favimage = faviconlogo.SingleOrDefault().faviconimage;
-            }
-        }
-        else
-        {
-            <link rel="icon" href="" type="image/x-icon" />
-        }
-        var admindetail = db2.Admin_details.ToList();
-        var mailid = admindetail.SingleOrDefault().email;
-        var mobile = admindetail.SingleOrDefault().mobile;
-        var Address = admindetail.SingleOrDefault().Address;
-        var Firm_Name = admindetail.SingleOrDefault().Companyname;
-        var SupportMail = admindetail.SingleOrDefault().email1;
-        var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
-        var PinCode = admindetail.SingleOrDefault().pincode;
 
-        int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
-        int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
-        var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
-        var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+        // Single query instead of ToList() + SingleOrDefault()
+        var faviconRec = db2.tblfavicons.FirstOrDefault(p => p.Role == "ADMIN");
+        if (faviconRec != null)
+        {
+            favimage = faviconRec.faviconimage;
+        }
 
-        var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
-        
-        var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
-        var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+        // Single DB hit for admin details
+        var admindetail = db2.Admin_details.FirstOrDefault();
+        var mailid = admindetail != null ? admindetail.email : "";
+        var mobile = admindetail != null ? admindetail.mobile : "";
+        var Address = admindetail != null ? admindetail.Address : "";
+        var Firm_Name = admindetail != null ? admindetail.Companyname : "";
+        var SupportMail = admindetail != null ? admindetail.email1 : "";
+        var CustCareNo = admindetail != null ? "+91" + admindetail.mobile1 : "";
+        var PinCode = admindetail != null ? admindetail.pincode : "";
+
+        int state = admindetail != null ? Convert.ToInt32(admindetail.State) : 0;
+        int district = admindetail != null ? Convert.ToInt32(admindetail.District) : 0;
+        var stateRec = db2.State_Desc.FirstOrDefault(a => a.State_id == state);
+        var districtRec = db2.District_Desc.FirstOrDefault(a => a.Dist_id == district && a.State_id == state);
+        var City = stateRec != null ? stateRec.State_name : "";
+        var State = districtRec != null ? districtRec.Dist_Desc : "";
+
+        var cardMenu = db2.tblMenus.FirstOrDefault(a => a.MenuName == "CARDS" && a.Role == "ADMIN");
+        var travelMenu = db2.tblMenus.FirstOrDefault(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN");
+        var Card = cardMenu != null ? cardMenu.Status : "N";
+        var Travel = travelMenu != null ? travelMenu.Status : "N";
+        var notshow = (Card == "Y" || Travel == "Y");
+
         var outerlink = db2.OuterUpload_Link.ToList();
-        var Outerlinkname_change = db2.Outer_Namechange.SingleOrDefault().Name;
-
+        var outerNameRec = db2.Outer_Namechange.FirstOrDefault();
+        var Outerlinkname_change = outerNameRec != null ? outerNameRec.Name : "";
     }
 
 
@@ -62,6 +63,9 @@
 
 
     <link href="~/MainFrontDesign/css/Custom-style.css" rel="stylesheet" />
+    <!-- preconnect speeds up Google Fonts by resolving DNS early -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Roboto:300,400,500,700&display=swap" rel="stylesheet">
     <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
     <script src="~/MainFrontDesign/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
@@ -72,23 +76,15 @@
             <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>*@
     }
     @{
-        var selectedcolor = "";
-        var menucolor = "";
-        VastwebmultiEntities db1 = new VastwebmultiEntities();
-        var allcolor = db1.tblMenuColors.ToList();
-        if (allcolor.Count > 0)
+        var selectedcolor = "Green";
+        var menucolor = "White";
+        // Reuse existing db2 context
+        var colorRec = db2.tblMenuColors.FirstOrDefault();
+        if (colorRec != null)
         {
-            selectedcolor = allcolor.SingleOrDefault().SelectedColor;
-            menucolor = allcolor.SingleOrDefault().MenuColor;
+            selectedcolor = colorRec.SelectedColor;
+            menucolor = colorRec.MenuColor;
         }
-        else
-        {
-            selectedcolor = "Green";
-            menucolor = "White";
-        }
-
-        //var selectedcolor = allcolor.SingleOrDefault().SelectedColor;
-        //var menucolor = allcolor.SingleOrDefault().MenuColor;
     }
     <style type="text/css">
 
@@ -196,52 +192,30 @@
     </style>
 </head>
 @{
-    VastwebmultiEntities db = new VastwebmultiEntities();
-    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
-    var col = "";
-    if (outercolor.Count > 0)
-    {
-        if (outercolor.SingleOrDefault().Role == "ADMIN")
-        {
-            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
-        }
-    }
-    else
-    {
-        col = "#da097d";
-    }
-    if (col == "")
-    {
-        col = "#da097d";
-    }
+    // Reuse db2 context (already opened above in <head>)
+    var outercolorRec = db2.changecolors.FirstOrDefault(p => p.Role == "ADMIN");
+    var col = (outercolorRec != null && !string.IsNullOrEmpty(outercolorRec.multipaloutercolor))
+              ? outercolorRec.multipaloutercolor : "#da097d";
     var color = col;
-      
-    var allcolor1 = db.tblMenuColors.ToList();
-    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
-    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
-    var logoimage = "";
-    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-    if (logo.Count > 0)
+
+    // Reuse colorRec already fetched above
+    var selectedcolor1 = colorRec != null ? colorRec.SelectedColor : "";
+    var menucolor1 = colorRec != null ? colorRec.MenuColor : "";
+
+    var logoimage = "images/Default_Logo.png";
+    var logoRec = db2.tblHeaderLogoes.FirstOrDefault(p => p.Role == "ADMIN");
+    if (logoRec != null)
     {
-        if (logo.SingleOrDefault().Role == "ADMIN")
-        {
-            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
-        }
-    }
-    else
-    {
-        logoimage = "images/Default_Logo.png";
+        logoimage = logoRec.LogoImage;
     }
 
-    var vv = from tbl in db.tblMenus
+    var vv = from tbl in db2.tblMenus
              where tbl.Status == "Y" && tbl.Role == "ADMIN"
              select new
              {
                  tbl.MenuName
              };
     ViewBag.menuname = vv;
-
-
 
     List<Vastwebmulti.JsonData.Hlp_TC_Privacy> people = new List<Vastwebmulti.JsonData.Hlp_TC_Privacy>();
     JSONReadWrite readWrite = new JSONReadWrite();
@@ -254,10 +228,9 @@
     people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("TnCAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
     var TC = people.ToList();
 
-    var Great_Help_News = db.Message_top.Where(a => a.users == "Outer").ToList();
-
-    var statuschkGreat = Great_Help_News.Where(aa => aa.name == "Great News" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
-    var statuschkNeed = Great_Help_News.Where(aa => aa.name == "Need Help" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+    // Single filtered query — no ToList() + in-memory Where()
+    var statuschkGreat = db2.Message_top.FirstOrDefault(aa => aa.name == "Great News" && aa.status == "Y" && aa.users == "Outer");
+    var statuschkNeed = db2.Message_top.FirstOrDefault(aa => aa.name == "Need Help" && aa.status == "Y" && aa.users == "Outer");
 
     JSONReadWrite readWrit1e = new JSONReadWrite();
     dynamic people1 = Newtonsoft.Json.JsonConvert.DeserializeObject(readWrit1e.Read("LogoBackgroundColor.json", "~/Areas/ADMIN/Models/JsonData/"));
@@ -290,7 +263,7 @@
                             <div class="collapse navbar-collapse custom-control-font" id="bs-example-navbar-collapse-1">
                                 <ul class="nav navbar-nav navbar-right">
                                     <li><a href='@Url.Action()'>home</a></li>
-                                    <li><a href='#our-app'><span style="background: var(--main-bg-lcolor);padding: 3px 6px;border-radius: 40px;border-left-width: 2px;border-right-width: 2px;padding-top:2px;"><img src="~/AdminDesign/images/android-menu.svg" style="width:14px;margin-top:-1px;" />&nbsp;Android</span></a></li>
+                                    <li><a href='#our-app'><span style="background: var(--main-bg-lcolor);padding: 3px 6px;border-radius: 40px;border-left-width: 2px;border-right-width: 2px;padding-top:2px;"><img loading="lazy" src="~/AdminDesign/images/android-menu.svg" style="width:14px;margin-top:-1px;" />&nbsp;Android</span></a></li>
                                     <li><a href="#ABOUT">about</a></li>
                                     <li><a href="#SERVICES">service</a></li>
                                     @*
@@ -367,33 +340,33 @@
 
                         <li class="footer-phone">
                             <h4 style="font-size:18px;"> 
-                                <img src="~/AdminDesign/images/customer-support.svg" style="width:20px;" />&nbsp;24&nbsp;x&nbsp;7 Customer Care
+                                <img loading="lazy" src="~/AdminDesign/images/customer-support.svg" style="width:20px;" />&nbsp;24&nbsp;x&nbsp;7 Customer Care
                             </h4>
                             <a href="tel:+91+@CustCareNo" style="letter-spacing: 2px;">
-                                <img src="~/AdminDesign/images/india.svg" style="width: 30px;padding: 0px 4px;background: #fff;border-radius: 3px;" />&nbsp;@CustCareNo
+                                <img loading="lazy" src="~/AdminDesign/images/india.svg" style="width: 30px;padding: 0px 4px;background: #fff;border-radius: 3px;" />&nbsp;@CustCareNo
                             </a>
                         </li>
                         <li class="footer-phone">
                             <h4 style="font-size:18px;margin-top: 10px;">
-                                <img src="~/AdminDesign/images/chat-box.svg" style="width:20px;" />&nbsp;24&nbsp;x&nbsp;7 Support Email Id
+                                <img loading="lazy" src="~/AdminDesign/images/chat-box.svg" style="width:20px;" />&nbsp;24&nbsp;x&nbsp;7 Support Email Id
                             </h4>
                             <a href="mailto:@SupportMail" style="font-size:20px;">@SupportMail</a>
                         </li>
                         <li class="footer-phone">
                             <h4 style="font-size:18px;margin-top: 10px;">
-                                <img src="~/AdminDesign/images/address-home.svg" style="width:20px;" />&nbsp; Office Address
+                                <img loading="lazy" src="~/AdminDesign/images/address-home.svg" style="width:20px;" />&nbsp; Office Address
                             </h4>
                             <p id="paddress" style="font-size:16px;font-weight:600;color:#fff;margin-top:15px;"></p>
                         </li>
                         <li class="footer-phone">
                             <h4 style="font-size:18px;margin-top: 10px;">
-                                <img src="~/AdminDesign/images/zip.svg" style="width:20px;" />&nbsp; zip Code
+                                <img loading="lazy" src="~/AdminDesign/images/zip.svg" style="width:20px;" />&nbsp; zip Code
                             </h4>
                             <p style="font-size:18px;font-weight:600;">@PinCode</p>
                         </li>
                         <li class="footer-phone">
                             <h4 style="font-size:18px;margin-top: 10px;">
-                                <img src="~/AdminDesign/images/area-pin.svg" style="width:20px;" />&nbsp; City&nbsp;&&nbsp;State
+                                <img loading="lazy" src="~/AdminDesign/images/area-pin.svg" style="width:20px;" />&nbsp; City&nbsp;&&nbsp;State
                             </h4>
                             <p id="pcity" style="font-size:18px;font-weight:600;"></p>
                         </li>
@@ -411,7 +384,7 @@
                                     @if (statuschkGreat != null)
                                     {
                                         <h2 class="news">
-                                            <img src="~/AdminDesign/images/great-news.svg" style="width:16px;margin-top:2px;margin-left:12px;" /> @statuschkGreat.name
+                                            <img loading="lazy" src="~/AdminDesign/images/great-news.svg" style="width:16px;margin-top:2px;margin-left:12px;" /> @statuschkGreat.name
 
                                         </h2>
                                         <span>
@@ -423,7 +396,7 @@
                                     @if (statuschkNeed != null)
                                     {
                                         <h2 class="help">
-                                            <img src="~/AdminDesign/images/question.svg" style="width:16px;margin-top:2px;margin-left:12px;" />  @statuschkNeed.name
+                                            <img loading="lazy" src="~/AdminDesign/images/question.svg" style="width:16px;margin-top:2px;margin-left:12px;" />  @statuschkNeed.name
                                         </h2>
                                         <span>
                                             @statuschkNeed.message
@@ -437,81 +410,81 @@
                     <ul class="footer-social">
                         @if (ViewBag.Afac != "")
                         {
-                            <li><a href="@ViewBag.Afac" target="_blank"><img src="~/AdminDesign/images/facebook.svg" /></a></li>
+                            <li><a href="@ViewBag.Afac" target="_blank"><img loading="lazy" src="~/AdminDesign/images/facebook.svg" /></a></li>
                         }
                         else
                         {
-                            <li><img src="~/AdminDesign/images/facebook.svg" /></li>
+                            <li><img loading="lazy" src="~/AdminDesign/images/facebook.svg" /></li>
                         }
 
 
                         @if (ViewBag.Atwi != "")
                         {
-                            <li><a href="@ViewBag.Atwi" target="_blank"><img src="~/AdminDesign/images/twitter.svg" /></a></li>
+                            <li><a href="@ViewBag.Atwi" target="_blank"><img loading="lazy" src="~/AdminDesign/images/twitter.svg" /></a></li>
                         }
                         else
                         {
-                            <li><img src="~/AdminDesign/images/twitter.svg" /></li>
+                            <li><img loading="lazy" src="~/AdminDesign/images/twitter.svg" /></li>
                         }
 
 
                         @if (ViewBag.AInstagra != "")
                         {
-                            <li><a href="@ViewBag.AInstagra" target="_blank"><img src="~/AdminDesign/images/instagram-sketched.svg" /></a></li>
+                            <li><a href="@ViewBag.AInstagra" target="_blank"><img loading="lazy" src="~/AdminDesign/images/instagram-sketched.svg" /></a></li>
                         }
                         else
                         {
-                            <li><img src="~/AdminDesign/images/instagram-sketched.svg" /></li>
+                            <li><img loading="lazy" src="~/AdminDesign/images/instagram-sketched.svg" /></li>
                         }
 
 
                         @if (ViewBag.Alinked != "")
                         {
-                            <li><a href="@ViewBag.Alinked" target="_blank"><img src="~/AdminDesign/images/linkedin.svg" /></a></li>
+                            <li><a href="@ViewBag.Alinked" target="_blank"><img loading="lazy" src="~/AdminDesign/images/linkedin.svg" /></a></li>
                         }
                         else
                         {
-                            <li><img src="~/AdminDesign/images/linkedin.svg" /></li>
+                            <li><img loading="lazy" src="~/AdminDesign/images/linkedin.svg" /></li>
                         }
 
 
                         @if (ViewBag.APinteres != "")
                         {
-                            <li><a href="@ViewBag.APinteres" target="_blank"><img src="~/AdminDesign/images/pinterest.svg" /></a></li>
+                            <li><a href="@ViewBag.APinteres" target="_blank"><img loading="lazy" src="~/AdminDesign/images/pinterest.svg" /></a></li>
                         }
                         else
                         {
-                            <li><img src="~/AdminDesign/images/pinterest.svg" /></li>
+                            <li><img loading="lazy" src="~/AdminDesign/images/pinterest.svg" /></li>
                         }
 
 
                         @if (ViewBag.AYoutub != "")
                         {
-                            <li><a href="@ViewBag.AYoutub" target="_blank"><img src="~/AdminDesign/images/youtube.svg" /></a></li>
+                            <li><a href="@ViewBag.AYoutub" target="_blank"><img loading="lazy" src="~/AdminDesign/images/youtube.svg" /></a></li>
                         }
                         else
                         {
-                            <li><img src="~/AdminDesign/images/youtube.svg" /></li>
+                            <li><img loading="lazy" src="~/AdminDesign/images/youtube.svg" /></li>
                         }
 
 
                         @if (ViewBag.ABlogge != "")
                         {
-                            <li><a href="@ViewBag.ABlogge" target="_blank"><img src="~/AdminDesign/images/blogger.svg" /></a></li>
+                            <li><a href="@ViewBag.ABlogge" target="_blank"><img loading="lazy" src="~/AdminDesign/images/blogger.svg" /></a></li>
                         }
                         else
                         {
-                            <li><img src="~/AdminDesign/images/blogger.svg" /></li>
+                            <li><img loading="lazy" src="~/AdminDesign/images/blogger.svg" /></li>
                         }
 
 
                         @if (ViewBag.ATumbl != "")
                         {
-                            <li><a href="@ViewBag.ATumbl" target="_blank"><img src="~/AdminDesign/images/tumblr.svg" /></a></li>
+                            <li><a href="@ViewBag.ATumbl" target="_blank"><img loading="lazy" src="~/AdminDesign/images/tumblr.svg" /></a></li>
                         }
                         else
                         {
-                            <li><img src="~/AdminDesign/images/tumblr.svg" /></li>
+                            <li><img loading="lazy" src="~/AdminDesign/images/tumblr.svg" /></li>
                         }
                     </ul>
 
@@ -618,48 +591,48 @@
                         <ul class="footer-social badges-footer">
                             @if (ViewBag.AppfuturA != "")
                             {
-                                <li><a href="@ViewBag.AppfuturA" target="_blank"><img src="~/AdminDesign/images/Appfutura.png" /></a></li>
+                                <li><a href="@ViewBag.AppfuturA" target="_blank"><img loading="lazy" src="~/AdminDesign/images/Appfutura.png" /></a></li>
                             }
 
                             @if (ViewBag.ApplancheA != "")
                             {
-                                <li><a href="@ViewBag.ApplancheA" target="_blank"><img src="~/AdminDesign/images/applancher.png" /></a></li>
+                                <li><a href="@ViewBag.ApplancheA" target="_blank"><img loading="lazy" src="~/AdminDesign/images/applancher.png" /></a></li>
                             }
 
                             @if (ViewBag.BadusA != "")
                             {
-                                <li><a href="@ViewBag.BadusA" target="_blank"><img src="~/AdminDesign/images/badush1.png" /></a></li>
+                                <li><a href="@ViewBag.BadusA" target="_blank"><img loading="lazy" src="~/AdminDesign/images/badush1.png" /></a></li>
                             }
 
                             @if (ViewBag.ExtracA != "")
                             {
-                                <li><a href="@ViewBag.ExtracA" target="_blank"><img src="~/AdminDesign/images/extract-badge-black.png" /></a></li>
+                                <li><a href="@ViewBag.ExtracA" target="_blank"><img loading="lazy" src="~/AdminDesign/images/extract-badge-black.png" /></a></li>
                             }
 
                             @if (ViewBag.GoodfirmA != "")
                             {
-                                <li><a href="@ViewBag.GoodfirmA" target="_blank"><img src="~/AdminDesign/images/good-firms.png" /></a></li>
+                                <li><a href="@ViewBag.GoodfirmA" target="_blank"><img loading="lazy" src="~/AdminDesign/images/good-firms.png" /></a></li>
                             }
 
                             @if (ViewBag.MobileapA != "")
                             {
-                                <li><a href="@ViewBag.MobileapA" target="_blank"><img src="~/AdminDesign/images/mobile-app.png" /></a></li>
+                                <li><a href="@ViewBag.MobileapA" target="_blank"><img loading="lazy" src="~/AdminDesign/images/mobile-app.png" /></a></li>
                             }
 
                             @if (ViewBag.TrustpiloA != "")
                             {
-                                <li><a href="@ViewBag.TrustpiloA" target="_blank"><img src="~/AdminDesign/images/trustpilot-posst-80-1a.png" /></a></li>
+                                <li><a href="@ViewBag.TrustpiloA" target="_blank"><img loading="lazy" src="~/AdminDesign/images/trustpilot-posst-80-1a.png" /></a></li>
                             }
                             @if (ViewBag.FreelancerA != "")
                             {
-                                <li><a href="@ViewBag.FreelancerA" target="_blank"><img src="~/AdminDesign/images/freelancer.png" /></a></li>
+                                <li><a href="@ViewBag.FreelancerA" target="_blank"><img loading="lazy" src="~/AdminDesign/images/freelancer.png" /></a></li>
                             }
                         </ul>
                     }
                     else
                     {
                         <div style="padding:10px;">
-                            <img src="~/AdminDesign/images/guarantee.svg" style="margin-top:12%;" />
+                            <img loading="lazy" src="~/AdminDesign/images/guarantee.svg" style="margin-top:12%;" />
                         </div>
                     }
 

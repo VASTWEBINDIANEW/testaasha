@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +6,9 @@ using System.Web.Mvc;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Composite view model aggregating multiple report or data views for the admin dashboard.
+    /// </summary>
     public class Multiview
     {
         public SelectList CountryListModel { get; set; }

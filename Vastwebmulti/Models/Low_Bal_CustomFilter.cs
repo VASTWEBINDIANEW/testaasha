@@ -8,6 +8,9 @@ using System.Web.Mvc;
 namespace Vastwebmulti.Models
 {
 
+    /// <summary>
+    /// Action filter that checks user wallet balance before each request and sends low balance alerts
+    /// </summary>
     public class Low_Bal_CustomFilter : ActionFilterAttribute, IActionFilter
     {
 
@@ -19,16 +22,20 @@ namespace Vastwebmulti.Models
                 try
                 {
                     var userid = filterContext.HttpContext.User.Identity.GetUserId();
-                    var role = (from rol in db.Roles join user in db.UserRoles on rol.RoleId equals user.RoleId where user.UserId == userid select rol.Name).SingleOrDefault().ToString();
+                    // Use FirstOrDefault with null-coalescing to safely get role name
+                    var roleRec = (from rol in db.Roles join user in db.UserRoles on rol.RoleId equals user.RoleId where user.UserId == userid select rol.Name).FirstOrDefault();
+                    var role = roleRec != null ? roleRec.ToString() : "";
                     switch (role)
                     {
                         case "Retailer":
-                            var remain = (from nm in db.Remain_reteller_balance where nm.RetellerId == userid select nm).Single().Remainamount;
-                            var userfor = db.lowbalances.Where(a => a.Role == "Retailer" && a.status == true && a.amount > remain).FirstOrDefault();
+                            // Use FirstOrDefault to avoid InvalidOperationException if balance record missing
+                            var remainRec = (from nm in db.Remain_reteller_balance where nm.RetellerId == userid select nm).FirstOrDefault();
+                            var remain = remainRec != null ? remainRec.Remainamount : 0;
+                            var userfor = db.lowbalances.FirstOrDefault(a => a.Role == "Retailer" && a.status == true && a.amount > remain);
                             if (userfor != null)
                             {
-                                var retailer = db.Retailer_Details.Where(a => a.RetailerId == userid && a.ISDeleteuser == false).SingleOrDefault();
-                                var chkmsg = db.lowbalancemsgs.Where(a => a.userid == userid).SingleOrDefault();
+                                var retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid && a.ISDeleteuser == false);
+                                var chkmsg = db.lowbalancemsgs.FirstOrDefault(a => a.userid == userid);
                                 if (chkmsg != null)
                                 {
                                     if (chkmsg.status == false)

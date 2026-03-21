@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +8,9 @@ using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for handling email encryption and security settings.
+    /// </summary>
     public class EncriptEmailsecurity
     {
         public string Encrypt(string clearText)

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Linq;
 using System.Web;
@@ -8,6 +8,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Controllers
 {
+    /// <summary>
+    /// ADMIN Area - Manages DTH plan listings, creation, editing, and deletion
+    /// </summary>
     [Authorize(Roles = "Admin")]
     public class DthBookingController : Controller
     {
@@ -37,7 +40,10 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 _userManager = value;
             }
         }
-        // GET: RETAILER/DthBooking
+
+        /// <summary>
+        /// GET - Displays all active DTH plans.
+        /// </summary>
         public ActionResult Index()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -59,6 +65,10 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 }).ToList());
             }
         }
+
+        /// <summary>
+        /// POST - Filters and displays DTH plans by operator ID.
+        /// </summary>
         [HttpPost]
         public ActionResult Index(int Opt)
         {
@@ -81,6 +91,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
+        /// <summary>
+        /// GET - Shows the form to add a new DTH plan.
+        /// </summary>
         public ActionResult AddDtdPlan()
         {
             try
@@ -98,6 +111,10 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return View();
             }
         }
+
+        /// <summary>
+        /// POST - Saves a new DTH plan with the provided details and specifications.
+        /// </summary>
         [HttpPost]
         public ActionResult AddDtdPlan(string title, string PlanName, decimal OfferPrice, decimal PublishedPrice, int optId, int BoxTypeId, string[] specifications)
         {
@@ -112,7 +129,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                         entry.CreatedOn = DateTime.Now;
                         entry.IsActive = true;
                         entry.IsDeleted = false;
-                        entry.MappingId = db.DthOperatorsSetTopBoxMappings.SingleOrDefault(a => a.OperatorId == optId && a.SetTopBoxId == BoxTypeId).Id;
+                        entry.MappingId = db.DthOperatorsSetTopBoxMappings.FirstOrDefault(a => a.OperatorId == optId && a.SetTopBoxId == BoxTypeId)?.Id ?? 0;
                         entry.OfferePrice = OfferPrice;
                         entry.PlanName = PlanName;
                         entry.PublishePrice = PublishedPrice;
@@ -135,6 +152,10 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return View();
             }
         }
+
+        /// <summary>
+        /// POST - Updates an existing DTH plan's pricing and specification details.
+        /// </summary>
         [HttpPost]
         public ActionResult EditDtdPlan(int Id, string title, string PlanName, decimal OfferPrice, decimal PublishedPrice, string specifications)
         {
@@ -144,13 +165,16 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 {
                     if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(PlanName) && !string.IsNullOrWhiteSpace(specifications))
                     {
-                        DthPlanAndSpecification entry = db.DthPlanAndSpecifications.SingleOrDefault(a => a.Id == Id);
-                        entry.OfferePrice = OfferPrice;
-                        entry.PlanName = PlanName;
-                        entry.PublishePrice = PublishedPrice;
-                        entry.Specification = specifications;
-                        entry.Title = title;
-                        db.SaveChanges();
+                        DthPlanAndSpecification entry = db.DthPlanAndSpecifications.FirstOrDefault(a => a.Id == Id);
+                        if (entry != null)
+                        {
+                            entry.OfferePrice = OfferPrice;
+                            entry.PlanName = PlanName;
+                            entry.PublishePrice = PublishedPrice;
+                            entry.Specification = specifications;
+                            entry.Title = title;
+                            db.SaveChanges();
+                        }
                     }
 
                     return RedirectToAction("Index");
@@ -162,14 +186,20 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
+        /// <summary>
+        /// GET - Soft-deletes a DTH plan by marking it as deleted and redirects to the list.
+        /// </summary>
         [HttpGet]
         public ActionResult DeleteDthPlan(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
             {
-                var item = db.DthPlanAndSpecifications.SingleOrDefault(a => a.Id == Id);
-                item.IsDeleted = true;
-                db.SaveChanges();
+                var item = db.DthPlanAndSpecifications.FirstOrDefault(a => a.Id == Id);
+                if (item != null)
+                {
+                    item.IsDeleted = true;
+                    db.SaveChanges();
+                }
                 return RedirectToAction("Index");
             }
         }

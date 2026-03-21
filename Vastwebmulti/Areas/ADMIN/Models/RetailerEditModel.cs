@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Form model for editing an existing retailer account profile and settings.
+    /// </summary>
     public class RetailerEditModel
     {
             public string DealerId { get; set; }

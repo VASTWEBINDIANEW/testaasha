@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// Utility class for sending emails with priority queue management and send limit tracking
+    /// </summary>
     public class CommUtilEmail
     {
         public void EmailLimitChk(string recepientEmail, string AdminToCC, string subject, string body, string callbackUrl, int ciunt = 5000)

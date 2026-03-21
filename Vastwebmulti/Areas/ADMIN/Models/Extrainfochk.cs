@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for capturing additional verification or information check parameters.
+    /// </summary>
     public class Extrainfochk
     {
         public string optcode { get; set; }

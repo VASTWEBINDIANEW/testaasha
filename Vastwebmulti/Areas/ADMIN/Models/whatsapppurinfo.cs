@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model representing WhatsApp service purchase information and configuration.
+    /// </summary>
     public class whatsapppurinfo
     {
         public string apiid { get; set; }

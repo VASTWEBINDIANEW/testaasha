@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
 
+   /// <summary>
+   /// Form model for creating or editing a dealer account with validation rules.
+   /// </summary>
    public class DealerModel
     {
         public string Dealerid { get; set; }

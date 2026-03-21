@@ -11,6 +11,9 @@ using Vastwebmulti.Areas.RETAILER.Models;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// Manages backup API routing and failover logic when primary recharge API fails
+    /// </summary>
     public class Backupapi
     {
         VastwebmultiEntities db = new VastwebmultiEntities();
