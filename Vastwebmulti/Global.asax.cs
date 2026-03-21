@@ -33,9 +33,21 @@ namespace Vastwebmulti
         }
         protected void Application_BeginRequest()
         {
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Cache.SetExpires(DateTime.UtcNow.AddHours(-1));
-            Response.Cache.SetNoStore();
+            // Only disable caching for dynamic pages (HTML responses)
+            // Allow browser to cache static files (CSS, JS, images) for faster repeat loads
+            string path = Request.AppRelativeCurrentExecutionFilePath ?? "";
+            bool isStaticFile = path.EndsWith(".css") || path.EndsWith(".js") ||
+                                path.EndsWith(".png") || path.EndsWith(".jpg") ||
+                                path.EndsWith(".jpeg") || path.EndsWith(".gif") ||
+                                path.EndsWith(".svg") || path.EndsWith(".ico") ||
+                                path.EndsWith(".woff") || path.EndsWith(".woff2") ||
+                                path.EndsWith(".ttf") || path.EndsWith(".eot");
+            if (!isStaticFile)
+            {
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.Cache.SetExpires(DateTime.UtcNow.AddHours(-1));
+                Response.Cache.SetNoStore();
+            }
         }
     }
 }
