@@ -1,0 +1,509 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Master_to_dealer_report_BYAdmin_Result>
+@{
+    ViewBag.Title = "MasterToDealer";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .btn-group, .btn-group-vertical {
+        box-shadow: none;
+    }
+
+    .ppp {
+        margin-top: -20px !important;
+    }
+.form-inline .bootstrap-select.btn-group, .form-horizontal .bootstrap-select.btn-group, .form-group .bootstrap-select.btn-group
+{
+    height:30px;
+}
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="margin-left:-13px;">
+                                    @Html.Partial("_menuaccount")
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-md-12" style="padding-left:0px; padding-right:0px;">
+                            @using (Html.BeginForm("MasterToDealer", "Home", FormMethod.Post))
+                            {
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group" style="margin-top:4px;margin-left:15px;">
+                                            <div class="" style="padding-top:3px;">
+                                                @Html.DropDownList("Masterid1", ViewBag.Masterid1 as SelectList, "Select Masterid", new { @class = " form-control", @style = "height:29px;padding:0px;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" >
+                                        <div class="form-group" style="margin-top:4px;margin-left:8px;">
+                                            <div class="" style="padding-top:3px;">
+                                                @Html.DropDownList("Dealerid", new SelectList(Enumerable.Empty<SelectListItem>(), "Dealerid", "DealerName"), "Select Dealer", new { @class = "form-control", @style = "height:29px;padding:0px;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group" style="margin-bottom:0px;">
+                                            <div class="input-daterange input-group">
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-exchange"></i>
+                                                </span>
+                                                @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <center>
+                                            <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left:-25px; height:34px;">
+                                                <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                                
+                                            </button>
+                                        </center>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            @using (Html.BeginForm("master_to_dlm_bal", "Home", FormMethod.Post))
+            {
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                    <div class="card" style="margin-top:-18px;background-color:whitesmoke;">
+                        <div class="">
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-top:4px; margin-bottom:0px;">
+                                    <div class="form-line" style="padding-bottom:3px;">
+                                        @Html.DropDownList("Masterid", ViewBag.Masterid as SelectList, "Select Masterid", new { @class = "selectpicker form-control border-0", data_live_search = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-top:4px; margin-bottom:0px;">
+                                    <div class="" style="padding-bottom:3px;">
+                                        @Html.DropDownList("DealerId", new SelectList(Enumerable.Empty<SelectListItem>(), "DealerId", "DealerName"), "Select Dealer", new { @class = "form-control",@style="height:30px;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1" id="messageshow" style="display:none;">
+                                <div class="form-group" style="margin-top:2px; margin-bottom:0px; width:92px;margin-left:-11px;">
+                                    <div class="" style="padding-top:3px;">
+                                        <label id="msg" style="color:red;font-weight:bold; padding-top:6px; padding-left:2px; padding-right:2px; background-color:white;height:34px;border:1px solid #dddddd;"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-top:4px; margin-bottom:0px;">
+                                    <div class="" style="padding-bottom:3px;">
+                                        <select id="ddl_fund_type" name="ddl_fund_type" class="selectpicker form-control border-0" data-live-search="true" style="padding-top:4px;" required="">
+                                            <option value="">Select Payment Mode</option>
+                                            <option value="Cash"> CASH WALLET TRANSFER</option>
+                                            <option value="Credit" style="color:red;">CREDIT VALUE TRANSFER</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group" style="margin-top:4px; margin-bottom:0px;">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBox("bal", "", new { required = "required", @class = "form-control", placeholder = "Value", @style = "padding-top:4px;height:33px;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-top:4px; margin-bottom:0px;">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        <textarea id="txtcomment" name="txtcomment" placeholder="Enter Comments" maxlength="120" class="form-control" style="height:33px;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <button type="submit" id="submit" class="btn btn-default waves-effect" style="margin-top:4px; margin-left:1px; height:35px;border:1px solid #dddddd;">
+                                        <i class="fa fa-exchange" style="top:1px;font-size:18px;"></i>
+                                        <span style="top:-1px;color:black;">Go To Fund Transfer</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-19px;">
+                <div class="card">
+               
+                    <div class="body" style="margin-top:1px;">
+                        <div class="row">
+                            <div class="table-responsive" style="position:inherit;margin-top:-17px;">
+                                <table id="example" class="table table-bordered">
+                                    <thead style="background-color:whitesmoke;">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Master&nbsp;Info</th>
+                                            <th>Distributor&nbsp;Info</th>
+                                            <th>Transfer&nbsp;Amt</th>
+                                            <th>Type</th>
+                                            <th>Current&nbsp;Cr</th>
+                                            <th>Old&nbsp;Cr</th>
+                                            @*<th>Fund&nbsp;Value</th>*@
+                                        
+                                            <th>Comment</th>
+                                       
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr style="background:no-repeat;">
+                                                <td><p style="margin-top:6px;">@item.date_dlm</p></td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <div class="btn-group" role="group">
+                                                            <button type="button" class="btn btn-default waves-effect dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Click to All information">
+                                                                @item.masteremail
+                                                            </button>
+                                                            <ul class="dropdown-menu ppp">
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="waves-effect waves-block" style="border-bottom:1px solid #f1efef;line-height:11px;">
+                                                                        @item.SuperstokistName
+                                                                        <p style="font-size: 11px;margin-left: 0px;margin-top: 6px;">Master&nbsp;Distributor&nbsp;Name</p>
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="waves-effect waves-block" style="border-bottom:1px solid #f1efef;line-height:11px;">
+                                                                        @item.admin_prebal
+                                                                        <p style="font-size: 11px;margin-left: 0px;margin-top: 6px;">Remain&nbsp;Pre</p>
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="waves-effect waves-block" style="border-bottom:1px solid #f1efef;line-height:11px;">
+                                                                        @item.admin_postbal
+                                                                        <p style="font-size: 11px;margin-left: 0px;margin-top: 6px;">Remain&nbsp;Post</p>
+                                                                    </a>
+                                                                </li>
+
+                                                            </ul>
+
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <div class="btn-group" role="group">
+                                                            <button type="button" class="btn btn-default waves-effect dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Click to All information">
+                                                                @item.dealeremail
+                                                            </button>
+                                                            <ul class="dropdown-menu ppp">
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="waves-effect waves-block" style="border-bottom:1px solid #f1efef;line-height:11px;">
+                                                                        @item.DealerName
+                                                                        <p style="font-size: 11px;margin-left: 0px;margin-top: 6px;">Distributor&nbsp;Name</p>
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="waves-effect waves-block" style="border-bottom:1px solid #f1efef;line-height:11px;">
+                                                                        @item.dealer_prebal
+                                                                        <p style="font-size: 11px;margin-left: 0px;margin-top: 6px;">Remain&nbsp;Pre</p>
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="waves-effect waves-block" style="border-bottom:1px solid #f1efef;line-height:11px;">
+                                                                        @item.dealer_postbal
+                                                                        <p style="font-size: 11px;margin-left: 0px;margin-top: 6px;">Remain&nbsp;Post</p>
+                                                                    </a>
+                                                                </li>
+
+                                                            </ul>
+
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                            
+                                               <td><p style="margin-top:6px;">@item.balance</p></td>
+                                                <td><p style="margin-top:6px;">@item.bal_type&nbsp;@item.fund_by</p></td>
+                                                <td><p style="margin-top:6px;">@item.cr</p></td>
+                                                <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>
+                                                @*<td>@Html.DisplayFor(modelItem => item.finalbal)</td>*@
+                                      
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <div class="btn-group" role="group">
+                                                            <button type="button" class="btn btn-default waves-effect dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;">View</p>
+                                                            </button>
+                                                            <ul class="dropdown-menu ppp">
+                                                                @if (item.comment != null && item.comment != "")
+                                                                {
+                                                                    <li>
+                                                                        <a href="javascript:void(0);" class="waves-effect waves-block" style="line-height:11px;">
+                                                                            @item.comment
+                                                                        </a>
+                                                                    </li>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <li>
+                                                                        <a href="javascript:void(0);" class="waves-effect waves-block" style="line-height:11px;">
+                                                                            <p style="font-size: 11px;margin-left: 0px;margin-top: 6px;">No Data Found !</p>
+                                                                        </a>
+                                                                    </li>
+                                                                }
+
+                                                            </ul>
+
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                                                      
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot style="background-color:whitesmoke;">
+                                        <tr>
+                                            <td style="font-size:17px;">Total</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="font-size:17px;">@Model.Sum(m => m.balance)</td>
+                                            <td></td>
+                                            <td style="font-size:17px;">@Model.Sum(m => m.cr)</td>
+                                            <td style="font-size:17px;">@Model.Sum(m => m.oldcrbalance)</td>
+                                            <td></td>
+                                           
+                                      
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+
+    $(document).ready(function()
+    {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+    });
+</script>
+<!--Check Credit Balance-->
+<script>
+    $(window).load(function () {
+        $("#DealerId").change(function () {
+            var mid = $('option:selected', $(this)).val();
+            if (mid != "Select Dealer ID" && mid != "") {
+                $.ajax({
+                    type: 'Post',
+                    url: "@Url.Action("D_Creditchk", "Home")",
+                    data: { Dealerid: mid },
+                dataType: 'json',
+                cache: false,
+                async: false,
+                success: function (data) {
+                    var msg = "OLD-CR : " + data + "";
+                    $('#msg').html(msg)
+                    $('#messageshow').show();
+                }
+            });
+            }
+        });
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#submit').on('click', function (e, data) {
+            var ddl = document.getElementById("RetailerId")
+            var x = ddl.options[ddl.selectedIndex].text;
+            var x2 = document.getElementById("bal").value;
+
+            var paymode = document.getElementById("ddl_fund_type")
+            var pay = paymode.options[paymode.selectedIndex].text;
+            if (x == "" || x == "Select Retailer" || x == null)
+               {
+                $("#RetailerId").validate({
+                       rules: {
+                           api: {
+                               required: true
+                           }
+                       }
+                   });
+
+                 return false;
+                   event.preventDefault;
+               }
+               if(x2 == "" || x2 == null)
+               {
+
+                   return false;
+                   event.preventDefault;
+               }
+               if (pay == "" || pay == null || pay == "Select Payment Mode") {
+
+
+                   return false;
+                   event.preventDefault;
+               }
+
+            else {
+                var text = "Fund Transfer To Retailer: " + x + "   Amount: " + x2 + " Only."
+                if (!data) {
+                    handleDelete(e, 1, text);
+                } else {
+                    window.location = $(this).attr('href');
+                }
+            }
+        });
+    });
+    function handleDelete(e, stop, kk) {
+        if (stop) {
+            e.preventDefault();
+            swal({
+                title: "Are you sure?",
+                text: kk,
+                //text: kk,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Fund Transfer!",
+                closeOnConfirm: false
+            },
+ function (isConfirm) {
+     if (isConfirm) {
+         $(e.target).trigger('click', {});
+     }
+ });
+        }
+    };
+</script>
+<!--Fill another Dropdown-->
+<script language="javascript" type="text/javascript">
+                    $(function () {
+                        $('#Masterid1').change(function () {
+
+                            // alert('Value:' + ' ' + $('#State1').val())
+                            var stid = $('#Masterid1').val()
+                       
+                            GetDistrict(stid)
+                        });
+                    })
+                    $(function () {
+                        $('#Masterid').change(function () {
+                            // alert('Value:' + ' ' + $('#State1').val())
+                            var stid = $('#Masterid').val()
+                            GetDistrict1(stid)
+                        });
+                    })
+                    function GetDistrict(_stateId) {
+                        var procemessage = "<option value='0'> Please wait...</option>";
+                        $("#Dealerid").html(procemessage).show();
+                        var url = '@Url.Action("DealerFill","Home")'
+                        $.ajax({
+                            url: url,
+                            data: { Id: _stateId },
+                            cache: false,
+                            type: "POST",
+                            success: function (data) {
+                                $("#Dealerid").html("");
+                                for (var x = 0; x < data.length; x++) {
+                                    $("#Dealerid").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                                }
+                            },
+                            error: function (reponse) {
+                                alert("error : " + reponse);
+                            }
+                        });
+                    }
+    function GetDistrict1(_stateId) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#DealerId").html(procemessage).show();
+        var url = '@Url.Action("DealerFill", "Home")'
+        $.ajax({
+            url: url,
+            data: { Id: _stateId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $("#DealerId").html("");
+                for (var x = 0; x < data.length; x++) {
+                    $("#DealerId").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                }
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print'
+            ]
+        });
+
+        var MSG = '@ViewBag.msg';
+        if (MSG != "") {
+            if (MSG == "Balance Transfer SuccessFully.") {
+                sweetAlert("Success !", MSG, "success");
+            }
+            else {
+                sweetAlert("Error !", MSG, "error");
+            }
+        }
+    });
+</script>
+

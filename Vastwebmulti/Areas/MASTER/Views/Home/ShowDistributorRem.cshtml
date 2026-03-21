@@ -1,0 +1,484 @@
+﻿@using Vastwebmulti.Models;
+@*@model IEnumerable<Vastwebmulti.Models.Show_master_credit_report_by_admin_Result>*@
+@model Vastwebmulti.Areas.MASTER.Models.DealerModel
+@{
+    ViewBag.Title = "ShowDistributorRem";
+    Layout = "~/Areas/MASTER/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Dealer").ToList();
+    var favimage = "";
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Dealer")
+        {
+            favimage = usernname.SingleOrDefault().NickName;
+
+
+        }
+    }
+}
+
+<style>
+    @@media screen and (max-width:766px) {
+        .padding-master {
+            padding-left: 0px;
+            padding-top: 10px;
+        }
+
+        .table-responsive table {
+            border: 1px solid #aaa4a4 !important;
+        }
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid padding-master" style="height: auto !important; min-height: inherit !important;">
+        <div class="container-fluid" style="padding:0px;padding-bottom:10px;height:auto !important;min-height:inherit !important;">
+
+            <!--Four-Design-Admin-page-Header-Section-Start-->
+            <div class="page-title-box-fourde-dealer">
+                <h3>Show Distributor</h3>
+                <ul>
+                    <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                    <li><a href="javascript:void(0);">Basic Setting 3&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                    <li><a href="javascript:void(0);">Show Distributor</a></li>
+                </ul>
+            </div>
+            <!--Four-Design-Admin-page-Header-Section-End-->
+
+            <div class="dealer-none-fourclass" style="float:left;">
+                <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:0px;margin-top:0px;padding:0;margin-bottom:0px;">
+                    <li class="active" style="color:#555; font-size:14px;font-weight:600;margin-top:9px;">Show @favimage</li>
+                </ol>
+            </div>
+
+            <div class="col-md-2" style="padding: 0px;float:right; width: auto;padding-left:0px;padding-top:3px;">
+                <div class="form-group">
+                    <div style="float:right">
+
+                        <input type="button" id="btnExport" value="Excel" style="margin-left:0px;font-size: 14px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                        <input type="button" id="btnPDF" value="PDF" style="margin-left:2px;font-size: 14px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                        @*<button class="white-success-button" style="height:32px;font-size: 14px;padding: 0px 4px;height: 32px;border: 1px solid #b1a6a638;float: left;margin-left: 2px;background: #b1a6a638;" onclick="findtotal()">Total</button>*@
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+
+
+                    <div class="body" style="padding:0px;">
+                        <div class="table-responsive table-responsivehide" style="position:inherit;overflow: hidden;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-due-second table-due-second-desti third-design-table" id="mdList" style="background:#eae9e9;">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr</th>
+                                            <th>@favimage&nbsp;Firm</th>
+                                            <th>@favimage&nbsp;Name</th>
+                                            <th>Mobile&nbsp;No</th>
+                                            <th>Aadhar&nbsp;No</th>
+                                            <th>Balance</th>
+                                            <th>KYC</th>
+                                            <th>Email&nbsp;V/F</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body">
+                                        @if (Model.Select_Dealer_total_Result != null)
+                                        {
+                                            int i = 0;
+                                            int id = 1;
+                                            foreach (var item in Model.Select_Dealer_total_Result)
+                                            {
+
+                                                var idno = "subTbl";
+                                                idno = idno + i;
+
+                                                var idshow = "subTblshow";
+                                                idshow = idshow + i;
+
+                                                var idhide = "subTblhide";
+                                                idhide = idhide + i;
+                                                <tr class="tr">
+
+                                                    <td>@id</td>
+                                                    <td>
+
+                                                        <span id="@idshow" onclick="md_dlm_List('@item.DealerId', '@i')">
+                                                            @*<img src="~/AdminDesign/images/down-arrow.svg" style="width:14px;float:left;margin-top:4px;">*@
+                                                            <i class="fa fa-caret-down" aria-hidden="true"></i>&nbsp;&nbsp;
+                                                            @item.FarmName
+                                                        </span>
+
+                                                        <span id="@idhide" style="display:none;" onclick="md_dlm_Listhide('@i')">
+                                                            @*<img src="~/AdminDesign/images/up-arrow.svg" style="width:14px;float:left;margin-top:4px;">*@
+                                                            <i class="fa fa-caret-up" aria-hidden="true"></i>&nbsp;&nbsp;
+                                                            @item.FarmName
+                                                        </span>
+
+                                                    </td>
+                                                    <td>@item.DealerName</td>
+                                                    <td>@item.Mobile</td>
+                                                    <td> @item.pancard</td>
+                                                    <td>@item.remaindlm</td>
+                                                    <td class="kyc-button">
+                                                        @if (item.PSAStatus == "Y" && item.aadharcardPath == "Y")
+                                                        {
+                                                            <button class="btn ">Done</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="btn" style="background:var(--main-bg-lcolor);height: 25px;color:#fff; padding: 4px 10px;float:left; font-size: 11px;">Due</div>
+                                                        }
+                                                        @*<button class="btn" style="background:yellow;"><img src="~/images/reportimage/wall-clock.svg" /></button>
+                                                            <button class="btn btn-danger"><img src="~/images/reportimage/close.svg" /></button>
+                                                            <button class="btn btn-success"><img src="~/images/reportimage/check.svg" /></button>*@
+
+
+
+                                                        @*@item.adharcard*@
+                                                    </td>
+                                                    <td data-toggle="modal" data-target="#defaultModal222" onclick="mdActionBtn('@item.DealerId', this)">
+                                                        @if (item.Emailconfirmed == true)
+                                                        {
+                                                            <button class="btn due-done-second done-third" style="border:1px solid #bbb;font-size: 11px;padding: 4px 7px;height: 25px;border: 1px solid #bbb;">Done</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <center>
+                                                                <div class="btn" style="background:var(--main-bg-lcolor);height: 25px;color:#fff; padding: 4px 10px;float:left; font-size: 11px;">Due</div>
+                                                            </center>
+                                                        }
+                                                        <img class="email-popup-second" src="~/ashok-images/rightaeps.svg" style="width: 11px;margin-top: 6px;float: right;border: 1px solid #aaa4a4;width: 20px;padding: 4px;cursor: pointer;" />
+                                                    </td>
+
+                                                </tr>
+                                                <tr id="@i" style="display:none;background-color: #fff;">
+                                                    <td colspan="8" style="padding:0px;">
+                                                        <div id="@idno">
+                                                            @*@Html.Partial("_SelectDlmID")*@
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                i++;
+                                                id++;
+
+
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--For Right Popup -->
+                            <div class="modal mastetr222Modal mastermodal-second-design" id="defaultModal222" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div id="loadredmodel" style="display:none;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);" class="loadingio-spinner-ripple-92ar2pfqk5j">
+                                        <div class="ldio-zdyd6mf6t5">
+                                            <div></div><div></div>
+                                        </div>
+                                    </div>
+                                    <div id="userinfodiv" class="modal-content width100 float-left input-border-third">
+
+                                        <div class="modal-body width100 float-left">
+                                            <div class="background-kk width100 float-left mastermodal-second">
+                                                <div class="thisLeft float-left">
+                                                    <img src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" />
+                                                    <div id="alinks">dtuhrtujty</div>
+                                                </div>
+                                                <div class="thisRight">
+                                                    <ul class="float-left width100">
+                                                        <li><span><b>Name :</b></span><span><label id="Name"></label></span></li>
+                                                        <li><span><b>Firm Name :</b></span><span><label id="FirmName"></label></span></li>
+                                                        <li><span><b>Registered Date :</b></span><span><label id="RegisteredDate"></label></span></li>
+
+                                                    </ul>
+                                                </div>
+                                                <button type="button" class="btn waves-effect" data-dismiss="modal" style="background: #f5f5f5;border: 0px;position: absolute;right: 15px;top: 15px;padding: 4px 9px;height: auto;">
+                                                    <i class="fa fa-times fulltextbodycolor fullbodydycolorbg" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                            <div class="float-left width100">
+
+                                                <form class="first-form">
+
+                                                    <div class="row">
+                                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label>Email</label>
+                                                                @Html.TextBox("Email11", "", new { @class = "form-control", placeholder = "Enter Email", @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                    </div><!--.row-->
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                                            <div class="form-group">
+                                                                <label>Pancard</label>
+                                                                @Html.TextBox("Pancard11", "", new { @class = "form-control", placeholder = "Enter Pancard No", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                                            <div class="form-group">
+                                                                <label>Aadhar Card</label>
+                                                                @Html.TextBox("Aadhar11", "", new { @class = "form-control", placeholder = "Enter Pancard No", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                    </div><!--.row-->
+                                                    <!--.row-->
+                                                    <div class="row">
+                                                        <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                                            <div class="form-group">
+                                                                <label>Farm Aggreement</label>
+                                                                @Html.TextBox("frmagr11", "", new { @class = "form-control", placeholder = "farm aggrement", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+
+                                                    </div><!--.row-->
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                                            <div class="form-group">
+                                                                <label>Area Pin Code</label>
+                                                                @Html.TextBox("pincode11", "", new { @class = "form-control", placeholder = "Enter Area Pin Code", maxlength = 6, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                                            <div class="form-group">
+                                                                <label>GST Registration No</label>
+                                                                @Html.TextBox("GSTRegistrationNo11", "", new { @class = "form-control", placeholder = "Enter Pancard No", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                    </div><!--.row-->
+
+
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                                            <div class="form-group">
+                                                                <label>State</label>
+                                                                @Html.TextBox("State11", "", new { @class = "form-control", placeholder = "Enter State", @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+
+                                                                @*     @Html.DropDownList("State11", new SelectList(ViewBag.state1, "Value", "Text"), "Select State", new { @class = "form-control", data_live_search = "true", @disabled = "disabled" })*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                                            <div class="form-group">
+                                                                <label>District</label>
+                                                                @Html.TextBox("District11", "", new { @class = "form-control", placeholder = "Enter District", @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+
+                                                                @*@Html.DropDownList("District11",
+                                                                    new SelectList(Enumerable.Empty<SelectListItem>(), "Dist_id", "Dist_Desc"),
+                                                                           "Select district",
+                                                                           new { @class = "form-control", data_live_search = "true", @disabled = "disabled" })*@
+                                                            </div>
+                                                        </div>
+                                                    </div><!--.row-->
+
+                                                    <div class="row">
+                                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label>Address</label>
+                                                                @Html.TextArea("address11", "", new { @class = "form-control", placeholder = "Enter Enter Address", @style = "text-transform:uppercase;height:72px", required = "required", @readonly = "readonly" })
+                                                            </div>
+                                                        </div>
+                                                    </div><!--.row-->
+                                                    <!--.modal-footer-->
+
+                                                </form>
+
+                                                <!--=============-->
+
+
+                                            </div>
+                                        </div><!--.modal-body-->
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+
+<script>
+     function md_dlm_List(DealerId, id) {
+        var idno = "subTbl";
+        idno = idno + id;
+           var idshow = "subTblshow";
+                    idshow = idshow +id;
+                    var idhide = "subTblhide";
+                    idhide = idhide + id;
+    $.ajax({
+        url: '@Url.Action("SelectRetailerID","Home")',
+        data: { MdId: DealerId },
+        type: 'POST',
+        cache: false,
+        success: function (response) {
+
+            $('#' + idno).html(response);
+             $('#' + idshow).css("display", "none");
+            $('#' + idhide).css("display", "block");
+            $('#' + id).css("display", "table-row");
+           }
+        })
+    }
+
+    function md_dlm_Listhide( id) {
+          var idno = "subTbl";
+        idno = idno + id;
+           var idshow = "subTblshow";
+                    idshow = idshow +id;
+                    var idhide = "subTblhide";
+                    idhide = idhide + id;
+            $('#' + idshow).css("display", "block");
+            $('#' + idhide).css("display", "none");
+            $('#' + id).css("display", "none");
+    }
+
+
+</script>
+
+<script>
+    function mdActionBtn(SSId) {
+
+
+      $('#loadredmodel').show();
+         $('#userinfodiv').hide();
+        $('#alinks').html('');
+        $.ajax({
+            url: '@Url.Action("DealerByIdSearch","Home")',
+            type: "POST",
+            data: { ssid: SSId },
+            cache: false,
+            success: function (data2) {
+
+                $('#error').text("");
+                var date = new Date(parseInt((data2.list[0].JoinDate).match(/\d+/)[0]))
+
+                var createddate = converttoDate(date);
+
+                var datess = data2.list[0].DOF;
+                var dateTimesss = moment(datess).format("YYYY-MM-DD");
+
+                 $("#Names").text(data2.list[0].DealerName);
+
+                $("#FirmName").text(data2.list[0].FarmName);
+
+
+                $("#RegisteredDate").text(createddate);
+                $("#Email11").val(data2.list[0].Email);
+                $("#Pancard11").val(data2.list[0].pancard);
+
+                $("#Aadhar11").val(data2.list[0].adharcard);
+
+                $("#GSTRegistrationNo11").val(data2.list[0].gst);
+
+
+
+
+                $("#pincode11").val(data2.list[0].Pincode);
+
+                //$("#masterremain").html(data2[0].superremain);
+                $("#Distributorbalance").val(data2.list[0].remaindlm);
+                $("#Retailerbalance").val(data2.list[0].remainrem);
+                $("#State11").val(data2.list[0].State_name);
+                $("#District11").val(data2.list[0].Dist_Desc);
+                $("#address11").val(data2.list[0].Address);
+
+                $('#userinfodiv').show();
+            }
+
+        });
+    }
+    function converttoDate(str) {
+            var date = new Date(str),
+                mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                day = ("0" + date.getDate()).slice(-2),
+                Hrs = (date.getHours()),
+                mnts = (date.getMinutes()),
+                sec = (date.getSeconds());
+            return dd= [day, mnth, date.getFullYear()].join("-") + " " + [Hrs + ":" + mnts + ":" + sec];
+        }
+    function binddistmdAction(staid, dist, objSelect11) {
+            var url = '@Url.Action("DistrictList","Home")'
+            $.ajax({
+                url: url,
+                data: { Id: staid },
+                cache: false,
+                type: "POST",
+                success: function (data1) {
+                    var markup = "<option value='0'>Select District</option>";
+                    for (var x = 0; x < data1.length; x++) {
+                        markup += "<option value=" + data1[x].Value + ">" + data1[x].Text + "</option>";
+                    }
+                    $("#DistrictEdit").html(markup).show();
+                    setSelectedValue(objSelect11, dist);
+                }
+
+            });
+    }
+    function setSelectedValue(selectObj, valueToSet) {
+            for (var i = 0; i < selectObj.options.length; i++) {
+                if (selectObj.options[i].value == valueToSet) {
+                    //alert(selectObj.options[i].value);
+                    selectObj.options[i].selected = true;
+                    return;
+                }
+            }
+    }
+    function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+    return [year, month, day].join('-');
+}
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+               $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+
+
+        });
+</script>

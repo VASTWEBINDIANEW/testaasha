@@ -1,0 +1,159 @@
+﻿@model List<Vastwebmulti.Models.Aeps_Report_New_Result>
+@{
+    Layout = null;
+}
+
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+
+        var color = "";
+        var fontweight = "";
+        var text = "";
+        var emailid = "";
+        var Retailername = "";
+        var framname = "";
+        var mobile = "";
+        var icon = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var sts = "";
+        var refundcolor = "";
+        var rolename = "";
+
+        if (item.ApplicationType == "web")
+        {
+            rchtypeicon = "fa fa-globe";
+        }
+        if (item.ApplicationType == "app")
+        {
+            rchtypeicon = "fa fa-android";
+        }
+        if (item.Role == "Retailer")
+        {
+            emailid = item.Email;
+            Retailername = item.RetailerName;
+            mobile = item.Mobile;
+            framname = item.Frm_Name;
+            rolename = "Retailer";
+
+
+        }
+
+        if (item.Status.Contains("Pending"))
+        {
+            color = "#ff9e00";
+            fontweight = "700";
+            sts = item.Status;
+            icon = "../../ashok-images/clkk.png";
+        }
+        if (item.Status.Contains("Failed"))
+        {
+            color = "red";
+            fontweight = "700";
+            sts = item.Status;
+            icon = "../../ashok-images/closes.svg";
+
+        }
+        if (item.Status.Contains("Success"))
+        {
+            color = "green";
+            fontweight = "700";
+            sts = item.Status;
+            icon = "../../ashok-images/correct.svg";
+        }
+        if (item.Status.ToUpper().Contains("REFUND"))
+        {
+            color = "blue";
+            sts = "Refund";
+            icon = "../../ashok-images/undo.svg";
+        }
+        if (item.Status.ToUpper().Contains("SETTLEMENT"))
+        {
+            color = "#9C27B0";
+            sts = "Settlement";
+        }
+        <tr style="font-weight:700;">
+            <td class="success-pandingclass">
+
+                @if (item.Status.ToUpper().Contains("PENDING"))
+                {<img style='height: 20px;width: 18px;margin-right: 5px;max-width: 100%;padding: 0; border-radius:50%;float:left; background-color:#ffc107' src='../../ashok-images/clkk.png' />;
+                <span style="color:black;float:right;">@item.Frm_Name</span>
+            }
+                @if (item.Status.ToUpper().Contains("FAILED"))
+                {<img style='height: 20px; width: 18px; margin-right: 5px; max-width: 100%; padding: 0; border-radius: 50%; float: left; background-color: red' src='../../ashok-images/closes.svg' />;
+                <span style="color: black;  float: right;">@item.Frm_Name</span>
+            }
+                @if (item.Status.ToUpper().Contains("SUCCESS"))
+                {<img style='height: 20px; width: 18px; margin-right: 5px; max-width: 100%; padding: 0; border-radius: 50%; float: left; background-color: green' src='../../ashok-images/correct.svg' />;
+                <span style="color: black;  float: right;">@item.Frm_Name</span>
+            }
+                @if (item.Status.ToUpper().Contains("BALANCE"))
+                {<span class="fullbodydycolorbg" style='height: 18px; margin-right: 5px !important; max-width: 100%; border-radius: 50%; float: left; display: inline-block; padding: 0px 5px !important; font-weight: 800; color: #fff !important; font-size: 14px;'>B</span>;
+                <span style="color: black;  float: right;">@item.Frm_Name</span>
+            }
+                @if (item.Status.ToUpper().Contains("Refund"))
+                {<img style='height: 20px; width: 18px; margin-right: 5px; max-width: 100%; padding: 0; border-radius: 50%; float: left; background-color: #9C27B0' src='../../ashok-images/closes.svg' />;
+                <span style="color: black;  float: right;">@item.Frm_Name</span>
+            }
+            </td>
+            <td class="success-pandingclass">
+                <span style="margin-right: 2px;background: #bbb;text-transform: uppercase;font-size: 9px;padding: 1px 3px;padding-bottom: 0px;color:#000; "> @item.ApplicationType &nbsp;&nbsp;&nbsp;</span>
+                <span style="font-size:12px;">@item.MerchantTxnId</span>
+            </td>
+
+            <td>
+                @if (!string.IsNullOrEmpty(@item.AccountHolderAadhaar))
+                {
+                    var aadhar = item.AccountHolderAadhaar;
+                    var len = aadhar.Length;
+                    var last = aadhar.Substring(len-4, 4);
+                    var first = new String('x', 8);
+
+                    <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp; @first@last&nbsp;</p>
+                }
+                else
+                {
+                    <p></p>
+                }
+            </td>
+            <td>
+                <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.BankName&nbsp;</p>
+            </td>
+            <td>
+                <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.Type&nbsp;</p>
+            </td>
+            <td>
+                <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.Amount&nbsp;</p>
+            </td>
+
+            <td>
+                @{
+                    decimal amount = 0;
+                    decimal remincome = 0;
+                    decimal usercredit = 0;
+                    if (item.Role == "Retailer")
+                    {
+                        amount = Convert.ToDecimal(item.Amount);
+                        remincome = Convert.ToDecimal(item.RemIncome);
+                        usercredit = (amount + remincome);
+                    }
+
+                }
+                <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@usercredit&nbsp;</p>
+            </td>
+            <td>
+                <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.DlmPost&nbsp;</p>
+            </td>
+            <td>
+                <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.BankRRN&nbsp;</p>
+            </td>
+            <td>
+
+                <span style="font-size:11px; color:#504141">@String.Format("{0:dd-MMM HH:mm:ss}", item.Txn_Date)</span>
+            </td>
+        </tr>
+    }
+}

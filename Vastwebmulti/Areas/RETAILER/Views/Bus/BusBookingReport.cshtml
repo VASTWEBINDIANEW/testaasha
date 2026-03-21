@@ -1,0 +1,618 @@
+﻿@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity
+@model List<Vastwebmulti.Models.proc_BusReport_Result>
+@{
+    ViewBag.Title = "Bus";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+@{
+    var userid = User.Identity.GetUserId();
+    var logoimage = "";
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        logoimage = logo.SingleOrDefault().LogoImage;
+    }
+    else
+    {
+        logoimage = "";
+    }
+    var mobile = db.Retailer_Details.Where(a => a.RetailerId == userid).FirstOrDefault().Mobile;
+
+}
+<style>
+
+    /* new css  */
+
+    .layoutt-retailer section.content {
+        margin-top: 95px;
+        padding-top: 5px;
+    }
+
+    .h_menu-set {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .h_menu-set .page-header-third {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    
+
+    /* new css  */
+
+    .loader_innner {
+        position: fixed;
+        z-index: 999999;
+        height: 100%;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+    }
+
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 95px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+
+    .bus-reportbus .flight-secondcss .btn-group button {
+        background-size: 10px !important;
+    }
+
+
+    @@media only screen and (max-width:1169px){
+
+        .layoutt-retailer section.content.aepsfullpage {
+            margin-left: 0% !important;
+        }
+        .container-fluid.buschangecss {
+            padding-left: 15px;
+        }
+
+
+    }
+    @@media only screen and (max-width:990px){
+
+        .busreport-responshive ul li a img {
+            width: 16px !important;
+        }
+
+        
+    }
+
+    @@media only screen and (max-width:767px){
+
+        .col-md-2.bus-status {
+            width: 50%;
+            margin-right: 0 !important;
+            padding-right: 4px !important;
+            margin-bottom: 5px;
+        }
+        .col-md-2.flightdate-show.finacial-selectsss {
+            width: 50%;
+            margin-top: 0px;
+            margin-bottom: 5px;
+        }
+        .bus-reportbus .col-md-2.flightdate-show {
+            padding-left: 0px;
+        }
+        .flight-secondcss .col-md-2 {
+            margin-right: 0px;
+        }
+        .col-md-2.flightdate-search {
+            padding-left: 0px !important;
+        }
+    }
+    @@media only screen and (max-width:480px){
+       
+
+        .h_menu-set {
+            display: block;
+        }
+
+        #tabsrepor-navs li {
+            margin-right: 0px !important;
+            padding-right: 2px;
+            width: 33.333%;
+            float: left;
+        }
+
+            #tabsrepor-navs li a {
+                width: 100%;
+            }
+
+        .newtabsreport.newtabsreport-ticketreport #tabsrepor-navs {
+            width: 100%;
+        }
+
+        #ul li {
+            margin-left: 0px !important;
+            padding-right: 2px;
+            width: 50%;
+        }
+
+        .layoutt-retailer section.content {
+            margin-top: 90px;
+        }
+
+        .all-chan-aepsfullpage .newtabsreport .container-tabsrepor .tabsrepor-nav li:nth-child(3) a {
+            padding-bottom: 5px;
+        }
+        .col-md-2.bus-status {
+            width: 100%;
+            padding-right: 0px !important;
+        }
+        .col-md-2.flightdate-show.finacial-selectsss {
+            width: 100%;
+        }
+        .all-chan-aepsfullpage .form-iconmy {
+            display: block;
+        }
+
+    }
+
+
+
+</style>
+<section class="content contentdate aepsfullpage all-chan-aepsfullpage content-margin-second" style="">
+    <div class="container-fluid buschangecss">
+        <div class="newtabsreport newtabsreportBusreport busreport-responshive">
+        <div class="container container-tabsrepor">
+
+            <div class="h_menu-set">
+
+                <div class="page-header-third">
+                    @Html.Partial("~/Areas/RETAILER/Views/Home/_Travelsview.cshtml")
+                </div>
+
+                <div class="page-header-third">
+                    <div class="flight-changecss">
+                       
+                            @Html.Partial("_Buspartialmenu")
+                        
+                    </div>
+                </div>
+
+
+            </div>
+
+            
+        </div>
+    </div>
+    <div class="row clearfix tabsrepor-content flightreportcssaaa busbookingreport busbookingreport-respo" style="margin:0;">
+        <div class="col-md-12" style="padding:0;">
+            <div class="card bus-reportbus" style="">
+                
+                <div class="col-md-9 flight-secondcss flight-secondcss-responshive" style="padding:0;">
+                    @using (Html.BeginForm("BusBookingReport", "Bus", FormMethod.Post))
+                    {
+                    <div class="page-header-third">
+
+
+                        <div class="col-md-2 bus-status">
+                            <div class="form-group">
+                                <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                    @Html.DropDownList("ddl_status", new List<SelectListItem>
+                        {
+                        new SelectListItem{ Text="Status",Value="ALL",},
+                        new SelectListItem{Text="SUCCESS",Value="Confirmed"},
+                        new SelectListItem{Text="Pending",Value="Proccessed"},
+                        new SelectListItem{Text="FAILED",Value="FAILED"}
+                        }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 flightdate-show finacial-selectsss">
+                            <div class="form-group" style="margin-bottom:0px;margin-left:-10px;width:100%;margin-top:2px;">
+                                <div class="input-daterange input-group">
+                                    <div class="datesate datesates">
+                                        <div class="form-iconmy" style="top: 0px;left: 1px;padding: 6px 5px;"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i></div>
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:32px;", autocomplete = "off" })
+                                    </div>
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-exchange" style="padding-top:10px;"></i>
+                                    </span>
+                                    <div class="datesate datesatese">
+                                        <div class="form-iconmy form-iconmyss" id="iconmyssee" style="top: 0px;left: 1px;padding: 6px 5px;"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i></div>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:32px;", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-md-2 flightdate-search buttonchangeresponsive classretbuttonbor-second">
+                            <center>
+                                <button type="submit" value="Old" name="submit" class="btn retailer-search-second" style="margin-top: 6px; margin-left:-83px; height:31px;border:1px solid #c7c2c2;background:#dedddd;">
+                                    <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                    <span style="top:-2px;color:black;">Search</span>
+                                </button>
+                            </center>
+                        </div>
+
+                        <div class="col-md-3 buttonPdf retailer-pdf-second" style="width: 30%;float: right;text-align: right;">
+
+                            <button id="btnPDF">PDF</button>
+                            <button id="btnExport">Export</button>
+                            <button>Total</button>
+                        </div>
+
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix flightreportcssaass" style="margin:0;">
+        <div class="col-md-12" style="padding:0;">
+            <div class="card">
+                <div class="page-header-third" style="">
+                    <div id="BusLoader" style="display:none;">
+                        <div class="loader_innner">
+                            <img src="~/images/Busloader.gif" style="margin-top:15%;margin-left:46%;" />
+                        </div>
+                    </div>
+                    <div class="body table-responsive bus-responsive tablethirddesign-newnew" style="position:inherit;padding:0px;">
+                        <table id="example" class="table table-bordered table-striped table-hover" cellspacing="0" style="width:100%;font-size:12px;">
+                            <thead style="color:black;position:inherit;background-color:whitesmoke;">
+                                <tr>
+                                    <th>#&nbsp;/&nbsp;PNR</th>
+                                    <th>Passanger&nbsp;Name</th>
+                                    <th>Booking&nbsp;No</th>
+                                    <th style="display:none;">PNR</th>
+                                    <th style="display:none;">Status</th>
+                                    <th>Source</th>
+                                    <th>Destination</th>
+                                    <th>DOJ</th>
+                                    <th>Fare</th>
+                                    <th>Pre&nbsp;₹</th>
+                                    <th>Post&nbsp;₹</th>
+                                    <th>Income</th>
+                                    <th>Date</th>
+                                    <th>#</th>
+                                    <th>#</th>
+                                    <th>Print</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trow">
+                                @{
+                                    Html.RenderAction("_ticketbusreport", "Bus", new { Model = Model });
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<div id="BookingDetailsModel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(to right,#ffff00,#ff0000);opacity: 1.4;  ">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <img src="@Url.Content("~/" +logoimage)" class="img-responsive" data-holder-rendered="true" style="margin-top:-10px;" />
+                <strong>
+                    <span class="pull-right" style="margin-top:-28px"><i class="fa fa-headphones" aria-hidden="true"></i>&nbsp;@mobile</span>
+                </strong>
+            </div>
+            <div class="modal-body" style="color:#484747;">
+                <div class="row">
+                    <div class="col-md-5">
+                        <strong>
+                            <span id="spanSourceCityName"></span><br />
+                            <span id="spanDepartureDateTime"></span><br />
+
+                            <small> (Source)</small>
+                        </strong>
+
+                    </div>
+                    <div class="col-md-2">
+                        <i class="fas fa-shuttle-van" style="font-size:25px;color: brown;"></i>
+                    </div>
+                    <div class="col-md-5" style="text-align:right;">
+                        <strong>
+                            <span id="spanDestinationCityName"></span><br />
+                            <span id="spanArrivalDateTime"></span><br />
+                            <small> (Destination)</small>
+                        </strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <h4 style="text-align:center;background-color :antiquewhite;padding: 4px 4px;">
+                        BOARDING DETAILS
+                    </h4>
+                    <br />
+                    <strong>Boarding Point &nbsp;:&nbsp; </strong> <span id="spanBoardingPoint"></span><br />
+                    <strong>Boarding Contact Number &nbsp;:&nbsp; </strong> <span id="spanBoardingcontantno"></span><br />
+                    <strong>Landmark &nbsp;:&nbsp;</strong> <span id="spanDroppingPoint"></span><br />
+                    <strong>Bus  Operator &nbsp;:&nbsp;</strong> <span id="spanBusOptName"></span><br />
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-3 p-l-0 p-r-0">
+                        <strong>Ticket No</strong><br />
+                        <small><span id="spanTicketNum"></span></small>
+                    </div>
+                    <div class="col-md-2 p-r-0">
+                        <strong>PNR No</strong><br />
+                        <small><span id="spanPNR"></span></small>
+                    </div>
+                    <div class="col-md-2 p-r-0">
+                        <strong>Total Fare</strong><br />
+                        <i class="fa fa-inr" aria-hidden="true"></i><span id="spanBaseFare"></span>
+                    </div>
+                    <div class="col-md-2 p-r-0">
+                        <strong>Cahrge/Tax</strong><br />
+                        <i class="fa fa-inr" aria-hidden="true"></i><span id="spanTaxAmount"></span>
+                    </div>
+                    <div class="col-md-3 p-r-0">
+                        <strong>Total Amount</strong><br />
+                        <i class="fa fa-inr" aria-hidden="true"></i><span id="spanTotalFareWithTax"></span>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="body table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>NAME</th>
+                                        <th>SEAT NO</th>
+                                        <th>GENDER</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="travellerDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<!--Calendar Javascript-->
+<script>
+    $(document).ready(function () {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+        var sts = '@ViewData["status"]';
+        var errormsg = '@ViewData["Message"]';
+        if (sts == "Failed" && sts != "") {
+            swal("Oops!..", errormsg, "error");
+        }
+    });
+</script>
+<script>
+    function BookingDetails(id) {
+        $("#BusLoader").show();
+        var url = '@Url.Action("getBookingDetails", "Bus")'
+        var jqxhr = $.post(url, { TraceId: id }, function (data) {
+            console.log(data);
+            var response = JSON.parse(data);
+            if (response.Status == "Success") {
+                $("#BusLoader").hide();
+                console.log(response.Message);
+                //console.log(response.Message.apiStatus);
+                if (response.Message.Error.ErrorCode == 0)
+                {
+                    $("#spanSourceCityName").html(response.Message.Itinerary.Origin);
+
+                    $("#spanDepartureDateTime").html(response.Message.Itinerary.DepartureTime + "," + response.Message.Itinerary.DateOfJourney);
+                    $("#spanDestinationCityName").html(response.Message.Itinerary.Destination);
+                    $("#spanArrivalDateTime").html(response.Message.Itinerary.ArrivalTime);
+                    $("#spanBoardingPoint").html(response.Message.Itinerary.BoardingPointdetails.CityPointName);
+                    $("#spanBoardingcontantno").html(response.Message.Itinerary.BoardingPointdetails.CityPointContactNumber);
+                    $("#spanDroppingPoint").html(response.Message.Itinerary.BoardingPointdetails.CityPointLandmark);
+                    $("#spanBusOptName").html(response.Message.Itinerary.TravelName);
+                    $("#spanTicketNum").html(response.Message.Itinerary.TicketNo);
+                    $("#spanPNR").html(response.Message.Itinerary.TravelOperatorPNR);
+                    $("#spanBaseFare").html(response.Message.Itinerary.Price.BasePrice);
+                    $("#spanTaxAmount").html(parseInt(response.Message.Itinerary.Price.OtherCharges + response.Message.Itinerary.Price.Tax));
+                    $("#spanTotalFareWithTax").html(response.Message.Itinerary.Price.PublishedPriceRoundedOff);
+                    var tabRow = '';
+                    var PaxCount = 1;
+                    response.Message.Itinerary.Passenger.forEach(function (entry) {
+                        var Paxgender;
+                        if (entry.Gender == "1")
+                        {
+                            Paxgender = "Male";
+                        } else {
+                            Paxgender = "Female";
+                        }
+                        tabRow = tabRow + '<tr><th scope="row">' + PaxCount + '</th><td>' + entry.FirstName + ' ' + entry.LastName + '</td><td>' + entry.Seat.SeatName + '</td><td>'+ Paxgender +'</td></tr>';
+                        PaxCount = PaxCount + 1;
+                        console.log(entry);
+                    });
+                    $("#travellerDetails").html(tabRow);
+                    $("#BookingDetailsModel").modal('show');
+                } else {
+                    swal("Oops!!!", response.Message.Error.ErrorMessage, "error");
+                }
+                //swal("Wow!", response.Message, "success");
+            }
+            else {
+                $("#BusLoader").hide();
+                swal("Oops!!!", response.Message, "error");
+            }
+        })
+       .fail(function (jqXHR, textStatus, errorThrown) {
+           $("#BusLoader").hide();
+           swal("Oops!!!", jqXHR.responseText, "error");
+       })
+    }
+</script>
+@*<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>*@
+<script>
+    function CancelBooking(id,bid,tcno)
+    {
+
+         swal({
+                   title: 'Are you sure?',
+                   //text: 'Total Fare : ' + totalTicketFare + '\nCancellation Charges :' + cancellationCharges + '\nRefund Amount :  ' + totalRefundAmount + '\n\nNote: You will not be able to recover this again!',
+                   text: 'Once cancelled, You will not be able to recover this again!',
+                   type: 'warning',
+                   showCancelButton: true,
+                   confirmButtonColor: '#dd6b55',
+                   cancelButtonColor: '#999',
+                   confirmButtonText: 'Yes!',
+                   cancelButtonText: 'No',
+                   closeOnConfirm: false
+               }, function (data) {
+             if(data == true)
+             {
+                 CancelBookingConfirm(id,bid,tcno);
+             }
+         })
+
+    }
+    function CancelBookingConfirm(id, bid, tcno) {
+        try{
+            $("#BusLoader").show();
+            var url = '@Url.Action("seatCancellationConfirm", "Bus")'
+            var jqxhr = $.post(url, { TraceId: id, BusId: bid, Ticketno: tcno }, function (data) {
+                $("#BusLoader").hide();
+                var response = JSON.parse(data);
+                if (response.Status == "Success") {
+                    console.log(response.Message);
+                    if (response.Message.Content.Addinfo.Error.ErrorCode == 0) {
+
+                        //var totalTicketFare = response.Message.totalTicketFare;
+                        //var totalRefundAmount = response.Message.totalRefundAmount;
+                        //var cancellationCharges = response.Message.cancellationCharges;
+                        //console.log(totalTicketFare);
+                        //console.log(totalRefundAmount);
+                        //console.log(cancellationCharges);
+                        swal("Wow!!!", "Ticket cancellation proceeded successfully", "success");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 5000);
+
+                    } else {
+                        swal("Oops!!!", response.Message.Content.Addinfo.Error.ErrorMessage, "error");
+                    }
+                    //swal("Wow!", response.Message, "success");
+                }
+                else {
+                    swal("Oops!!!", response.Message, "error");
+                }
+            })
+           .fail(function (jqXHR, textStatus, errorThrown) {
+               $("#BusLoader").hide();
+               swal("Oops!!!", jqXHR.responseText, "error");
+           })
+        } catch (err) {
+            $("#BusLoader").hide();
+            console.log('Error : ' +err.message)
+        }
+    }
+</script>
+
+<!--My Script-->
+<script>
+    $(".input-daterange").click(function () {
+        $(".datepicker").addClass('datepickersecond');
+    });
+
+
+</script>
+
+<script>
+    $(function () {
+        var loc = window.location.href; // returns the full URL
+        if ('/~/RETAILER/Bus/BusBookingReport') {
+            $('.list.report-list-change li#rewertyd a').addClass('active');
+        }
+    });
+</script>
+<script>
+    $("#btnExport").click(function (e) {
+        e.preventDefault()
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddl_status = $('#ddl_status').val();
+        var PNR = $('#PNR').val();
+        var url = '@Url.Action("Excel_Ticketbus_Report", "Bus")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddl_status=' + ddl_status + '&PNR=' + PNR;
+        location.href = url
+});
+</script>
+<script>
+    $("#btnPDF").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddl_status = $('#ddl_status').val();
+        var PNR = $('#PNR').val();
+        var url = '@Url.Action("PDF_TicketBusReport", "Bus")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddl_status=' + ddl_status + '&PNR=' + PNR;
+        window.open(
+url,
+  '_blank' // <- This is what makes it open in a new window.
+);
+    });
+</script>

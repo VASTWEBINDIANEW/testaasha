@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Vastwebmulti.Models.select_rem_pur_order_Result>
+
+<style>
+    .showpurchase-retailer-report table tr td img {
+        height: 20px;
+        width: 20px;
+        margin-right: 3px;
+        float: left;
+        border-radius: 50%;
+        padding: 3px;
+    }
+</style>
+
+<div class="table-responsive showpurchase-retailer-report" style="position:inherit;">
+    <table class="table table-bordered table-striped table-hover tablemargin-master" style="width:100%;background:#f9f9f9;">
+
+        <thead style="background-color:whitesmoke;">
+
+            <tr>
+                <th style="padding-right: 36px;">Status </th>
+                <th>Order&nbsp;No</th>
+
+                <th>Retailer&nbsp;Info</th>
+                <th>Request&nbsp;Date </th>
+                <th>Payment&nbsp;Mode</th>
+                <th>Amount</th>
+                <th>Charge</th>
+
+                <th>Admin&nbsp;Bank&nbsp;Name&nbsp;/&nbsp;Acc&nbsp;No </th>
+                <th>Utr&nbsp;/&nbsp;SlipNo </th>
+                <th>Comment</th>
+
+                <th>Resp.&nbsp;Date</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+        <tbody id="body" class="alin  chnj">
+            @foreach (var item in Model)
+            {
+                var color = "";
+                var stscolor = "";
+                var img = "";
+
+
+
+                if (item.paymode == "CASH" || item.paymode == "Cash")
+                {
+                    color = "green";
+                }
+                if (item.paymode== "CREDIT" || item.paymode == "Credit")
+                {
+                    color = "red";
+                }
+                if (item.sts == "Pending")
+                {
+                    stscolor = "#FF9800";
+                    img = "../../ashok-images/clkk.png";
+
+                }
+                if (item.sts == "APPROVED")
+                {
+                    stscolor = "green";
+                    img = "../../ashok-images/correct.svg";
+                }
+                if (item.sts == "REJECTED")
+                {
+                    stscolor = "red";
+                    img = "../../ashok-images/closes.svg";
+                }
+
+
+            <tr>
+                <td><p style="font-size:12px;text-align:center;"><span style="color:#555;font-weight:400;"><img src="@img" style="background:@stscolor;" />@item.sts</span></p></td>
+                <td><p style="font-size:12px;">@item.orderno&nbsp;⇒&nbsp;<span style="color:@color;font-weight:600;">@item.paymode</span></p></td>
+
+                <td style="font-size:12px;">@Html.DisplayFor(modelItem => item.RemEmail)</td>
+                <td><p style="font-size:12px;">@String.Format("{0:dd-MM-yyyy hh:mm:ss}", item.reqdate)</p></td>
+                <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.paymode)</p></td>
+                <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount) </p></td>
+                <td><p style="font-size:12px;">@item.cashDepositCharge</p></td>
+
+                <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.banknm)&nbsp;/</p>  <p>&nbsp;@Html.DisplayFor(modelItem => item.Toaccountno)</p></td>
+
+                <td>@Html.DisplayFor(modelItem => item.utrno).ToString().ToUpper()</td>
+
+                <td>@Html.DisplayFor(modelItem => item.details)</td>
+
+
+                <td>@String.Format("{0:dd-MM-yyy hh:mm:ss}", item.responsedate)</td>
+                <td>
+                    <div class="row">
+                        @if (item.sts == "Pending")
+                        {
+                            <div class="col-md-12">
+                                <button type="button" name="type" onclick="return funin('@item.idno','APP')" style="background-color: transparent; color: black; border: none; margin-top: 0px;">
+                                    <i class="fa fa-check" style="top:1px;border: 1px solid #c7c2c2;padding: 3px;font-size: 10px;" aria-hidden="true"></i>
+                                </button>
+
+                                <button type="button" name="type" onclick="return funin('@item.idno','REJ')" style="background-color: transparent; color: black; border: none; margin-top: 0px;">
+                                    <i class="fa fa-times" style="top:1px;border: 1px solid #c7c2c2;padding: 3px 4px;font-size: 10px;" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+
+                        }
+                    </div>
+                </td>
+            </tr>
+            }
+            <tr>
+                <td><p style="font-size:17px;">Total</p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><p style="font-size:18px;text-align:center;">@Model.Sum(a => a.amount)</p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr>
+        </tbody>
+       
+    </table>
+</div>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>

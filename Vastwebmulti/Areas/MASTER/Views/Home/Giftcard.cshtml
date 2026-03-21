@@ -1,0 +1,582 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Models.Gift_card_details_report_Result>
+@{
+    ViewBag.Title = "Giftcard";
+    Layout = "~/Areas/MASTER/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Retailer").ToList();
+    var favimage = "";
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Retailer")
+        {
+            favimage = usernname.SingleOrDefault().NickName;
+
+
+        }
+    }
+    var usernname1 = DB1.Usernicknames.Where(aa => aa.Role == "Dealer").ToList();
+    var favimage1 = "";
+    if (usernname1.Count() > 0)
+    {
+        if (usernname1.SingleOrDefault().Role == "Dealer")
+        {
+            favimage1 = usernname1.SingleOrDefault().NickName;
+
+
+        }
+    }
+    var usernname11 = DB1.Usernicknames.Where(aa => aa.Role == "master").ToList();
+    var favimage11 = "";
+    if (usernname11.Count() > 0)
+    {
+        if (usernname11.SingleOrDefault().Role == "master")
+        {
+            favimage11 = usernname11.SingleOrDefault().NickName;
+
+
+        }
+    }
+}
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .dataTables_wrapper .dt-buttons a.dt-button {
+        padding: 7px 10px 8px 8px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+
+    .col-lg-12.col-md-12.col-sm-12.col-xs-12.giftcard-report-hide {
+        display: none;
+    }
+
+    .table-th-padding .table-bordered thead tr th {
+        padding-top: 0;
+        padding-bottom: 0;
+        vertical-align: middle;
+    }
+
+    .giftcard-report-show button {
+        height: 30px !important;
+    }
+
+    .padding-left-right {
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+        .padding-left-right .input-group input[type="text"], .padding-left-right .input-group .form-control, .padding-left-right .ner {
+            height: 34px !important;
+        }
+
+    .giftcar-table-master table tr td img {
+        height: 20px;
+        padding: 3px;
+        width: 20px;
+        border-radius: 50%;
+    }
+
+    .mastetr222Modal .modal-body .form-group input {
+        min-height: 32px;
+        width: 100%;
+    }
+
+    .mastetr222Modal .modal-body label {
+        float: left;
+        width: 100%;
+        margin-bottom: 2px;
+        margin-top: 6px;
+        color: #555;
+        font-size: 14px;
+    }
+
+    .table-responsive table {
+        background: #f9f9f9;
+    }
+
+    @@media screen and (max-width:992px) {
+        .padding-left-right {
+            width: 50%;
+            float: left;
+            margin-bottom: 10px;
+        }
+
+            .padding-left-right .form-group {
+                margin-bottom: 0px;
+            }
+
+        .table-th-padding .table-bordered thead tr th {
+            padding: 7px;
+        }
+
+        .paddig-right-right {
+            padding: 0px;
+        }
+
+        .padding-top-in-top {
+            padding-top: 25px;
+        }
+
+        .ls-closed section.content {
+            margin-left: 0px;
+        }
+    }
+
+    @@media screen and (max-width:420px) {
+        .padding-left-right-right {
+            width: 100%;
+        }
+    }
+</style>
+<section class="content">
+    <div class="container-fluid padding-top-in-top">
+
+        <!--Four-Design-Master-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Giftcard Report</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                <li><a href="javascript:void(0);">Report's&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                <li><a href="javascript:void(0);">Giftcard Report</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Master-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 giftcard-report-hide">
+                <div class="card" style="margin-top: 2px;">
+                    <div class="">
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 6px;">
+                                <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left: -22px;">
+                                    <li class="active" style="color: #a79f9f;font-size: 20px;margin-top: -12px;/* font-weight:700; */">Giftcard Report</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="col-md-9">
+                            <div class="form-group" style="margin-top:-19px;">
+                                <div style="padding-top: 22px; padding-left:66%;">
+                                    <button type="button" class="btn btn-success waves-effect" style="margin-top:2px;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totals"]</button>
+                                    <button type="button" class="btn btn-danger waves-effect" style="margin-top:2px;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalf"]</button>
+                                    <button type="button" class="btn btn-warning waves-effect" style="margin-top:2px;" title="Total  Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalp"]</button>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 giftcard-report-show" style="">
+                <div class="card" style="margin-top: 2px;">
+                    @using (Html.BeginForm("Giftcard", "Home", FormMethod.Post))
+                    {
+                        <div class="">
+                            <div class="col-md-1 padding-left-right">
+                                <div class="form-group">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("ddlusers", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="Master",Value="Master"},
+                                new SelectListItem{Text="Distributor",Value="Dealer"},
+                                new SelectListItem{Text="Retailer",Value="Retailer"}
+                                }, new { @class = "selectpicker form-control", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", data_live_search = "true", onchange = "answers()" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 padding-left-right" style="display:none;" id="dlm">
+                                <div class="form-group">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("alldealerid", (IEnumerable<SelectListItem>)ViewBag.DealerId, "All Dealer", new { id = "alldealerid", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 padding-left-right" style="display:none;" id="rem">
+                                <div class="form-group">
+                                    <div class="" style="margin-top:5px;margin-left:-13px;width:108%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 padding-left-right">
+                                <div class="form-group">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("Operator", ViewBag.Operator as SelectList, "Select Operator", new { id = "Operator", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px; text-align:center;height:34px;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 padding-left-right" style="display: none;">
+                                <div class="form-group">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("ddl_top", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="50",Value="50"},
+                                new SelectListItem{Text="100",Value="100"},
+                                new SelectListItem{Text="200",Value="200"},
+                                new SelectListItem{Text="500",Value="500"},
+                                new SelectListItem{Text="1500",Value="1500"},
+                                new SelectListItem{Text="All",Value="All"}
+                                }, new { @class = "selectpicker form-control", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", data_live_search = "true" })
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 padding-left-right padding-left-right-right" style="">
+                                <div class="form-group">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="Status",Value="ALL",},
+                                new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                                new SelectListItem{Text="Pending",Value="PENDING"},
+                                new SelectListItem{Text="FAILED",Value="FAILED"}
+                                }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 padding-left-right padding-left-right-right">
+                                <div class="">
+                                    <div class="" style="width: 100%;">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <div class="input-daterange input-group">
+                                                <div class="custom-date-icon ner">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                </div>
+                                                <input autocomplete="off" class="form-control" id="txt_frm_date" name="txt_frm_date" required="required" style="border:1px solid #dddddd; height:32px;" type="text" value="">
+                                                <span class="input-group-addon" style="padding:0px;min-width:3px;">
+
+                                                </span>
+                                                <div style="position:relative;">
+                                                    <div class="custom-date-icon ner">
+                                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                    </div>
+                                                    <input autocomplete="off" class="form-control" id="txt_to_date" name="txt_to_date" required="required" style="border:1px solid #dddddd; ;height:32px;" type="text" value="">
+                                                </div>
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 padding-left-right">
+                                <center>
+                                    <button type="submit" style="height:32px !important;border:1px solid #dddddd;background: #fff;width: 100%;">
+                                        <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                        <span style="top:-2px;color:black;">Search</span>
+                                    </button>
+                                </center>
+                            </div>
+
+                            <div class="col-md-2 tre4 paddig-right-right" style="width:auto;padding-right:0px;">
+                                <div class="white-l-search-nine">
+                                    <div class="web-white-filter" style="float: right;">
+                                        <input type="button" id="btnExportA" value="Export" style="margin-left:0px;font-size: 11px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                        <input type="button" id="btnPDFA" value="PDF" style="margin-left:2px;font-size: 11px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                        <button class="white-success-button" style="height:32px !important;font-size: 11px;padding: 0px 4px;height: 32px;border: 1px solid #b1a6a638;float: left;margin-left: 2px;background: #b1a6a638;" onclick="findtotalA()">Total</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+
+
+
+        </div>
+        @*        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-26px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">GIFT CARD REPORT&nbsp;></li>
+                        </ol>
+                    </div>*@
+        <div class="row clearfix ">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-th-padding giftcar-table-master">
+                <div class="">
+                    <div class="body table-responsive tableseconddes-master" style="position: inherit;">
+                        <table class="table table-bordered table-striped table-hover" cellspacing="0" style="width:100%;font-size:12px;">
+                            <thead class="navbar" style="position:inherit; color: #000; background:transparent;">
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Sender&nbsp;Information</th>
+                                    <th>Receiver&nbsp;Information</th>
+                                    <th>Request&nbsp;Date</th>
+                                    <th>Amount</th>
+                                    <th>Service&nbsp;Name</th>
+                                    <th>Type</th>
+                                    <th>Operator&nbsp;Id</th>
+                                    <th>@favimage Pre</th>
+                                    <th>@favimage Post</th>
+                                    @*<th><span>Dealer</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">Pre&nbsp;Amt&nbsp;</span><span style="padding-left:2px;">│</span><span style="padding-left:3px;">Net&nbsp;INC</span><span style="padding-left:2px;">│</span><span style="padding-left:2px;">Post&nbsp;Amt</span></th>
+                                        <th><span>Master</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">Pre&nbsp;Amt&nbsp;</span><span style="padding-left:2px;">│</span><span style="padding-left:3px;">Net&nbsp;INC</span><span style="padding-left:2px;">│</span><span style="padding-left:2px;">Post&nbsp;Amt</span></th>*@
+                                    <th>Response&nbsp;Time</th>
+                                    @*<th>Gift Card Message</th>
+                                        <th>API&nbsp;Request</th>*@
+                                    <th>API&nbsp;Response</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        var color = "";
+                                        var fontweight = "";
+                                        var img = "";
+
+                                        if (item.status.Contains("success"))
+                                        {
+                                            color = "green";
+                                            fontweight = "700";
+                                            img = "../../ashok-images/correct.svg";
+                                        }
+                                        if (item.status.Contains("failed"))
+                                        {
+                                            color = "red";
+                                            fontweight = "700";
+                                            img = "../../ashok-images/closes.svg";
+                                        }
+
+                                        if (item.status.Contains("Pending"))
+                                        {
+                                            color = "#FF9800";
+                                            fontweight = "700";
+                                            img = "../../ashok-images/clkk.png";
+                                        }
+                                        if (item.status.Contains("Refund "))
+                                        {
+                                            color = "#9C27B0";
+                                            fontweight = "700";
+                                            img = "../../ashok-images/undo.svg";
+                                        }
+
+
+                                        <tr>
+                                            <td>@*<p>&nbsp;@item.status</p>*@ <img src="@img" style="background-color:@color;" /></td>
+                                            <td><p style="font-size:11px;"><span>&nbsp;<i class="fa fa-user-circle-o"></i>&nbsp;@item.sender_name</span>&nbsp;⇒&nbsp;@item.sender_email</p></td>
+                                            <td><p style="font-size:11px;"><span>&nbsp;<i class="fa fa-user-circle-o"></i>&nbsp;@item.reciver_name</span>&nbsp;⇒&nbsp;@item.reciver_email</p></td>
+                                            <td><p style="font-size:13px;">&nbsp;@String.Format("{0:dd-MMM-yy HH:mm:ss}", item.request_time)</p></td>
+                                            <td><p style="font-size:13px;">&nbsp;@item.amount</p></td>
+                                            <td><p style="font-size:13px;">&nbsp;@item.operator_Name</p></td>
+                                            <td><p style="font-size:13px;">&nbsp;@item.Operator_type</p></td>
+                                            <td><p style="font-size:13px;">&nbsp;@item.operator_id</p></td>
+                                            <td><p><span style="padding-left:8px;">@item.rem_pre_remain</span></p></td>
+                                            <td><p><span style="padding-left:9px;">@item.rem_post_remain</span></p></td>
+                                            @*<td><p><span>Dealer</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.dlm_pre_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.comm_dlm</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.dlm_post_remain</span></p></td>
+                                                <td><p><span>Master</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.master_pre_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.comm_master</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.master_post_remain</span></p></td>*@
+                                            <td><p style="font-size:13px;">&nbsp;@String.Format("{0:dd-MMM-yy HH:mm:ss}", item.Response_time)</p></td>
+                                            @*<td><p style="font-size:13px;">&nbsp;@item.gift_message</p></td>
+                                                <td><p style="font-size:13px;">&nbsp;@item.api_request</p></td>*@
+                                            <td><p style="font-size:13px;">&nbsp;@item.api_response</p></td>
+                                            <td><img data-target="#mastergiftcardmodal" data-toggle="modal" src="../../ashok-images/rightaeps.svg" style="width: 20px; height: auto; padding: 0; border-radius: 0;border: 1px solid #aaa4a4;padding: 3px;" /></td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                            <tfoot class="navbar" style="color:white;position:inherit;background:transparent;">
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="modal mastetr222Modal" id="mastergiftcardmodal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div id="loadredmodel" style="display:none;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);" class="loadingio-spinner-ripple-92ar2pfqk5j">
+                    <div class="ldio-zdyd6mf6t5">
+                        <div></div><div></div>
+                    </div>
+                </div>
+                <div id="userinfodiv" class="modal-content width100 float-left">
+                    <div class="modal-header width100 float-left">
+                        <div class="modal-back width100 float-left">
+
+                            <div class="report-status">
+                                <div class="form-group" style="border-right: 3px solid #555;">
+
+
+                                </div>
+                                <div class="form-group">
+
+
+                                </div>
+
+                            </div>
+                            <button type="button" class="btn waves-effect" data-dismiss="modal" style="padding: 0px;background:transparent;">
+                                <i class="fa fa-times fulltextbodycolor fullbodydycolorbg" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!--.modal-header-->
+                    <div class="modal-body width100 float-left">
+
+                        <div class="float-left width100">
+
+
+                            <form class="first-form">
+
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                        <div class="form-group">
+                                            <label>@favimage1 pre</label>
+                                            <input type="text" readonly="readonly" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                        <div class="form-group">
+                                            <label>@favimage1 post</label>
+                                            <input type="text" readonly="readonly" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                        <div class="form-group">
+                                            <label>@favimage11 pre</label>
+                                            <input type="text" readonly="readonly" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                        <div class="form-group">
+                                            <label>@favimage11 post</label>
+                                            <input type="text" readonly="readonly" />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Gift&nbsp;Card&nbsp;Message</label>
+                                            <textarea class="form-control" cols="20" id="" name="" readonly="readonly" style="height:50px;"></textarea>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label>API&nbsp;Request</label>
+                                            <textarea class="form-control" cols="20" id="" name="" readonly="readonly" style="height:50px;"></textarea>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label>API&nbsp;Response</label>
+                                            <textarea class="form-control" cols="20" id="" name="" readonly="readonly" style="height:50px;"></textarea>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+                            </form>
+                        </div>
+                    </div><!--.modal-body-->
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<!--Calendar Javascript-->
+<script>
+    $(document).ready(function () {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+        answers();
+    });
+</script>
+
+<script type="text/javascript">
+    function answers() {
+
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer") {
+            document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+
+        }
+        else if (answer == "Master") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+        }
+        else if (answer == "Retailer") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+        }
+
+    }
+</script>
+

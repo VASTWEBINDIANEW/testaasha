@@ -1,0 +1,125 @@
+﻿@using Microsoft.AspNet.Identity
+@using Vastwebmulti.Models;
+<style>
+
+    /* new css  */
+
+    #ul li a {
+        margin: 0 1px;
+    }
+    
+    
+    /* new css  */
+
+
+    #ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+        #ul li {
+            float: left;
+        }
+
+            #ul li a {
+                display: block;
+                text-align: center;
+                padding: 5px 10px;
+                text-decoration: none;
+                border: 1px solid #b1a6a638;
+                position: initial;
+            }
+
+                #ul li a:hover:not(.activee) {
+                    background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;
+                    color: #fff;
+                    border: 1px solid #b1a6a6;
+                }
+
+    .activee {
+        color: white;
+        /*background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;*/
+        background: var(--main-bg-lcolor);
+    }
+
+        .activee:hover {
+            color: white;
+            border: 1px solid #00000026;
+            background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;
+        }
+
+    #ul li a.activee::before {
+        background: #fff;
+        color: var(--main-bg-lcolor);
+    }
+
+    #ul li a::before {
+        background: #000;
+        color: #fff;
+        
+        float: left;
+        height: 14px;
+        line-height: 14px;
+        margin-top: 3px;
+        padding: 0px 2px;
+    }
+
+    @@media only screen and (max-width:480px) {
+        #custnav #ul li a {
+            padding: 5px 2px;
+        }
+            #custnav #ul li a span {
+                padding: 0px 1px;
+            }
+
+        #custnav #ul li {
+            width: 32%;
+            margin-bottom: 5px;
+            margin-right: 2px;
+        }
+    }
+    .beforenoneclass::before{display:none !important;}
+    span.mastervalueshow {
+        background: #fff;
+        border-radius: 4px;
+        padding: 0px 4px;
+        margin-right: 4px;
+    }
+ 
+</style>
+@{
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var userid = User.Identity.GetUserId();
+    var masterpurchase = DB1.master_purchase.Where(x => x.frm == userid && x.sts=="Pending").Count();
+    var dealerpurchase = DB1.dlm_purchage.Where(x => x.frm == userid && x.sts=="Pending").Count();
+    var rempurchase = DB1.rem_purchage.Where(x => x.frm == userid && x.sts=="Pending").Count();
+     var apiuser = (from m in DB1.api_purchase where m.frm == userid && m.sts == "Pending" select m).Count();
+    //whitelabel  Purchase Total Count
+    var whitelabeluser = (from m in DB1.Whitelabel_master_purchase where m.frm == userid && m.sts == "Pending" select m).Count();
+}
+<div id="custnav">
+    <ul id="ul">
+        <li><a class="beforenoneclass" href="~/ADMIN/Home/ShowPurchase_master">&nbsp;<span class="mastervalueshow">@masterpurchase</span> Master</a></li>
+        <li><a href="~/ADMIN/Home/Dealer_showpurchase">&nbsp;<span class="mastervalueshow">@dealerpurchase</span>Distributor</a> </li>
+        <li><a href="~/ADMIN/Home/Retailer_showpurchase">&nbsp;<span class="mastervalueshow">@rempurchase</span>Retailer</a></li>
+        <li><a href="~/ADMIN/Home/Api_showpurchase">&nbsp;<span class="mastervalueshow">@apiuser</span>API&nbsp;User</a></li>
+        <li><a href="~/ADMIN/Home/Show_Whitelabelpurchase">&nbsp;<span class="mastervalueshow">@whitelabeluser</span>Whitelabel</a></li>
+
+    </ul>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var current = location.pathname;
+        $('#custnav li a').each(function () {
+            var $this = $(this);
+            if ($this.attr('href').indexOf(current) !== -1) {
+                $this.addClass('activee');
+
+            }
+        })
+    });
+</script>

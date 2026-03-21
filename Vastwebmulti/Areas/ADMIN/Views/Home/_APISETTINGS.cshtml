@@ -1,0 +1,164 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.SMSViewModel
+
+
+<div id="tab-4" class="tab-content custom-table-responsive padding-top-second">
+    <div class="table-responsive">
+        <table class="table table-bordered " style="width:100%;">
+            <thead>
+                <tr>
+                    <th style="white-space: nowrap">Api Type</th>
+                    <th>SMS Api Name</th>
+                    <th>Status</th>
+                    <th>DEL</th>
+                </tr>
+            </thead>
+            <tbody id="smsapilist">
+                @if (Model.apismslist_all.Count() > 0)
+                {
+                    foreach (var item in Model.apismslist_all)
+                    {
+                        <tr>
+                            <td>
+                                <div>
+                                    @if (item.api_type == "sms")
+                                    {
+                                        <span class="">SMS</span>
+                                    }
+                                    else if (item.api_type == "whatsapp")
+                                    {
+                                        <span class="">Whatsapp</span>
+                                    }
+                                </div>
+                            </td>
+                            <td class="nr">
+                                <span class="default-sms-api">@item.smsapi</span>
+                                <span class="edit-sms-api" style="display:none;">  @Html.TextBoxFor(m => m.apiapisms.smsapi1, "", new { @class = "form-control searchInput", placeholder = "Enter SMS Api", required = "required" })</span>
+                                <br />
+                                <span class="default-sms-api">@item.smsremainapi</span>
+                            </td>
+                            <td>
+                                <div class="onoffswitch onoffswitch-secondclass">
+                                    @if (item.sts == "Y")
+                                    {
+                                        <span class="costom-on custom-on-secondbutton" onclick="checkevent(@item.id);">on</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="custom-off custom-off-secondbutton" onclick="checkevent(@item.id);">off</span>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+
+                                <button id="DeleteBtn" class=" waves-effect  special-iii delete-fa switch-edit-button">
+
+                                    <img class="before-delete" src="~/MainFrontDesign/images/delete.svg" />
+                                    <span class="after-delete" style="display:none;font-size: 10px;color:red;" onclick='deleteevent(@item.id);'>Sure&nbsp;?</span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4">
+                            <div class="no-data-found-img">
+                                <img src="~/img/NoDatall.svg" />
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+
+    function checkevent(id) {
+         $.ajax({
+            url: '@Url.Action("SMSAPISTSetting","Home")',
+            type: 'GET',
+             data: { id: id },
+
+            success: function (response) {
+
+            $('#ApiSettings').html(response);
+
+                $('#LoaddataTemp').click();
+                }
+        })
+    }
+
+    function deleteevent(id) {
+              $.ajax({
+                type: 'POST',
+                url: '@Url.Action("deletesmsapi","Home")',
+                data: {id: id},
+             success: function (response) {
+                 $('#ApiSettings').html(response);
+
+                    $('#LoaddataTemp').click();
+
+                }
+
+            });
+
+    }
+
+</script>
+
+<script>
+function AddSMSAPI() {
+        var txt = $('#smsapiurl').val();
+        var re = /(http(s)?:\\)?([\w-]+\.)+[\w-]+[.com|.in|.org]+(\[\?%&=]*)?/
+        if (re.test(txt)) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AddSmsApi","Home")',
+                data: {
+                    smsapiurl: $('#smsapiurl').val(), smsapiCheck: $('#smsapiCheck').val(), sms_type: $('#sms_type').val()
+                },
+                success: function (response) {
+                    $('#defaultModal').modal('hide');
+                    $('#ApiSettings').html(response);
+
+                    $('#LoaddataTemp').click();
+                }
+
+            });
+        }
+        else {
+            alert('Not a Valid Url !');
+        }
+    }
+</script>
+
+<script type="text/javascript">
+
+    var val1 = "";
+    function animationEdit(id, smsapi) {
+        $("#apiapisms_id").val(id);
+        $("#apiapisms_smsapi1").val(smsapi);
+        $('#defaultModal1').modal('show');
+    }
+
+</script>
+
+<script>
+
+    $('.edit-change').click(function () {
+        $(this).closest("tr").find(".nr").find("span.default-sms-api").hide()
+        $(this).closest("tr").find(".nr").find("span.edit-sms-api").show()
+    });
+
+    $('.before-delete').click(function () {
+        $(this).hide()
+        $(this).next().show()
+    });
+
+</script>
+

@@ -1,0 +1,514 @@
+﻿@model List<Vastwebmulti.Models.Sp_Recharge_info_LazyLoad_Result>
+@{
+    ViewBag.Title = "RechargeReport";
+    Layout = "~/Areas/WRetailer/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu{margin-top:0 !important;}
+    .wretailer-rechargereport .col-md-2, .wretailer-rechargereport .col-md-3, .wretailer-rechargereport .col-md-4 {
+        padding-left: 0;float: left;padding-right: 5px;}
+    .wretailer-rechargereport .rechargefirst .select2.select2-container, .wretailer-rechargereport .rechargesecond .select2.select2-container {
+        width: 100% !important;float: left;
+    }
+        .wretailer-rechargereport .rechargefirst .select2.select2-container .select2-selection, .wretailer-rechargereport .rechargesecond .select2.select2-container .select2-selection {
+            border-radius: 0;height: 32px;border-color: #cccccc !important;
+        }
+    .wretailer-rechargereport, .wretailer-rechargereport .col-lg-12.col-md-12.col-sm-12.col-xs-12 {
+        padding: 0;
+    }
+    .wretailer-rechargereport .rechargethrees .input-whitelabel i {top: 0 !important;}
+    .wretailer-rechargereport .rechargefive button {width: 100%;margin: 0 !important;}
+    .wretailer-rechargereport .rechargefive {width: 10%;}
+    .wretailer-rechargereport .rechargepdfexal {width: auto;padding: 0;float:right;}
+    .wretailer-rechargereport .rechargepdfexal span {position: relative;}
+    .wretailer-rechargereport .rechargepdfexal span:first-child input{background:url(/ashok-images/pdf.png) no-repeat;background-position:1px;}
+    .wretailer-rechargereport .rechargepdfexal span:nth-child(2) input{background:url(/ashok-images/xls.png) no-repeat;background-position:1px;}
+    .wretailer-rechargereport .rechargepdfexal span input {padding-left: 14px;}
+    .wretailer-rechargereport .rechargefiveclass {width: 13%;}
+    .wretailer-rechargereporttable table tr th, .wretailer-rechargereporttable table tr td {
+        text-align: left !important;white-space: nowrap;padding: 8px 5px !important;width: auto !important;
+    }
+    .wretailer-rechargereporttable table tr td img {
+    border-radius: 50%;padding: 2px 3px;height: 17px !important;width: 17px !important;
+    float: left;margin-right: 2px;padding-left: 3px !important;
+}
+    .wretailer-rechargereport .row.clearfix {margin: 0;}
+    .wretailer-rechargereporttable .table-responsive {overflow: auto;}
+        .wretailer-rechargereporttable .table-responsive table {
+            box-sizing: border-box;
+        }
+
+
+    @@media screen and (max-width:1366px){
+        .wretailer-rechargereporttable table tr td:nth-child(3) {
+            white-space: normal !important;
+        }
+    }
+    @@media screen and (max-width:767px){
+        .wretailer-rechargereport .rechargefiveclass {
+            width: 28%;
+        }
+        .wretailer-rechargereport .rechargefirst, .wretailer-rechargereport .rechargesecond {
+            width: 36%;
+        }
+        .wretailer-rechargereport .rechargefive {
+            width: 15%;
+            padding-right: 0;
+        }
+        .all-page-container {
+            margin-top: 65px !important;
+        }
+        .wretailer-rechargereport .rechargefiveclass .form-group {
+            margin-bottom: 15px;
+        }
+        .wretailer-rechargereporttable table tr th:nth-child(1) {
+            padding-right: 70px !important;
+        }
+
+    }
+
+    @@media screen and (max-width:580px){
+        .wretailer-rechargereport .rechargefive .form-group, .wretailer-rechargereport .rechargepdfexal {margin-bottom: 15px;}
+        .wretailer-rechargereport .rechargefive {width: 25%;}
+        .wretailer-rechargereport .rechargethrees {width: 74%;float: left;}
+        .wretailer-rechargereport .rechargethrees input {text-align: center !important;}
+
+    }
+
+
+</style>
+<section class="content" style="margin:0;">
+    <div class="all-page-container">
+        <div class="container-fluid wretailer-rechargereport">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card" style="margin-top:2px;float: left;width: 100%;margin-bottom:0;">
+                        @using (Html.BeginForm("RechargeReport", "Home", FormMethod.Post))
+                        {
+                            
+                                <div class="col-md-2 rechargefirst">
+                                    <div class="form-group">
+                                        <div class="" style="">
+                                            @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                    {
+                                    new SelectListItem{ Text="ALL Status",Value="",},
+                                    new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                                    new SelectListItem{Text="Pending",Value="PENDING"},
+                                    new SelectListItem{Text="FAILED",Value="FAILED"}
+                                    }, new { @class = "form-control", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-2 rechargesecond">
+                                    <div class="form-group">
+                                        <div class="" style="">
+                                            @Html.DropDownList("Operator", ViewBag.Operator as SelectList, "ALL OPERATORS", new { id = "Operator", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 rechargefiveclass">
+                                    <div class="form-group">
+                                        <div class="" style="border: 1px solid #ccc;">
+                                            @Html.TextBox("txtmob", "", new { @class = "form-control", @placeholder = "Consumer Number", @style = "height:30px;" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 rechargethrees">
+                                    <div class="form-group" style="margin-bottom:0px;margin-top:0px;">
+                                        <div class="input-daterange input-group">
+                                            <div class="input-whitelabel leftwhitellabel">
+                                                <i class="fa fa-calendar tmw-total-color-one" style="background-image: linear-gradient(to right , @PageData["Globalfirst"], @PageData["GlobalSecond"]);"></i>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:0px;height:32px;", autocomplete = "off" })
+                                            </div>
+                                            @*<span class="input-group-addon" style="display:none;">
+                                                <i class="fa fa-exchange" style="padding-top:8px;"></i>
+                                            </span>*@
+                                            <div class="input-whitelabel rightwhitellabel">
+                                                <i class="fa fa-calendar tmw-total-color-one" style="background-image: linear-gradient(to right , @PageData["Globalfirst"], @PageData["GlobalSecond"]);"></i>
+                                                @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:0px;height:32px;", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                </div>
+                                <div class="col-md-2 rechargefive">
+                                    <div class="form-group">
+                                        <div class="form-line" style="border-bottom:none;margin-top:0px;">
+                                            <center>
+                                                <button value="LIVE" type="submit" class="btn" id="btntype" name="btntype" style="margin-top:5px; margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;">
+                                                    <i class="fa fa-search" style="top:-1px;font-size:13px;color:#555;"></i>
+                                                    <span style="top:-1px;color:#555;">Search</span>
+                                                </button>
+
+                                            </center>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                        }
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 rechargepdfexal">
+                            <div style="float:right;">
+                                <span><input type="button" id="btnPDF" value="PDF" style="margin-left:2px; height:32px;border:1px solid #c7c2c2;background-color:#dedddd;" /></span>
+                                <span>
+                                    <input type="button" id="btnExport" value="Export" style="margin-left:2px; height:32px;border:1px solid #c7c2c2;background-color:#dedddd;" />
+                                </span>
+
+                                <button onclick="findtotal()" class="btn" id="pdfblock" style=" margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;">
+                                    <span class="displaypdf" style="top:-1px;color:#555;">TOTAL</span>
+                                    <strong class="pdfblocks" style="display:none;float:right;"><span id="successtotal"></span><span id="Failedtotal"></span><span id="Pendingtotal"></span></strong>
+                                </button>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix" style="display:none;">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                <span>SUCCESS : </span>
+
+
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                <span>FAILED : </span>
+
+
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                <span>PENDING : </span>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row clearfix wretailer-rechargereporttable">
+                <div class="col-md-12" style="width:100%;float:left;padding:0;">
+                    <div class="card" style="width:100%;float:left;">
+                        <div class="body change-iconrech-report change-iconrech-responshive" style="padding:0px;width:100%;float:left;">
+                            <div class="table-responsive custome-background-wr table-responsive-whitelabel" style="position:inherit;margin-top:0px;">
+                                <table id="tbldata" class="table table-bordered table-striped table-hover dataTable" cellspacing="0" style="width:100%;">
+                                    <thead style="background-color:whitesmoke;">
+                                        <tr>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">#&nbsp;Category</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Consumer&nbsp;No</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Operator&nbsp;Name</th>
+
+
+                                            @*<th style="padding-left:2px; padding-right:2px;text-align:center;">Opt&nbsp;Type</th>*@
+
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Net&nbsp;Amt</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Debit</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Earn</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Remain</th>
+                                            @*<th style="padding-left:2px; padding-right:2px;text-align:center;">Type</th>*@
+
+                                            @*<th style="padding-left:2px; padding-right:2px;text-align:center;">Operator&nbsp;ID</th>*@
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Request&nbsp;Date</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Resp&nbsp;Date</th>
+
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Transition</th>
+                                            <th class="noExl" style="padding-left:2px; padding-right:2px;text-align:center;width:76px;">Action</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="trow">
+                                        @{
+                                            Html.RenderAction("_Rechargereport", "Home", new { Model = Model });
+                                        }
+                                    </tbody>
+                                </table>
+                                <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:20px;">
+                                    <div class="loadertablecssnew wretailerloadertablecssnew">Loading...</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!--Dispute Reason Model-->
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+@*<script>
+        $('#tbldata').DataTable({
+            dom: 'Bfrtip',
+
+             "paging":   false,
+            "ordering": false,
+            "info": false,
+              //"searching": false,
+        buttons: [
+            'excel'
+            ],
+          buttons: [
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                         columns: [0,1,2,3,4,5,6,7,8,9,10 ]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: {
+                                columns: [0,1,2,3,4,5,6,7,8,9,10 ]
+                    }
+                },
+                  {
+                    extend: 'print',
+                    exportOptions: {
+                                columns: [ 0, 1, 2, 3,4,5,6,7,8,9,10 ]
+                    }
+                }
+            ]
+    });
+    </script>*@
+
+<script>
+    function confirm(e) {
+        $('#disp-'+e).hide();
+        $('#confirm-'+e).show();
+        $('#close-'+e).show();
+    }
+    function cancel(e) {
+          $('#disp-'+e).show();
+        $('#confirm-'+e).hide();
+        $('#close-'+e).hide();
+    }
+    function disputedata(e) {
+         var txt_frm_date = $('#txt_frm_date').val();
+         var txt_to_date = $('#txt_to_date').val();
+         var ddl_status = $('#ddl_status').val();
+         var Operator = $('#Operator').val();
+        var txtmob = $('#txtmob').val();
+
+             $.post("@Url.Action("dispute","Home")",
+             {"id": e, "txtregion": ""},
+                 function (data) {
+                     $.post("@Url.Action("InfiniteScroll","Home")",
+             { "pageindex": pageindex, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date,"ddl_status":ddl_status,"Operator":Operator,"txtmob":txtmob },
+                    function (data) {
+                        $("#trow").html(data.HTMLString);
+                    });
+           });
+
+    }
+</script>
+<script>
+    $('select').select2();
+</script>
+<script>
+    var txt_frm_date = $('#txt_frm_date').val();
+    var txt_to_date = $('#txt_to_date').val();
+    var ddl_status = $('#ddl_status').val();
+    var Operator = $('#Operator').val();
+    var txtmob = $('#txtmob').val();
+        var pageindex = 2;
+        var NoMoredata = false;
+        var inProgress = false;
+    $(window).scroll(function () {
+            if ($(window).scrollTop() > Number($("#tbldata").height()) / 4 && !NoMoredata && !inProgress) {
+                inProgress = true;
+                $("#loadingdiv").show();
+                $.post("@Url.Action("InfiniteScroll","Home")",
+             { "pageindex": pageindex, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date,"ddl_status":ddl_status,"Operator":Operator,"txtmob":txtmob },
+                    function (data) {
+                        pageindex = pageindex + 1;
+                        NoMoredata = data.NoMoredata;
+                        $("#trow").append(data.HTMLString);
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    });
+            }
+        });
+</script>
+<script type="text/javascript">
+    function GotoPDFRecharge(e) {
+                       // alert(e)
+                       var idno = e.toString();
+                       var url = '@Url.Action("RechargePDF", "Home")?Idno=' + idno + '';
+                       //window.location.href = url,;
+                       window.open(url, '_blank');
+                   }
+</script>
+
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+   });
+
+</script>
+
+<!--Dispute Id-->
+<script>
+    function findtotal() {
+         var txt_frm_date = $('#txt_frm_date').val();
+         var txt_to_date = $('#txt_to_date').val();
+         var ddl_status = $('#ddl_status').val();
+         var Operator = $('#Operator').val();
+         var txtmob = $('#txtmob').val();
+             $.post("@Url.Action("FindTotal","Home")",
+             {"txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date,"ddl_status":ddl_status,"Operator":Operator,"txtmob":txtmob},
+                 function (data) {
+                     $('#successtotal').text(data.success);
+                     $('#Failedtotal').text(data.failed);
+                       $('#Pendingtotal').text(data.pending);
+                    });
+    }
+</script>
+
+<!--Genertae Invoice-->
+<script type="text/javascript">
+    function GenrateInvoice(ultra_request_id, RechargeTo, OptName, amt, OptID, Date) {
+       var url = '@Url.Action("GotoInvoicePDF1", "Home")?Id=' + ultra_request_id + '&RechargeTo=' + RechargeTo + '&OptName=' + OptName + '&amt=' + amt + '&OptID=' + OptID + '&Date=' + Date + '';
+            window.open(url, '_blank');
+     }
+</script>
+<script>
+    $("#btnExport").click(function(){
+   var txt_frm_date = $('#txt_frm_date').val();
+         var txt_to_date = $('#txt_to_date').val();
+         var ddl_status = $('#ddl_status').val();
+         var Operator = $('#Operator').val();
+        var txtmob = $('#txtmob').val();
+        var url = '@Url.Action("ExcelRechargereport","Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddl_status=' + ddl_status + '&Operator=' + Operator + '&txtmob=' + txtmob;
+        location.href = url;
+});
+</script>
+<script>
+    $("#btnPDF").click(function () {
+     var txt_frm_date = $('#txt_frm_date').val();
+         var txt_to_date = $('#txt_to_date').val();
+         var ddl_status = $('#ddl_status').val();
+         var Operator = $('#Operator').val();
+        var txtmob = $('#txtmob').val();
+        var url = '@Url.Action("PDFRechargereport","Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddl_status=' + ddl_status + '&Operator=' + Operator + '&txtmob=' + txtmob;
+        window.open(
+url,
+  '_blank' // <- This is what makes it open in a new window.
+);
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var current = location.pathname;
+        $('.menu-top-custome ul li a').each(function () {
+            var $this = $(this);
+            if ($this.attr('href').indexOf(current) !== -1) {
+                $this.addClass('active');
+
+
+            }
+        })
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#pdfblock").click(function () {
+            $(".pdfblocks").css("display", "block");
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".rechargefirst span.select2-selection").click(function () {
+            $(".select2-dropdown").addClass('selectcutomere');
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".rechargesecond span.select2-selection").click(function () {
+            $(".select2-dropdown").addClass('selectcutomeress');
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $(".rechargethrees input").click(function () {
+            $(".datepicker").addClass('datepickerrecharge');
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".fundtranfer-responshive .rechargefirst .select2").click(function () {
+            $(".select2-dropdown.select2-dropdown--below.selectcutomere").addClass('parepaidstatus');
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".fundtranfer-responshive .col-md-3.rechargesecond .select2").click(function () {
+            $(".select2-dropdown.select2-dropdown--below.selectcutomeress").addClass('parepaidstatussecond');
+
+        });
+    });
+</script>

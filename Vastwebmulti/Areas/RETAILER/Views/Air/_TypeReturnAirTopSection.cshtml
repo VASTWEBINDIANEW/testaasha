@@ -1,0 +1,253 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.AirTopSectionModel
+<div class="row">
+    @{
+        Vastwebmulti.Areas.RETAILER.ViewModels.Result SrcItem = null;
+        Vastwebmulti.Areas.RETAILER.ViewModels.Result DstnItem = null;
+        var SrcACode = string.Empty;
+        var DstnACode = string.Empty;
+        decimal pb = 0;
+        decimal op = 0;
+        decimal dis = 0;
+        decimal tax = 0;
+        decimal bas = 0;
+        var apinm = "";var apinm1 = "";
+        if (Model.Results.Count == 1) //For International
+        {
+            SrcItem = Model.Results[0];
+            DstnItem = Model.Results[0];
+            SrcACode = SrcItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode;
+            DstnACode = DstnItem.Segments.LastOrDefault().FirstOrDefault().Airline.AirlineCode;
+            apinm = Model.Results[0].Apinm;
+            apinm1 = apinm;
+            if (Model.Results[0].Fare != null)
+            {
+                pb = Model.Results[0].Fare.PublishedFare;
+                op = Model.Results[0].Fare.OfferedFare;
+                dis=Model.Results[0].Fare.Discount;
+                tax=Model.Results[0].Fare.Tax;
+                bas=Model.Results[0].Fare.BaseFare;
+            }
+        }
+        else if (Model.Results.Count == 2) //Domastic
+        {
+            SrcItem = Model.Results[0];
+            DstnItem = Model.Results[1];
+            SrcACode = SrcItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode;
+            DstnACode = DstnItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode;
+            apinm = Model.Results[0].Apinm;
+            apinm1 = Model.Results[1].Apinm;
+            if (Model.Results[0].Fare != null && Model.Results[1].Fare != null)
+            {
+                pb = Model.Results[0].Fare.PublishedFare + Model.Results[1].Fare.PublishedFare;
+                op = Model.Results[0].Fare.OfferedFare + Model.Results[1].Fare.OfferedFare;
+                dis=Model.Results[0].Fare.Discount+ Model.Results[1].Fare.Discount;
+                tax=Model.Results[0].Fare.Tax+ Model.Results[1].Fare.Tax;
+                bas=Model.Results[0].Fare.BaseFare+Model.Results[1].Fare.BaseFare;
+            }
+        }
+    }
+
+    <div class="col-md-3 pub-img" style="padding-right:0px;">
+        <div class="media">
+            <div class="media-left">
+                <a href="javascript:void(0);">
+                    @{
+                        var AirlineCode = SrcItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode;
+                        var dir = Server.MapPath("~/images/AirlineLogo");
+                        var myFiles = Directory.GetFiles(dir, "" + AirlineCode + ".*", SearchOption.AllDirectories);
+                    }
+                    @if (myFiles != null && myFiles.Length > 0)
+                    {
+                        string pPath = myFiles[0];
+                        int endIndex = pPath.LastIndexOf(@"\");
+                        string vPath = "~/images/AirlineLogo/" + pPath.Remove(0, endIndex);
+                        <img class="media-object" src="@Url.Content(vPath)" width="32" height="32">
+                    }
+                    else
+                    {
+                        <img class="media-object" src="http://placehold.it/32x32" width="32" height="32">
+                    }
+                @{ 
+                    var srcval = "";
+                }
+                @if(apinm==null)
+                {
+                    srcval = "TBO";
+                }
+                else
+                {
+                    srcval = apinm;
+                }
+                    <span id="sourcespan">@srcval</span>
+                </a><br />
+            </div>
+            <div class="media-body" style="text-align:left;" id="mediabodySrc">
+                @foreach (var segment in SrcItem.Segments.FirstOrDefault())
+                {
+                    <strong> <span> (@segment.Origin.Airport.AirportCode) @Convert.ToDateTime(segment.Origin.DepTime).ToString("HH:mm")</span> <span class="center-border"></span> <span>(@segment.Destination.Airport.AirportCode) @Convert.ToDateTime(segment.Destination.ArrTime).ToString("HH:mm")</span> </strong>
+                }
+                <br />
+                <span class="flight-name">@SrcItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineName</span>
+                <span title="Publish Price" class="publishprice">
+                    @if (SrcItem.Fare != null)
+                    {
+                        <span>@SrcItem.Fare.Currency&nbsp;@SrcItem.Fare.PublishedFare</span>
+                    }
+
+
+                </span>
+                <br />
+                <!--
+                <span title="Offer Orice">
+                    @if (SrcItem.Fare != null)
+                    {
+                        <span>@string.Format("{0:C2}", SrcItem.Fare.OfferedFare) (O.P.)</span>
+                    }
+                </span>
+                    -->
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 pub-img pub-img-second" style="padding-right:0px;">
+        <div class="media">
+            <div class="media-left">
+                <a href="javascript:void(0);">
+                    @{
+                        AirlineCode = DstnItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode;
+                        dir = Server.MapPath("~/images/AirlineLogo");
+                        myFiles = Directory.GetFiles(dir, "" + AirlineCode + ".*", SearchOption.AllDirectories);
+                    }
+                    @if (myFiles != null && myFiles.Length > 0)
+                    {
+                        string pPath = myFiles[0];
+                        int endIndex = pPath.LastIndexOf(@"\");
+                        string vPath = "~/images/AirlineLogo/" + pPath.Remove(0, endIndex);
+                        <img class="media-object" src="@Url.Content(vPath)" width="32" height="32">
+                    }
+                    else
+                    {
+                        <img class="media-object" src="http://placehold.it/32x32" width="32" height="32">
+                    }
+                @{ 
+                    var desti = "";
+                }
+                    @if (apinm1 == null)
+                    {
+                        desti = "TBO";
+                    }
+                    else
+                    {
+                        desti = apinm1;
+                    }
+                    <span id="destispan">@desti</span>
+                </a><br />
+            </div>
+            <div class="media-body" style="text-align:left;">
+                @foreach (var segment in DstnItem.Segments.LastOrDefault())
+                {
+                    <strong> <span> (@segment.Origin.Airport.AirportCode)@Convert.ToDateTime(segment.Origin.DepTime).ToString("HH:mm")</span> <span class="center-border"></span> <span> (@segment.Destination.Airport.AirportCode)@Convert.ToDateTime(segment.Destination.ArrTime).ToString("HH:mm")</span></strong>
+                }
+                <br />
+                <span class="flight-name">@DstnItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineName</span>
+                <span title="Publish Price" class="publishprice">
+                    @if (DstnItem.Fare != null)
+                    {
+                        <span>@DstnItem.Fare.Currency&nbsp;@DstnItem.Fare.PublishedFare</span>
+                    }
+                </span>
+                <br />
+                <!--
+                @if (DstnItem.Fare != null)
+                {
+                    <span title="Offer Orice">@string.Format("{0:C2}", DstnItem.Fare.OfferedFare) (O.P.)</span>
+                }
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 pubprice">
+        <p class="text-uppercase"><strong>Trip price:&nbsp;&nbsp;&nbsp;</strong> &#8377;<span class="text-right AirPbFareSpan">@pb</span></p>
+        <!--<p class="text-uppercase"><strong>offered price:&nbsp;&nbsp;&nbsp;</strong> &#8377;<span class="text-right AirOfFareSpan">@op</span></p>-->
+
+        <div class="mouseover mouseover-second" style="display:none;">
+            <h4>Fare Summary</h4>
+            <ul>
+                @*<li>Fare Summary<span></span></li>*@
+                <li class="widthalign">
+                    Base Fare<span>
+                        @bas
+                    </span>
+                </li>
+                <li class="widthalign">Fees & Taxes<span>
+    <img src="~/ashok-images/rupee-1.svg" style="width:11px;margin-right:2px;" />
+    @tax
+    
+</span></li>
+                <li class="widthalign">Offer Fare<span><img src="~/ashok-images/rupee-1.svg" style="width:11px;margin-right:2px;" />@op</span></li>
+                <li class="payli"><strong>Total Pay :</strong><strong><img src="~/ashok-images/rupee-1.svg" style="width:11px;margin-right:2px;" />@pb</strong></li>
+                <li><strong>Round Trip Discount (-)</strong><strong><img src="~/ashok-images/rupee-1.svg" style="width:11px;margin-right:2px;" />@dis</strong></li>
+                <li class="payli"><strong>You Pay :</strong><strong><img src="~/ashok-images/rupee-1.svg" style="width:11px;margin-right:2px;" />@pb</strong></li>
+
+            </ul>
+            <p>Note: Total fare displayed above has been rounded off and may show a slight difference from actual fare.</p>
+
+        </div>
+
+
+        <div class="col-md-12 submite-query">
+            @if (Model.JourneyType != 4)
+            {
+                using (Html.BeginForm("FlightDetails", "Air", FormMethod.Get))
+                {
+                    @Html.Hidden("TraceId", Model.TraceId)
+                    @Html.Hidden("ResultIndex", SrcItem.ResultIndex)
+                    @Html.Hidden("ResultIndex", DstnItem.ResultIndex)
+                    @Html.Hidden("JourneyType", Model.JourneyType)
+                    <input type="submit" class="btn btn-primary bg-dark-green bookeee" name="Book Now" value="Book Now">
+                    <div class="nextloadereass" style="display:none">
+                        <div class="loader1 loader--style2" title="1">
+                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                            <rect x="0" y="0" width="4" height="20" fill="#ff0048">
+                            <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+                           </rect>
+                            <rect x="7" y="0" width="4" height="20" fill="#ff0048">
+                            <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0.2s" dur="0.6s" repeatCount="indefinite"></animate>
+                           </rect>
+                            <rect x="14" y="0" width="4" height="20" fill="#ff0048">
+                            <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0.4s" dur="0.6s" repeatCount="indefinite"></animate>
+                           </rect>
+                           </svg>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <button type="button" class="btn btn-primary bg-dark-green"><span></span>Show Price</button>
+            }
+
+
+
+
+        </div>
+    </div>
+
+
+
+</div>
+
+
+<script>
+
+    $('.bookeee').click(function () {
+        $('.nextloadereass').css('display', 'block');
+  
+    
+        $(this).css('font-size', '0px');
+      });
+
+</script>
+
+
+

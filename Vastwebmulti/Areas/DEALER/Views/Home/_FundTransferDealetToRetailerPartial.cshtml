@@ -1,0 +1,415 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.DEALER.ViewModel.FundRequestViewmodel
+
+@{ decimal? Totalamount = 0; decimal? Totalcharges = 0; decimal? Netamounttransfer = 0; decimal? oldcrs; decimal? currentcr; decimal? totalcrsattelment = 0;
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Retailer").ToList();
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Retailer")
+        {
+            var favimage = usernname.SingleOrDefault().NickName;
+            ViewBag.nickname = favimage;
+        }
+    }
+    }
+ 
+<style>
+    .table-bordered thead tr th, .table-bordered tbody tr td {
+        padding: 10px 5px;
+    }
+
+    .third-design-dealer .third-design-table tr:hover td a {
+        color: #fff;
+    }
+</style>
+@if (Model.DealerToRemFundTransfer != null)
+{
+    <table id="tbldata" class="table table-bordered table-striped table-hover fundtransfer-tableclass third-design-table">
+        <thead>
+            <tr>
+                <th>@ViewBag.nickname&nbsp;Transcation&nbsp;Time</th>
+                <th>Payment&nbsp;Mode</th>
+                <th>Transection Id</th>
+                <th>Amount</th>
+
+                <th>Charges</th>
+
+                <th>CR&nbsp;STL</th>
+
+                <th>Net&nbsp;T/F</th>
+                <th><strong class="crposttable"><span style="float: left;font-size: 30px;line-height: 30px;">CR</span>&nbsp;<p style="float: right;width: 51%;margin: 0px;font-size: 11px;line-height: 17px;text-transform: uppercase;">pre</p><p style="float: right;width: 51%;margin: 0px;font-size: 11px;line-height: 5px;text-transform: uppercase;">Post</p></strong></th>
+                <th><strong class="rblposttable"><span style="float: left;font-size: 30px;line-height: 30px;">R.BAL</span>&nbsp;<p style="float: right;width: 30%;margin: 0px;font-size: 11px;line-height: 17px;text-transform: uppercase;">pre</p><p style="float: right;width: 30%;margin: 0px;font-size: 11px;line-height: 5px;text-transform: uppercase;">Post</p></strong></th>
+                <th><strong class="dbalposttable"><span style="float: left;font-size: 30px;line-height: 30px;">D.BAL</span>&nbsp;<p style="float: right;width: 30%;margin: 0px;font-size: 11px;line-height: 17px;text-transform: uppercase;">pre</p><p style="float: right;width: 30%;margin: 0px;font-size: 11px;line-height: 5px;text-transform: uppercase;">Post</p></strong></th>
+
+            </tr>
+        </thead>
+
+        <tbody id="tblbody">
+            @{
+                List<decimal?> termsList = new List<decimal?>();
+            }
+            @foreach (var item in Model.DealerToRemFundTransfer.OrderByDescending(a => a.RechargeDate))
+            {
+
+                Totalamount = Model.DealerToRemFundTransfer.Sum(x => x.Balance);
+                Totalcharges = Model.DealerToRemFundTransfer.Sum(x => x.commission);
+                Netamounttransfer = Model.DealerToRemFundTransfer.Sum(x => x.TotalBal);
+
+
+
+                oldcrs = item.oldcrbalance == null ? 0 : item.oldcrbalance;
+                currentcr = item.cr == null ? 0 : item.cr;
+                decimal? totalsattlement = 0;
+                totalsattlement = oldcrs - currentcr;
+                if (totalsattlement <= 0)
+                {
+                    totalsattlement = 0;
+                }
+
+                termsList.Add(totalsattlement);
+
+
+                var colrss = "";
+                if (@item.bal_type == "Charge Back")
+                {
+                    colrss = "#ff000063";
+                }
+                else
+                {
+                    colrss = "#eae9e9";
+                }
+
+                //if (item.bal_type == "Credit")
+                //{
+                //    crsatle = 0;
+                //}
+                //else
+                //{
+                //    crsatle = item.oldcrbalance - item.cr;
+                //}
+
+                var charge = item.commission == null ? 0 : item.commission;
+                var masterfarmname = item.Frm_Name == null || item.Frm_Name == "" ? item.RetailerName : item.Frm_Name;
+                masterfarmname = masterfarmname + " / " + item.Mobile;
+                var headtype = item.Head == null || item.Head == "DirectT" ? "Direct" : item.Head;
+
+                <tr class="tr" data-toggle="modal" onclick="tablerowshowdetail('@masterfarmname','@headtype','@item.bal_type','@item.Balance','@charge','@item.cr','@item.TotalBal','@item.remain_pre_amount','@item.remain_amount','@item.oldcrbalance','@item.cr','@item.comment','@item.Balance','@item.RechargeDate','@masterfarmname','@item.CollectionBy','@totalsattlement')" data-target11="#m-d-fund-transfer" style="background: @colrss">
+
+
+                    <td>
+                        <p style="margin:0px;">  @masterfarmname</p>
+                        <p style="margin:0px; margin-top:3px;color: var(--main-bg-lcolor);font-size: 12px;">@item.RechargeDate</p>
+                    </td>
+                    <td>
+
+
+                        <div class="card-header" role="tab" id="headingOne1-@item.id">
+                            <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1-@item.id" aria-expanded="true"
+                               aria-controls="collapseOne1">
+
+                                @headtype
+
+                            </a>
+                        </div>
+
+                        <div id="collapseOne1-@item.id" class="collapse" role="tabpanel" aria-labelledby="headingOne1-@item.id"
+                             data-parent="#accordionEx">
+                            <div class="card-body">
+                                @item.CollectionBy
+                            </div>
+                        </div>
+
+                        <p style="margin:0px; margin-top:3px;">@item.bal_type</p>
+
+
+
+                    </td>
+
+                    <td>
+                        <p style="margin-top:6px;">
+                            @if (item.Transectionid == null)
+                            {
+                                <span> "Not Found"</span>
+                            }
+                            else
+                            {
+                                @item.Transectionid;
+                            }
+
+                        </p>
+                    </td>
+
+                    <td>
+                        <p style="margin-top:6px;">
+                            @if (item.Balance < 0)
+                            {
+                                decimal bb = Convert.ToDecimal(item.Balance);
+                                bb = -bb;
+                                <span>  (-) @bb</span>
+                            }
+                            else
+                            {
+                                @item.Balance
+                            }
+
+
+                        </p>
+                    </td>
+                    @*
+                        <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+                    @if (item.commission == null)
+                    {
+                        <td><p style="margin-top:6px;"> <span>0.00</span>@item.commission</p></td>
+
+                    }
+                    else
+                    {
+                        <td><p style="margin-top:6px;">@item.commission</p></td>
+                    }
+
+                    @*
+                        <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                    @*
+                        <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+
+                    <td><p style="margin-top:6px;">@totalsattlement</p></td>
+                    <td><p style="margin-top:6px;">@item.TotalBal</p></td>
+                    @*
+                        <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+                    <td>
+                        <p style="margin:0px;">@item.oldcrbalance</p>
+                        <p style="margin:0px; margin-top:3px;">@item.cr</p>
+                    </td>
+                    <td>
+                        <p style="margin:0px;">@item.remain_pre_amount</p>
+                        <p style="margin:0px; margin-top:3px;">@item.remain_amount</p>
+
+
+                    </td>
+                    <td>
+                        <p style="margin:0px; margin-top:3px;">@item.remain_amount_dealer</p>
+                        <p style="margin:0px;">@item.remain_pre_amount_dealer</p>
+
+                    </td>
+
+                </tr>
+            }
+            @{
+                decimal? sum = termsList.Sum();
+            }
+            <tr><td colspan="3"></td><td>@Totalamount</td><td>@Totalcharges</td><td>@sum</td><td>@Netamounttransfer</td></tr>
+        </tbody>
+    </table>
+
+}
+else if (Model.SendPurchaserequest != null)
+{
+    if (Model.SendPurchaserequest != null)
+    {
+
+        <table class="table table-bordered table-striped table-hover fundtransfertabledealer third-design-table">
+            <thead style="background-color:whitesmoke;">
+
+
+                <tr>
+
+
+                    <th>Order&nbsp;No</th>
+
+                    <th>Request&nbsp;To</th>
+                    <th>PayMent&nbsp;Mode</th>
+                    <th><center>Discription</center></th>
+                    <th><center>Total&nbsp;Amount</center></th>
+                    <th><center>Charge</center></th>
+                    <th><center>Net&nbsp;Amount</center></th>
+
+                    <th>Request&nbsp;Date</th>
+                </tr>
+            </thead>
+            <tbody id="tblbody">
+                @foreach (var item in Model.SendPurchaserequest)
+                {
+                    Totalamount = Model.SendPurchaserequest.Sum(x => x.amount);
+                    Totalcharges = Model.SendPurchaserequest.Sum(x => x.comm);
+                    Netamounttransfer = Model.SendPurchaserequest.Sum(x => x.finalAmount);
+
+
+                    <tr class="tr" onclick="tablerowshowdetail22('@item.name','@item.orderno','@item.sts','@item.paymode','@item.utrno','@item.details','@item.amount','@item.reqdate','@item.respodate','@item.cashDepositCharge','@item.finalAmount','@item.HeadType')" style="background:no-repeat;">
+
+                        <td>
+
+                            @if (item.sts == "Pending")
+                            {
+                                <img src="~/ashok-images/clock.svg" style="width: 20px;">
+                            }
+                            else if (item.sts == "REJECTED")
+                            {
+                                <img style="height:20px;width:20px;margin-right:3px;float:left; background-color:red;border-radius: 50%;padding: 3px;" src="../../ashok-images/closes.svg">
+                            }
+                            else
+                            {
+                                <img style="height:20px;width:20px; background-color:green;border-radius: 50%;padding: 3px;" src="../../ashok-images/correct.svg">
+                            }
+
+                            @item.orderno
+
+
+                        </td>
+
+                        <td><p style="margin-top:6px;">@item.Role</p></td>
+                        <td>@item.paymode.ToUpper()</td>
+                        <td>
+                            @item.utrno
+                        </td>
+                        <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p> </td>
+                        <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.cashDepositCharge)</p> </td>
+                        <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.finalAmount)</p> </td>
+
+                        <td class="wallet-modalopen-img">@Html.DisplayFor(modelItem => item.reqdate)<img src="~/ashok-images/rightaeps.svg" data-toggle="modal" data-target="#m-d-fund-transfer12" style="width:13px;cursor:pointer;" /></td>
+
+
+                    </tr>
+
+
+                }
+                <tr><td colspan="4"></td><td>@Totalamount</td><td>@Totalcharges</td><td>@Netamounttransfer</td><td></td></tr>
+            </tbody>
+        </table>
+
+
+    }
+}
+
+else if (Model.PurchaseRequestRecived != null)
+{
+
+    <table class="table table-bordered table-striped table-hover retailerfundtrtable third-design-table">
+        <thead style="background-color:whitesmoke;">
+
+
+            <tr>
+
+
+
+                <th>Order&nbsp;No</th>
+
+                <th>Request&nbsp;From</th>
+                <th><center>Payment&nbsp;Mode</center></th>
+                <th><center>Discription</center></th>
+                <th><center>Total&nbsp;Amount</center></th>
+                <th><center>Charge</center></th>
+
+                <th><center>Net&nbsp;Amount</center></th>
+                <th>Request&nbsp;Date</th>
+            </tr>
+        </thead>
+        <tbody id="tblbody">
+            @foreach (var item in Model.PurchaseRequestRecived)
+            {
+                Totalamount = Model.PurchaseRequestRecived.Sum(x => x.amount);
+                Totalcharges = Model.PurchaseRequestRecived.Sum(x => x.cashDepositCharge);
+                Netamounttransfer = Model.PurchaseRequestRecived.Sum(x => x.finalAmount);
+
+                <tr class="tr" onclick="tablerowshowdetailorderrecive('@item.RemEmail','@item.orderno','@item.sts','@item.paymode','@item.utrno','@item.details','@item.amount','@item.reqdate','@item.responsedate','@item.cashDepositCharge','@item.finalAmount','@item.sts','@item.idno')" style="background:no-repeat;">
+
+                    <td>
+                        @if (item.sts == "Pending")
+                        {
+                            <img src="~/ashok-images/clock.svg" style="width: 20px;">
+                        }
+                        else if (item.sts == "REJECTED")
+                        {
+                            <img style="height:20px;width:20px;margin-right:3px;float:left; background-color:red;border-radius: 50%;padding: 3px;" src="../../ashok-images/closes.svg">
+                        }
+                        else
+                        {
+                            <img style="height:20px;width:20px; background-color:green;border-radius: 50%;padding: 3px;" src="../../ashok-images/correct.svg">
+                        }
+
+                        @item.orderno
+                    </td>
+
+                    <td><p style="margin-top:6px;">@item.RemEmail</p></td>
+                    <td>@item.paymode</td>
+                    <td>
+                        @item.utrno
+                        @*@try
+                            {
+                                if (item.paymode.Contains("Online Transfer"))
+                                {
+                                    <span>  @item.banknm </span>
+                                }
+
+                            }
+                            catch (ArgumentNullException ex)
+                            {
+                                @item.utrno
+                            }*@
+
+                    </td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p> </td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.cashDepositCharge)</p> </td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.finalAmount)</p> </td>
+
+
+
+
+                    <td>@Html.DisplayFor(modelItem => item.reqdate)<img class="img-sateallpagemodal" src="~/ashok-images/rightaeps.svg" data-toggle="modal" data-target="#m-d-fund-orderRecive" style="width:13px;cursor:pointer;" /></td>
+                    @*<td>
+                            <div class="row">
+                                @if (item.sts == "Pending")
+                                {
+                                    <div class="col-xs-6" style="margin-bottom:0px;">
+                                        <center>
+                                            <button type="button" name="type" onclick="return funin('@item.id','APP')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa fa-check" style="color:green;"></li> </button>
+                                        </center>
+                                    </div>
+                                    <div class="col-xs-6" style="margin-bottom:0px;">
+                                        <center>
+                                            <button type="button" name="type" onclick="return funin('@item.id','REJ')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa  fa-ban" style="color:red;"></li> </button>
+                                        </center>
+                                    </div>
+                                }
+                                else
+                                {
+
+                                }
+                            </div>
+                        </td>*@
+
+                </tr>
+
+
+            }
+            <tr><td colspan="3"></td><td>@Totalamount</td><td>@Totalcharges</td><td>@Netamounttransfer</td><td></td></tr>
+        </tbody>
+    </table>
+
+
+}
+
+
+
+<script>
+    $('.third-design-dealer .third-design-table td').mouseenter(function () {
+
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+
+
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('cssText', 'color: #fff !important;background:var(--main-bg-rcolor) !important;');
+        $(".third-design-table tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+
+    });
+
+    $('.third-design-dealer .third-design-table td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+
+    });
+</script>

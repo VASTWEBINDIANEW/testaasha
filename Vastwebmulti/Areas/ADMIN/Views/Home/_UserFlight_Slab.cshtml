@@ -1,0 +1,239 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.FlightSlab
+@using (Ajax.BeginForm("_UserFlight_Slab", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess1", OnFailure = "onfailed", LoadingElementId = "div_Loader", UpdateTargetId = "divEditFormComm", InsertionMode = InsertionMode.Replace }))
+{
+    <input id="btnsubmituser" type="submit" value="Update For Existing Users" class="btn  waves-effect" style="display:none;" />
+    <input id="btnsubmitusercommon" type="submit" name="Button" value="Update Existing & New Users" class="btn  waves-effect" style="display:none;" />
+
+    @Html.Hidden("role")
+    <div class="row clearfix" style="margin-right:0px;">
+        <div class="col-md-12">
+            <div class="slab-master-block">
+                <div class="slab-master-block-left">
+                    <div>
+                        <div class="custom-district-img">
+
+                            <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                        </div>
+                        @Html.DropDownList("ddlUserId", Model.UserId, "All Users", new { @class = "for-select2 form-control", @onchange = "ddlUserIdChange()" })
+                    </div>
+                </div>
+                <div class="slab-master-block-right">
+                    <div id="slab-master-message" class="slab-master-message slab-master-message-show" style="display: none;">
+                        <p>  If you edit the slabs of all the master distributors, you are given a data view of the common slabs.</p>
+                    </div>
+                    <div id="slab-master-detail" class="slab-master-detail slab-master-detail-hide" style="display: block;">
+                        <div class="row clearfix">
+
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon">
+                                    <img src="~/AdminDesign/images/user.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Name" value="@Model.Name">
+
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon" style="border-left: 1px solid #bbb;">
+                                    <img src="~/AdminDesign/images/number.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Registered Number" value="@Model.Phone">
+
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon" style="border-left: 1px solid #bbb;">
+                                    <img src="~/AdminDesign/images/email.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Registered Mail" value="@Model.Email">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-bordered slab-table third-design-table">
+        <thead class="navbar" style="position:initial;">
+            <tr>
+                <th>User</th>
+                <th>Flight&nbsp;Type)</th>
+                <th>Charge&nbsp;&&nbsp;Sharing(%)</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyshow">
+           
+            @if (Model.common != null)
+            {
+                for (int i = 0; i < Model.common.Count; i++)
+                {
+                    if (Model.common[i].UserId != "Default")
+                    {
+                        var type = " % Share"; var jj = " % - Offered Fare MarkUP";
+                        var margin = Model.common[i].marginPercentage;
+                        <tr>
+                            <td>@Html.DisplayFor(a => a.common[i].Email)</td>
+                            <td>@string.Format("{0}", Model.common[i].IsDomestic ? "Domestic" : "International")</td>
+                            <td>
+                                @if (Model.common[i].Role == "Retailer" || Model.common[i].Role == "Whitelabel")
+                                {
+                                    @margin @jj
+                                }
+                                else
+                                {
+                                    @margin @type
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+        <tbody id="tbodyedit" style="display:none;">
+            <!-- User-->
+            @if (Model.common != null)
+            {
+                for (int i = 0; i < Model.common.Count; i++)
+                {
+                    if (Model.common[i].UserId != "Default")
+                    {
+                        <tr>
+                            @Html.HiddenFor(a => a.common[i].Role)
+                            @Html.HiddenFor(a => a.common[i].idno)
+                            @Html.HiddenFor(a => a.common[i].Email)
+                            @Html.HiddenFor(a => a.common[i].UserId)
+                            @Html.HiddenFor(a => a.common[i].IsDomestic)
+                            @*@Html.HiddenFor(a => a[i].RetailerMarkupCharge)*@
+                            <td>
+                                @Html.DisplayFor(a => a.common[i].Email)
+                            </td>
+
+                            <td>@string.Format("{0}", Model.common[i].IsDomestic ? "Domestic" : "International")</td>
+
+                            <td>
+                                <div>
+                                    @if (Model.common[i].Role == "Master" || Model.common[i].Role == "Dealer")
+                                    {
+                                        @Html.TextBoxFor(aa => aa.common[i].marginPercentage, new { @class = "form-control", @style = "padding:0px; -webkit-appearance:none;" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(a => a.common[i].marginPercentage, new List<SelectListItem>
+                                       {
+                                              new SelectListItem{Text="0.00%",Value="0.00",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(0.00)? true:false},
+                                              new SelectListItem{Text="0.25%",Value="0.25",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(0.25)? true:false},
+                                              new SelectListItem{Text="0.50%",Value="0.50",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(0.50)? true:false},
+                                              new SelectListItem{Text="0.75%",Value="0.75",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(0.75)? true:false},
+                                              new SelectListItem{Text="1.00%",Value="1.00",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(1.00)? true:false},
+                                              new SelectListItem{Text="1.25%",Value="1.25",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(1.25)? true:false},
+                                              new SelectListItem{Text="1.50%",Value="1.50",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(1.50)? true:false}
+                                            }, "Select Commission", new { @class = "form-control", @style = "padding:0px; -webkit-appearance:none;" })
+                                    }
+                                </div>
+                                @Html.ValidationMessageFor(a => a.common[i].marginPercentage)
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+            <!--End User-->
+        </tbody>
+        <tbody id="tbodyeditAll" style="display:none;">
+            @if (Model.all != null)
+            {
+                for (int i = 0; i < Model.all.Count; i++)
+                {
+                    <tr>
+                        @Html.HiddenFor(a => a.all[i].idno)
+                        @*@Html.HiddenFor(a => a[i].min)
+                            @Html.HiddenFor(a => a[i].max)*@
+                        @Html.HiddenFor(a => a.all[i].UserId)
+                        @Html.HiddenFor(a => a.all[i].IsDomestic)
+                        @*@Html.HiddenFor(a => a[i].RetailerMarkupCharge)*@
+                        <td>
+                            <p>All</p>
+                        </td>
+                        <td>@string.Format("{0}", Model.all[i].IsDomestic ? "Domestic" : "International")</td>
+                        <td>
+                            <div>
+                                @if (Model.all[i].Role == "Master" || Model.all[i].Role == "Dealer")
+                                {
+                                    @Html.TextBoxFor(aa => aa.all[i].marginPercentage, new { @class = "form-control", @style = "padding:0px; -webkit-appearance:none;" })
+                                }
+                                else
+                                {
+                                @Html.DropDownListFor(a => a.all[i].marginPercentage, new List<SelectListItem>
+                                 {
+                            new SelectListItem{Text="0.00%",Value="0.00",Selected= Model.all[i].marginPercentage==Convert.ToDecimal(0.00)? true:false},
+                           new SelectListItem{Text="0.25%",Value="0.25",Selected= Model.all[i].marginPercentage==Convert.ToDecimal(0.25)? true:false},
+                           new SelectListItem{Text="0.50%",Value="0.50",Selected= Model.all[i].marginPercentage==Convert.ToDecimal(0.50)? true:false},
+                           new SelectListItem{Text="0.75%",Value="0.75",Selected= Model.all[i].marginPercentage==Convert.ToDecimal(0.75)? true:false},
+                           new SelectListItem{Text="1.00%",Value="1.00",Selected= Model.all[i].marginPercentage==Convert.ToDecimal(1.00)? true:false},
+                           new SelectListItem{Text="1.25%",Value="1.25",Selected= Model.all[i].marginPercentage==Convert.ToDecimal(1.25)? true:false},
+                           new SelectListItem{Text="1.50%",Value="1.50",Selected= Model.all[i].marginPercentage==Convert.ToDecimal(1.50)? true:false}
+
+                           }, "Select Commission", new { @class = "form-control", @style = "padding:0px; -webkit-appearance:none;" })
+                              
+                                }
+                            </div>
+                            @Html.ValidationMessageFor(a => a.all[i].marginPercentage)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(a => a[i].RetailerMarkupCharge)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(a => a[i].gst, new { @style = "width:100%" })
+                                @Html.ValidationMessageFor(a => a[i].gst)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(a => a[i].tds, new { @style = "width:100%" })
+                                @Html.ValidationMessageFor(a => a[i].tds)
+                            </td>*@
+
+                        @*<td>
+                                @Html.TextBoxFor(a => a.UpdateMaster[i].gst, new { @style = "width:100%" })
+                                @Html.ValidationMessageFor(a => a.UpdateMaster[i].gst)
+                            </td>*@
+
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script>
+    $('.for-select2').select2();
+
+
+</script>
+
+<script>
+    function OnSuccess1(data) {
+        $('#btnsubmituser').hide();
+        $('#btnsubmitusercommon').hide();
+        $('#btnEdit').show();
+    }
+    function onfailed(error) {
+        alert(error.responseText);
+    }
+</script>
+
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

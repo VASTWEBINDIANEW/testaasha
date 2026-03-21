@@ -1,0 +1,282 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.ShowAllDefaultSlabCharge
+@{
+    ViewBag.Title = "Default_slab";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    $(function () {
+
+        var chh = '@ViewData["type"]';
+        $('#' + chh+'').show();
+    });
+
+    function funedit() {
+        var chh1 = '@ViewData["type"]';
+
+        $('#' + chh1 + '_show').hide()
+        $('#' + chh1 + '_edit').show()
+        $('#' + chh1 + '_Save').show()
+    }
+</script>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-4">
+                        <h2 style="color:#00000082; font-size:16px; padding-left:11px; margin-top:10px;">
+                            Show All Default Slab Charge
+                        </h2>
+                    </div>
+                    <div class="col-md-6">
+                        @using (Html.BeginForm("Default_slab", "Home", FormMethod.Post, new { id = "CreateForm" }))
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="input-group" style="margin-top:3px;">
+                                        <div class="" style="border:1px solid #dddddd; height:38px;">
+                                            @Html.DropDownList("ddlUser", new List<SelectListItem>
+                                        {
+                                               new SelectListItem{Text="Select One",Value="Select"},
+                                        new SelectListItem{Text="Distributor",Value="Distributor"},
+                                        new SelectListItem{Text="Retailer",Value="Retailer"}
+                                        }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "border:1px solid #8e7f7f4d;height:38px;", })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group" style="margin-top:3px;">
+                                        <div class="" style="border:1px solid #dddddd; height:38px;">
+                                            @Html.DropDownList("ddltype", new List<SelectListItem>
+                                        {
+                                               new SelectListItem{Text="Select One",Value="Select"},
+                                        new SelectListItem{Text="Prepaid Utility",Value="Prepaid"},
+                                        new SelectListItem{Text="Postpaid Utility",Value="Postpaid"},
+                                        new SelectListItem{Text="IMPS",Value="IMPS"}
+                                        }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "border:1px solid #8e7f7f4d;height:38px;", })
+                                        </div>
+                                        <span class="input-group-addon">
+                                            <button type="submit" class="btn bg-blue-grey waves-effect" style="margin-top:-6px; height:38px; ">
+                                                <i class="material-icons" style="top:4px;">save</i>
+                                                <span style="top:-2px;">Submit</span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>    
+                            </div>   
+                        }
+                    </div>
+                    <div class="col-md-2">
+                        <center style="margin-right:15px; margin-top:3px;">
+                            <button type="submit" class="btn bg-blue-grey waves-effect" onclick="funedit()" style="height:38px;">
+                                <i class="material-icons">edit</i>
+                                <span style="top:-2px;">EDIT</span>
+                            </button>
+                        </center>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-19px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;">
+                            <li><a href="javascript:void(0);" style="font-weight:100; font-size:15px;">Slab Charge's</a></li>
+                            <li class="active" style="color:#607d8b; font-size:15px;">Default Charge</li>
+                            <li class="active" style="color:#607d8b; font-weight:700;font-size:15px;">All Default Slab Charge Details</li>
+                        </ol>
+
+                    </div>
+                    <div class="body" style="margin-top:-11px;">
+                        <div id="Prepaid" class="table-responsive" style="position:inherit; margin-top:-20px; display:none;">
+                            @using (Html.BeginForm("EditDefaultSlabCharge", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <input type="hidden" value="@TempData["userid"]" id="userid" name="userid" />
+
+                                <div id="Prepaid_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                            <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                                <thead class="navbar" style="color:white;position:inherit;">
+                                                    <tr>
+                                                        <th>Operator&nbsp;Name</th>
+                                                        <th>Commission</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="Prepaid_show">
+                                                    @foreach (var item in Model.DefaultPrepaid)
+                                                    {
+                                                        <tr>
+                                                            <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                            <td>@Html.DisplayFor(modelItem => item.commission)</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                                <tbody id="Prepaid_edit" style="display:none;">
+                                                    @{
+                                                        int i = 0;
+                                                        foreach (var item in Model.DefaultPrepaid)
+                                                        {
+                                                            @Html.HiddenFor(o => o.DefaultPrepaid[i].idno)
+                                                            @Html.HiddenFor(o => o.DefaultPrepaid[i].ddltype)
+                                                            @Html.Hidden("ID", "Prepaid")
+                                                            <tr>
+                                                                <td>@item.OperatorName</td>
+
+                                                                <td>
+                                                                    @Html.EditorFor(o => o.DefaultPrepaid[i].commission)
+                                                                    @Html.ValidationMessageFor(o => o.DefaultPrepaid[i].commission)
+                                                                </td>
+                                                            </tr>
+                                                            i++;
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                                        }
+                        </div>
+
+                        <div id="Postpaid" class="table-responsive" style="position:inherit; margin-top:-20px; display:none;">
+                            @using (Html.BeginForm("EditDefaultSlabCharge", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <input type="hidden" value="@TempData["userid"]" id="userid" name="userid" />
+                                <div id="Postpaid_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                                <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                                    <thead class="navbar" style="color:white;position:inherit;">
+                                                        <tr>
+                                                            <th>Operator&nbsp;Name</th>
+                                                            <th>Range(1-1000)</th>
+                                                            <th>Range(1001-2000)</th>
+                                                            <th>Range(2001-Above)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="Postpaid_show">
+                                                        @foreach (var item in Model.DefaultPostpaid)
+                                                        {
+                                                            <tr>
+                                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                                <td>@Html.DisplayFor(modelItem => item.commission1)</td>
+                                                                <td>@Html.DisplayFor(modelItem => item.commission2)</td>
+                                                                <td>@Html.DisplayFor(modelItem => item.commission3)</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                    <tbody id="Postpaid_edit" style="display:none;">
+                                                        @{
+                                                            int i = 0;
+                                                            foreach (var item in Model.DefaultPostpaid)
+                                                            {
+                                                                @Html.HiddenFor(o => o.DefaultPostpaid[i].idno)
+                                                                @Html.HiddenFor(o => o.DefaultPostpaid[i].ddltype)
+                                                                @Html.Hidden("ID", "Postpaid")
+                                                                <tr>
+                                                                    <td>@item.OperatorName</td>
+                                                                    <td>
+                                                                        @Html.EditorFor(o => o.DefaultPostpaid[i].commission1)
+                                                                        @Html.ValidationMessageFor(o => o.DefaultPostpaid[i].commission1)
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.EditorFor(o => o.DefaultPostpaid[i].commission2)
+                                                                        @Html.ValidationMessageFor(o => o.DefaultPostpaid[i].commission2)
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.EditorFor(o => o.DefaultPostpaid[i].commission3)
+                                                                        @Html.ValidationMessageFor(o => o.DefaultPostpaid[i].commission3)
+                                                                    </td>
+                                                                </tr>
+                                                                i++;
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                                            }
+                        </div>
+
+                        <div id="IMPS" class="table-responsive" style="position:inherit; margin-top:-20px; display:none;">
+                            @using (Html.BeginForm("EditDefaultSlabCharge", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <input type="hidden" value="@TempData["userid"]" id="userid" name="userid" />
+                                <div id="IMPS_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                                <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                                    <thead class="navbar" style="color:white;position:inherit;">
+                                                        <tr>
+                                                            <th>Operator&nbsp;Name</th>
+                                                            <th>Minimum</th>
+                                                            <th>Maximum</th>
+                                                            <th>Commission</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="IMPS_show">
+                                                        @foreach (var item in Model.DefaultIMPS)
+                                                        {
+                                                            <tr>
+                                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                                <td>@Html.DisplayFor(modelItem => item.minimum)</td>
+                                                                <td>@Html.DisplayFor(modelItem => item.maximum)</td>
+                                                                <td>@Html.DisplayFor(modelItem => item.commission)</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                    <tbody id="IMPS_edit" style="display:none;">
+                                                        @{
+                                                            int i = 0;
+                                                            foreach (var item in Model.DefaultIMPS)
+                                                            {
+                                                                @Html.HiddenFor(o => o.DefaultIMPS[i].idno)
+                                                                @Html.HiddenFor(o => o.DefaultIMPS[i].ddltype)
+                                                                @Html.Hidden("ID", "IMPS")
+                                                                <tr>
+                                                                    <td>@item.OperatorName</td>
+                                                                    <td>@item.minimum</td>
+                                                                    <td>@item.maximum</td>
+                                                                    <td>
+                                                                        @Html.EditorFor(o => o.DefaultIMPS[i].commission)
+                                                                        @Html.ValidationMessageFor(o => o.DefaultIMPS[i].commission)
+                                                                    </td>
+                                                                </tr>
+                                                                i++;
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+

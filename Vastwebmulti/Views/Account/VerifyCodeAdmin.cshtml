@@ -1,0 +1,255 @@
+﻿@*@model Vastwebmulti.Models.VerifyCodeViewModel*@
+@using Vastwebmulti.Models;
+@{
+    ViewBag.Title = "Verify";
+    Layout = null;
+}
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    //var image = db.tblWhiteLabelLoginBackImages.Where(p => p.Role == "WHITELABEL").ToList();
+    //if (image.Count > 0)
+    //{
+    //    ViewBag.image = image.SingleOrDefault().ImageUrl;
+    //}
+    //else
+    //{
+    //    ViewBag.image = "img85.png";
+    //}
+    //ViewBag.image = image.Count == 0 ? "" : image.SingleOrDefault().ImageUrl;
+}
+<link rel="stylesheet" href="~/MainFrontDesign/css/bootstrap.css">
+<link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/MainFrontDesign/css/bootstrap.min.css">
+<link rel="stylesheet" href="~/MainFrontDesign/css/style.css">
+
+<style>
+    .navbar-default {
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    .otp-form {
+        width: 36%;
+        margin: auto;
+        border: 2px solid #fff;
+        padding: 0px 30px;
+        margin-bottom: 40px;
+    }
+
+    .submit-button-one input:hover {
+        background: #fff;
+        color: #ff0000 !important;
+    }
+
+    #otp-mess, #otp-mess2 {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 10px;
+        width: 100%;
+        float: left;
+        text-align: center;
+    }
+
+    #otp-mess2 {
+        margin-top: 0px;
+    }
+
+    .for-p-border {
+        font-size: 19px;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 30px !important;
+        font-weight: 600
+    }
+
+    .digit-group {
+        text-align: center;
+        border: 2px solid #fff;
+        padding: 7px 0px;
+    }
+
+        .digit-group input {
+            width: 15%;
+            height: 50px;
+            background-color: #fff;
+            border: none;
+            line-height: 50px;
+            text-align: center;
+            font-size: 30px;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 600;
+            color: #555;
+            margin: 0 2px;
+        }
+
+        .digit-group .splitter {
+            padding: 0 5px;
+            color: white;
+            font-size: 24px;
+        }
+
+    .prompt {
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: white;
+    }
+</style>
+<div class="container-fluid fullbodydycolorbg" style="width:100%;height:100vh;padding-top:8%; float:left;border-top: 5px solid #fff;border-bottom: 5px solid #fff;" @*style="background:url(@Url.Content("~/FooterImages/"+ViewBag.image)"*@>
+
+    <center>
+        <p class="large-text" style="font-weight:700; font-size: 42px; padding: 32px 0px; color:#fff;">
+            <img src="~/AdminDesign/images/encryption.svg" style="width:40px;" /> Enter Standard OTP
+        </p>
+
+    </center>
+
+    <div class="otp-form">
+        @using (Html.BeginForm("VerifyCodeAdmin", "Account", new { ReturnUrl = ViewBag.returnUrl }, FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("provider", TempData["provider"])
+            <input type="hidden" name="rememberMe" value="@ViewBag.rememberMe" />
+            <div class="row" style="margin-top:40px; margin-bottom:40px;">
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="for-p-border">One Time Password&nbsp;(OTP)</p>
+                        </div>
+                    </div>
+                    @*<div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                @Html.TextBox("Code", "", new { @class = "form-control", @placeholder = "Enter One Time Password", @required = "required", @style = "color:black; padding:0px 10px;box-shadow:none;border:0px;" })
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>*@
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <div class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
+                                <input type="text" id="digit-1" name="digit-1" data-next="digit-2" autocomplete="off" /><input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" autocomplete="off" /><input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" autocomplete="off" /><input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" autocomplete="off" /><input type="text" id="digit-5" name="digit-5" data-next="digit-6" data-previous="digit-4" autocomplete="off" /><input type="text" id="digit-6" name="digit-6" data-previous="digit-5" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        @*<div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-11" style="margin-top:5px;">
+                                        <span>@Html.CheckBox("RememberBrowser", new { @checked = "checked" })@Html.Label("RememberBrowser", new { @style = "font-size: 15px; color: #fff; font weight: 100; " })</span>
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span style="text-align: center;width: 100%;display: block;color: #fff;margin-top:10px; font-weight: 600;">@TempData["invalidcode"]</span>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-12 submit-button-one" style="text-align:center;">
+                                <input type="hidden" id="Code" name="Code" autocomplete="off" />
+                                <input type="submit" id="subHere" class="btn btn-default" value="Submit" style="padding:0px; height:35px;color:#fff;border-color:#fff; margin-right:5px;" />
+                                <input type="button" class="btn btn-primary" value="Resend OTP" onclick="resendotp()" style="padding:0px;color:#fff;border-color:#fff; height:35px;" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span id="otp-mess"></span>
+                                <span id="otp-mess2"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+<script src="~/MainFrontDesign/js/vendor/bootstrap.min.js"></script>
+<script src="~/MainFrontDesign/js/main.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminDesign/plugins/sweetalert/sweetalert-dev.js"></script>
+<script>
+    function resendotp()
+    {
+       @*var url = '@Url.Action("VerifyCode", "Account")?provider=' + "Email Code" + '&returnUrl=' + null + '&rememberMe=' + false + '';*@
+        var url = '@Url.Action("VerifyCodeAdmin", "Account")?provider=' + "Email Code" + '&returnUrl=' + null + '&type=' + "Resend" + '&rememberMe=' + false + '';
+        location.href = url;
+    }
+</script>
+<script>
+        window.onload = function()
+        {
+            var message = '@TempData["invalidcode"]'
+            if(message !="" && message !=null)
+            {
+                //swal("Oops...", message, "error")
+                $('#otp-mess').text(message);
+            }
+
+        }
+</script>
+<script>
+$(document).ready(function(){
+    var resend = '@TempData["resend"]'
+    var resend2 = '@TempData["resend2"]'
+    if (resend != null && resend != "") {
+        //swal("Good job!", resend, "success")
+        $('#otp-mess').text(resend);
+        $('#otp-mess2').text(resend2);
+    }
+});
+</script>
+<script>
+    $("#digit-1, #digit-2, #digit-3, #digit-4, #digit-5, #digit-6").on("keyup", function () {
+        var OtpDigit = $("#digit-1").val() + $("#digit-2").val() + $("#digit-3").val() + $("#digit-4").val() + $("#digit-5").val() + $("#digit-6").val();
+        if (OtpDigit.length == 6) {
+            $('#Code').val(OtpDigit);
+         //   $('#subHere').click();
+        }
+    });
+</script>
+
+<script>
+    $('.digit-group').find('input').each(function () {
+        $(this).attr('maxlength', 1);
+        $(this).on('keyup', function (e) {
+            var parent = $($(this).parent());
+
+            if (e.keyCode === 8 || e.keyCode === 37) {
+                var prev = parent.find('input#' + $(this).data('previous'));
+
+                if (prev.length) {
+                    $(prev).select();
+                }
+            } else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                var next = parent.find('input#' + $(this).data('next'));
+
+                if (next.length) {
+                    $(next).select();
+                } else {
+                    if (parent.data('autosubmit')) {
+                        parent.submit();
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+@if (!HttpContext.Current.Request.IsLocal)
+{
+    <!-- To Disable Inspect Element -->
+    <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+}

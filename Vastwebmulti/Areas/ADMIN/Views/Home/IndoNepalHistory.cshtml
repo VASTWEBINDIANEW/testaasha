@@ -1,0 +1,1101 @@
+﻿@model IEnumerable<Vastwebmulti.Models.proc_report_IndoNepal_Result>
+@using Newtonsoft.Json;
+@{
+    ViewBag.Title = "IndoNepal";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+</style>
+<style type="text/css">
+    .loadermoney {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 199999;
+        background: url('../../images/mmmm.svg') 50% 50% no-repeat rgba(249, 249, 249, 0.9);
+    }
+
+    .ss :hover {
+        color: green;
+    }
+
+    .ff :hover {
+        color: red;
+    }
+
+    .ress :hover {
+        color: #ff9600;
+    }
+
+    .view :hover {
+        color: #3F51B5;
+    }
+</style>
+<div id="loadermoney" class="loadermoney" style="display:none;"></div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-6">
+                        <div style="margin-left:-14px;">
+                            @Html.Partial("_finicalmenureport")
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group" style="margin-top:-18px; ">
+                                <div style="padding-top: 22px;  margin-right: 4px; float:right;">
+                                    <button type="button" id="admin" value="Admin" class="btn bg-grey waves-effect" style="margin-top:2px;" title="Admin income" onclick="Getvaladmin(this)">My Earn</button>
+                                    <button type="button" id="gst" value="GST" class="btn bg-grey waves-effect" style="margin-top:2px;" title="Total GST" onclick="Getvaladmin(this)">GST</button>
+                                    <button type="button" id="tds" value="TDS" class="btn bg-grey waves-effect" style="margin-top:2px;" title="Total TDS" onclick="Getvaladmin(this)">TDS</button>
+                                    <button type="button" id="countverify" value="Verify" class="btn bg-grey waves-effect" style="margin-top:2px;" title="Total Imps Verify" onclick="totaocount(this)">Verify</button>
+                                    <button type="button" id="countimps" value="IMPS" class="btn bg-grey waves-effect" style="margin-top:2px;" title="Total Imps " onclick="totaocount(this)">IMPS</button>
+                                    <button type="button" class="btn btn-success waves-effect" style="margin-top:2px;" title="Total Imps Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totals"]</button>
+                                    <button type="button" class="btn btn-danger waves-effect" style="margin-top:2px;" title="Total Imps Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalf"]</button>
+                                    <button type="button" class="btn btn-warning waves-effect" style="margin-top:2px;" title="Total Imps Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalp"]</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-17px;">
+                <div class="card">
+                    @using (Html.BeginForm("IndoNepalHistory", "Home", FormMethod.Post))
+                    {
+                        <div class="">
+                            <div class="col-md-1">
+                                <div class="" style="margin-top:4px; margin-left:-13px;width:108%;">
+                                    @Html.DropDownList("ddlusers", new List<SelectListItem>
+                              {
+                           new SelectListItem{ Text="Admin",Value="Admin"},
+                           new SelectListItem{Text="Master",Value="Master"},
+                           new SelectListItem{Text="Dealer",Value="Dealer"},
+                           new SelectListItem{Text="Retailer",Value="Retailer"},
+                           new SelectListItem{Text="Api User",Value="APIID"}
+                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;", @onchange = "answers()" })
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-2" style="display:none;" id="allmaster">
+                                <div class="" style="margin-top:4px;margin-left:-13px;width:108%;">
+                                    @Html.DropDownList("allmaster", ViewBag.allmaster as SelectList, "All Master", new { @style = "margin-top:0px;padding:0px;", @class = "selectpicker form-control", data_live_search = "true", })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2" style="display:none;" id="dlm">
+                                <div class="" style="margin-top:4px;margin-left:-13px;width:108%;">
+                                    @Html.DropDownList("alldealer", ViewBag.alldealer as SelectList, " All Distubutor", new { id = "alldealer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;" })
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="display:none;" id="rem">
+                                <div class="" style="margin-top:4px;margin-left:-13px;width:108%;">
+                                    @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;" })
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="display:none;" id="apiid">
+                                <div class="" style="margin-top:4px;margin-left:-13px;width:108%;">
+                                    @Html.DropDownList("allapiuser", ViewBag.apiid as SelectList, "All API", new { id = "allapiuser", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;" })
+                                </div>
+                            </div>
+                            <div class="col-md-1" id="top">
+                                <div class="" style="margin-top:4px;margin-left:-16px;width:109%;">
+                                    @Html.DropDownList("ddl_top", new List<SelectListItem>
+                              {
+                           new SelectListItem{ Text="TOP 50",Value="50"},
+                           new SelectListItem{Text="TOP 100",Value="100"},
+                           new SelectListItem{Text="TOP 200",Value="200"},
+                           new SelectListItem{Text="TOP 500",Value="500"},
+                           new SelectListItem{Text="TOP 1500",Value="1500"},
+                           new SelectListItem{Text="All Entry",Value="All"}
+                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;" })
+                                </div>
+
+                            </div>
+                            <div class="col-md-1" id="sts">
+                                <div class="" style="margin-top:4px;margin-left:-13px;width:108%;">
+                                    @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                {
+                        new SelectListItem{ Text="Status",Value="ALL",},
+                        new SelectListItem{Text="Success",Value="SUCCESS"},
+                        new SelectListItem{Text="Pending",Value="PENDING"},
+                        new SelectListItem{Text="Failed",Value="FAILED"}
+                         }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+
+                                <div class="" style="margin-top:4px;margin-left:-13px;width:108%;">
+                                    @Html.DropDownList("api_name", ViewBag.apiname as SelectList, "Select Api", new { @style = "margin-top:0px;padding:0px;", @class = "selectpicker form-control", data_live_search = "true" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="input-group" style="border:1px solid #bfbebe;margin-top:4px;margin-left:-13px;width:108%;">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-search" style="margin-left:3px;"></i>
+                                    </span>
+                                    <div class="">
+                                        @Html.TextBox("txtmob", "", new { @class = "form-control", @placeholder = "NUMBER / BANK", @style = "height:37px;margin-left:-8px;padding:0px; background:none;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-bottom:0px;margin-left:-10px;width:100%;">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:36px;", autocomplete = "off" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-exchange"></i>
+                                        </span>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:36px;", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <center>
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left:-60px; height:36px;">
+                                        <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                        <span style="top:-2px;color:black;">Search</span>
+                                    </button>
+                                </center>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-26px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">MONEY&nbsp;TRANSFER&nbsp;REPORT&nbsp;></li>
+                        </ol>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-42px;">
+                            <div class="">
+                                <div class="table-responsive" style="position:inherit;">
+                                    <table id="example" class="table table-bordered table-striped table-hover dataTable js-exportable" cellspacing="0" style="width:100%;font-size:12px;">
+                                        <thead class="navbar" style="color:white;position:inherit;">
+                                            <tr>
+                                                <th style="width:110px;">Live&nbsp;Status</th>
+                                               
+                                                <th>Sender&nbsp;Number</th>
+                                                <th>Beneficiary&nbsp;A/C</th>
+                                                <th>Type</th>
+                                                <th>&nbsp;⇗&nbsp;&nbsp;&nbsp;Request&nbsp;Date</th>
+                                                <th>&nbsp;⇙&nbsp;&nbsp;Response</th>
+                                                <th>Net&nbsp;Tr&nbsp;</th>
+                                               
+                                                <th>User&nbsp;Debit&nbsp;</th>
+                                               
+                                                <th>Bank&nbsp;UTR&nbsp;/&nbsp;Transaction&nbsp;Id&nbsp;</th>
+                                                <th style="width:80%;">
+                                                    @* <a href="#" id="res" data-toggle="tooltip" title="Resend" style="border:1px solid white; padding:1px 1px 1px 1px; margin-left:-16px; color:white;text-decoration:none;">Res</a>*@
+                                                    <center><span data-toggle="tooltip" title="Success" style="margin-left:38px;margin-right:38px;">Action</span></center>
+                                                </th>
+                                               
+                                                <th>User&nbsp;Pre&nbsp;₹&nbsp;│&nbsp;Debit&nbsp;│&nbsp;Post&nbsp;Amt&nbsp;₹</th>
+                                                @*<th>Bank&nbsp;Name</th>*@
+                                              
+                                                <th>Reciver&nbsp;Name</th>
+                                                <th>User's&nbsp;Information</th>
+                                                <th><span>User&nbsp;</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">Charge&nbsp;│&nbsp;Margin&nbsp;│&nbsp;GST&nbsp;│&nbsp;TDS&nbsp;<span style="padding-left:9px;">⇒</span><span style="padding-left:10px;">Net&nbsp;INC</span></span></th>
+                                                <th><span>Master&nbsp;</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">Charge&nbsp;│&nbsp;Margin&nbsp;│&nbsp;GST&nbsp;│&nbsp;TDS&nbsp;<span style="padding-left:9px;">⇒</span><span style="padding-left:10px;">Net&nbsp;INC</span><span style="padding-left:9px;"></th>
+                                                <th><span>Master&nbsp;Pre&nbsp;Amt</span><span style="padding-left:5px;">│</span><span>Credit</span><span style="padding-left:5px;">│</span><span>Master&nbsp;Post&nbsp;Amt</span></th>
+                                                <th><span>Dealer&nbsp;</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">Charge&nbsp;│&nbsp;Margin&nbsp;│&nbsp;GST&nbsp;│&nbsp;TDS&nbsp;<span style="padding-left:9px;">⇒</span><span style="padding-left:10px;">Net&nbsp;INC</span><span style="padding-left:9px;"></th>
+
+                                                <th><span>Dealer&nbsp;Pre&nbsp;Amt</span><span style="padding-left:5px;">│</span><span>Credit</span><span style="padding-left:5px;">│</span><span>Dealer&nbsp;Post&nbsp;Amt</span></th>
+                                                @*<th><span>API&nbsp;Share</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">GST&nbsp;│&nbsp;TDS&nbsp;<span style="padding-left:9px;">⇒</span><span style="padding-left:10px;">Net&nbsp;INC</span></span></th>
+                                                <th><span>W.L&nbsp;Share</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">GST&nbsp;│&nbsp;TDS&nbsp;<span style="padding-left:9px;">⇒</span><span style="padding-left:10px;">Net&nbsp;INC</span></span></th>*@
+                                                <th>Request&nbsp;ID&nbsp;</th>
+                                                @*<th>Common&nbsp;Trans&nbsp;ID</th>*@
+                                                @*<th>API&nbsp;Name</th>*@
+                                                @*<th>IP&nbsp;Address</th>*@
+                                                <th>Request&nbsp;Url</th>
+                                                <th>Response&nbsp;Url</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model != null)
+                                            {
+                                                foreach (var item in Model)
+                                                {
+                                                    #region setings
+                                                    var color = "";
+
+                                                    var framname = "";
+
+                                                    var rolename = "";
+                                                    var fontweight = "";
+                                                    var rchtypeicon = "";
+                                                    var sts = "";
+                                                    var refundcolor = "";
+                                                    var dmtytpe = "";
+                                                    if (item.status.Contains("Success To Failed"))
+                                                    {
+                                                        color = "red";
+                                                        sts = "Success To Failed";
+                                                        fontweight = "700";
+
+                                                    }
+                                                    if (item.status.Contains("Failed To Success"))
+                                                    {
+                                                        color = "green";
+                                                        sts = "Failed To Success";
+                                                        fontweight = "700";
+
+                                                    }
+                                                    if (item.status.Contains("SUCCESS"))
+                                                    {
+                                                        color = "green";
+                                                        fontweight = "700";
+                                                        sts = item.status;
+
+                                                    }
+                                                    if (item.status.Contains("REFUND AGAINST"))
+                                                    {
+                                                        color = "red";
+                                                        fontweight = "700";
+                                                        sts = "REFUND";
+                                                        refundcolor = "red";
+                                                    }
+
+                                                    if (item.status.Contains("Pending"))
+                                                    {
+                                                        color = "#ff9600";
+                                                        fontweight = "700";
+                                                        sts = item.status;
+
+                                                    }
+                                                    if (item.status.Contains("FAILED"))
+                                                    {
+                                                        color = "#9C27B0";
+                                                        fontweight = "700";
+                                                        sts = item.status;
+
+                                                    }
+                                                    if (item.status.Contains("Resend"))
+                                                    {
+                                                        color = "#2196F3";
+                                                        fontweight = "700";
+                                                        sts = item.status;
+
+                                                    }
+                                                    #endregion
+                                                    <tr style="font-weight:700;">
+                                                        <td>
+                                                        <p style="font-size:13px;text-transform:uppercase;"><span style="color:@color;">@sts</span>&nbsp;</p>
+                                                        </td>
+                                                       
+                                                        <td>
+                                                            <p style="font-size:13px;margin-left:-8px;">&nbsp;@item.senderidnumber&nbsp;</p>
+                                                        </td>
+                                                        @if (item.Transfer_Type.ToUpper().Contains("BANK"))
+                                                        {
+                                                        <td>
+                                                            <p style="font-size:13px;margin-left:-7px; ">@item.Accountno</p>
+                                                        </td>
+                                                        }
+                                                        
+
+                                                        <td>
+                                                                <p style="font-size:18px;margin-left:-7px;margin-top:-5px;font-weight:normal;">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">@item.Transfer_Type</span></p>
+                                                        </td>
+
+                                                        <td>
+                                                        <p style="font-size:11px;margin-left:-7px; margin-top:2px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.Transfertime)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p>
+                                                        </td>
+                                                        <td>
+
+                                                            @if (item.Responsetime != null)
+                                                            {
+                                                                DateTime end = (DateTime)item.Responsetime;
+                                                                DateTime now = (DateTime)item.Transfertime;
+                                                                var diff = end.Subtract(now.TimeOfDay);
+                                                                <p style="font-size:13px;font-weight:700;margin-left:-7px;">@String.Format("{0:HH:mm:ss}", diff)</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <p style="font-size:13px; margin-left:-7px;"></p>
+                                                            }
+
+                                                        </td>
+                                                        <td>
+                                                            <p style="font-size:13px;margin-left:-7px;">@item.Amount</p>
+                                                        </td>
+                                                        
+                                                        <td>
+                                                          
+                                                            <p style="font-size:13px;margin-left:-7px;">@item.FinalAmount</p>
+
+                                                        </td>
+                                                      
+                                                        <td><p style="font-size:13px;margin-left:-7px;">@item.bankrefid</p></td>
+                                                        <td>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="row">
+                                                                        @if (item.status.ToUpper() == "PENDING" || item.status.ToUpper() == "FAILED")
+                                                                        {
+                                                                            <div class="col-xs-3" style="margin-bottom:0px;">
+
+                                                                                <button class="ss" data-toggle="tooltip" onclick="success('@item.agentid','@item.bankrefid','@item.reciverName','@item.status')" style="font-size:31px;border:none;color:black; background:transparent; margin-top:-14px; margin-left:-10px;" title="Success"><i class="fa fa-check-circle-o" style="font-size:21px;"></i></button>
+
+                                                                            </div>
+
+                                                                        }
+                                                                        @if (item.status.ToUpper() == "PENDING" || item.status.ToUpper() == "SUCCESS")
+                                                                        {
+                                                                            <div class="col-xs-3" style="margin-bottom:0px;">
+
+                                                                                <button type="button" class="ff" style="background-color:transparent; color:black;border:none;margin-top:0px;margin-left:-10px;" data-toggle="modal" title="Refund" data-toggle="modal" data-target="#defaultModal1" onclick="refundshow('@item.agentid','@item.bankrefid','@item.reciverName','@item.status')">
+                                                                                    <i class="fa fa-times-circle" style="font-size:20px;"></i>
+                                                                                </button>
+                                                                            </div>
+
+                                                                        }
+                                                                       
+                                                                        @if (item.status.ToUpper() == "PENDING" || item.status.ToUpper() == "FAILED" || item.status.ToUpper() == "SUCCESS" || item.status == "Manual SUCCESS")
+                                                                        {
+                                                                            <div class="col-xs-3" style="margin-bottom:0px;">
+                                                                                <button type="button" class="view" style="background-color:transparent;color:black; border:none;margin-top:0px;margin-left:-16px;" title="View" data-toggle="modal" data-target="#largeModal" onclick="response('@item.Idno')">
+                                                                                    <i class="fa fa-eye" style="font-size:20px;"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+
+                                                       
+                                                        <td>
+                                                            
+                                                            @item.RemainPre&nbsp;│&nbsp;@item.FinalAmount&nbsp;│&nbsp;@item.RemainPost
+
+                                                        </td>
+                                                        @*<td><p style="font-size:13px;">@item.Bankname</p></td>*@
+                                                       
+                                                        <td><p style="font-size:13px;">@item.reciverName</p></td>
+                                                        <td>
+                                                            <p style="font-size:13px;">@item.Frm_Name</p>
+                                                        </td>
+
+                                                        <td>
+                                                            <p><span>&nbsp;</span><span style="padding-left:39px;"></span><span>&nbsp;@item.ServiceCharge</span><span style="padding-left:24px;"></span><span>&nbsp;@item.Margin</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@item.gst&nbsp;&nbsp;&nbsp;</span><span>&nbsp;@item.Tds&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@item.FinalAmount</p>
+                                                        </td>
+                                                        <td>
+                                                            <p><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="padding-left:39px;"></span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@item.MasterServiceCharge</span><span style="padding-left:24px;"></span><span>&nbsp;&nbsp;&nbsp;@item.MasterMargin</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@item.Mastergst&nbsp;&nbsp;&nbsp;</span><span>&nbsp;@item.MasterTds&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@item.MasterFinalAmount</p>
+
+                                                        </td>
+                                                        <td>
+                                                            <p><span>@item.MasterRemainPre</span><span style="padding-left:39px;">+</span><span>&nbsp;@item.MasterFinalAmount</span><span style="padding-left:24px;">=</span><span>&nbsp;@item.MasterRemainPost</span></p>
+
+                                                        </td>
+                                                        <td>
+                                                            <p><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="padding-left:39px;"></span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@item.DlmServiceCharge</span><span style="padding-left:24px;"></span><span>&nbsp;&nbsp;&nbsp;@item.DlmMargin</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@item.DlmGst&nbsp;&nbsp;&nbsp;</span><span>&nbsp;@item.DlmTds&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@item.DlmFinalAmount</p>
+
+                                                        </td>
+                                                        <td>
+                                                            <p><span>@item.DlmRemainPre</span><span style="padding-left:39px;">+</span><span>&nbsp;@item.DlmFinalAmount</span><span style="padding-left:24px;">=</span><span>&nbsp;@item.DlmRemainPost</span></p>
+
+                                                        </td>
+
+                                                        @*<td>
+                                                            @{
+                                                                int apishare_comm = 0;
+                                                                int apicomm_include_gst = 0;
+                                                                if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")))
+                                                                {
+                                                                    <p></p>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <p></p>
+                                                                }
+                                                            }
+                                                        </td>*@
+                                                        @*<td>
+                                                            @{
+                                                                int whiteshare_comm = 0;
+                                                                int whitecomm_include_gst = 0;
+
+                                                                if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) )
+                                                                {
+                                                                    <p></p>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <p></p>
+                                                                }
+
+                                                            }
+                                                        </td>*@
+                                                        @*<td>
+                                                            <p style="font-size:13px;color:@refundcolor;">@item.agentid</p>
+                                                        </td>*@
+                                                        @*<td>
+                                                            <p style="font-size:13px;color:@refundcolor;"></p>
+                                                        </td>*@
+
+                                                        @*<td>
+                                                            <p style="font-size:13px;">To&nbsp;-&nbsp;</p>
+                                                        </td>*@
+                                                        <td>
+                                                            <p style="font-size:13px;">@item.agentid</p>
+                                                        </td>
+                                                        <td>
+                                                            <p style="font-size:13px;">@item.requestJson</p>
+                                                        </td>
+                                                        <td>
+                                                            <p style="font-size:13px;">@item.responseJson</p>
+                                                        </td>
+                                                    </tr>
+                                                                    }
+                                                                }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+<!--Refund Model-->
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom:1px solid #ece7e7;">
+                <h4 class="modal-title" id="defaultModalLabel">Refund</h4>
+            </div>
+            <div class="modal-body">
+                <div class="body">
+                    <div class="row clearfix">
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                            <label for="email_address_2">Reason</label>
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                @Html.TextBox("txtrefidno", "", new { style = "display:none;" })
+                                @Html.TextBox("txtbankid", "", new { style = "display:none;" })
+                                @Html.TextBox("txtrecivername", "", new { style = "display:none;" })
+                                @Html.TextBox("txtstatus", "", new { style = "display:none;" })
+                                <div class="" style="border:1px solid #dddddd;">
+                                    @Html.DropDownList("ddl_refund", new List<SelectListItem>
+                                           {
+                     new SelectListItem{ Text="Manual Failed",Value="Manual FAILED"},
+                     new SelectListItem{Text="Bank Server Down ",Value="Bank Server Down"},
+                   new SelectListItem{ Text="Failed Due To Invalid Choice",Value="Failed Due To Invalid Choice"},
+                  new SelectListItem{Text="Network Down",Value="Network Down"},
+                    new SelectListItem{Text="Unsupported Network",Value="Unsupported Network"},
+                 new SelectListItem{Text="Network issue",Value="Network issue"},
+                 new SelectListItem{Text="Insufficient Fund ",Value="Insufficient Fund"}
+                            }, new { @class = "btn-group bootstrap-select form-control show-tick dropup" })
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                            <label for="email_address_2">Security&nbsp;Password</label>
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="" style="border:1px solid #dddddd;">
+                                    <input type="text" id="securitypass" name="securitypass" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn bg-blue-grey waves-effect" onclick="Failed()">Save Change</button>
+                        <button type="button" class="btn bg-grey waves-effect" data-dismiss="modal">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--view modal popup-->
+<div class="modal fade" id="largeModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="largeModalLabel" style="color:#100f0fa8;">View Response</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <table id="simple-table" class="table  table-bordered table-hover">
+                        <tr>
+                            <th>Status</th>
+                            <td><span id="sts1"></span></td>
+                        </tr>
+                        @*<tr>
+                                <th>message</th>
+                                <td><span id="message"></span></td>
+                            </tr>*@
+                        <tr>
+                            <th>Amount</th>
+                            <td><span id="amount"></span></td>
+                        </tr>
+                        @*<tr>
+                                <th>type</th>
+                                <td><span id="type"></span></td>
+                            </tr>*@
+                        <tr>
+                            <th>Bank&nbsp;id</th>
+                            <td><span id="bankID"></span></td>
+                        </tr>
+                        <tr>
+                            <th>Beneficiary&nbsp;Name</th>
+                            <td><span id="benname"></span></td>
+                        </tr>
+                        @*<tr>
+                                <th>Account&nbsp;No</th>
+                                <td><span id="accountno"></span></td>
+                            </tr>
+
+                            <tr>
+                                <th>transfer&nbsp;type</th>
+                                <td><span id="transfertype"></span></td>
+                            </tr>*@
+
+                    </table>
+                </div>
+                @*<input type="text" id="idno" name="idno" style="display:none;" />
+                    <div class="">
+                        <label for="email_address">DMT&nbsp;Request</label>
+                        <div class="form-group" style="margin-bottom:0px;">
+                            <div class="" style="margin-top:-6px;border-bottom:1px solid #bfbebe;">
+                                <input type="text" id="rechargerequest" name="rechargerequest" class="form-control" readonly="" style="background-color:white;">
+                            </div>
+                        </div>
+                        <label for="password">DMT&nbsp;Response</label>
+                        <div class="form-group" style="margin-bottom:0px;">
+                            <div class="" style="margin-top:-6px;border-bottom:1px solid #bfbebe;">
+                                <input type="text" id="rechargeresponse" name="rechargeresponse" class="form-control" readonly="" style="background-color:white;">
+                            </div>
+                        </div>
+                    </div>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-grey waves-effecttn b" data-dismiss="modal">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+
+<!--Manual SUCCESS -->
+<script>
+    function success(trans_id, bank_trans_id, recivername,status)
+    {
+        var answer = confirm('Are you sure ?');
+        if(answer)
+        {
+            $.ajax({
+                //url: '@Url.Action("Moneysucess", "Home")',
+                url: '@Url.Action("IndoNepalsucess", "Home")',
+                type: 'POST',
+                dataType: "html",
+                data: { trans_id: trans_id, bank_trans_id: bank_trans_id, recivername: recivername, currentstatus: status },
+                success: function (data) {
+                    var response = JSON.parse(data);
+                       if (response.Status) {
+                           swal("Good Job", response.Message, "success");
+                           window.location.reload();
+                           reloadPageeee();
+                    }
+                    else {
+                        swal("Oops...", response.Message, "error");
+                    }
+                },
+                error: function (data) {
+                }
+            });
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+</script>
+
+<!--failed show model popup-->
+<script>
+    function refundshow(trans_id, bank_trans_id, recivername,status) {
+        $("#txtrefidno").val(trans_id);
+        $("#txtbankid").val(bank_trans_id);
+        $("#txtrecivername").val(recivername);
+        $("#txtstatus").val(status);
+    }
+</script>
+
+<!--Manual failed -->
+<script>
+    function Failed()
+    {
+     var answer = confirm('Are you sure ?');
+     if(answer)
+     {
+         var secuirtypass = $("#securitypass").val();
+         var id = $("#txtrefidno").val();
+         var bankid = $("#txtbankid").val();
+         var recivername = $("#txtrecivername").val();
+         var status = $("#txtstatus").val();
+         var e = document.getElementById("ddl_refund");
+         var ddlval = e.options[e.selectedIndex].value
+         if (secuirtypass != "" && secuirtypass != null)
+         {
+         $.ajax({
+             // url: '@Url.Action("MoneyFailed", "Home")',
+             url: '@Url.Action("IndoNepalFailed", "Home")',
+             type: 'POST',
+             dataType: "html",
+             data: { txtrefidno: id, bankid: bankid, recivername: recivername, ddl_refund: ddlval, secuirtypass: secuirtypass, currentstatus: status },
+             success: function (data) {
+                 var response = JSON.parse(data);
+                 if (response.Status) {
+                     swal("Good Job!", response.Message, "success");
+                     window.location.reload();
+                     reloadPageeee();
+                 }
+                 else {
+                     swal("Oops...", response.Message, "error");
+                 }
+             },
+             error: function (data) {
+
+             }
+         }).done(function () {
+             $("#defaultModal1").modal('hide');
+         });
+             return true;
+           }
+            else {
+             swal("Oops..!", "Please Enter security Password", "error");
+             return false;
+              }
+        }
+     else {
+         $("#defaultModal1").modal('hide');
+            return false;
+        }
+    }
+</script>
+
+<!--Resend-->
+
+<script>
+   function reloadPageeee() {
+       $('#balance').load(location.href + " #balance");
+       $('#all').load(location.href + " #all");
+
+   }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+        answers();
+    });
+</script>
+
+<script type="text/javascript">
+    function answers() {
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer") {
+            $("#sts").addClass("col-md-1").removeClass("col-md-2");
+            $("#top").addClass("col-md-1").removeClass("col-md-2");
+            document.getElementById("sts").style.marginLeft = "-6px";
+            document.getElementById("top").style.marginLeft = "5px";
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("apiid").style.display = "none";
+          }
+        else if (answer == "Master") {
+            $("#sts").addClass("col-md-1").removeClass("col-md-2");
+            document.getElementById("sts").style.marginLeft = "-6px";
+            document.getElementById("top").style.marginLeft = "5px";
+            $("#top").addClass("col-md-1").removeClass("col-md-2");
+            document.getElementById("allmaster").style.display = "block";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("apiid").style.display = "none";
+        }
+        else if (answer == "Admin") {
+
+            $("#sts").removeClass("col-md-1").addClass("col-md-1");
+            $("#top").removeClass("col-md-1").addClass("col-md-1");
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("apiid").style.display = "none";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+                }
+        else if (answer == "Retailer") {
+            $("#sts").addClass("col-md-1").removeClass("col-md-2");
+            $("#top").addClass("col-md-1").removeClass("col-md-2");
+            document.getElementById("sts").style.marginLeft = "-6px";
+            document.getElementById("top").style.marginLeft = "5px";
+            document.getElementById("allmaster").style.display = "none";
+                document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+            document.getElementById("apiid").style.display = "none";
+          }
+        else if (answer == "APIID") {
+            $("#sts").addClass("col-md-1").removeClass("col-md-2");
+            $("#top").addClass("col-md-1").removeClass("col-md-2");
+            document.getElementById("sts").style.marginLeft = "-6px";
+            document.getElementById("top").style.marginLeft = "5px";
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("apiid").style.display = "block";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+              }
+    }
+</script>
+
+<script type="text/javascript">
+    function funsave1(e) {
+        var arr = e.split('|||');
+        var id = arr[0];
+        var trnid = arr[1];
+        swal({
+            title: "Are you sure?",
+            text: "You will Refund the Transtion ID " + trnid + "!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, Refund it!",
+            cancelButtonText: "No, cancel it!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+function (isConfirm) {
+    if (isConfirm) {
+        $.ajax({
+            type: "POST",
+            //url:"@Url.Action("MoneyFailed", "Home")",
+            url:"@Url.Action("IndoNepalFailed", "Home")",
+            data: { 'id': id },
+            cache: false,
+            dataType: 'json',
+            async: false,
+            success: function (result) {
+                swal("Refunded!", "Transtion ID " + trnid + " Is Refund SuccessFully. ", "success");
+                location.reload();
+            }
+        });
+    } else {
+        swal("Cancelled", " Canceled it:)", "error");
+        return false;
+    }
+});
+        return false;
+    }
+</script>
+
+<script type="text/javascript">
+    function funsave2(e) {
+         var arr = e.split('|||');
+        var id = arr[0];
+        var trnid = arr[1];
+        swal({
+            title: "Are you sure?",
+            text: "You will Success this Transtion ID " + trnid + "!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, Success it!",
+            cancelButtonText: "No, cancel it!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+function (isConfirm) {
+    if (isConfirm) {
+        $.ajax({
+            type: "POST",
+           // url:  "@Url.Action("Moneysuccess", "Home")",
+            url:  "@Url.Action("IndoNepalsuccess", "Home")",
+            data: { 'id': id },
+            cache: false,
+            dataType: 'json',
+            async: false,
+            success: function (result) {
+                swal("SUCCESS!", "Transtion ID " + trnid + " is  SUCCESS. ", "success");
+                location.reload();
+            }
+        });
+    } else {
+        swal("Cancelled", " Canceled it:)", "error");
+        return false;
+    }
+});
+        return false;
+    }
+</script>
+
+
+
+<script>
+          function sender(sender) {
+//  $('#loader').show();
+              $.ajax({
+                    type: 'Post',
+                    url: "@Url.Action("process_sender_cyber", "Home")",
+                    data: {sender_number:sender},
+                    dataType: 'json',
+                    cache: false,
+                    async: false,
+                    success: function (data) {
+                          var chhh = data.CardDetail;
+                          var wallremain=chhh.RemitLimitAvailable;
+                          var walluse=chhh.Balance;
+                          $("#bal").html(walluse);
+                            $("#balremain").html(wallremain);
+                          $("#sendnum").html(sender);
+                            $("#loader").css("display", "none");
+                           jQuery('#click1').click();
+                    }
+                    });
+    }
+
+                function Responseurl(idno, Receivername,trandate,bankname,ifsc,transmode,apiname,transamount,granttotal,remopenbal,remclosebal,dlmopenbal,dlmclosebal,mdopenbal,mdclosebal,requesturl,responseurl)
+                {
+                    $("#idno").val(idno);
+                    $("#receivername").val(Receivername);
+                    $("#transactiondate").val(trandate);
+                    $("#bankname").val(bankname);
+                    $("#ifsccode").val(ifsc);
+                    $("#transactionmode").val(transmode);
+                    $("#apiname").val(apiname);
+                    $("#transactionamount").val(transamount);
+                    $("#granttotal").val(granttotal);
+                    $("#retaileropenbal").val(remopenbal);
+                    $("#retailerclosebal").val(remclosebal);
+                    $("#distributoropenbal").val(dlmopenbal);
+                    $("#distributorclosebal").val(dlmclosebal);
+                    $("#masteropenbal").val(mdopenbal);
+                    $("#masterclosebal").val(mdclosebal);
+                    $("#requesturl").val(requesturl);
+                    $("#responseurl").val(responseurl);
+
+                }
+</script>
+
+<!--Generate Print-->
+<script type="text/javascript">
+            function GotoPDF(e) {
+                // alert(e)
+                var idno = e.toString(); ;
+                var url = '@Url.Action("GeneratePDF", "Home")?Idno=' + idno + '';
+                //window.location.href = url,;
+                window.open(url, '_blank');
+            }
+</script>
+
+<script>
+
+    $("#res").click(function () {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this imaginary file!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Yes, I am sure!',
+            cancelButtonText: "No, cancel it!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+function (isConfirm) {
+
+    if (isConfirm) {
+
+        swal("Shortlisted!", "Candidates are successfully shortlisted!", "success");
+
+    } else {
+        swal("Cancelled", "Your imaginary file is safe :)", "error");
+    }
+});
+    });
+
+    function Show() {
+        $('#div_Loader').show();
+    }
+
+    function Hide() {
+        $('#div_Loader').hide();
+    }
+
+</script>
+<!--show count Gst and Tds and Admin income-->
+<script>
+    function Getvaladmin(obj)
+    {
+        var val = obj.value;
+        var txt_frm_date=$("#txt_frm_date").val();
+        var txt_to_date = $("#txt_to_date").val();
+          $.ajax({
+            type: 'Post',
+            url: "@Url.Action("AdminImpsIncmoe", "Home")",
+            data:{Type:val,txt_frm_date:txt_frm_date,txt_to_date:txt_to_date},
+            dataType: 'json',
+            cache: false,
+            async: false,
+            success: function (data) {
+                var type = data.Type;
+
+                if (type == "Admin")
+                {
+                    document.getElementById("admin").innerText = "₹ " + data.Adminincome;
+
+                  }
+                else if (type == "GST")
+                {
+                    document.getElementById("gst").innerText = "₹ " + data.Gst;
+                   }
+                else if (type == "TDS")
+                {
+                    document.getElementById("tds").innerText = "₹ " + data.Tds;
+              }
+
+
+        }
+    });
+    }
+</script>
+
+<!--show count Imps Verify and Count Imps In javscript-->
+<script>
+    function totaocount(obj)
+    {
+        var val = obj.value;
+        var txt_frm_date=$("#txt_frm_date").val();
+        var txt_to_date = $("#txt_to_date").val();
+        var ddltop = $("#ddl_top").val();
+          $.ajax({
+            type: 'Post',
+            url: "@Url.Action("CountImpasandVerify", "Home")",
+              data: { Type: val, ddlval: ddltop, txt_frm_date: txt_frm_date, txt_to_date: txt_to_date },
+            dataType: 'json',
+            cache: false,
+            async: false,
+            success: function (data) {
+                var type = data.Type;
+                if (type == "Verify")
+                {
+                    document.getElementById("countverify").innerText = "ⓥ " + data.VerifyCount;
+
+                  }
+                else if (type == "IMPS")
+                {
+                    document.getElementById("countimps").innerText = "⇗ " + data.Impscount;
+              }
+
+              }
+    });
+    }
+</script>
+
+<!--view modal popup javacsript-->
+<script type="text/javascript">
+    function response(idno) {
+        $('#sts1').text("");
+        $('#message').text("");
+        $('#amount').text("");
+        $('#type').text("");
+        $('#bankID').text("");
+        $('#benname').text("");
+        $('#accountno').text("");
+        $('#transfertype').text("");
+        $.ajax({
+            type: "POST",
+            //url: "@Url.Action("reponse_result_money", "Home")",
+            url: "@Url.Action("", "Home")",
+            data: { idno: idno },
+            dataType: "json",
+            cache: false,
+            async: true,
+            success: function (result) {
+                if (result != "NO") {
+                    var ss = JSON.parse(result);
+                    $('#sts1').text(ss.status);
+                    $('#amount').text(ss.data.amount);
+                    $('#bankID').text(ss.data.opr_id);
+                    $('#benname').text(ss.data.name);
+                    jQuery('#largeModal').click();
+                }
+            }
+        });
+    }
+</script>

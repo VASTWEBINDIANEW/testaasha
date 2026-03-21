@@ -1,0 +1,780 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.recharge_report
+@{
+    ViewBag.Title = "Recharge_Report";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Swalalert/datatable.css" rel="stylesheet" />
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+       .dropdown-menu {
+        margin-top: 81px !important;
+    }
+       .dataTables_wrapper .dt-buttons a.dt-button{
+           padding:7px 10px 8px 8px;
+       }
+        .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            @using (Html.BeginForm("Recharge_Report", "Home", FormMethod.Post))
+            {
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card" style="margin-top:2px;">
+                        <div class="">
+                            <div class="col-md-1">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    <select class="selectpicker form-control" data-live-search="true"  id="ddlusers" name="ddlusers" style="margin-top:4px; padding:0px;text-align:center;height:34px;" onchange="answers()">
+                                        <option value="Admin">Admin</option>
+                                        <option value="Master">Master</option>
+                                        <option value="Dealer">Distributor</option>
+                                        <option value="Retailer">Retailer</option>
+                                        <option value="API">Api User</option>
+                                        <option value="WAdmin">Whitelabel</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="display:none;" id="allmaster">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px; width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("allmaster1", ViewBag.allmaster as SelectList, "Master", new { @style = "margin-top:0px;padding:0px;height:34px;", @class = "selectpicker form-control", data_live_search = "true", })
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-2" style="display:none;" id="dlm">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("alldealer", ViewBag.alldealer as SelectList, "Distubutor", new { id = "alldealer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;height:34px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="display:none;" id="rem">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;height:34px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="display:none;" id="apiid">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("API", ViewBag.API as SelectList, "Select API", new { id = "API", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px;  padding:0px;text-align:center;height:34px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="display:none;" id="whitelabelid">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("Whitelabel", ViewBag.whitelabel as SelectList, "Select Whitelabel", new { id = "Whitelabel", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px;  padding:0px;text-align:center;height:34px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                {
+                        new SelectListItem{ Text="Status",Value="ALL",},
+                        new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                        new SelectListItem{Text="PENDING",Value="PENDING"},
+                        new SelectListItem{Text="FAILED",Value="FAILED"}
+                         }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;height:34px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-1" id="optt">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("Operator", ViewBag.Operator as SelectList, "Select Operator", new { id = "Operator", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px; text-align:center;height:34px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-line" style="margin-top:5px;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("ddl_top", new List<SelectListItem>
+                              {
+                           new SelectListItem{ Text="TOP 50",Value="50"},
+                           new SelectListItem{Text="TOP 100",Value="100"},
+                           new SelectListItem{Text="TOP 200",Value="200"},
+                           new SelectListItem{Text="TOP 500",Value="500"},
+                           new SelectListItem{Text="TOP 1500",Value="1500"},
+                           new SelectListItem{Text="All Entry",Value="All"}
+                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px; text-align:center;height:34px;" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="" style="margin-top:5px;margin-left:-13px;width:108%;">
+                                                @Html.TextBox("txtmob", "", new { @style = "margin-top:0px;padding-left:0px;padding-right:0px;text-align:center;height:30px;", @placeholder = "RCH-NUMBER", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-group" style="margin-bottom:0px; margin-left:-13px;margin-top:1px;">
+                                            <div class="input-daterange input-group">
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:32px;", autocomplete = "off" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-exchange" style="padding-top:8px;"></i>
+                                                </span>
+                                                @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:32px;", autocomplete = "off" })
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-12" style="margin-left:-33px;">
+                                        <center>
+                                            <button name="btntype" value="TODAY" type="submit" class="btn" style="margin-top:5px; margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;" onclick="serch()" >
+                                                <i class="fa fa-search" style="top:-1px;font-size:13px;color:black;"></i>
+                                                <span style="top:-1px;color:black;">Today</span>
+                                            </button>
+                                            <button name="btntype" value="OLD" type="submit" class="btn" style="margin-top:5px; margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;" onclick="serch()">
+                                                <i class="fa fa-search" style="top:-1px;font-size:13px;color:black;"></i>
+                                                <span style="top:-1px;color:black;">OLD</span>
+                                            </button>
+                                            
+                                        </center>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card" style="margin-top:-18px;">
+                    <div class="col-md-6">
+                        <div style="margin-left:-13px;margin-top:1px;">
+                            @Html.Partial("menuoperatorreport")
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" style="margin-top:-21px; ">
+                            <div style="padding-top: 26px;  margin-left: 45%; ">
+                                <button type="button" class="btn btn-success waves-effect" style="margin-top:2px;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totals"]</button>
+                                <button type="button" class="btn btn-danger waves-effect" style="margin-top:2px;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalf"]</button>
+                                <button type="button" class="btn btn-warning waves-effect" style="margin-top:2px;" title="Total  Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalp"]</button>
+
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-26px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">RECHARGE REPORT&nbsp;></li>
+                        </ol>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="">
+                                <div class="body table-responsive" style="position:inherit;margin-top:-42px;padding:3px;">
+                                    <table id="example" class="table table-bordered table-striped table-hover dataTable js-exportable" cellspacing="0" style="width:100%;font-size:12px;">
+                                        <thead class="navbar" style="color:white;position:inherit;">
+                                            <tr>
+                                                <th style="width:100px;">Request&nbsp;ID</th>
+                                                <th>Status</th>
+                                                <th>Transaction&nbsp;Information</th>
+                                                <th>Request&nbsp;Date</th>
+                                                <th>&nbsp;Users&nbsp;&nbsp;Registration&nbsp;Information&nbsp;</th>
+                                                <th><span>User&nbsp;Role</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">Pre&nbsp;Amt&nbsp;</span><span style="padding-left:2px;">│</span><span style="padding-left:3px;">Net&nbsp;INC</span><span style="padding-left:2px;">│</span><span style="padding-left:2px;">Post&nbsp;Amt</span></th>
+                                                <th>Operator&nbsp;Id</th>
+                                                <th><span>Master&nbsp;Net&nbsp;INC</span><span style="padding-left:2px;">│</span><span style="padding-left:2px;">Post&nbsp;Amt</span></th>
+                                                <th><span>Dealer&nbsp;Net&nbsp;INC</span><span style="padding-left:2px;">│</span><span style="padding-left:2px;">Post&nbsp;Amt</span></th>
+                                                <th>
+                                                    <span style="padding-left:8px;">Whitelabel&nbsp;Pre&nbsp;Amt&nbsp;</span><span style="padding-left:2px;">│</span><span style="padding-left:3px;">Net&nbsp;INC</span><span style="padding-left:2px;">│</span><span style="padding-left:2px;">Post&nbsp;Amt</span></th>
+                                                <th>Response&nbsp;Time</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.rechargereport != null)
+                                            {
+                                                foreach (var item in Model.rechargereport)
+                                                {
+                                                    var color = "";
+                                                    var fontweight = "";
+                                                    var emailid = "";
+                                                    var Retailername = "";
+                                                    var framname = "";
+                                                    var rolename = "";
+                                                    var icon = "";
+                                                    var rchtype = "";
+                                                    var rchtypeicon = "";
+
+
+                                                    if (item.Roles == "Retailer")
+                                                    {
+                                                        emailid = item.Email;
+                                                        Retailername = item.retailername;
+                                                        framname = item.frm_name;
+                                                        rolename = "Retailer";
+
+                                                    }
+                                                    if (item.Roles == "Whitelabelretailer")
+                                                    {
+                                                        emailid = item.whiterememail;
+                                                        Retailername = item.whiteremname;
+                                                        framname = item.whiteremfrmname;
+                                                        rolename = "Whitelabel";
+
+                                                    }
+                                                    if (item.Roles == "API")
+                                                    {
+                                                        emailid = item.Email;
+                                                        Retailername = item.retailername;
+                                                        framname = item.frm_name;
+                                                        rolename = "APIUser";
+
+                                                    }
+                                                    if (item.rstatus.Contains("SUCCESS"))
+                                                    {
+                                                        color = "green";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("FAILED"))
+                                                    {
+                                                        color = "red";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("Success To Failed"))
+                                                    {
+                                                        color = "red";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("Failed To Success"))
+                                                    {
+                                                        color = "#53ad00";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("Refund"))
+                                                    {
+                                                        color = "#673AB7";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("Request Send"))
+                                                    {
+                                                        color = "#FF9800";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.operator_type == "PrePaid" || item.operator_type == "PostPaid")
+                                                    {
+                                                        icon = "fa fa-mobile";
+                                                    }
+                                                    if (item.operator_type == "Electricity")
+                                                    {
+                                                        icon = "fa fa-plug";
+                                                    }
+                                                    if (item.rch_type == "ONLINE")
+                                                    {
+                                                        rchtype = "WEB";
+                                                        rchtypeicon = "fa fa-globe";
+                                                    }
+                                                    if (item.rch_type == "Apps")
+                                                    {
+                                                        rchtype = "APP";
+                                                        rchtypeicon = "fa fa-android";
+                                                    }
+                                                    if (item.rch_type == "SMS")
+                                                    {
+                                                        rchtype = "SMS";
+                                                        rchtypeicon = "fa fa-commenting";
+                                                    }
+                                                    <tr>
+                                                        <td><p style="font-size:13px;"><span>@item.idno</span>&nbsp;&nbsp;<i class="@rchtypeicon" style="font-size:12px;"></i></p></td>
+                                                        <td><p style="font-size:11px;"><span style="color:@color;font-weight:@fontweight;">@item.rstatus</span></p></td>
+                                                        <td><p style="font-size:13px;"><span>&nbsp;₹&nbsp;@item.amount</span>&nbsp;⇒&nbsp;@item.mobile&nbsp;<i class="@icon"></i>&nbsp;@item.Operator_name</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@String.Format("{0:dd-MMM-yy HH:mm:ss}", item.Rch_time)</p></td>
+                                                        <td><p style="font-size:11px;"><span>&nbsp;<i class="fa fa-user-circle-o"></i>&nbsp;@framname</span>&nbsp;⇒&nbsp;@emailid</p></td>
+
+                                                        <td>
+
+                                                            @if (item.Roles == "Retailer")
+                                                            {
+                                                            <p><span>@rolename</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.user_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.income</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.remain</span></p>
+                                                            }
+                                                            else if (item.Roles == "Whitelabelretailer")
+                                                            {
+                                                            <p><span>@rolename</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.user_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.income</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.remain</span></p>
+                                                            }
+                                                            else if (item.Roles == "API")
+                                                            {
+                                                            <p><span>@rolename</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.user_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.income</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.remain</span></p>
+                                                            }
+
+                                                        </td>
+
+                                                        <td>&nbsp;@item.opt_id</td>
+                                                        <td>
+                                                            @if (item.Roles == "Retailer")
+                                                            {
+                                                            <p><span style="padding-left:3px;">@item.masterincome</span><span style="padding-left:59px;">│</span><span>@item.masterremain</span></p>
+
+                                                            }
+                                                            else if (item.Roles == "Whitelabelretailer")
+                                                            {
+                                                            <p></p>
+                                                            <p></p>
+                                                            }
+                                                            else if (item.Roles == "API")
+                                                            {
+                                                            <p></p>
+                                                            <p></p>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (item.Roles == "Retailer")
+                                                            {
+                                                            <p><span style="padding-left:3px;">@item.dealerincome</span><span style="padding-left:59px;">│</span><span>@item.dealerremain</span></p>
+
+                                                            }
+                                                            else if (item.Roles == "Whitelabelretailer")
+                                                            {
+                                                            <p></p>
+                                                            <p></p>
+                                                            }
+                                                            else if (item.Roles == "API")
+                                                            {
+                                                            <p></p>
+                                                            <p></p>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (item.Roles == "Retailer")
+                                                            {
+                                                                <p></p>
+                                                                <p></p>
+                                                                @*<p><span style="padding-left:3px;">@item.dealerincome</span><span style="padding-left:59px;">│</span><span>@item.dealerremain</span></p>*@
+
+                                                            }
+                                                            else if (item.Roles == "Whitelabelretailer")
+                                                            {
+                                                                <p><span style="padding-left:8px;">@item.whitelabelremainpost</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.whitelabelincome</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.whitelabelremain</span></p>
+                                                            }
+                                                            else if (item.Roles == "API")
+                                                            {
+                                                                <p></p>
+                                                                <p></p>
+                                                            }
+                                                        </td>
+
+                                                        <td>
+                                                            @if (item.resp_time != null)
+                                                            {
+                                                                DateTime end = (DateTime)item.resp_time;
+                                                                DateTime now = (DateTime)item.Rch_time;
+                                                                var diff = end.Subtract(now.TimeOfDay);
+                                                            <p><i class="fa fa-calendar-check-o"></i>&nbsp;@String.Format("{0:HH:mm:ss}", diff)</p>
+                                                            }
+                                                            else
+                                                            {
+                                                            <p style="margin-top:-7px; font-size:11px;"></p>
+                                                            }
+
+                                                        </td>
+
+
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                foreach (var item in Model.recharge_reportold)
+                                                {
+                                                    var color = "";
+                                                    var fontweight = "";
+                                                    var emailid = "";
+                                                    var Retailername = "";
+                                                    var framname = "";
+                                                    var rolename = "";
+                                                    var icon = "";
+                                                    var rchtype = "";
+                                                    var rchtypeicon = "";
+
+
+                                                    if (item.Roles == "Retailer")
+                                                    {
+                                                        emailid = item.Email;
+                                                        Retailername = item.retailername;
+                                                        framname = item.frm_name;
+                                                        rolename = "Retailer";
+
+                                                    }
+                                                    if (item.Roles == "Whitelabelretailer")
+                                                    {
+                                                        emailid = item.whiterememail;
+                                                        Retailername = item.whiteremname;
+                                                        framname = item.whiteremfrmname;
+                                                        rolename = "Whitelabel";
+
+                                                    }
+                                                    if (item.Roles == "API")
+                                                    {
+                                                        emailid = item.Email;
+                                                        Retailername = item.retailername;
+                                                        framname = item.frm_name;
+                                                        rolename = "APIUser";
+
+                                                    }
+                                                    if (item.rstatus.Contains("SUCCESS"))
+                                                    {
+                                                        color = "green";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("FAILED"))
+                                                    {
+                                                        color = "red";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("Success To Failed"))
+                                                    {
+                                                        color = "red";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("Failed To Success"))
+                                                    {
+                                                        color = "#53ad00";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("Refund"))
+                                                    {
+                                                        color = "#673AB7";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.rstatus.Contains("Request Send"))
+                                                    {
+                                                        color = "#FF9800";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.operator_type == "PrePaid" || item.operator_type == "PostPaid")
+                                                    {
+                                                        icon = "fa fa-mobile";
+                                                    }
+                                                    if (item.operator_type == "Electricity")
+                                                    {
+                                                        icon = "fa fa-plug";
+                                                    }
+                                                    if (item.rch_type == "ONLINE")
+                                                    {
+                                                        rchtype = "WEB";
+                                                        rchtypeicon = "fa fa-globe";
+                                                    }
+                                                    if (item.rch_type == "Apps")
+                                                    {
+                                                        rchtype = "APP";
+                                                        rchtypeicon = "fa fa-android";
+                                                    }
+                                                    if (item.rch_type == "SMS")
+                                                    {
+                                                        rchtype = "SMS";
+                                                        rchtypeicon = "fa fa-commenting";
+                                                    }
+                                                    <tr>
+                                                        <td><p style="font-size:13px;"><span>@item.idno</span>&nbsp;&nbsp;<i class="@rchtypeicon" style="font-size:12px;"></i></p></td>
+                                                        <td><p style="font-size:11px;"><span style="color:@color;font-weight:@fontweight;">@item.rstatus</span></p></td>
+                                                        <td><p style="font-size:13px;"><span>&nbsp;₹&nbsp;@item.amount</span>&nbsp;⇒&nbsp;@item.mobile&nbsp;<i class="@icon"></i>&nbsp;@item.Operator_name</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@String.Format("{0:dd-MMM-yy HH:mm:ss}", item.Rch_time)</p></td>
+                                                        <td><p style="font-size:11px;"><span>&nbsp;<i class="fa fa-user-circle-o"></i>&nbsp;@framname</span>&nbsp;⇒&nbsp;@emailid</p></td>
+
+                                                        <td>
+
+                                                            @if (item.Roles == "Retailer")
+                                                            {
+                                                                <p><span>@rolename</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.user_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.income</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.remain</span></p>
+
+
+                                                            }
+                                                            else if (item.Roles == "Whitelabelretailer")
+                                                            {
+                                                                <p><span>@rolename</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.user_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.income</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.remain</span></p>
+
+                                                            }
+
+                                                            else if (item.Roles == "API")
+                                                            {
+                                                                <p><span>@rolename</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.user_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.income</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.remain</span></p>
+
+
+                                                            }
+
+                                                        </td>
+
+                                                        <td>&nbsp;@item.opt_id</td>
+                                                        <td>
+                                                            @if (item.Roles == "Retailer")
+                                                            {
+                                                                <p><span style="padding-left:3px;">@item.masterincome</span><span style="padding-left:59px;">│</span><span>@item.masterremain</span></p>
+
+                                                            }
+                                                            else if (item.Roles == "Whitelabelretailer")
+                                                            {
+                                                                <p></p>
+                                                                <p></p>
+                                                            }
+                                                            else if (item.Roles == "API")
+                                                            {
+                                                                <p></p>
+                                                                <p></p>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (item.Roles == "Retailer")
+                                                            {
+                                                                <p><span style="padding-left:3px;">@item.dealerincome</span><span style="padding-left:59px;">│</span><span>@item.dealerremain</span></p>
+
+                                                            }
+                                                            else if (item.Roles == "Whitelabelretailer")
+                                                            {
+                                                                <p></p>
+                                                                <p></p>
+                                                            }
+                                                            else if (item.Roles == "API")
+                                                            {
+                                                                <p></p>
+                                                                <p></p>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (item.Roles == "Retailer")
+                                                            {
+                                                                <p></p>
+                                                                <p></p>
+                                                                @*<p><span style="padding-left:3px;">@item.dealerincome</span><span style="padding-left:59px;">│</span><span>@item.dealerremain</span></p>*@
+
+                                                            }
+                                                            else if (item.Roles == "Whitelabelretailer")
+                                                            {
+                                                                <p><span style="padding-left:8px;">@item.whitelabelremainpost</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.whitelabelincome</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.whitelabelremain</span></p>
+                                                            }
+                                                            else if (item.Roles == "API")
+                                                            {
+                                                                <p></p>
+                                                                <p></p>
+                                                            }
+                                                        </td>
+                                                        <td>
+
+                                                            @if (item.resp_time != null)
+                                                            {
+                                                                DateTime end = (DateTime)item.resp_time;
+                                                                DateTime now = (DateTime)item.Rch_time;
+                                                                var diff = end.Subtract(now.TimeOfDay);
+                                                                <p><i class="fa fa-calendar-check-o"></i>&nbsp;@String.Format("{0:HH:mm:ss}", diff)</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <p style="margin-top:-7px; font-size:11px;"></p>
+                                                            }
+
+                                                        </td>
+
+
+                                                    </tr>
+                                                }
+                                            }
+
+                                        </tbody>
+                                        <tfoot class="navbar" style="color:white;position:inherit;">
+                                            @if (Model.rechargereport != null)
+                                            {
+                                                <tr>
+                                                    <td style="font-size:18px;">Total</td>
+                                                    <td></td>
+                                                    <td style="font-size:18px;">@Model.rechargereport.Sum(a => a.amount)</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td style="font-size:18px;">Total</td>
+                                                    <td></td>
+                                                    <td style="font-size:18px;">@Model.recharge_reportold.Sum(a => a.amount)</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            }
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="~/Swalalert/datatablejquery.js"></script>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+
+<!--Calendar Javascript-->
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+       
+        answers();
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    function answers() {
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer") {
+            $("#optt").removeClass("col-md-2");
+            $("#optt").addClass("col-md-1");
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("whitelabelid").style.display = "none";
+            document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("apiid").style.display = "none";
+
+            document.getElementById("allretailer").selectedIndex = "0";
+            document.getElementById("allmaster1").selectedIndex = "0";
+            document.getElementById("API").selectedIndex = "0";
+            document.getElementById("Whitelabel").selectedIndex = "0";
+        }
+        else if (answer == "Master") {
+            $("#optt").removeClass("col-md-2");
+            $("#optt").addClass("col-md-1");
+            document.getElementById("allmaster").style.display = "block";
+            document.getElementById("whitelabelid").style.display = "none";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("apiid").style.display = "none";
+            document.getElementById("alldealer").selectedIndex = "0";
+            document.getElementById("allretailer").selectedIndex = "0";
+            document.getElementById("API").selectedIndex = "0";
+            document.getElementById("Whitelabel").selectedIndex = "0";
+        }
+        else if (answer == "Admin") {
+             $("select#allmaster1").attr('selectedIndex', 0);
+            $("select#alldealer").attr('selectedIndex', 0);
+            $("#optt").removeClass("col-md-1");
+            $("#optt").addClass("col-md-2");
+           
+            document.getElementById("whitelabelid").style.display = "none";
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("apiid").style.display = "none";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("alldealer").selectedIndex = "0";
+            document.getElementById("allretailer").selectedIndex = "0";
+            document.getElementById("allmaster1").selectedIndex = "0";
+            document.getElementById("API").selectedIndex = "0";
+            document.getElementById("Whitelabel").selectedIndex = "0";
+        }
+        else if (answer == "Retailer") {
+            $("#optt").removeClass("col-md-2");
+            $("#optt").addClass("col-md-1");
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("whitelabelid").style.display = "none";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+            document.getElementById("apiid").style.display = "none";
+            document.getElementById("alldealer").selectedIndex = "0";
+            document.getElementById("allmaster1").selectedIndex = "0";
+            document.getElementById("API").selectedIndex = "0";
+            document.getElementById("Whitelabel").selectedIndex = "0";
+        }
+        else if (answer == "API") {
+            $("#optt").removeClass("col-md-2");
+            $("#optt").addClass("col-md-1");
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("whitelabelid").style.display = "none";
+            document.getElementById("apiid").style.display = "block";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("alldealer").selectedIndex = "0";
+            document.getElementById("allretailer").selectedIndex = "0";
+            document.getElementById("allmaster1").selectedIndex = "0";
+            document.getElementById("Whitelabel").selectedIndex = "0";
+        }
+        else if (answer == "WAdmin") {
+            $("#optt").removeClass("col-md-2");
+            $("#optt").addClass("col-md-1");
+            document.getElementById("allmaster").style.display = "none";
+            //document.getElementById("dlmformasterDiv").style.display = "none";
+            document.getElementById("apiid").style.display = "none";
+            document.getElementById("whitelabelid").style.display = "block";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("alldealer").selectedIndex = "0";
+            document.getElementById("allretailer").selectedIndex = "0";
+            document.getElementById("allmaster1").selectedIndex = "0";
+            document.getElementById("Whitelabel").selectedIndex = "0";
+        }
+
+        
+    }
+</script>
+
+
+
+
+
+
+
+

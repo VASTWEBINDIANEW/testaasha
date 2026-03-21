@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Vastwebmulti.Areas.RETAILER.Models
+{
+    public class RealsePNRModel
+    {
+        public string TraceId { get; set; }
+        public string PNR { get; set; }
+        public string BookingId { get; set; }
+        public string Source { get; set; }
+    }
+}

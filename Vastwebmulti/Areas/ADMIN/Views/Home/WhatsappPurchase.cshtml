@@ -1,0 +1,225 @@
+﻿@model IEnumerable<Vastwebmulti.Areas.ADMIN.Models.whatsapppurinfo>
+@{
+    ViewBag.Title = "WhatsappPurchase";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .select2-container .select2-selection--single{
+        height:32px !important;
+        border-radius:0px !important;
+    }
+    .width_r {
+        width: auto;
+        float: left;
+    }
+
+    @@media only screen and (max-width:1280px) {
+
+        section.content {
+            margin: 75px 0px 0 160px;
+        }
+    }
+
+    @@media only screen and (max-width:1169px) {
+
+        .ls-closed section.content {
+            margin-left: 0px;
+        }
+    }
+
+    @@media only screen and (max-width:1024px) {
+
+        #sidebar-open {
+            top: 29px;
+            left: -147px;
+        }
+    }
+
+    @@media only screen and (max-width:767px){
+        #sidebar-open {
+            top: -1px;
+            left: -4px;
+        }
+    }
+
+    @@media only screen and (max-width:480px) {
+        .width_r {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+
+    }
+
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 gift-card-top all-type-third">            
+                <div class="card page-header-third margin-bottom-third cardbackg-third onlymargin-third newcardclass borderclassgift" style="width: auto; float: left;">
+                    @using (Html.BeginForm("WhatsappPurchase", "Home", FormMethod.Post))
+                    {
+                        <div class="">
+                            <div class="col-md-2 gift-select width_r" style="padding: 0px;">
+                                <div class="form-line selecthotel-third">
+                                    @Html.DropDownList("API", ViewBag.API as SelectList, "Select API", new { @style = "margin-top:0px;padding:0px;height:34px;", @class = "select-s form-control", data_live_search = "true", })
+                                </div>
+                            </div>
+                            <div class="col-md-4 respo-upup width_r" style="margin-top: 1px;padding: 0px;padding-left:3px;">
+                                <div class="form-group" style="margin-bottom:0px;">
+                                    <div class="input-daterange input-group">
+                                        <div class="custom-date-icon ner">
+                                            <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                        </div>
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; height:32px;", autocomplete = "off" })
+                                        <span class="input-group-addon" style="padding:0px;min-width:3px;">
+                                        </span>
+                                        <div style="position:relative;">
+                                            <div class="custom-date-icon ner">
+                                                <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                            </div>
+                                            @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; ;height:32px;", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+                            <div class="col-md-1 ytr-okpli gift-respo-thired search-resp-third width_r" style="padding:0px;padding-left:5px;">
+                                <div class="">
+                                    <div class="">
+                                        <center>
+                                            <button name="btntype" type="submit" class="btn input-back-second" style="  height:32px;border: 1px solid #b1a6a638;background: #fff;margin-top:1px;background: #f9f9f9;width: 100%;" onclick="serch()">
+                                                <i class="fa fa-search" style="top:-1px;font-size:13px;color:black;"></i>
+                                                <span style="top:-1px;color:black;">Search</span>
+                                            </button>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    }
+                </div>
+                <div class="card page-header-third margin-bottom-third cardbackg-third onlymargin-third newcardclass borderclassgift" style="width: auto; float: right;">
+                    <div style="float:right;" class="web-white-filter lop pdfexpoer-second totalbutton-secondclas">
+                        <button class="white-success-button" style="height:32px;padding: 0px 4px;height: 32px;border: 1px solid #b1a6a638;float: right;margin-left: 4px;background: #b1a6a638;" onclick="findtotal()">Total</button>
+                        <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;">
+                        <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="page-header-third">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @*<h2 style="font-size: 24px;">Purchase Report </h2>*@
+                                <div class="table-responsive" style="">
+                                    <table id="simple-table" class="table  table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>API ID</th>
+                                                <th>Plan Name</th>
+                                                <th>Plan Price</th>
+                                                <th>Status</th>
+                                                @*<th>GST</th>*@
+                                                <th>Remain Pre</th>
+                                                <th>Remain Post</th>
+                                                <th>Purchase Date</th>
+                                                <th>Expire Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                var pdate = Convert.ToDateTime(item.purchasedate);
+                                                var renewaldate = Convert.ToDateTime(item.renewaldate);
+                                                var color = ""; var fcolor = "";
+                                                if (item.status.ToUpper() == "SUCCESS")
+                                                {
+                                                    color = "green";
+                                                    fcolor = "White";
+                                                }
+                                                else if (item.status.ToUpper() == "FAILED" || item.status.Contains("Refund"))
+                                                {
+                                                    color = "Red";
+                                                    fcolor = "White";
+                                                }
+                                                <tr style="background-color:@color;color:@fcolor">
+                                                    <td>@item.farmname</td>
+                                                    <td>@item.planname</td>
+                                                    <td>@item.planprice</td>
+                                                    <td>@item.status</td>
+                                                    @*<td>@item.gst</td>*@
+                                                    <td>@item.remainpre</td>
+                                                    <td>@item.remainpost</td>
+                                                    <td>@pdate.ToString("dd-MM-yyyy hh:mm:ss tt")</td>
+                                                    <td>@renewaldate.ToString("dd-MM-yyyy hh:mm:ss tt")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="~/Swalalert/datatablejquery.js"></script>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script>
+    $('.select-s').select2();
+
+</script>
+
+<script type="text/javascript">
+            $(document).ready(function () {
+
+                $('.input-daterange').datepicker({
+                    format: "yyyy-mm-dd",
+                    todayHighlight: true,
+                    autoclose: true,
+                    orientation: "bottom auto",
+
+                });
+                var val = '@ViewBag.chk';
+                if (val != "post") {
+                    $("#txt_frm_date").datepicker("setDate", new Date());
+                    $("#txt_to_date").datepicker("setDate", new Date());
+                }
+
+                answers();
+            });
+
+</script>

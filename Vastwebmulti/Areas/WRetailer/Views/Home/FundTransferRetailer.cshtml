@@ -1,0 +1,612 @@
+﻿
+@{
+    ViewBag.Title = "FundTransferRetailer";
+}
+
+<style>
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #eee !important;
+        border-radius: 0px !important;
+        height: 32px !important;
+    }
+</style>
+
+<section>
+    <div class="all-page-container">
+        <div class="back-home-page">
+            <ul>
+                <li><a href="~/ADMIN/Home/Dashboard">Dashboard&nbsp;<img src="/ashok-images/rightaeps.svg" alt="right-arrow" style="width: 12px;margin-top: -2px;"></a></li>
+                <li>Fund&nbsp;<sup>2</sup>&nbsp;Transfer</li>
+            </ul>
+        </div>
+
+        <div class="fundtransfer-wr">
+
+            <div class="col-md-4 purchase-tab-wr">
+                <div class="custome-background-wr second-purchase-bo">
+
+                    <ul class="nav nav-tabs">
+                        <li class="active table-block-none"><a data-toggle="tab" href="#Purchase-wrpage">Purchase&nbsp;Rerquest</a></li>
+                        <li class="table-block-add"><a data-toggle="tab" href="#Purchase-wrpage">Fund&nbsp;Recive&nbsp;Reports</a></li>
+
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="Purchase-wrpage" class="tab-pane fade in active Purchase-wrpage-class">
+                            <div class="tab-content-linkwr">
+                                <ul class="">
+                                    <li class="active-tab"><a data-toggle="tab" href="javascript:void(0);">Purchase&nbsp;Rerquest</a></li>
+                                    <li><a data-toggle="tab" href="javascript:void(0);">Fund&nbsp;Recive&nbsp;Reports</a></li>
+
+                                </ul>
+                            </div>
+
+                            <div class="purchase-form-wr">
+                                <div>
+                                    <strong class="fullbodydycolorbg">No Old Credit Balance</strong>
+                                    <span>Payment Mode</span>
+                                    <select class="for-select2" id="ddldealerPaymentMode" name="ddldealerPaymentMode" onchange="changemoded(this)">
+                                        <option value="Cash">Cash</option>
+                                        <option value="Branch / CMS Deposite">Branch / CMS Deposite</option>
+                                        <option value="Online Transfer">Online Transfer</option>
+                                        <option value="Wellets Transfer">Wellets Transfer</option>
+                                    </select>
+                                    <span>Collection By</span>
+                                    <input id="txtdlmretcollection" name="txtdlmretcollection" type="text" placeholder="Enter Collection Person" />
+
+                                    <span>Enter Amount</span>
+                                    <input id="txtdlmretamount" name="txtdlmretamount" type="text" placeholder="Enter Amount" />
+
+                                    <span>Comments</span>
+                                    <textarea id="dlmretcomment" name="dlmretcomment" spellcheck="false"></textarea>
+                                    @*<button class="fullbodydycolorbg">Submit</button>*@
+                                    <div>
+                                        <label id="errorsssnd"></label>
+                                        <button id="btndistributorInform" class="fullbodydycolorbg" style="color:#fff;float:right;padding: 6px 20px;border: 1px solid #bbb;margin-top: 10px;line-height: 22px;">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="DIstribotorshowinformation" style="display:none" class="fund-transfer-form show-after-submit">
+                                @using (Ajax.BeginForm("PlacePurchaseOrder", "Home",
+                                new AjaxOptions
+                                {
+                                    InsertionMode = InsertionMode.Replace,
+                                    OnSuccess = "OnSuccess11",
+                                    OnFailure = "OnFailure",
+                                    UpdateTargetId = "tblshowMasterD",
+                                                        // LoadingElementId = "progress"
+                                                    }))
+                                {
+
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div>
+                                            <input type="hidden" id="Payto" name="Payto" value="Distributor" />
+
+                                            <div id="hdddninputvalues">
+
+                                            </div>
+                                            <button id="btnsendpurorder" class="fullbodydycolorbg" type="submit" style="color:#fff;float:right;padding: 6px 20px;border: 1px solid #bbb;margin-top: 10px;line-height: 22px;margin-left:10px;">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+
+
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-8 fundtransfer-reportwr">
+
+                <div class="custome-background-wr height-report-id">
+                    <div class="purchasereport-header">
+                        <h2 style="position:relative;">History<span class="fullbodydycolorbg">Fund Received</span><i class="fa fa-caret-down" aria-hidden="true"></i></h2>
+
+                        <div class="col-md-2 lager-date-search">
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:none;margin-top:0px;">
+                                    <center>
+
+                                        <button value="OLD" type="submit" class="btn" id="btntype" name="btntype" style="margin-top:5px; margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;">
+                                            <i class="fa fa-search" style="top:-1px;font-size:13px;color:black;"></i>
+                                            <span style="top:-1px;color:black;">Search</span>
+                                        </button>
+
+                                    </center>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 lager-date-wr" style="padding:0;">
+                            <div class="form-group" style="margin-bottom:0px;margin-top:1px;">
+                                <div class="input-daterange input-group">
+                                    <div class="input-whitelabel leftwhitellabel">
+                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i>
+                                        <input type="date" style="text-align:center;padding-left:0px;" />
+                                    </div>
+                                    <div class="input-whitelabel rightwhitellabel">
+                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i>
+                                        <input type="date" style="text-align:center;padding-left:0px;" />
+                                    </div>
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="tblshowMasterD" class="table-report-purchase">
+                        <div class="table-responsive-bottom">
+                            <table border="1" id="block-tablenone">
+                                <thead>
+                                    <tr>
+                                        <th>Order&nbsp;No</th>
+                                        <th>Request&nbsp;To</th>
+                                        <th>Amount</th>
+                                        <th>Charge</th>
+                                        <th>PayMent&nbsp;Mode</th>
+                                        <th>Request&nbsp;Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in ViewBag.purchase_entry)
+                                    {
+                                        <tr data-toggle="modal" data-target="#table-allabout-data">
+                                            <td>@item.orderno</td>
+                                            <td>@item.order_to</td>
+                                            <td>@item.amount</td>
+                                            <td>@item.cashDepositCharge</td>
+                                            <td>@item.paymode</td>
+                                            <td>@item.reqdate</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <table border="1" id="block-tableadd" style="display:none;">
+                                <thead>
+                                    <tr>
+                                        <th>Recive&nbsp;From</th>
+                                        <th>Head</th>
+                                        <th>P_Mod</th>
+                                        <th>Net&nbsp;Transfer</th>
+                                        <th>Charge</th>
+                                        <th>Recive&nbsp;Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>123</td>
+                                        <td>Head</td>
+                                        <td>P_Mod</td>
+                                        <td>10</td>
+                                        <td>7</td>
+                                        <td>28-07-2020</td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!------------------------------Modal-Popup------------------------------>
+
+            <div class="modal fade" id="table-allabout-data" role="dialog" style="display:none">
+                <div class="modal-dialog modal-table-content">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header-wr">
+                            <h2 style="font-size:14px;margin:0;float:left;">Purchase Order History</h2>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><span>x</span></button>
+                        </div>
+                        <table border="1">
+
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="padding:0;width:100%;"><span>Firm Name</span><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Order No</span><input type="text" /></td>
+                                    <td><span>Status</span><input type="text" /></td>
+                                </tr>
+
+                                <tr>
+                                    <td><span>paymode</span><input type="text" /></td>
+                                    <td><span>Collection By</span><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td><span>amount</span><input type="text" /></td>
+                                    <td><span>reqdate</span><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td><span>responsedate</span><input type="text" /></td>
+                                    <td><span>responsedate</span><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td><span>cash DepositCharge</span><input type="text" /></td>
+                                    <td><span>finalAmount</span><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding:0;width:100%;"><span>Comment</span><input type="text" style="border-color:var(--main-bg-lcolor);" /></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</section>
+
+
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+
+
+<script>
+    $('.for-select2').select2();
+
+
+</script>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.tab-content-linkwr ul li').click(function (event) {
+
+            jQuery('.active-tab').removeClass('active-tab');
+
+            jQuery(this).addClass('active-tab');
+
+
+
+            event.preventDefault();
+        });
+    });
+</script>
+
+<script>
+    $(".table-block-add").click(function () {
+        $("#block-tableadd").css("display", "block");
+        $("#block-tablenone").css("display", "none");
+
+    });
+
+    $(".table-block-none").click(function () {
+        $("#block-tableadd").css("display", "none");
+        $("#block-tablenone").css("display", "block");
+
+    });
+
+</script>
+
+<script>
+    $(function () {
+        var loc = window.location.href; // returns the full URL
+        if ('/~/WRetailer/Home/UPITRANSFER') {
+            $('.list-reports-wr li:nth-child(8) a').addClass('active');
+        }
+    });
+</script>
+<script>
+
+    ///Distreibutort Start
+
+    $('#btndistributorInform').click(function () {
+        $('#hdddninputvalues').empty();
+
+        if ($('#ddldealerPaymentMode').val() == '' || $('#ddldealerPaymentMode').val() == null) {
+            $("#errorsssnd").text('Pay mode REQUIRED');
+            return false;
+        }
+        if ($('#ddldealerPaymentMode').val() == 'Cash') {
+            if ($('#txtdlmretcollection').val() == '' || $('#txtdlmretcollection').val() == null) {
+                $("#errorsssnd").text('Collection Person Name');
+                return false;
+            }
+            if ($('#txtdlmretamount').val() == '' || $('#txtdlmretamount').val() == null) {
+                $("#errorsssnd").text('Amount Required');
+                return false;
+            }
+            if ($('#dlmretcomment').val() == '' || $('#dlmretcomment').val() == null) {
+                $("#errorsssnd").text('Comment Required');
+                return false;
+            }
+
+
+        }
+        else if ($('#ddldealerPaymentMode').val() == 'Branch / CMS Deposite') {
+
+            if ($('#dealerbank').val() == '' || $('#dealerbank').val() == null) {
+                $("#errorsssnd").text('Select Bank Name');
+                return false;
+            }
+            if ($('#txtdlmretamount').val() == '' || $('#txtdlmretamount').val() == null) {
+                $("#errorsssnd").text('Amount Required');
+                return false;
+            }
+            if ($('#txtdeposno').val() == '' || $('#txtdeposno').val() == null) {
+                $("#errorsssnd").text('Enter Deposite Slip No.');
+                return false;
+            }
+
+            if ($('#dlmretcomment').val() == '' || $('#dlmretcomment').val() == null) {
+                $("#errorsssnd").text('Comment Required');
+                return false;
+            }
+
+        }
+
+        else if ($('#ddldealerPaymentMode').val() == 'Online Transfer') {
+
+            //if ($('#DDTransferType').val() == '' || $('#DDTransferType').val() == null) {
+            //    $("#errorss").text('Select Transfer Type');
+            //    return false;
+            //}
+            if ($('#dealerbank').val() == '' || $('#dealerbank').val() == null) {
+                $("#errorsssnd").text('Select Bank Name');
+                return false;
+            }
+            if ($('#txtdealeraccountno').val() == '' || $('#txtdealeraccountno').val() == null) {
+                $("#errorsssnd").text('Account No Required');
+                return false;
+            }
+            if ($('#txtdelmretutr').val() == '' || $('#txtdelmretutr').val() == null) {
+                $("#errorsssnd").text('UTR No Required');
+                return false;
+            }
+            if ($('#txtdlmretamount').val() == '' || $('#txtdlmretamount').val() == null) {
+                $("#errorsssnd").text('Amount Required');
+                return false;
+            }
+
+        }
+        else if ($('#ddldealerPaymentMode').val() == 'Wellets Transfer') {
+
+            if ($('#dealerwallets').val() == '' || $('#dealerwallets').val() == null) {
+                $("#errorsssnd").text('Select Wallets');
+                return false;
+            }
+            if ($('#txtdealerwalletno').val() == '' || $('#txtdealerwalletno').val() == null) {
+                $("#errorsssnd").text('Wallet No. Required');
+                return false;
+            }
+            if ($('#txtdlmrettranctionno').val() == '' || $('#txtdlmrettranctionno').val() == null) {
+                $("#errorsssnd").text('Transtion No.');
+                return false;
+            }
+            if ($('#txtdlmretamount').val() == '' || $('#txtdlmretamount').val() == null) {
+                $("#errorsssnd").text('Amount Required');
+                return false;
+            }
+            //if ($('#txtDISTCOMMENTS').val() == '' || $('#txtDISTCOMMENTS').val() == null) {
+            //    $("#errorss").text('Comment Required');
+            //    return false;
+            //}
+        }
+
+        else if ($('#ddldealerPaymentMode').val() == 'Credit') {
+
+
+
+            if ($('#txtdlmretamount').val() == '' || $('#txtdlmretamount').val() == null) {
+                $("#errorsssnd").text('Amount Required');
+                return false;
+            }
+            if ($('#dlmretcomment').val() == '' || $('#dlmretcomment').val() == null) {
+                $("#errorsssnd").text('Comment Required');
+                return false;
+            }
+        }
+
+
+        var idst = $("#ddldealerPaymentMode option:selected").text();
+        var collper = $('#txtdlmretcollection').val();
+        var amount = $('#txtdlmretamount').val();
+
+        var comment = $('#dlmretcomment').val();
+        var bankname = $("#dealerbank option:selected").text();
+        var depositeslip = $('#txtdeposno').val();
+        var tranftype = $("#ddlAdmintransfertype option:selected");
+        var accountno = $('#txtdealeraccountno').val();
+        var UTRnos = $('#txtdelmretutr').val();
+        var walletname = $("#dealerwallets option:selected");
+        var walletno = $('#txtdealerwalletno').val();
+        var transectionno = $('#txtdlmrettranctionno').val();
+        //var setteltype = $('#txtDISTSETTLEMENTTYPE').val();
+        //var crdetails = $('#txtDISTCREDITDETAILS').val();
+        var sbject = $('#txtdlmretreason').val();
+        var accnosele = $("#dealerbank").val();
+
+
+        var thtm = '<div id="hdidsss">';
+
+        thtm += '<input id="hdPaymentMode" required name="hdPaymentMode" type="hidden"  value="' + idst + '" />';
+        //  thtm += '<input id="hdPaymentAmount" name="hdPaymentAmount" type="hidden"  value="' +amount + '" />';
+
+
+        if ($("#ddldealerPaymentMode").val() === "Cash") {
+
+            thtm += '<input id="hdMDcollection" required name="hdMDcollection" type="hidden"  value="' + collper + '" />';
+            thtm += '<input id="hdMDComments" required name="hdMDComments" type="hidden"  value="' + comment + '" />';
+            thtm += '<input id="hdPaymentAmount" required name="hdPaymentAmount" type="hidden"  value="' + amount + '" />';
+        }
+        if ($("#ddldealerPaymentMode").val() === "Branch / CMS Deposite") {
+
+            thtm += '<input id="hdMDBank" required name="hdMDBank" type="hidden"  value="' + bankname + '" />';
+            thtm += '<input id="hdMDaccountno" required name="hdMDaccountno" type="hidden"  value="' + accnosele + '" />';
+            thtm += '<input id="hdPaymentAmount" required name="hdPaymentAmount" type="hidden"  value="' + amount + '" />';
+            thtm += '<input id="hdMDDepositeSlipNo" required name="hdMDDepositeSlipNo" type="hidden"  value="' + depositeslip + '" />';
+            thtm += '<input id="hdMDComments" required name="hdMDComments" type="hidden"  value="' + comment + '" />';
+
+
+        }
+        if ($("#ddldealerPaymentMode").val() === "Online Transfer") {
+
+            thtm += '<input id="hdMDTransferType" required name="hdMDTransferType" type="hidden"  value="' + tranftype.text() + '" />';
+            thtm += '<input id="hdMDBank" required name="hdMDBank" type="hidden"  value="' + bankname + '" />';
+            thtm += '<input id="hdMDaccountno" required  name="hdMDaccountno" type="hidden"  value="' + accountno + '" />';
+            thtm += '<input id="hdMDutrno" required name="hdMDutrno" type="hidden"  value="' + UTRnos + '" />';
+            thtm += '<input id="hdPaymentAmount" required name="hdPaymentAmount" type="hidden"  value="' + amount + '" />';
+        }
+        if ($("#ddldealerPaymentMode").val() === "Wellets Transfer") {
+
+            thtm += '<input id="hdMDwallet" required name="hdMDwallet" type="hidden"  value="' + walletname.text() + '" />';
+            thtm += '<input id="hdMDwalletno" required name="hdMDwalletno" type="hidden"  value="' + walletno + '" />';
+            thtm += '<input id="hdMDtransationno" required name="hdMDtransationno" type="hidden"  value="' + transectionno + '" />';
+            thtm += '<input id="hdPaymentAmount" required name="hdPaymentAmount" type="hidden"  value="' + amount + '" />';
+            thtm += '<input id="hdMDComments" required name="hdMDComments" type="hidden"  value="' + comment + '" />';
+        }
+        if ($("#ddldealerPaymentMode").val() === "Credit") {
+
+
+            thtm += '<input id="hdMDComments" required name="hdMDComments" type="hidden"  value="' + comment + '" />';
+            thtm += '<input id="hdPaymentAmount" required name="hdPaymentAmount" type="hidden"  value="' + amount + '" />';
+        }
+
+        thtm += '</div>';
+
+        $('.txtcodecodec').val('');
+        // $('#txtcode').val('')
+        $('#hdddninputvalues').html(thtm);
+        $('#btnsendpurorder').click();
+
+
+    })
+
+</script>
+
+<script>
+
+     function OnSuccess11(result) {
+        $("#frmdata1 #errorsssnd").text(result);
+
+        $('.old-crd').empty();
+
+        $('#hdddninputvalues').empty();
+
+        $.ajax({
+            url: "@Url.Action("MDTODealer","Home",new { tabtype="Purchase_ORDER"})",
+            success: function (data) {
+                $('#tblshowMasterD').html(data)
+            }
+        })
+    }
+
+</script>
+
+<script>
+
+    function changemasterd(value) {
+        var mas = $(value).val();
+        if (mas == '') {
+            $('.old-crd').hide();
+
+        } else {
+            $('.old-crd').show();
+        }
+    }
+    function changemoded(value) {
+        var res = $(value).val();
+
+        if (res == "Cash") {
+            $('.dcollection-by').show();
+
+            $('.dbank-select').hide();
+            $('.daccount-no').hide();
+            $('.dutr-no').hide();
+            $('.dwallet-select').hide();
+            $('.dwallet-no').hide();
+            $('.dtranstion-no').hide();
+            $('.dtransfer-type').hide();
+            $('.dsubject-reason').hide();
+            $('.ddeposite-slip-no').hide();
+            $('.dfund-comment').show();
+        }
+        else if (res == "Branch / CMS Deposite") {
+            $('.dcollection-by').hide();
+
+            $('.dbank-select').show();
+            $('.daccount-no').hide();
+            $('.dutr-no').hide();
+            $('.dwallet-select').hide();
+            $('.dwallet-no').hide();
+            $('.dtranstion-no').hide();
+            $('.dtransfer-type').hide();
+            $('.dsubject-reason').hide();
+            $('.ddeposite-slip-no').show();
+            $('.dfund-comment').show();
+        }
+        else if (res == "Online Transfer") {
+            $('.dcollection-by').hide();
+            $('.dtransfer-type').show();
+            $('.dbank-select').show();
+            $('.daccount-no').show();
+            $('.dutr-no').show();
+            $('.dwallet-select').hide();
+            $('.dwallet-no').hide();
+            $('.dtranstion-no').hide();
+
+            $('.dsubject-reason').hide();
+            $('.ddeposite-slip-no').hide();
+            $('.dfund-comment').hide();
+
+
+        }
+        else if (res == "Wellets Transfer") {
+            $('.dcollection-by').hide();
+            $('.dtransfer-type').hide();
+            $('.dbank-select').hide();
+            $('.daccount-no').hide();
+            $('.dutr-no').hide();
+            $('.dwallet-select').show();
+            $('.dwallet-no').show();
+            $('.dtranstion-no').show();
+
+            $('.dsubject-reason').hide();
+            $('.ddeposite-slip-no').hide();
+            $('.dfund-comment').show();
+        }
+        else if (res == "Credit") {
+            $('.dcollection-by').hide();
+            $('.dtransfer-type').hide();
+            $('.dbank-select').hide();
+            $('.daccount-no').hide();
+            $('.dutr-no').hide();
+            $('.dwallet-select').hide();
+            $('.dwallet-no').hide();
+            $('.dtranstion-no').hide();
+            $('.dtransfer-type').hide();
+            $('.dsubject-reason').hide();
+            $('.ddeposite-slip-no').hide();
+            $('.dfund-comment').show();
+        }
+    }
+</script>

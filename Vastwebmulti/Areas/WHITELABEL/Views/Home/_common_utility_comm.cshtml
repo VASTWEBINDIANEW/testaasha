@@ -1,0 +1,82 @@
+﻿@model Vastwebmulti.Areas.WHITELABEL.Models.PostpaidUtilitySlab
+@using (Ajax.BeginForm("_common_utility_comm", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", UpdateTargetId = "divEditFormComm", InsertionMode = InsertionMode.Replace }))
+{
+    <input id="btnsubmit" type="submit" value="Save Data" class="btn btnsubmit-custom  waves-effect" style="display:none;" />
+    <div class=" slab-table">
+        <table class="table table-bordered" style="margin-top:15px;">
+            <thead class="navbar" style="position:initial;">
+                <tr>
+                    <th>Operator&nbsp;Name</th>
+                    <th class="table-select">
+                        <span class="for-slab-b">
+                            <span>Operator&nbsp;Type</span>
+                            <div class="utility-slab-select">
+                                @Html.DropDownList("ddlOPttype", Model.OPttype.Distinct(), new { @class = "form-control", @onchange = "ddlopttypeChange()" })
+                            </div>
+                        </span>
+                    </th>
+                    <th>Master&nbsp;(M/D)</th>
+                    <th>Distributor</th>
+                    <th>Retailer</th>
+                    @*<th>Retailer > Common</th>*@
+                </tr>
+            </thead>
+            <tbody id="tbodyshow">
+                @foreach (var item in Model.common)
+                {
+                    <tr>
+                        <td><p>@item.OperatorName</p></td>
+                        <td><p>@item.opttype</p></td>
+                        <td>@item.mastercomm</td>
+                        <td>@item.dlmcomm</td>
+                        <td>@item.dlm_rem_comm</td>
+                        @*<td>@item.retailercomm</td>*@
+                    </tr>
+                }
+
+            </tbody>
+            <tbody id="tbodyedit" style="display:none;">
+                @for (int i = 0; i < Model.common.Count; i++)
+                {
+                    <tr>
+                        @Html.HiddenFor(a => a.common[i].idno)
+                        <td>
+                            @Html.DisplayFor(a => a.common[i].OperatorName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(a => a.common[i].opttype)
+                        </td>
+
+
+                        <td>
+                            @Html.EditorFor(a => a.common[i].mastercomm, new { htmlAttributes = new { @style = "width:100%" } })
+                            @Html.ValidationMessageFor(a => a.common[i].mastercomm)
+                        </td>
+                        <td>
+                            @Html.EditorFor(a => a.common[i].dlmcomm, new { htmlAttributes = new { @style = "width:100%" } })
+                            @Html.ValidationMessageFor(a => a.common[i].dlmcomm)
+                        </td>
+                        <td>
+                            @Html.EditorFor(a => a.common[i].dlm_rem_comm, new { htmlAttributes = new { @style = "width:100%" } })
+                            @Html.ValidationMessageFor(a => a.common[i].dlm_rem_comm)
+                        </td>
+                        @*<td>
+                                @Html.EditorFor(a => a.common[i].retailercomm, new { htmlAttributes = new { @style = "width:100%" } })
+                                @Html.ValidationMessageFor(a => a.common[i].retailercomm)
+                            </td>*@
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+}
+
+
+<script>
+    function OnSuccess() {
+
+        $('#btnsubmit').hide();
+        $('#btnEdit').show();
+    }
+</script>

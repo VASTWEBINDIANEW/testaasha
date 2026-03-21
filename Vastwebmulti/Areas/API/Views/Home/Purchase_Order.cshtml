@@ -1,0 +1,641 @@
+﻿@model IEnumerable<Vastwebmulti.Models.select_api_pur_order_Result>
+@{
+    ViewBag.Title = "Purchase_Order";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .nav-tabs li.active a {background: none; }
+    .dropdown-menu { margin-top: 81px !important; }
+    #addmodel .nav-tabs > li { display: inline-block;float:none;}
+    #addmodel .nav-tabs li.active a:focus, #addmodel .nav-tabs li.active a { background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important; }
+    #addmodel .nav-tabs li.active a span{color:#fff !important;}
+    #addmodel .nav-tabs li a span{color:var(--main-bg-lcolor) !important;}
+    #addmodel .nav-tabs > li > a::before {display:none;}
+    #addmodel .nav-tabs > li > a{margin-right:0px;background: transparent !important;}
+    #addmodel .nav-tabs > li{background-color: transparent !important;border-color: var(--main-bg-lcolor) !important;width:49%;}
+    #FUND .form-group ,#CREDIT .form-group{margin-bottom: 10px;}
+    .form-iconmy { top: 0px; }
+    @@media only screen and (max-width:480px) {
+     .ls-closed section.content { margin-left: 0px; padding: 0px 10px;}
+     .purchase-date .col-md-9{padding:0px;}
+     .purchase-date .col-md-3{margin-top:5px;width:48%;}
+     .purchase-date .col-md-3 button{width:100%;}
+     .rechargepdfexal {width: 50%;right: 6px; position: absolute;text-align: right;top: -32px;}
+     .col-md-6.purchase-new-add{padding-right:6px;}
+     .purchase-new-add button{margin:5px 0px;}
+     .purchase-table{padding:0px;}
+     #addmodel .nav-tabs > li > a{padding: 10px 0px !important;}
+     #addmodel .modal-header .col-xs-8,#addmodel .modal-header .col-xs-4{width:100%;}
+     #addmodel .modal-header{padding:5px;}
+     #FUND .row .col-xs-5,  #FUND .row .col-xs-7{width:100%;}
+     #FUND .row .col-xs-5 label{margin-bottom:0px;}
+     #CREDIT .row .col-xs-5,#CREDIT .row .col-xs-7{width:100%;}
+     #CREDIT .row .col-xs-5 label{margin-bottom:0px;}
+       
+    }
+   
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    
+                    <div class="row">
+                        @using (Html.BeginForm("Purchase_Order", "Home", FormMethod.Post))
+                        {
+                            <div class="col-md-6">
+                                <div class="row purchase-date">
+                                    <div class="col-md-9" style="padding-right:5px;">
+                                        <div class="form-group" style="margin-bottom:0px;">
+                                            <div class="input-daterange input-group">
+                                                <div class="form-iconmy"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i></div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;height:32px; ", autocomplete = "off" })
+                                                <span class="input-group-addon" style="min-width:5px;padding:0px;">
+
+                                                </span>
+                                                <div style="position:relative;width:100%;float:left ;">
+                                                    <div class="form-iconmy"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i></div>
+                                                    @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;height:32px; ", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="padding:0px;">
+
+                                            <button type="submit" class="btn waves-effect" style=" height:32px;background:transparent;border:1px solid #ddd;">
+                                                <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                                <span style="top:-1px;color:black;">Search</span>
+                                            </button>
+                                     
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+
+                            <div class="col-md-6 purchase-new-add">
+                                <button type="button" class="btn fullbodydycolorbg waves-effect" style="margin-left:5px; float:right; height:32px;border: 1px solid #ccc;" data-toggle="modal" data-target="#addmodel">
+                                    <i class="fa fa-plus" style="top:0px;font-size:16px;color:#fff;"></i>
+                                    <span style="top:-2px;color:#fff;">New&nbsp;Purchase&nbsp;Req.</span>
+                                </button>
+                                <div class="rechargepdfexal" style="float:right;">
+                                    <span><img src="~/ashok-images/pdf.png"><input type="button" id="btnPDF" value="PDF" style="border:0px;background:transparent"></span>
+                                    <span>
+                                        <img src="~/ashok-images/xls.png"><input type="button" id="btnExport" value="Export" style="border:0px;background:transparent;">
+                                    </span>
+                                </div>
+
+
+
+
+                            </div>
+
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+     
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 purchase-table" style="margin-top:-38px;">
+                <div class="card">
+                    <div class="">
+                        <h2 style="color:black; font-size:16px;padding-top:9px; padding-left:22px;"></h2>
+                    </div>
+                    <div class="body" style="padding:0px;">
+                        <div class="table-responsive" style="position:inherit;margin-top:-24px;">
+                            <table class="table table-bordered table-striped table-hover " style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Order&nbsp;No</th>
+                                        <th>Status </th>
+                                        <th>From</th>
+                                        <th><center>Amount</center></th>
+                                        <th><center>Charge</center></th>
+                                        <th>PayMent&nbsp;Mode</th>
+                                        <th>To&nbsp;Acc&nbsp;No </th>
+                                        <th>UtrNo/SlipNo </th>
+                                        <th>Request&nbsp;Date </th>
+                                        <th>Response&nbsp;Date</th>
+                                        <th>Comment</th>
+                                        <th>Screenshot </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var color = "";
+                                        var stscolor = "";
+                                        if (item.type_ == "Cash")
+                                        {
+                                            color = "green";
+                                        }
+                                        if (item.type_ == "Credit")
+                                        {
+                                            color = "red";
+                                        }
+                                        if (item.sts == "Pending")
+                                        {
+                                            stscolor = "#FF9800";
+
+                                        }
+                                        if (item.sts == "APPROVED")
+                                        {
+                                            stscolor = "green";
+
+                                        }
+                                        if (item.sts == "REJECTED")
+                                        {
+                                            stscolor = "red";
+
+                                        }
+                                        <tr>
+                                            <td><p style="font-size:12px;">@item.orderno&nbsp;⇒&nbsp;<span style="color:@color;font-weight:600;">@item.type_.ToUpper()</span></p></td>
+                                            <td><p style="font-size:12px;text-align:center;"><span style="color:@stscolor;font-weight:600;">@item.sts.ToUpper()</span></p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.frm).ToString().ToUpper()</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p> </td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.cashDepositCharge)</p> </td>
+                                            <td><p style="font-size:11px;">@Html.DisplayFor(modelItem => item.paymode).ToString().ToUpper()</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.Toaccountno)</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.utrno).ToString().ToUpper()</p></td>
+                                            <td>@Html.DisplayFor(modelItem => item.reqdate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.responsedate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.details)</td>
+
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(item.Slip))
+                                                {
+                                                    <img src="@Url.Content("~/" + item.Slip)" height="60" width="60" />
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="addmodel" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <div class="col-xs-8">
+                    <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add New Purchase Order</h4>
+                </div>
+                <div class="col-xs-4">
+                    <p style="color:red;font-size:16px;">My Credit : @ViewData["oldcredit"]</p>
+                </div>
+            </div>
+
+            <div class="modal-body" style="margin-top:0px;">
+                <div class="body">
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card" style="box-shadow: none">
+
+                                <div>
+                                    <div class="row">
+                                    
+                                        <div class="col-md-12">
+                                            <ul class="nav nav-tabs tab-nav-right" role="tablist" style="position: initial; border-bottom:none;text-align:center;">
+                                                <li role="presentation" class="active" style="background-color:#dedddd;border:1px solid #c7c2c2;"><a href="#FUND" data-toggle="tab" aria-expanded="false" class="btn bg-blue-grey waves-effect"><span style="color:black;font-weight:700;">Cash&nbsp;Transfer&nbsp;Request</span> </a></li>
+                                                <li role="presentation" style="background-color:#dedddd;border:1px solid #c7c2c2; margin-left:2px;"><a href="#CREDIT" data-toggle="tab" aria-expanded="false" class="btn bg-grey waves-effect"><span style="color:black;font-weight:700;">Credit Request</span> </a></li>
+
+                                            </ul>
+                                        </div>
+                                    </div> 
+
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane fade active in" id="FUND">
+                                            @using (Html.BeginForm("purchageorder", "Home", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                                            {
+                                                @Html.ValidationSummary()
+                                                <form id="form_validation" method="POST" novalidate="novalidate">
+                                                    @Html.Hidden("type", "Cash")
+
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="Paymode" class="">Order&nbsp;Type</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.DropDownList("Paymode", new List<SelectListItem>
+                                                 {
+                                                    new SelectListItem{Text="Third Party Transfer", Value="Third Party Transfer"},
+                                                    new SelectListItem{Text="Online Transfer (NEFT,RTGS)", Value="Online Transfer (NEFT,RTGS)"},
+                                                    new SelectListItem{Text="Online Transfer (IMPS)", Value="Online Transfer (IMPS)"},
+                                                    new SelectListItem{Text="ATM Machine Deposit", Value="ATM Machine Deposit"},
+                                                    new SelectListItem{Text="Branch Cash Deposit", Value="Branch Cash Deposit"}
+                                               }, new { @class = "form-control" })
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="balance" class="">Balance</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group" id="balanceDiv">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("balance", "", new { @class = "form-control", placeholder = "Enter Balance", autocomplete = "off", @required = "required", @pattern = "[0-9]{0,20}", @title = "Only number is allowed" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("balance", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class=" formElement row" id="dopistChargeDiv" style="display:none;">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="RefNo">Deposit&nbsp;Charge</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("dipositCharge", "20", new { @class = "form-control", disabled = "disabled" })
+                                                                </div>
+                                                                @Html.ValidationMessage("dipositCharge", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="divPancard" class=" formElement row" style="display:none;">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="RefNo">Pancard</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("pancard", "", new { @class = "form-control", pattern = @"^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$" })
+                                                                </div>
+                                                                @Html.ValidationMessage("pancard", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 ">
+                                                            <label for="RefNo">Reffrence&nbsp;ID</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("utrno", "", new { @class = "form-control", placeholder = "Enter UTR/Slip No", @required = "required" })
+                                                                </div>
+                                                                @Html.ValidationMessage("utrno", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="firstname" class="">Account</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.DropDownList("accountno", ViewBag.account as SelectList, "Select Admin Account No", new { id = "accountno1", @class = "form-control acc", @required = "required" })
+                                                                </div>
+                                                                @Html.ValidationMessage("accountno", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="divbranch" class="formElement row" style="display:none;">
+
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="RefNo">Branch</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("branch", "", new { @class = "form-control", placeholder = "Enter Branch" })
+                                                                </div>
+                                                                @Html.ValidationMessage("branch", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="divpartyAcc" class="formElement row">
+
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="RefNo">Party Account</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("partyAcc", "", new { @class = "form-control", placeholder = "Enter Third Party Account", })
+                                                                </div>
+                                                                @Html.ValidationMessage("partyAcc", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="divAccHolderName" class="formElement row">
+
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="RefNo">Account Holder Name</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("AccHolderName", "", new { @class = "form-control", placeholder = "Enter Account Holder Name", })
+                                                                </div>
+                                                                @Html.ValidationMessage("AccHolderName", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 ">
+                                                            <label for="balance" class="">Comment</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("Comment", "", new { @class = "form-control", placeholder = "Enter Comment or remark", autocomplete = "off" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("Comment", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="balance" class="">Screenshot</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("file", "", new { @type = "file", @class = "form-control", autocomplete = "off" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("file", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer" style="margin-top:-15px;padding-right:0px;">
+
+                                                        <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:32px;border: 1px solid var(--border-color) !important;" data-dismiss="modal">
+                                                            <span style="color:black;">Close</span>
+                                                        </button>
+                                                        <button type="submit" class="btn bg-grey waves-effect fullbodydycolorbg" style="margin-top: 4px; height:32px;" onclick="return confirm('Are you sure?');">
+                                                            <span style="color:#fff;">Save Change</span>
+                                                        </button>
+                                                    </div>
+                                                </form>
+
+                                            }
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane fade" id="CREDIT">
+                                            @using (Html.BeginForm("purchageorder", "Home", FormMethod.Post))
+                                            {
+                                                <form id="form_validation" method="POST">
+                                                    @Html.Hidden("type", "Credit")
+
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 ">
+                                                            <label for="balance" class="">Balance</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("balance", "", new { @class = "form-control", placeholder = "Enter Balance", autocomplete = "off", @required = "required", @pattern = "[0-9]{0,20}", @title = "Only number is allowed" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("balance", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                                            <label for="balance" class="">Comment</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("Comment", "", new { @class = "form-control", placeholder = "Enter Comment or remark", autocomplete = "off" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("Comment", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer" style="margin-top:-15px;padding-right:0px;">
+
+                                                        <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:32px;border: 1px solid var(--border-color) !important;" data-dismiss="modal">
+                                                            <span style="color:black;">Close</span>
+                                                        </button>
+                                                        <button type="submit" class="btn bg-grey waves-effect fullbodydycolorbg" style="margin-top: 4px; height:32px;" onclick="return confirm('Are you sure?');">
+                                                            <span style="color:#fff;">Save Change</span>
+                                                        </button>
+                                                    </div>
+                                              
+                                                </form>
+
+                                            }
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+
+</script>
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    $(function () {
+        $('#Paymode').change(function () {
+
+            var amount = $('#balanceDiv').find('input[name="balance"]').val();//$("#balance").text();
+            //alert('amount'+amount);
+            var disCharge = 20;
+            $(".formElement").hide();
+            var name = $("#Paymode option:selected").val();
+            if (name == "Third Party Transfer") {
+                $('#divpartyAcc').show();
+                $('#divAccHolderName').show();
+            }
+            if (name == "ATM Machine Deposit") {
+                $('#divbranch').show();
+                $('#divPancard').show();
+                $('#dopistChargeDiv').show();
+                //alert('@ViewBag.ATMMinCharge');
+                //alert('@ViewBag.ATMChargePercant');
+                disCharge = (amount * '@ViewBag.ATMChargePercant') / 100;
+                // alert(disCharge);
+                if (disCharge <= '@ViewBag.ATMMinCharge') {
+                    disCharge = '@ViewBag.ATMMinCharge';
+                }
+            }
+            if (name == "Branch Cash Deposit") {
+                $('#divbranch').show();
+                $('#divPancard').show();
+                $('#dopistChargeDiv').show();
+                disCharge = (amount * '@ViewBag.CashChargePercant') / 100;
+                //alert(disCharge);
+                if (disCharge <= '@ViewBag.CashMinCharge') {
+                    disCharge = '@ViewBag.CashMinCharge';
+                }
+            }
+            $('#dipositCharge').val(disCharge);
+        });
+
+        $(document).on("focusout", "#balance", function () {
+            // alert();
+            var disCharge = 20;
+            // alert();
+            var amount = $(this).val();
+            // alert("amount " +amount);
+
+            //var dipCharge = $("#dipositCharge").val();
+            var name = $("#Paymode option:selected").val();
+            //alert("name " + name);
+            if (name == "ATM Machine Deposit") {
+                disCharge = (amount * '@ViewBag.ATMChargePercant') / 100;
+                //alert(disCharge);
+                if (disCharge <= '@ViewBag.ATMMinCharge') {
+                    disCharge = '@ViewBag.ATMMinCharge';
+                }
+
+            } else if (name == "Branch Cash Deposit") {
+                disCharge = (amount * '@ViewBag.CashChargePercant') / 100;
+                if (disCharge <= '@ViewBag.CashMinCharge') {
+                    disCharge = '@ViewBag.CashMinCharge';
+                }
+            }
+            // alert(disCharge);
+            $("#dipositCharge").attr("disabled", false);
+            $("#dipositCharge").val(disCharge);
+            $("#dipositCharge").attr("disabled", true);
+        });
+    });
+   </script>
+
+<script type="text/jscript">
+    $(document).ready(function () {
+
+        var erreor = '@ViewData["error"]';
+        var success = '@ViewData["success"]';
+        if (erreor != "" && erreor != null) {
+
+            swal("Oops...", erreor, "error");
+        }
+        if (success != "" && success != null) {
+            swal("Purchase Order!", success, "success")
+        }
+
+
+        $('#radio_6').on('click', function () {
+            if ((this.value) == "3rdParty") {
+                $("#accountno2").replaceWith($('<input/>', { 'type': 'text', 'name': 'accountno', 'required': "", 'placeholder': 'Enter Account Number', 'class': 'form-control' }));
+            }
+        });
+        $('#radio_3').on('click', function () {
+            if ((this.value) == "3rdParty") {
+                $("#accountno1").replaceWith($('<input/>', { 'type': 'text', 'name': 'accountno', 'required': "", 'placeholder': 'Enter Account Number', 'class': 'form-control' }));
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#balance").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                // Allow: Ctrl+A, Command+A
+                (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: home, end, left, right, down, up
+                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+
+    });
+
+</script>
+<script>
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<script>
+    $(document).ready(function()
+    {
+            $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+    })
+</script>

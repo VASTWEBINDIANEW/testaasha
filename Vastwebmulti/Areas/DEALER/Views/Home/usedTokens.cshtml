@@ -1,0 +1,221 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Models.prc_getRetailerCreationUsedTokens_Result>
+@{
+    ViewBag.Title = "Joining Tokens";
+    Layout = "~/Areas/DEALER/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Retailer").ToList();
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Retailer")
+        {
+           var favimage = usernname.SingleOrDefault().NickName;
+            ViewBag.nickname = favimage;
+        }
+    }
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .slab-setting-menu li a.activee {
+        background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;
+    }
+
+    @@media screen and (max-width:360px) {
+        .recharge-report-dealer input {
+            font-size: 12px;
+        }
+    }
+
+    @@media screen and (max-width:768px) {
+        .usedtokens-tableclass .table-responsive {
+            border: 0;
+        }
+
+            .usedtokens-tableclass .table-responsive tr td, .usedtokens-tableclass .table-responsive tr th, .usedtokens-tableclass .table-responsive tr td p, .usedtokens-tableclass .table-responsive tr td span {
+                font-size: 13px !important;
+            }
+    }
+</style>
+<section class="content">
+    <div class="container-fluid usedtokens-tableclass full-dealer-secondanimation">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Token's History</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Account Active&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Token's History</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-7" style="width:auto;float:left;">
+                            <div>
+                                @Html.Partial("TokenSetting")
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 recharge-report-dealer" style="width:auto;float:right;padding-left:0px;">
+                            <div class="form-group" style="margin-bottom:0px;width:100%;float:left;">
+                                <div style="padding-top:0px;float:right">
+                                    @*<button class="white-success-button" style="height:32px;border:1px solid #b1a6a638;background:#b1a6a638;float: right;padding: 0px 4px;margin-top:-1px;" onclick="findtotal()">Total</button>*@
+                                    <div class="web-white-filter fil" style="float: left;margin-right: 0px;margin-top:-1px;">
+                                        <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;">
+                                        <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 token-buttonmargin" style="display:none;">
+
+                            <div class="web-white-filter" style="float:right;">
+                                <table class="dataTable js-exportable ">
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card all-reporttable-css">
+
+                    <div class="body" style="padding:0px;">
+                        <div class="table-responsive tableseconddes-dealer" style="position:inherit;margin-top:-18px;">
+                            <table class="table table-bordered table-striped table-hover example-second third-design-table third-design-table" style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>SN</th>
+                                        <th>@ViewBag.nickname</th>
+                                        <th>Created&nbsp;By</th>
+                                        <th>Tokens</th>
+                                        <th>Remain Pre</th>
+                                        <th>Remain Post</th>
+                                        <th>Date</th>
+                                        @*<th>Free&nbsp;By&nbsp;Dealer</th>*@
+                                        @*<th>#</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ int i = 1;}
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.JoiningTokenId)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.RemainTokenPre)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.RemainTokenPost)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.JoinDate)</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("button.shownextrow").click(function () {
+            $(this).closest("tr").next().show();
+            $(this).closest("tr").hide();
+        });
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+    });
+</script>
+<script>
+    window.onload = function () {
+        var message = '@ViewData["successorder"]';
+        if (message != "" && message != null) {
+            swal("Good job!", message, "success");
+
+        }
+        var errormessage = '@ViewData["failedorder"]';
+        if (errormessage != "" && errormessage != null) {
+            swal("Oops!", errormessage, "error");
+
+        }
+    }
+</script>
+<script type="text/jscript">
+    $(function () {
+        var data = '@ViewData["show"]';
+        if (data != "") {
+            sweetAlert("Oops...", data, "error");
+        }
+    })
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('.second-design-dealer .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>

@@ -1,0 +1,297 @@
+﻿@using System.Net.Mime
+@using Vastwebmulti.Models
+@model List<Vastwebmulti.Areas.ADMIN.Models.CatagoryModel>
+@{
+    ViewBag.Title = "CatagoryList";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+      <div class="row clearfix">
+      <div class="col-md-12">
+      <div class="card">
+       <div class="col-md-8">
+           <div style="margin-left:-13px;">
+               @Html.Partial("Ecommercemenu")
+           </div>
+          
+       </div>
+          <div class="col-md-4">
+              <button type="button" class="btn btn-default waves-effect" id="subcategory" value="SubCategory" style="margin-top:4px; margin-right:6px;border:1px solid #dddddd;" data-toggle="modal" data-target="#defaultModal" onclick="hide()">
+                  <i class="fa fa-shopping-cart" style="top:-1px;font-size:14px;color:black;"></i>
+                  <span style="top:-1px;color:black;">Add&nbsp;Sub&nbsp;Category</span>
+              </button>
+              <button type="button" class="btn btn-default waves-effect" id="category" value="Category" style="margin-top:4px; margin-right:6px;border:1px solid #dddddd;" data-toggle="modal" data-target="#defaultModal" onclick="show()">
+                  <i class="fa fa-shopping-cart" style="top:-1px;font-size:14px;color:black;"></i>
+                  <span style="top:-1px;color:black;">Add&nbsp;Category</span>
+              </button>
+                  @*<button type="button" id="subcategory" value="SubCategory" class="btn bg-blue-grey waves-effect" style="margin-top:3px; margin-right:6px;" data-toggle="modal" data-target="#defaultModal" onclick="hide()">
+                      <i class="fa fa-shopping-cart" style="top:1px;"></i>
+                      <span style="top:-2px;">Add&nbsp;Sub&nbsp;Category</span>
+                  </button>
+                  <button type="button" id="category" value="Category" class="btn bg-blue-grey waves-effect" style="margin-top:3px; margin-right:6px;" data-toggle="modal" data-target="#defaultModal" onclick="show()">
+                      <i class="fa fa-shopping-cart" style="top:1px;"></i>
+                      <span style="top:-2px;">Add&nbsp;Category</span>
+                  </button>*@
+             
+          </div>
+      </div>
+      </div>
+      </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-26px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">ALL CATEGORY & SUB CATEGORY&nbsp;></li>
+                        </ol>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="" style="padding:7px;">
+                                <div class="table-responsive" style="position:inherit;margin-top:-27px;">
+                                    <table class="table table-bordered ">
+                                        <thead  style="background-color:whitesmoke;">
+                                            <tr>
+                                                <th>SR.No</th>
+                                                <th>Type</th>
+                                                <th>Name</th>
+                                                <th>Parent Name</th>
+                                                <th>Status</th>
+                                                <th>Edit</th>
+                                                <th >Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                              @{ var i = 1;}
+                                            @foreach (var item in Model)
+                                            {
+                                               
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Category</td>
+                                                    <td style="padding:3px;">@item.CatName</td>
+                                                    <td style="padding:3px;"></td>
+                                                    <td style="padding:3px;">
+                                                        @if (item.IsActive)
+                                                        {
+                                                            <center>
+                                                                <a href="@Url.Action("Catstatus", new {id = item.CatId})" style="text-decoration:none;">
+                                                                    <img src="~/images/reportimage/switch_on.png" style="margin-top:2px;height:23px;" />
+                                                                </a>
+                                                            </center>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <center>
+                                                                <a href="@Url.Action("Catstatus",new { id = item.CatId  })" style="text-decoration:none;">
+                                                                    <img src="~/images/reportimage/switchoff.png" style="margin-top:2px;height:23px;" />
+                                                                </a>
+                                                            </center>
+                    
+                                                        }
+                                                    </td>
+                                                    <td style="padding:3px;">
+                                                        <button id="but" onclick="filldata('@item.CatId','@item.CatName','catagory')" style="background-color:transparent;color:#03a9f4; border:none;" data-toggle="modal" data-target="#defaultModal1">
+                                                            <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Edit</p>
+                                                        </button>
+                                                    </td>
+                                                    <td style="padding:3px;">
+                                                        <a href="@Url.Action("RemoveCat",new { catagory = "catagory",CatId = item.CatId  })" style="text-decoration:none;"><span class="" style=""></span><i class="fa fa-trash" style="color:red; font-size:24px;"></i></a>
+                                                    </td>
+                                                </tr>
+                                                foreach (var subitem in item.SubCatagories.Where(a => a.CatId == item.CatId))
+                                                {
+                                                    <tr>
+                                                        <td>@i</td>
+                                                        <td>Subcategory</td>
+                                                        <td style="padding:3px;">@subitem.SubCatName</td>
+                                                        <td style="padding:3px;">@item.CatName</td>
+                                                        <td style="padding:3px;">
+                                                            @if (subitem.IsActive)
+                                                            {
+                                                                <center>
+                                                                    <a href="@Url.Action("SubCatstatus", new {id = subitem.SubCatId})" style="text-decoration:none;">
+                                                                        <img src="~/images/reportimage/switch_on.png" style="margin-top:2px;height:23px;" />
+                                                                    </a>
+                                                                </center>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <center>
+                                                                    <a href="@Url.Action("SubCatstatus", new {id = subitem.SubCatId})" style="text-decoration:none;">
+                                                                        <img src="~/images/reportimage/switchoff.png" style="margin-top:2px;height:23px;" />
+                                                                    </a>
+                                                                </center>
+                                  
+                                                            }
+                                                        </td>
+                                                        <td style="padding:3px;">
+                                                            <button id="but" onclick="filldata('@subitem.SubCatId','@subitem.SubCatName','SubCat')" style="background-color:transparent;color:#03a9f4; border:none;" data-toggle="modal" data-target="#defaultModal1">
+                                                                <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Edit</p>
+                                                            </button>
+                                                        </td>
+                                                        <td style="padding:3px;">
+                                                            <a href="@Url.Action("RemoveCat",new { catagory = "SubCat",CatId = subitem.SubCatId  })" style="text-decoration:none;"><span class="" style=""></span><i class="fa fa-trash" style="color:red; font-size:24px;"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                i++;
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Add New catagory  modal-->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;"><i class="material-icons" style="font-size:17px;">add_shopping_cart</i>&nbsp;&nbsp;Add New Category</h4>
+            </div>
+            @using (Html.BeginForm("AddCatagory", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <form>
+                            <div class="row clearfix" style="margin-top:30px;">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="catName">Catagory Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("catName","", new { @class = "form-control", placeholder = "Enter Name", required = "required" })
+                                            @Html.ValidationMessage("catName", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix" id="showDiv" style="display:none;">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="parentCatId">Parent Catagory</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownList("parentCatId", new SelectList(Model, "CatId", "CatName"), "Select Parent", new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;"})
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Edit New catagory  modal-->
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add New Master Distributor</h4>
+            </div>
+            @using (Html.BeginForm("EditCatagory", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.Hidden("catagory")
+                        @Html.Hidden("CatId")
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="catName1">Catagory Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBox("catName1", "", new { @class = "form-control", placeholder = "Enter Name", required = "required" })
+                                            @Html.ValidationMessage("catName1", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    function filldata(catId,catName, cat) {
+        $('#catName1').val(catName);
+        $('#CatId').val(catId);
+        $('#catagory').val(cat);
+    }
+</script>
+
+<script>
+    function show()
+    {
+        var cate = document.getElementById("category").value;
+        if (cate == "Category") {
+            document.getElementById("showDiv").style.display = "none";
+        }
+         }
+    function hide() {
+        var sub = document.getElementById("subcategory").value;
+        if (sub == "SubCategory") {
+            document.getElementById("showDiv").style.display = "block";
+        }
+       
+       
+    }
+</script>
+

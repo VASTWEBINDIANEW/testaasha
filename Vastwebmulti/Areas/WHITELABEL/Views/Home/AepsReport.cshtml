@@ -1,0 +1,991 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Aeps_Report_New_Result>
+@{
+    ViewBag.Title = "AEPS_Report";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+<style>
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #eee !important;
+        border-radius: 0px !important;
+        height: 32px !important;
+        margin-top: 1px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .table > thead > tr > th {
+        font-size: 13px !important;
+        padding: 10px 4px !important;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+
+    table.dataTable thead > tr > th, table.dataTable thead > tr > td {
+        padding-right: 10px;
+    }
+
+    .card {
+        margin-bottom: 0px;
+    }
+
+    .table-bordered tbody tr td span {
+        color: inherit;
+    }
+
+    .table-bordered tbody tr td {
+        font-size: 13px;
+        padding: 10px 4px;
+    }
+
+    .toast-top-right1 {
+        top: 65px;
+        left: 81%;
+    }
+
+    .cltu {
+        width: 15%;
+    }
+
+    @@media only screen and (min-width:481px) and (max-width:992px) {
+        .fin2 {
+            width: 100% !important;
+            float: left;
+        }
+
+        .left-space-no {
+            margin-left: 0px !important;
+        }
+
+        .responcive-fify {
+            width: 49% !important;
+            float: left !important;
+            margin-bottom: 20px;
+        }
+
+            .responcive-fify button.btn.llpo {
+                width: 100%;
+                text-align: left;
+            }
+
+        .responcive-full {
+            width: 99% !important;
+            float: left;
+            margin-bottom: 10px;
+        }
+
+            .responcive-full .nrr3 {
+                width: 50% !important;
+                float: left;
+            }
+
+            .responcive-full input {
+                width: 49% !important;
+            }
+
+            .responcive-full .nrr3 input {
+                width: 100% !important;
+            }
+
+        .responcive-fify .web-white-filter {
+            width: 100%;
+        }
+
+        .fin3.responcive-fify {
+            position: absolute;
+            top: 170px;
+            right: 10px;
+        }
+
+        .fin1.gjut-ruty ul li {
+            width: 24.5%;
+            position: relative;
+        }
+
+            .fin1.gjut-ruty ul li img {
+                position: absolute;
+                left: 30%;
+            }
+
+        .col-md-1.cltu.for-width-r.responcive-full {
+            margin-bottom: 23px;
+        }
+
+        .white-success {
+            float: left !important;
+            width: auto !important;
+            right: 52% !important;
+        }
+    }
+
+    @@media only screen and (max-width:480px) {
+
+        .fin1, .fin2 {
+            width: 100% !important;
+        }
+
+            .fin1 .kklo #custnav ul li a {
+                padding: 5px 15px;
+            }
+
+            .fin2 .col-md-2, .fin2 .cltu.col-md-1 {
+                width: 49% !important;
+                float: left;
+                margin-left: 0px !important;
+            }
+
+            .fin2 .col-md-1.cltu.for-width {
+                width: 49.2% !important;
+            }
+
+            .fin2 .col-md-1.cltu.for-width-r {
+                width: 48% !important;
+            }
+
+            .fin2 .col-md-3 {
+                width: 100% !important;
+                margin-bottom: 5px;
+            }
+
+                .fin2 .col-md-3 input {
+                    width: 49% !important;
+                }
+
+                .fin2 .col-md-3 .nrr3 {
+                    width: 48%;
+                }
+
+                    .fin2 .col-md-3 .nrr3 input {
+                        width: 100% !important;
+                    }
+
+        .cltu {
+            margin-bottom: 15px !important;
+        }
+
+        .llpo span {
+            display: inline-block;
+        }
+
+        .col-md-2.fin3 {
+            width: 55%;
+            right: 18px;
+            top: 151px;
+        }
+
+        .fin2 .col-md-1 {
+            width: 40% !important;
+        }
+
+            .fin2 .col-md-1 .button {
+                width: 100%;
+            }
+
+        .table-responsive > .table-bordered > thead > tr > th:first-child {
+            border-left: 1px solid var(--border-color);
+        }
+
+        .table-responsive > .table-bordered > thead > tr > th:last-child {
+            border-right: 1px solid var(--border-color);
+        }
+    }
+</style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-3 fin1 gjut-ruty" style="padding: 0px;">
+                        <div>
+                            @Html.Partial("_Financial_partial_view")
+                        </div>
+                    </div>
+                    <div class="col-md-7 fin2" style="padding: 0px;">
+                        <div class="card">
+                            @using (Html.BeginForm("AepsReport", "Home", FormMethod.Post))
+                            {
+                                <div class="">
+                                    <div class="col-md-1 cltu responcive-fify" style="padding: 0px; margin-right: 3px;">
+                                        <div class="form-line">
+                                            <select class="selectpicker form-control" data-live-search="true" id="ddlusers" name="ddlusers" style="margin-top:4px;padding-left:0px; padding-right:0px;text-align:center;" onchange="answers()">
+                                                <option value="Whitelabel">All User</option>
+                                                <option value="Whitelabelmaster">Master D</option>
+                                                <option value="Whitelabeldealer">Distributor</option>
+                                                <option value="Whitelabelretailer">Retailer</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 responcive-fify" style="display:none;padding: 0px; margin-right: 3px; margin-bottom: 10px;" id="allmaster">
+                                        <div class="form-line">
+                                            @Html.DropDownList("allmaster1", ViewBag.allmaster as SelectList, "All Master", new { @style = "margin-top:0px", @class = "selectpicker form-control", data_live_search = "true", })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 responcive-fify" style="display:none;padding: 0px; margin-right: 3px; margin-bottom: 10px;" id="dlm">
+                                        <div class="form-line">
+                                            @Html.DropDownList("alldealer", ViewBag.alldealer as SelectList, " All Distubutor", new { id = "alldealer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 responcive-fify" style="display:none;padding: 0px; margin-right: 3px; margin-bottom: 10px;" id="rem">
+                                        <div class="form-line">
+                                            @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1 cltu for-width responcive-fify" style="padding: 0px;margin-right: 3px;">
+                                        <div class="form-line">
+                                            @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                        {
+                                new SelectListItem{ Text="All Status",Value="ALL",},
+                                new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                                new SelectListItem{Text="Pending",Value="Pending"},
+                                new SelectListItem{Text="FAILED",Value="FAILED"},
+
+                         }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1 cltu for-width-r responcive-fify" style="padding: 0px;margin-right: 3px;">
+                                        <div class="form-line">
+                                            @Html.DropDownList("ddl_settletype", new List<SelectListItem>
+                                        {
+                                new SelectListItem{ Text="Settle Type",Value="ALL",},
+                                new SelectListItem{Text="Direct",Value="Direct"},
+                                new SelectListItem{Text="InDirect",Value="InDirect"}
+                                 }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 responcive-full" style="padding: 0px;float: left;margin-right: 1px;width: 215px;">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <div class="input-daterange input-group">
+                                                <div class="custom-date-icon ner">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #b1a6a638; margin-top:0px;height:32px;padding-right: 0px;padding-left: 23px;width: 105px;margin-right: 3px;" })
+                                                <span class="input-group-addon" style="min-width: 0px;padding: 3px;float: left;">
+
+                                                </span>
+                                                <div class="nrr3">
+                                                    <div class="custom-date-icon ner2">
+                                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                    </div>
+                                                    @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #b1a6a638; margin-top:0px;height:32px;padding-right: 0px;padding-left: 23px;width: 105px;" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 responcive-fify" style="padding: 0px;float: left;width: 10px;">
+
+                                        <center>
+                                            <button type="submit" value="Old" name="submit" class="btn llpo" style=" border:1px solid #b1a6a638;background: transparent;">
+                                                <i class="fa fa-search" style="top:0px;font-size:16px;color:black;"></i>
+                                                <span style="top:0px;color:black;">SEARCH</span>
+                                            </button>
+                                        </center>
+
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-2 fin3 responcive-fify" style="padding: 0px;">
+                        <div class="row">
+                            <div class="form-group">
+                                <div style="float:right; padding-right:5px;text-align:right;" class="web-white-filter">
+                                    <button class="white-success-button" style="height:32px;padding: 0px 4px;height: 32px;border: 1px solid #b1a6a638;float: right;margin-left: 4px;background: #b1a6a638;" onclick="findtotalaeps()">Total</button>
+                                    <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;" />
+                                    <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;" />
+
+                                </div>
+                                <div class="white-success" style="display:none;float: right;position: absolute;width: auto;right: 31px;">
+                                    <span id="successtotal" class="btn btn-success waves-effect" style="font-size: 13px;padding:9px; color:white;font-weight:600;float: left;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Failedtotal" class="btn btn-danger waves-effect" style="font-size: 13px;padding:9px; color:white;font-weight:600;float: left;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Pendingtotal" class="btn btn-warning waves-effect" style="font-size: 13px;padding:9px;color:white; font-weight:600;float: left;" title="Total  Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i> </span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+
+            <div class="col-md-12" style="margin-top: 10px;">
+                <div class="card">
+
+                    <div class="body" style="padding:0px;">
+                        <div class="table-responsive" style="position:inherit;margin-top:0px;">
+                            <table id="Aeps" class="table table-bordered table-striped table-hover" cellspacing="0" style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr style="color: black;font-size: 13px;">
+
+                                        <th>Transaction&nbsp;Status&nbsp;</th>
+
+                                        <th>Partner&nbsp;Firm&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                        <th>User&nbsp;Bank&nbsp;Name</th>
+                                        <th>User&nbsp;A/C</th>
+                                        <th>User&nbsp;Aadhaar</th>
+                                        <th>User&nbsp;Mobile</th>
+                                        <th>User&nbsp;Name</th>
+
+                                        <th>Withdraw&nbsp;(₹)</th>
+                                        <th>Comm</th>
+                                        <th>Partner&nbsp;Pre</th>
+                                        <th>Net&nbsp;T/F&nbsp;<span style="font-size: 20px;color: #008000;line-height: 11px;">&#8865;</span> </th>
+
+                                        <th>Partner&nbsp;Post</th>
+                                        <th>RRN&nbsp;&&nbsp;<span style="color:red;">Error&nbsp;Info..</span></th>
+                                        <th>Transaction&nbsp;Date&nbsp;&nbsp;</th>
+
+
+                                        @*<th>From</th>*@
+
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody id="trow" class="alin chnj">
+                                    @{
+
+                                        Html.RenderAction("_AepsReport", "Home", new { Model = Model });
+
+                                    }
+                                </tbody>
+                            </table>
+                            <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:20px;">
+                                <img src="~/img/ajax-loader.gif" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<div class="modal mastetr222Modal" id="defaultModal222" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="min-height:auto;">
+        <div id="loadredmodel" style="display:none;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);" class="loadingio-spinner-ripple-92ar2pfqk5j">
+            <div class="ldio-zdyd6mf6t5">
+                <div></div><div></div>
+            </div>
+        </div>
+        <div id="userinfodiv" class="modal-content width100 float-left">
+            <div class="modal-header width100 float-left" style="background-color:#eee">
+
+                <div class="modal-back width100 float-left">
+                    <div class="form-group" style="float: left;margin: 0px;width:80%;">
+
+                        @Html.TextBox("MerchantTxnId", "", new { @class = "form-control", @style = "text-transform:uppercase;background: transparent;", @readonly = "readonly" })
+                    </div>
+                    <button type="button" class="btn waves-effect" data-dismiss="modal" style="padding: 0px;margin-top: 7px;background:transparent;">
+                        <i class="fa fa-times fulltextbodycolor fullbodydycolorbg" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body width100 float-left">
+
+                <div class="float-left width100">
+
+                    <form class="first-form">
+                        @Html.Hidden("idno")
+
+
+                        <div class="row">
+
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Admin Pre</label>
+                                    @Html.TextBox("WLPre", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Commission</label>
+                                    @Html.TextBox("WLIncome", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Post Amt</label>
+                                    @Html.TextBox("WLPost", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Master Pre</label>
+                                    @Html.TextBox("MdPre", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Commission</label>
+                                    @Html.TextBox("Mdcomm", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Post Amt</label>
+                                    @Html.TextBox("MdPost", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Distributor Pre</label>
+                                    @Html.TextBox("DlmPre", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Commission</label>
+                                    @Html.TextBox("DlmComm", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Post Amt</label>
+                                    @Html.TextBox("DlmPost", "", new { @class = "form-control", maxlength = 10, @style = "text-transform:uppercase", required = "required", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+
+
+<script>
+    $('#allwhitelabel1').select2();
+    $('#allmaster1').select2();
+    $('#alldealer').select2();
+    $('#allretailer').select2();
+    $('#allapiuser').select2();
+</script>
+
+<script>
+    function findtotalaeps() {
+        var ddlusers = $('#ddlusers').val();
+        var allmaster = $('#allmaster1').val();
+        var alldealer = $('#alldealer').val();
+        var allretailer = $('#allretailer').val();
+        var allwhitelabel = $('#allwhitelabel1').val();
+        var ddl_status = $('#ddl_status').val();
+        var api_name = $('#api_name').val();
+        var ddl_settletype = $('#ddl_settletype').val();
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+             $.post("@Url.Action("AepsReport_Total", "Home")",
+                 { "ddlusers": ddlusers, "allmaster1": allmaster, "alldealer": alldealer, "allretailer": allretailer, "allwhitelabel1": allwhitelabel, "ddl_status": ddl_status, "api_name": api_name, "ddl_settletype": ddl_settletype, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date },
+                 function (data) {
+                     $('#successtotal').text("₹. " + data.success);
+                     $('#Failedtotal').text("₹. " + data.failed);
+                     $('#Pendingtotal').text("₹. " + data.pending);
+
+                 });
+    }
+</script>
+
+<script>
+    function mdActionBtn(idno) {
+        $('#loadredmodel').show();
+
+        $.ajax({
+            url: '@Url.Action("AepsReport_View", "Home")',
+            type: "POST",
+            data: { idno: idno },
+            cache: false,
+            success: function (Response) {
+                var usercredit1 = '';
+                $("#WLIncome").val(Response[0].WLIncome);
+                $("#Mdcomm").val(Response[0].MdIncome);
+                $("#DlmComm").val(Response[0].DlmIncome);
+                $("#WLPre").val(Response[0].WLPre);
+                $("#WLPost").val(Response[0].WLPost);
+                $("#MdPre").val(Response[0].MdPre);
+                $("#MdPost").val(Response[0].MdPost);
+                $("#DlmPre").val(Response[0].DlmPre);
+                $("#DlmPost").val(Response[0].DlmPost);
+                $("#TerminalId").val(Response[0].TerminalId);
+                $("#Remark").val(Response[0].Remark);
+                $("#MerchantTxnId").val(Response[0].MerchantTxnId);
+                $("#Issettled").val(Response[0].Issettled);
+                $("#Request").val(Response[0].Request);
+                $("#Response").val(Response[0].response_output);
+            }
+        });
+    };
+
+</script>
+<script>
+
+    $('.white-success-button').click(function () {
+        $('.white-success').toggle();
+    });
+</script>
+<script>
+    var pageindex = 2;
+        var NoMoredata = false;
+    var inProgress = false;
+    $(window).scroll(function () {
+
+        var ddlusers = $('#ddlusers').val();
+        var allmaster = $('#allmaster1').val();
+        var alldealer = $('#alldealer').val();
+        var allretailer = $('#allretailer').val();
+        var allwhitelabel = $('#allwhitelabel1').val();
+        var ddl_status = $('#ddl_status').val();
+        var api_name = $('#api_name').val();
+        var ddl_settletype = $('#ddl_settletype').val();
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        if (api_name == null) {
+            api_name = "";
+        }
+        if ($(window).scrollTop() > Number($("#Aeps").height()) / 4 && !NoMoredata && !inProgress) {
+                   inProgress = true;
+                $("#loadingdiv").show();
+                $.post("@Url.Action("InfiniteScroll_Aeps", "Home")",
+                    { "pageindex": pageindex, "ddlusers": ddlusers, "allmaster1": allmaster, "alldealer": alldealer, "allretailer": allretailer, "allwhitelabel1": allwhitelabel, "ddl_status": ddl_status, "api_name": api_name, "ddl_settletype": ddl_settletype, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date },
+                    function (data) {
+
+                        pageindex = pageindex + 1;
+                        NoMoredata = data.NoMoredata;
+                        $("#loadingdiv").load("content.html");
+                        $("#trow").append(data.HTMLString);
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    });
+            }
+        });
+</script>
+
+
+
+<script>
+    $("#btnExport").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var allmaster = $('#allmaster1').val();
+        var alldealer = $('#alldealer').val();
+        var allretailer = $('#allretailer').val();
+        var allwhitelabel = $('#allwhitelabel1').val();
+        var ddl_status = $('#ddl_status').val();
+        var api_name = $('#api_name').val();
+        var ddl_settletype = $('#ddl_settletype').val();
+
+        var url = '@Url.Action("ExcelRechargereport_Aeps", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&ddl_status=' + ddl_status + '&allmaster1=' + allmaster + '&alldealer=' + alldealer + '&allretailer=' + allretailer + '&allwhitelabel1=' + allwhitelabel + '&api_name=' + api_name + '&ddl_settletype=' + ddl_settletype;
+        location.href = url;
+});
+</script>
+
+<script>
+    $("#btnPDF").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var allmaster = $('#allmaster1').val();
+        var alldealer = $('#alldealer').val();
+        var allretailer = $('#allretailer').val();
+        var allwhitelabel = $('#allwhitelabel1').val();
+        var ddl_status = $('#ddl_status').val();
+        var api_name = $('#api_name').val();
+        var ddl_settletype = $('#ddl_settletype').val();
+        var url = '@Url.Action("PDFAepsReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&ddl_status=' + ddl_status + '&allmaster1=' + allmaster + '&alldealer=' + alldealer + '&allretailer=' + allretailer + '&allwhitelabel1=' + allwhitelabel + '&api_name=' + api_name + '&ddl_settletype=' + ddl_settletype;
+        window.open(url,'_blank');
+    });
+</script>
+
+
+<!--Manual SUCCESS -->
+<script>
+    function success()
+    {
+
+        var bankrrn = $('#BankRRN').val();
+        var trans_id =$('#trans_id').val();
+        var Remark =$('#Remark').val();
+        if (bankrrn == null || bankrrn == '')
+        {
+            swal("RRN?", 'Hit check status to update RRN first.', "error");
+            return false;
+        }
+        var answer = confirm('Are you sure ?');
+        if(answer)
+        {
+            $.ajax({
+                url: '@Url.Action("AEPSsucess", "Home")',
+                type: 'POST',
+                dataType: "html",
+                data: { trans_id: trans_id, RRN: bankrrn, terminalID: '', Remark: Remark },
+                success: function (data) {
+                    var response = JSON.parse(data);
+                       if (response.Status) {
+                           swal("Good Job", response.Message, "success");
+                           window.location.reload();
+                           reloadPageeee();
+                    }
+                    else {
+                        swal("Oops...", response.Message, "error");
+                    }
+                },
+                error: function (data) {
+                    swal("Oops...", response.Message, "error");
+                }
+            });
+            return true;
+        }
+        else {
+            $("#defaultModal2").modal('hide');
+            return false;
+        }
+    }
+    function checkStaus(txnid)
+    {
+
+        $.ajax({
+            url: '@Url.Action("AepsStatus", "Home")',
+            type: 'POST',
+            dataType: "json",
+            data: { txnid: txnid },
+            success: function (data) {
+                var response = JSON.parse(data);
+                if (response.Status =="Success") {
+                    swal("Good Job", response.Message, "success");
+                    window.location.reload();
+                    //reloadPageeee();
+                }
+                else {
+                    swal("Oops...", response.Message, "error");
+                }
+                //alert(response.Message);
+            },
+            error: function (data) {
+            }
+        }).done(function () {
+            $("#defaultModal2").modal('hide');
+        });
+    }
+</script>
+
+<!--failed show model popup-->
+<script>
+    function refundshow(trans_id, mobile) {
+
+        $("#txtrefidno").val(trans_id);
+        $("#mobile").val(mobile);
+    }
+</script>
+
+<!--Manual failed -->
+<script>
+    function Failed()
+    {
+     var answer = confirm('Are you sure ?');
+     if(answer)
+     {
+         var secuirtypass = $("#securitypass").val();
+         var id = $("#txtrefidno").val();
+         var mobile = $("#mobile").val();
+         var recivername = $("#txtrecivername").val();
+         var e = document.getElementById("ddl_refund");
+         var ddlval = e.options[e.selectedIndex].value
+         if (secuirtypass != "" && secuirtypass != null)
+         {
+         $.ajax({
+             url: '@Url.Action("AepsFailed", "Home")',
+             type: 'POST',
+             dataType: "html",
+             data: { txtrefidno: id, mobile: mobile, ddl_refund: ddlval, secuirtypass: secuirtypass },
+             success: function (data) {
+                 var response = JSON.parse(data);
+                 if (response.Status) {
+                     swal("Good Job!", response.Message, "success");
+                     window.location.reload();
+                     reloadPageeee();
+                 }
+                 else {
+                     swal("Oops...", response.Message, "error");
+                 }
+             },
+             error: function (data) {
+
+             }
+         }).done(function () {
+             $("#defaultModal1").modal('hide');
+         });
+             return true;
+           }
+            else {
+
+             swal("Oops..!", "Please Enter security Password", "error");
+             return false;
+              }
+
+
+        }
+     else {
+         $("#defaultModal1").modal('hide');
+            return false;
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+               $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+
+        }
+        answers();
+        });
+</script>
+
+<script type="text/javascript">
+    function answers() {
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        
+        if (answer == "Whitelabel") {
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("allwhitelabel").style.display = "block";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+        }
+        else if (answer == "Whitelabelmaster") {
+            document.getElementById("allmaster").style.display = "block";
+            document.getElementById("allwhitelabel").style.display = "none";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+        }
+        else if (answer == "Whitelabeldealer") {
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("allwhitelabel").style.display = "none";
+            document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+        }
+        else if (answer == "Whitelabelretailer") {
+            document.getElementById("allwhitelabel").style.display = "none";
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+        }
+    }
+</script>
+
+
+
+<script>
+    function setTxnValue(idno) {
+        $('#defaultModal2').show();
+        $.ajax({
+            url: '@Url.Action("AepsReport_View", "Home")',
+            type: "POST",
+            data: { idno: idno },
+            cache: false,
+            success: function (Response) {
+                $("#BankRRN").val(Response[0].BankRRN);
+                $("#trans_id").val(Response[0].MerchantTxnId);
+                $("#Remark").val(Response[0].Remark);
+                $("#Request").val(Response[0].Request);
+                $("#Response").val(Response[0].response_output);
+            }
+        });
+    }
+     function Failedtosuccess(idno) {
+        $('#defaultModal2').show();
+        $.ajax({
+            url: '@Url.Action("AepsReport_View", "Home")',
+            type: "POST",
+            data: { idno: idno },
+            cache: false,
+            success: function (Response) {
+                $("#BankRRN").val(Response[0].BankRRN);
+                $("#trans_id").val(Response[0].MerchantTxnId);
+                $("#Remark").val(Response[0].Remark);
+                $("#Request").val(Response[0].Request);
+                $("#Response").val(Response[0].response_output);
+            }
+        });
+    }
+</script>
+
+
+
+<script>
+    $("#checkStausToaster").click(function () {
+    var maxFileSize = 824000; // 824 kb
+   var fileUpload = $('#fileInputSingle');
+
+        if (fileUpload.val() == '') {
+            ToastrMessage();
+            toastr.error('Select a File');
+    return false;
+   }
+else {
+      if (fileUpload[0].files[0].size < maxFileSize) {
+
+        var files = $("#fileInputSingle").get(0).files;
+        var btnVal = "Single";
+            var fileData = new FormData();
+
+            for (var i = 0; i < files.length; i++) {
+                fileData.append("fileInputSingle", files[i]);
+                fileData.append("fileButton", btnVal);
+            }
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("BackLogin_Content", "Home")',
+            contentType: false,
+            processData: false,
+            data: fileData,
+            success: function (result, status, xhr) {
+
+                $.ajax({
+                    url: '@Url.Action("_LoginPageBackgroundImages3","Home")',
+                    type: 'GET',
+                    success: function (response2) {
+
+                        $("#img1").attr('src',"../.."+ response2)
+                        //$("#img1").attr('background',"")
+                        //$('#img1').attr('background', "../.." + response2)
+                        $('#fileInputSingleTab').attr('href', "../.." + response2)
+
+                        ToastrMessage();
+                        toastr.success('File Upload Successfully.');
+                    }
+                });
+
+                },
+                error: function (xhr, status, error) {
+
+                }
+            });
+         return true;
+      }else{
+            ToastrMessage();
+            toastr.error('File too big !');
+         return false;
+      }
+   }
+    });
+
+    function checkStaus(txnid)
+    {
+
+        $.ajax({
+            url: '@Url.Action("AepsStatus", "Home")',
+            type: 'POST',
+            dataType: "json",
+            data: { txnid: txnid },
+            success: function (data) {
+                var response = JSON.parse(data);
+                if (response.Status == "Success") {
+                    //swal("Good Job", response.Message, "success");
+                    //window.location.reload();
+                    //reloadPageeee();
+
+                    ToastrMessage();
+                    toastr.success(response.Message);
+                }
+                else {
+                    //swal("Oops...", response.Message, "error");
+                    ToastrMessage();
+                    toastr.error(response.Message +' !');
+                }
+                //alert(response.Message);
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    function ToastrMessage() {
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "positionClass": "toast-top-right1",
+            "newestOnTop": false,
+            "progressBar": true,
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "100",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "show",
+            "hideMethod": "hide"
+        };
+        //toastr.info('MY MESSAGE!');
+    }
+</script>
+
+<script>
+    $(function () {
+        var loc = window.location.href; // returns the full URL
+        if ('/~/ADMIN/Home/AepsReport') {
+            $('.sidebar .kkli li:nth-child(2) a').addClass('activee');
+        }
+    });
+</script>

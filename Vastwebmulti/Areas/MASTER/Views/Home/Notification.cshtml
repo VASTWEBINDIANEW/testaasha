@@ -1,0 +1,232 @@
+﻿@using Vastwebmulti.Models;
+@{
+    ViewBag.Title = "Notification";
+    Layout = "~/Areas/MASTER/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Dealer").ToList();
+    var favimage = "";
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Dealer")
+        {
+            favimage = usernname.SingleOrDefault().NickName;
+
+
+        }
+    }
+}
+<style type="text/css">
+    .loadermoney {
+        width: auto;
+        float: left;
+        margin-right: 15px;
+        margin-top: 8px;
+    }
+
+        .loadermoney img {
+            width: 17px;
+            margin-right: 6px;
+            border-radius: 50%;
+            padding: 3px;
+        }
+
+    .breadcrumb li::before {
+        display: none;
+    }
+</style>
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .notification-master .select2 .select2-selection {
+        border: 0;
+        height: 34px;
+        padding: 2px 0;
+        outline: none;
+    }
+
+    .master-four-design .col-md-12.notification-master button:first-child {
+        background: var(--fullbodybg-four) !important;
+    }
+
+    @@media screen and (max-width:1366px) {
+        .clearfix.clearfix-notification-master {
+            margin: 0px;
+        }
+    }
+
+    @@media screen and (max-width:992px) {
+        .clearfix.clearfix-notification-master .col-md-12 {
+            width: 100%;
+            float: left;
+        }
+
+        .clearfix.clearfix-notification-master .responsivecolmd12 {
+            padding: 0px;
+        }
+
+        .clearfix-notification-master {
+            margin-top: 10px !important;
+        }
+    }
+
+    @@media screen and (max-width:766px) {
+        .notification-container-fluid {
+            padding-left: 0px;
+        }
+
+            .notification-container-fluid .row {
+                margin: 0;
+                margin-top: 0px;
+                width: 100%;
+                float: left;
+            }
+
+            .notification-container-fluid .responsivecolmd12 .body {
+                width: 100%;
+                float: left;
+                padding: 0;
+            }
+
+                .notification-container-fluid .responsivecolmd12 .body .col-md-12 {
+                    padding: 0px;
+                }
+
+        .breadcrumb.breadcrumb-col-blue-grey {
+            height: auto;
+            width: 100%;
+            float: left;
+        }
+    }
+</style>
+
+
+<section class="content">
+    <div class="container-fluid notification-container-fluid">
+        <div class="row clearfix clearfix-notification-master">
+            <div class="col-md-12 responsivecolmd12">
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-12 responsivecolmd12">
+                        <div class="card" style="margin-bottom: 0px;">
+                            <div class="dealer-box-back-four" style="border:1px solid #150f0f1f;background-color:whitesmoke;">
+                                <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:0px;margin-top:2px;">
+                                    <li class="active" style="color:#555; font-size:16px;"><i class="fa fa-android" style=" margin-right:6px;" aria-hidden="true"></i> NOTIFICATION TO @favimage</li>
+                                    <li style="float: right;"><span>Note:-</span>Use only to send the required information</li>
+                                </ol>
+                            </div>
+                            <div class="col-md-12 notification-master dealer-box-back-four" style="float: left;background: #f5f5f5;margin-top: 15px;border:1px solid #150f0f1f;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="body">
+                                            @using (Html.BeginForm("Send_Notification", "Home", FormMethod.Post))
+                                            {
+                                                <div class="row" style="margin-bottom:0px; margin-top:0px;">
+                                                    <div class="col-md-12" style="margin-bottom:0px;">
+                                                        <label for="email_address_2" style="float:left;margin-top:7px;">Select @favimage</label>
+                                                    </div>
+                                                    <div class="col-md-12" style="margin-bottom:0px;">
+                                                        <div class="form-group" style="margin-bottom:10px;">
+                                                            <div class="" style="border:1px solid #dddddd;">
+                                                                @Html.DropDownList("dealerid", (List<SelectListItem>)ViewBag.alldealer, "Select User", new { @class = "selectpicker form-control for-select2", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row" style="margin-bottom:0px; margin-top:0px;">
+                                                    <div class="col-md-12" style="margin-bottom:0px;">
+                                                        <label for="email_address_2" style="float:left;margin-top:7px;">Message</label>
+                                                    </div>
+                                                    <div class="col-md-12" style="margin-bottom:0px;">
+                                                        <div class="form-group" style="">
+                                                            <div class="" style="border:1px solid #dddddd;">
+                                                                @Html.TextArea("txtMsgBody", "", new { maxlength = 160, @class = "form-control", @placeholder = "Enter Message Here", style = "height:120px", @required = "" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="col-lg-9" style="padding: 0px;float: right;">
+
+                                                        <button type="submit" class="btn waves-effect" style="background:var(--main-bg-rcolor);margin-top: 0px; margin-right:0px; height:34px;float:right;border:1px solid #555 !important;" onclick="Saveall()">
+                                                            <span style="font-size:14px;top:0px;color:#fff;">Send Notification</span>
+                                                        </button>
+                                                        <button id="btn" type="reset" class="btn bg-grey waves-effect" style="margin-top: 0px; margin-right:16px; height:34px;float:right;border:1px solid #555 !important;">
+                                                            <span style="font-size:14px;top:0px;color:black;">Reset</span>
+                                                        </button>
+                                                        <div id="loadermoney" class="loadermoney" style="display:none;"><img style="background-color:green" src="../../ashok-images/correct.svg">Notification Sended Successfully</div>
+
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+
+
+<script>
+    $('.for-select2').select2();
+</script>
+
+
+<script>
+    $(document).ready(function()
+    {
+        document.getElementById("loadermoney").style.display = "none";
+        var succ = '@ViewData["success"]'
+        if(succ != "")
+        {
+            //swal("Send Notification !", succ, "success");
+            $("#loadermoney").css("display", "block");
+        }
+    })
+</script>
+@*<script>
+        function Saveall()
+        {
+            document.getElementById("loadermoney").style.display = "none";
+            return true;
+        }
+    </script>*@
+
+<script>
+
+
+    $("#btn").click(function () {
+        $('#loadermoney').css('display', 'none');
+    });
+
+</script>

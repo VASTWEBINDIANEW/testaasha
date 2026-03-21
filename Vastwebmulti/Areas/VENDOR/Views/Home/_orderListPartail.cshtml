@@ -1,0 +1,267 @@
+﻿<style>
+     .dropdown-menu {
+       top:-356%;
+    }
+</style>
+@model IEnumerable<Vastwebmulti.Areas.VENDOR.ViewModel.OrderListVM>
+<div class="body table-responsive" style="position:inherit;margin-top:-14px;padding:0px;">
+    <table class="table table-bordered table-striped table-hover dataTable js-exportable" style="width:100%;font-size:12px; ">
+        <thead  style="background-color:whitesmoke;color:black;">
+            <tr>
+                <th style="padding-left:-2px;">Porduct&nbsp;Image</th>
+                <th>Buyer&nbsp;Name</th>
+                <th>Product&nbsp;Name</th>
+                <th>List&nbsp;Price</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th>OrderDate</th>
+                <th>Status</th>
+                <th>View</th>
+                <th style="padding-left:2px;">Delivery&nbsp;Status</th>
+                <th style="padding-left:2px;">Delivered&nbsp;On</th>
+                <th>Invoice</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var color = "";
+                if (item.OrderStatus == 1)
+                {
+                    color = "#ff9600";
+                }
+                <tr style="color:@color;">
+                    <td style="padding:3px;"><img src="@Url.Content("~/" +item.ProductPhoto)" class="img-responsive" style="width:60px; height:60px;" /></td>
+                    <td>@item.BuyerName</td>
+                    <td>@item.ProductName</td>
+                    <td>₹&nbsp;@String.Format("{0:0.00#}", item.ListPrice)</td>
+                    @*<td>@String.Format("{0:C2}", item.ListPrice)</td>*@
+                    <td>₹&nbsp;@String.Format("{0:0.00#}", item.StandardPrice)</td>
+                    <td>@item.Qty</td>
+                    <td>@String.Format("{0:0.00#}", item.Amount)</td>
+                    <td>@item.OrderDate</td>
+                    @if (item.OrderStatus == 1)
+                    {
+                        <td>
+                            @*<a href="@Url.Action("RemoveProduct",new { id = item.ProductID  })" style="text-decoration:none;"><span class="" style=""></span><i class="fa fa-trash fa-2x" style="color:red;"></i></a>*@
+                            <div class="header" style="border:none;position:absolute;">
+                                <ul class="header-dropdown m-r--5" style="top:0px;">
+                                    <li class="dropdown">
+                                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                                            <i class="material-icons">more_vert</i>
+                                        </a>
+                                        <ul class="dropdown-menu pull-right">
+                                            <li style="margin-top:3px;">
+                                                <button class="ss" onclick="Approvedandreject('@item.Idno','@item.OrderID','Approve','@item.BuyerID','@item.BuyerRole')" style="margin-left:15px;background:transparent;border:none;color:#c7c2c2;margin-top:-4px;" title="Manual Success">
+                                                    <p>Approve</p>
+                                                </button>
+                                              </li>
+                                            <li style="margin-top:12px;">
+                                                <button class="ss" onclick="Approvedandreject('@item.Idno','@item.OrderID','Cencel','@item.BuyerID','@item.BuyerRole')" style="margin-left:15px;background:transparent;border:none;color:#c7c2c2;margin-top:-4px;" title="Manual Success">
+                                                    <p>Cancel</p>
+                                                </button>
+                                                 </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    }
+                    else if (item.OrderStatus == 3)
+                    {
+                        <td><p style="color:red;font-weight:700;">Cencelled</p></td>
+                    }
+                    else if (item.OrderStatus == 2)
+                    {
+                        <td><p style="color:green;font-weight:700;">Delivered</p></td>
+                    }
+                    <td style="padding:0px;text-align:center;">
+                        <button id="but" onclick="showall('@item.BuyerID')" style="background-color:transparent;color:#03a9f4; border:none;" class="dropdown-toggle" role="button" data-toggle="tooltip" data-placement="bottom" title="Click this icon show all Buyer Customer Details ">
+                            <i class="fa fa-eye fa-2x" style="font-size:24px;color:#607D8B;"></i>
+                        </button>
+                    </td>
+                    @if (item.DeliveryStatus == Vastwebmulti.Areas.VENDOR.ViewModel.DeliveryStatus.Delivered)
+                    {
+                        <td style="padding:3px;">@item.DeliveryStatus</td>
+                    }
+                    else
+                    {
+                        if (item.OrderStatus != 3)
+                        {
+                        <td style="padding:0px;text-align:center;">
+                            <button  class="btn btn-primary" data-toggle="modal" data-target="#otpModal" onclick="SetHiddenFieldVal('@item.OrderID')" title="Click to update delivery status ">
+                               Deliver
+                            </button>
+                        </td>
+                        }
+                    }
+                    <td style="padding:3px;">@item.DeliverOn</td>
+                    @if (item.OrderStatus == 2)
+                    {
+                        <td style="padding:0px;">
+                            <div style="text-align:center;" class="dropdown-toggle" role="button" data-toggle="tooltip" data-placement="bottom" title="GST INVOICE ">
+                                <a href="@Url.Action("EcommInvoicePdf",new { OrderID = item.OrderID})" target="_blank">
+                                    <i class="material-icons" style="font-size: 39px;line-height: 42px;">receipt</i>
+                                </a>
+
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="modal" id="myModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">View Buyer Customer Details</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+               <div class="row">
+                 <div class="col-md-6">
+                     <label for="email_address">Name</label>
+                     <div class="form-group">
+                         <div class="" style="border:1px solid #dddddd;">
+                             <input type="text" id="txtname" class="form-control" readonly="" style="background-color:white;">
+                         </div>
+                     </div>
+                     <label for="email_address">Mobile Number</label>
+                     <div class="form-group">
+                         <div class="" style="border:1px solid #dddddd;">
+                             <input type="text" id="txtmobile" class="form-control" readonly="" style="background-color:white;">
+                         </div>
+                     </div>
+                     <label for="email_address">State</label>
+                     <div class="form-group">
+                         <div class="" style="border:1px solid #dddddd;">
+                             <input type="text" id="txtstate" class="form-control" readonly="" style="background-color:white;">
+                         </div>
+                     </div>
+                     <label for="email_address">Pincode</label>
+                     <div class="form-group">
+                         <div class="" style="border:1px solid #dddddd;">
+                             <input type="text" id="txtpincode" class="form-control" readonly="" style="background-color:white;">
+                         </div>
+                     </div>
+                 </div>
+                   <div class="col-md-6">
+                       <label for="email_address">Frim Name</label>
+                       <div class="form-group">
+                           <div class="" style="border:1px solid #dddddd;">
+                               <input type="text" id="txtfrmname" class="form-control" readonly="" style="background-color:white;">
+                           </div>
+                       </div>
+                       <label for="email_address">Email-ID</label>
+                       <div class="form-group">
+                           <div class="" style="border:1px solid #dddddd;">
+                               <input type="text" id="txtemail" class="form-control" readonly="" style="background-color:white;">
+                           </div>
+                       </div>
+                       <label for="email_address">District</label>
+                       <div class="form-group">
+                           <div class="" style="border:1px solid #dddddd;">
+                               <input type="text" id="txtdistrict" class="form-control" readonly="" style="background-color:white;">
+                           </div>
+                       </div>
+                       <label for="email_address">Address</label>
+                       <div class="form-group">
+                           <div class="" style="border:1px solid #dddddd;">
+                               <input type="text" id="txtaddress" class="form-control" readonly="" style="background-color:white;">
+                           </div>
+                       </div>
+                      
+                   </div>
+               </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn bg-grey waves-effect" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- OTP Modal -->
+<div id="otpModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Update Delivery Status</h4>
+            </div>
+            <div class="modal-body">
+              
+             @using (Ajax.BeginForm("UpdateDeliveryStatus", "Home",null, new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" }))
+                 {
+                @Html.Hidden("orderId")
+                @*<form class="form-horizontal">*@
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="email_address_2">OTP</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP to update delivery status">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
+                            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Verify</button>
+                        </div>
+                    </div>
+                @*</form>*@
+                }
+            </div>
+            @*<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>*@
+        </div>
+
+    </div>
+</div>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/pages/ui/tooltips-popovers.js"></script>
+@*<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>*@
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script>
+    function showall(BuyerID)
+    {
+        var url = '@Url.Action("Showallbuyerdetails","Home")'
+        $.ajax({
+            url: url,
+            data: { buyerid: BuyerID },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $("#txtname").val(data[0].RetailerName);
+                $("#txtfrmname").val(data[0].Frm_Name);
+                 $("#txtemail").val(data[0].Email);
+                $("#txtmobile").val(data[0].Mobile);
+                $("#txtaddress").val(data[0].Address);
+                $("#txtstate").val(data[0].State_name);
+                $("#txtdistrict").val(data[0].Dist_Desc);
+                $("#txtpincode").val(data[0].Pincode);
+                $('#myModal').modal('show');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>

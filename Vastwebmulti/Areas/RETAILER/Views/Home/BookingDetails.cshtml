@@ -1,0 +1,192 @@
+﻿@model List<Vastwebmulti.Areas.RETAILER.Models.TickeBookingDetailsVM>
+@{
+    ViewBag.Title = "BookingDetails";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/AdminDesign/Retailer_Slider/Slieder.css" rel="stylesheet" />
+
+<section class="content" style="margin-left: 10px;margin-right: 10px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="panel-group">
+                @foreach (var item in Model)
+                {
+                    if (item.ResponseJson != null && item.ResponseJson.Content != null)
+                    {
+                        var response = item.ResponseJson.Content.Addinfo.Response;
+                        if (response != null)
+                        {
+                            var FlightItinerary = response.FlightItinerary;
+                            if (FlightItinerary != null)
+                            {
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading" style="height: 30px;padding: 4px;">@FlightItinerary.Passenger[0].FirstName &nbsp; @FlightItinerary.Passenger[0].LastName</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4">
+                                                <ol>
+                                                    @foreach (var Pax in FlightItinerary.Passenger)
+                                                    {
+                                                        <li><a>@Pax.FirstName @Pax.LastName</a></li>
+                                                    }
+                                                </ol>
+                                            </div>
+                                            <div class="col-md-4" style="text-align:center;">
+                                                @FlightItinerary.AirlineCode | @FlightItinerary.Origin - @FlightItinerary.Destination | <span title="Ticket Date">@FlightItinerary.LastTicketDate.Date</span>
+                                                @*</br>*@
+                                                <p> @FlightItinerary.Passenger.Count(a => a.PaxType == "1") <span>ADULT |</span> @FlightItinerary.Passenger.Count(a => a.PaxType == "2") <span>CHILD |</span> @FlightItinerary.Passenger.Count(a => a.PaxType == "3") <span>INFANT</span></p>
+                                            </div>
+                                            <div class="col-md-4" style="text-align:right;">
+                                                <p> <strong>PNR : @FlightItinerary.Pnr</strong></p>
+                                                <p> Ref No : @FlightItinerary.BookingId</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-footer" style="padding-bottom: 15px;padding-top: 10px;">
+                                        <span>
+                                            <span><a>Fare Rule</a></span>&nbsp;&nbsp;
+                                            <span><a>View Ticket</a></span>&nbsp;&nbsp;
+                                            @{ var ids = FlightItinerary.Passenger.Select(a => a.Ticket.TicketId).ToList();
+                                                var str = string.Join(",", ids);
+                                            }
+                                            <span onclick="changerequest('@FlightItinerary.BookingId','@FlightItinerary.Origin','@FlightItinerary.Destination','@str')"><a>Change Request</a></span>&nbsp;&nbsp;
+                                            <span id="statusLink" onclick="getTicketStatus('@item.ResponseJson.Content.Addinfo.TraceId','@response.BookingId','@response.Pnr')"><a>Current Status</a></span>
+                                        </span>
+                                        <span style="float:right">
+                                            <span> <a class="btn btn-primary">View Invoice</a></span>&nbsp;&nbsp;
+                                            <span>  <a class="btn btn-primary">Open</a></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+            </div>
+        </div>
+    </div>
+    <!--Slider div-->
+    <br />
+</section>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<!-- Start Rechargepaybill js-->
+<script src="~/Retailerjavascript/Rechargepaybill/electricityl.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Landline.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Dth.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/gas.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Insurance.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/mobileperpaidandpostpaid.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Water.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/broadband.js"></script>
+<!--End-->
+<script src="~/AdminDesign/Retailer_Slider/multislider.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(function () {
+        $('.slimScrollDiv').slimScroll({
+            height: '250px',
+            wheelStep: 10,
+        });
+    });
+</script>
+<script>
+    function getTicketStatus(TraceId,refNo,pnr)
+    {
+        var requestObject = {};
+        requestObject.BookingId = refNo;
+        requestObject.PNR = pnr;
+        requestObject.TraceId = TraceId;
+        //alert(JSON.stringify(requestObject));
+        $.ajax({
+            url: '@Url.Action("GetFlightStatus", "Home")',
+            type: 'POST',
+            data: JSON.stringify(requestObject),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                //alert("Success");
+                var respo = JSON.parse(data);
+                if(respo.Status == "Success")
+                {
+                    if(respo.StatusCode == 5)
+                    {
+                        swal("Wow!!", "Ticketed successfully", "success");
+                    }
+                    else if (respo.StatusCode == 1) {
+                        swal("Wow!!", "Ticket is on Hold", "warning");
+                    }
+                    else if (respo.StatusCode == 2) {
+                        swal("Wow!!", "Ticket is ready", "success");
+                    }
+                    else if (respo.StatusCode == 3) {
+                        swal("Wow!!", "Ticket is cancelled", "warning");
+                    }
+                    else if (respo.StatusCode == 4) {
+                        swal("Wow!!", "Ticket is in InProgress", "warning");
+                    }
+                    else {
+                        swal("Oh!", "Ticket not confirmed yet", "warning");
+                    }
+                } else {
+                    swal("Oops!!", respo.Message, "error");
+                }
+                // alert('Data: '+data);
+                //$("#topSection").html(data);
+                //$('#radio_'+DstnRadionValue).click();
+                //$('#radio_' + DstnRadionValue).attr("checked", true);
+            },
+            error: function (request, error) {
+                 alert("Error");
+                // alert("Request: "+JSON.stringify(request));
+                console.log("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+</script>
+<script>
+    function changerequest(bookingId,orgn,dstn,TicketId)
+    {
+        //alert(bookingId);
+        //alert(orgn);
+        //alert(dstn);
+        //alert(TicketId);
+        // call CancelTicket action
+        var url = '@Url.Action("CancelTicket", "Home")';
+        $.post(url, { bookingid: bookingId, origin: orgn, destination: dstn, ticketIds: TicketId }, function (data) {
+            alert(data);
+            var respo = JSON.parse(data);
+            if(respo.Status == "Success")
+            {
+                swal("Wow!!", "Your cancel request has been accepted.", "success");
+            } else {
+                swal("Oops!!", respo.Message, "error");
+            }
+        }).fail(function () {
+            swal("Oops!!", "Unknow error.", "error");
+        })
+    }
+</script>

@@ -1,0 +1,500 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    string urllinks = @ViewBag.urllink;
+
+    VastwebmultiEntities db2 = new VastwebmultiEntities();
+    var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+    var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+    var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+
+}
+
+
+<meta name="viewport" content="width=device-width">
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var col = "";
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "";
+    }
+    var color = col;
+    var Apk_Version = "";
+    var apkversion = db.uploaded_apklink.SingleOrDefault();
+    if (apkversion != null)
+    {
+        if (!string.IsNullOrWhiteSpace(apkversion.Apk_Version))
+        {
+            Apk_Version = apkversion.Apk_Version;
+        }
+
+    }
+    var logoimage = "";
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    var aboutbac = db.tblAboutUsBackgroundColorChanges.Where(p => p.Role == "ADMIN").ToList();
+    var aboutbaccolor = aboutbac.Count == 0 ? "" : aboutbac.SingleOrDefault().MultipalAboutUsColor;
+
+    var service = db.tblServiceOuterColors.Where(p => p.Role == "ADMIN").ToList();
+    var servicecolor = service.Count == 0 ? "" : service.SingleOrDefault().ServiceBackGroundcolor;
+
+    ViewBag.Services = db.tblServices.Where(p => p.Role == "ADMIN").ToList();
+
+    ViewBag.product = db.tblProducts.ToList();
+
+    var productcolor = db.tblProductBackColors.ToList();
+    var productbackcolor = productcolor.Count == 0 ? "" : productcolor.SingleOrDefault().ProductBackColor;
+
+    ViewBag.works = db.tblWorks.ToList();
+    var workbackcolor1 = db.tblWorkbackColors.ToList();
+    var workbackcolor = workbackcolor1.Count == 0 ? "" : workbackcolor1.SingleOrDefault().WorkBackColor;
+
+    var border = db.Admin_Outer_Border.ToList();
+    var bordersize = border.Count == 0 ? "" : border.SingleOrDefault().Border;
+
+    ViewBag.card = db.tblCards.Where(p => p.Role == "ADMIN").ToList();
+    var cardbackcolor1 = db.tblCardBackColors.Where(p => p.Role == "ADMIN").ToList();
+    var cardbackcolor = cardbackcolor1.Count == 0 ? "" : cardbackcolor1.SingleOrDefault().CardBackColor;
+    ViewBag.about = db.tblAboutUsContents.Where(p => p.Role == "ADMIN").ToList();
+    ViewBag.address = db.tblContects.ToList();
+    var st = db.tblMenus.Where(p => p.Role == "ADMIN").ToList();
+    var homests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "HOME").SingleOrDefault().Status;
+    var aboutsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "ABOUT").SingleOrDefault().Status;
+    var servicests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "SERVICES").SingleOrDefault().Status;
+    var productsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "PRODUCTS").SingleOrDefault().Status;
+    var worksts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "WORKS ").SingleOrDefault().Status;
+    //var cardsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "CARDS").SingleOrDefault().Status;
+    var travelsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "TRAVEL").SingleOrDefault().Status;
+    var dthsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "DTHCONNECTION").SingleOrDefault().Status;
+    var teamsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "TEAM").SingleOrDefault().Status;
+    var contactsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "CONTACTUS").SingleOrDefault().Status;
+    var whychoosests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "WHYCHOOSEUS").SingleOrDefault().Status;
+    var newupdatasts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "NEWUPDATE").SingleOrDefault().Status;
+
+
+}
+
+@{
+    var admindetail = db2.Admin_details.ToList();
+    var mailid = admindetail.SingleOrDefault().email;
+    var mobile = admindetail.SingleOrDefault().mobile;
+    var Address = admindetail.SingleOrDefault().Address;
+    var Firm_Name = admindetail.SingleOrDefault().Companyname;
+    var SupportMail = admindetail.SingleOrDefault().email1;
+    var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
+    var PinCode = admindetail.SingleOrDefault().pincode;
+
+    int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
+    int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
+    var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
+    var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+
+
+}
+
+
+
+
+<div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class='carousel-item active'>
+            <img src='~/images/benarimg.png' alt='2' class="d-block w-100" />
+        </div>
+        <div class='carousel-item'>
+            <img src='~/MainFrontDesign/theme11_css/images/Slider/actual/638539663442679618r2.png' alt='2' class="d-block w-100" />
+        </div>
+        <div class='carousel-item'>
+            <img src='~/MainFrontDesign/theme11_css/images/Slider/actual/638503729978596551m1.png' alt='1' class="d-block w-100" />
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<div id="SERVICES" class="container mb-5">
+    <div class="text-center mt-5 mb-5">
+        <h1>Our Services</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-xs-12 ">
+            <center>
+                <div class="ih-item circle effect15 left_to_right">
+                    <a href="#">
+                        <div class="img">
+                            <img src="~/images/energy-saving.png" alt="img" class="img-responsive" />
+                        </div>
+                        <div class="info fullbodydycolorbg">
+                            <h3>BILL PAYMENT</h3>
+                        </div>
+                    </a>
+                </div>
+                <h3>Bill Payment</h3>
+                <p>Pay all your bills online with the BBPS. Postpaid mobile, landline, electricity bill, and water bill payment.</p>
+            </center>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <center>
+                <div class="ih-item circle effect15 left_to_right">
+                    <a href="#">
+                        <div class="img">
+                            <img src="~/images/utility.png" class="img-responsive" />
+
+                        </div>
+                        <div class="info fullbodydycolorbg">
+                            <h3>All Utilities </h3>
+                        </div>
+                    </a>
+                </div>
+                <h3>All Utilities </h3>
+                <p>Postpaid Mobile, Landline, Broadband, Electricity bill with BBPS, Insurance premium, and Water Bill Payment.</p>
+            </center>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12 ">
+            <center>
+                <div class="ih-item circle effect15 left_to_right">
+                    <a href="#">
+                        <div class="img">
+                            <img src="~/images/mobile-Dth.png" alt="img" class="img-responsive" />
+                        </div>
+                        <div class="info fullbodydycolorbg">
+                            <h3>Mobile & DTH Recharge</h3>
+                        </div>
+                    </a>
+                </div>
+                <h3>Mobile & DTH Recharge</h3>
+                <p>We are provide all prepaid and DTH rechange with live response, you feel real speed with US.</p>
+            </center>
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-xs-12 ">
+            <center>
+                <div class="ih-item circle effect15 left_to_right">
+                    <a href="#">
+                        <div class="img">
+                            <img src="~/images/pos-terminal.png" class="img-responsive" />
+                        </div>
+                        <div class="info fullbodydycolorbg">
+                            <h3>M-POS DEVICE</h3>
+                        </div>
+                    </a>
+                </div>
+                <h3>M-POS Device</h3>
+                <p>M POS (Mobile Point of Sale) 24x7 Fast services with maximum commission.</p>
+            </center>
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-xs-12 ">
+            <center>
+                <div class="ih-item circle effect15 left_to_right">
+                    <a href="#">
+                        <div class="img">
+                            <img src="~/images/four-busouter.png" alt="img" class="img-responsive" />
+                        </div>
+                        <div class="info fullbodydycolorbg">
+                            <h3>BUS & FLIGHT</h3>
+                        </div>
+                    </a>
+                </div>
+                <h3>Bus & Flight</h3>
+                <p>All domestic Bus booking and All domestic & international Flight booking.</p>
+            </center>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12 ">
+            <center>
+                <div class="ih-item circle effect15 left_to_right">
+                    <a href="#">
+                        <div class="img">
+                            <img src="~/images/online-shop.png" alt="img" class="img-responsive" />
+                        </div>
+                        <div class="info fullbodydycolorbg">
+                            <h3>E-COMMERCE</h3>
+                        </div>
+                    </a>
+                </div>
+                <h3>E-Commerce</h3>
+                <p>We are provide India largest E commerce market minimum price and maximum standard.</p>
+            </center>
+        </div>
+    </div>
+</div>
+<div class="container my-5 py-3">
+    <div class="dark-grey-text text-center">
+        <h1 class="text-center retalclr">Benefits Of @Firm_Name </h1>
+        <hr class="titlebdr" />
+        <div class="row justify-content-center d-flex mt-3">
+            <div class="col-md-2 col-sm-2 col-lg-2 mb-4">
+                <a href="#!" class="hoverable">
+                    <div class="text-center">
+                        <div class="cardshfhf">
+                            <img class="img-fluid " src="~/MainFrontDesign/theme11_css/assets/icons/onboarding-icon.png" alt="0" />
+                            <p class="text-dark clrblack">Start your Digital Financial Journey with Zero Investment</p>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+            <!--First column-->
+            <div class="col-md-2 col-sm-2 col-lg-2 mb-4">
+                <a href="#!" class="hoverable">
+                    <div class="text-center">
+                        <div class="cardshfhf">
+                            <img class="img-fluid" src="~/MainFrontDesign/theme11_css/assets/icons/zero-investment-icon.png" alt="1" />
+                            <p class="text-dark clrblack">Fast & Easy On-Boarding with KYC</p>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+            <!-- Third Column -->
+            <div class="col-md-2 col-sm-2 col-lg-2 mb-4">
+                <a href="#!" class="hoverable">
+                    <div class="text-center">
+                        <div class="cardshfhf">
+                            <img class="img-fluid" src="~/MainFrontDesign/theme11_css/assets/icons/success-rates-icon.png" alt="2" />
+                            <p class="text-dark clrblack">100% Secure & Reliable Platform for all Digital Financial Services</p>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+            <!-- Second Row Start -->
+            <div class="col-md-2 col-sm-2 col-lg-2 mb-4">
+                <a href="#!" class="hoverable">
+                    <div class="text-center">
+                        <div class="cardshfhf">
+                            <img class="img-fluid" src="~/MainFrontDesign/theme11_css/assets/icons/app-icon.png" alt="3" />
+                            <p class="text-dark clrblack">Best Margins promised on all Service Transactions</p>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+            <!--First column-->
+            <div class="col-md-2 col-sm-2 col-lg-2 mb-4">
+                <a href="#!" class="hoverable">
+                    <div class="text-center">
+                        <div class="cardshfhf">
+                            <img class="img-fluid" src="~/MainFrontDesign/theme11_css/assets/icons/languages-icon.png" alt="4" />
+                            <p class="text-dark clrblack">24/7 Multi-Lingual Technical Support</p>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Second Ropw End -->
+    </div>
+</div>
+<div class="" style="padding-bottom: 48px; display: table; width: 100%; ">
+    <div class="container" id="counters_2">
+        <section class="z-depth-1 ">
+            <h1 class="text-center retalclr">
+                Trusted @Firm_Name Users
+            </h1>
+            <hr class="titlebdr">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-3 col-lg-3 text-center">
+                    <h4 class="h1 font-weight-normal mb-3">
+                        <i class="fas fa-smile"></i>
+                        <span class="counter" data-targetnum="8000" data-speed="2500">0</span>
+                        <h6>Happy Customer</h6>
+                        <!-- <p class="sign">+</p> -->
+                    </h4>
+                </div>
+                <div class="col-md-3 col-lg-3 text-center">
+                    <h4 class="h1 font-weight-normal mb-3">
+                        <i class="fas fa-users-cog"></i>
+                        <span class="counter" data-targetnum="100" data-speed="3000">0</span>
+                        <h6>Super Distributer</h6>
+                        <!-- <h6 class="sign">+</h6>  -->
+                    </h4>
+                </div>
+                <div class="col-md-3 col-lg-3 text-center">
+                    <h4 class="h1 font-weight-normal mb-3">
+                        <i class="fas fa-users  "></i>
+                        <span class="counter" data-targetnum="500" data-speed="3000">0</span>
+                        <h6>Distributer</h6>
+                        <!-- <h6 class="sign">+</h6> -->
+                    </h4>
+                </div>
+                <div class="col-md-3 col-lg-3 text-center">
+                    <h4 class="h1 font-weight-normal mb-3">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span class="counter" data-targetnum="250" data-speed="3000">0</span>
+                        <h6>Retailer</h6>
+                    </h4>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<div class='container-fluid mx-auto my-5 py-2 mt-5 mb-5 col-12' style="text-align: center">
+    <div class="hd">
+        <h1 class="title mb-5">Become A Part Of Us</h1>
+    </div>
+    <p>
+
+    </p>
+    <div class="row" style="justify-content: center">
+        <div class="card col-md-3 col-12">
+            <div class="card-content">
+                <div class="card-body">
+                    <img class="img" src="~/MainFrontDesign/theme11_css/assets/image/agent-icon-2.png" alt="icon" />
+
+                    <div class="shadow"></div>
+                    <div class="card-title">Become An Agent </div>
+                    <div class="card-subtitle">
+                        <p><small class="text-muted">If you are a shopkeeper and willing to expand your business while helping customers of your area in commercial and non- commercial domain then use trusted platform of @Firm_Name</small> </p>
+                        <a href="" class="btn1 text-white">Apply Online</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card col-md-3 col-12 ml-2">
+            <div class="card-content">
+                <div class="card-body">
+                    <img class="img" src="~/MainFrontDesign/theme11_css/assets/image/agent-icon-1.png" alt="icon" />
+
+                    <div class="card-title">Become A Distributor </div>
+                    <div class="card-subtitle">
+                        <p><small class="text-muted">Give your distribution network a reliable and rapidly growing platform of @Firm_Name and earn more than 45k per month. Physical stock is not needed.</small> </p>
+                        <a href="" class="btn1 text-white">Apply Online</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card col-md-3 col-12 ml-2">
+            <div class="card-content">
+                <div class="card-body">
+                    <img class="img" src="~/MainFrontDesign/theme11_css/assets/image/agent-icon-3.png" alt="icon" />
+
+                    <div class="card-title">Become A Master Distributor</div>
+                    <div class="card-subtitle">
+                        <p><small class="text-muted">Lead banking & non-banking business in your district with the help of a vast digital network of Distributors and Retailers and earn more than 80k per month on your investment. Physical stock is not mandatory.</small> </p>
+                        <a href="" class="btn1 text-white">Apply Online</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+</div>
+<div class="" style="height:auto; /* height:130px;*/ align-items: center; justify-content: center; text-align: center;">
+    <div class="container">
+        <div class="hd">
+            <h1 class="title"> Our Partners </h1>
+        </div>
+        <div class="text-center">
+            <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="1800">
+                <div class="carousel-inner">
+                    <div class="carousel-item active mt-4">
+                        <div class="row">
+                            <div class="partner col-lg-2 col-md-2 d-flex align-items-center justify-content-center">
+                                <img src="~/MainFrontDesign/theme11_css/images/client.png" class="img-fluid " alt="Logo" />
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="carousel-item mt-4">
+                        <div class="row">
+                            <div class="partner col-lg-2 col-md-2 d-flex align-items-center justify-content-center">
+                                <img src="~/MainFrontDesign/theme11_css/images/client.png" class="img-fluid " alt="Logo" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="our-app" class="about bounceIn ">
+    <div class="container">
+        <div class="hd" style="text-align:center;">
+            <h1 class="title mb-5">DOWNLOAD OUR APP ENJOY OUR SERVICES</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="app-design-first">
+                    <div class="app-design-first-before">
+
+                    </div>
+                    <div class="app-design-first-after">
+
+                    </div>
+                    <span> Download Our App</span>
+                </div>
+
+            </div>
+            <div class="col-md-6" style="text-align:center;">
+
+                <div class="app-design-image" style="height: auto; text-align: center;">
+                    <img src="~/images/Downloadapk.png" />
+
+                </div>
+
+            </div>
+            <div class="col-md-12">
+                <div class="app-design-second mt-5">
+                    <p>To download the Android application directly from the website, the download button is given below, <br /> to download the application, open the website in the Android device.</p>
+
+                    @if (!string.IsNullOrEmpty(urllinks))
+                    {
+                        <a href="@Url.Action("DownloadAPK", "Home")" style="background:var(--main-bg-lcolor);">Download Android App / Version = @Apk_Version</a>
+                    }
+                    else
+                    {
+                        <a class="fullbodydycolorbg">App Link Not Available</a>
+                    }
+
+
+                    <a href="javascript:void(0);" onclick="myFunction()" onmouseout="outFunc()" class="fullbodydycolorbg" style="margin:0px 10px;">Copy Download Link</a>
+
+
+                    <a href="#" style="background:var(--main-bg-rcolor);">Download Play Store Link</a>
+                </div>
+                @if (!string.IsNullOrEmpty(urllinks))
+                {
+                    <input type="text" id="txthdlink" name="txthdlink" readonly value="@urllinks" style="opacity:0;" />
+                }
+            </div>
+
+
+        </div>
+    </div>
+</div>
+

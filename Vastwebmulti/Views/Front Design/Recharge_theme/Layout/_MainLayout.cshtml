@@ -1,0 +1,498 @@
+﻿<!DOCTYPE html>
+@using Vastwebmulti.Models;
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>@ViewBag.compnay</title>
+    @{
+        var favimage = "";
+        VastwebmultiEntities db2 = new VastwebmultiEntities();
+        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+            }
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var admindetail = db2.Admin_details.ToList();
+        var mailid = admindetail.SingleOrDefault().email;
+        var mobile = admindetail.SingleOrDefault().mobile;
+        var Address = admindetail.SingleOrDefault().Address;
+        var Firm_Name = admindetail.SingleOrDefault().Companyname;
+        var SupportMail = admindetail.SingleOrDefault().email1;
+        var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
+        var PinCode = admindetail.SingleOrDefault().pincode;
+
+        int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
+        int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
+        var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
+        var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+
+        var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+        var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+        var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+        var outerlink = db2.OuterUpload_Link.ToList();
+        var Outerlinkname_change = db2.Outer_Namechange.SingleOrDefault().Name;
+
+    }
+
+
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Site Metas -->
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+
+
+    <!-- bootstrap core css -->
+    <link href="~/MainFrontDesign/Recharge_theme_css/Vikash_css/bootstrap.css" rel="stylesheet" />
+
+    <!--owl slider stylesheet -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+    <!-- nice select  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
+    <!-- font awesome style -->
+    <link href="~/MainFrontDesign/Recharge_theme_css/Vikash_css/font-awesome.min.css" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="~/MainFrontDesign/Recharge_theme_css/Vikash_css/style.css" rel="stylesheet" />
+    <!-- responsive style -->
+    <link href="~/MainFrontDesign/Recharge_theme_css/Vikash_css/responsive.css" rel="stylesheet" />
+
+
+
+
+
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        @*
+            <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>*@
+    }
+    @{
+        var selectedcolor = "";
+        var menucolor = "";
+        VastwebmultiEntities db1 = new VastwebmultiEntities();
+        var allcolor = db1.tblMenuColors.ToList();
+        if (allcolor.Count > 0)
+        {
+            selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+            menucolor = allcolor.SingleOrDefault().MenuColor;
+        }
+        else
+        {
+            selectedcolor = "Green";
+            menucolor = "White";
+        }
+
+        //var selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+        //var menucolor = allcolor.SingleOrDefault().MenuColor;
+    }
+
+</head>
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    var col = "";
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "#da097d";
+    }
+    if (col == "")
+    {
+        col = "#da097d";
+    }
+    var color = col;
+      
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var logoimage = "";
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    var vv = from tbl in db.tblMenus
+             where tbl.Status == "Y" && tbl.Role == "ADMIN"
+             select new
+             {
+                 tbl.MenuName
+             };
+    ViewBag.menuname = vv;
+
+
+
+    List<Vastwebmulti.JsonData.Hlp_TC_Privacy> people = new List<Vastwebmulti.JsonData.Hlp_TC_Privacy>();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("PrivacyAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Privacy = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("OutHelpForAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Help = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("TnCAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var TC = people.ToList();
+
+    var Great_Help_News = db.Message_top.Where(a => a.users == "Outer").ToList();
+
+    var statuschkGreat = Great_Help_News.Where(aa => aa.name == "Great News" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+    var statuschkNeed = Great_Help_News.Where(aa => aa.name == "Need Help" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+
+    JSONReadWrite readWrit1e = new JSONReadWrite();
+    dynamic people1 = Newtonsoft.Json.JsonConvert.DeserializeObject(readWrit1e.Read("LogoBackgroundColor.json", "~/Areas/ADMIN/Models/JsonData/"));
+    string logoBgColor = people1.ColorCode;
+}
+
+<body>
+    <div class="hero_area">
+        <div class="bg-box">
+            <img src="~/MainFrontDesign/Recharge_theme_css/images/hero-bg.png" />
+        </div>
+        <!-- header section strats -->
+        <header class="header_section">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg custom_nav-container ">
+                    <a class="navbar-brand" href="Index1">
+                        <span>
+                            <img src="@Url.Content("~/"+@logoimage)" alt="Alternate Text" />
+                        </span>
+                    </a>
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class=""> </span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav  mx-auto ">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="Index1">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#our_app">Android</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#about_section">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#book_section">Contact Us</a>
+                            </li>
+                            
+                        </ul>
+                        <div class="user_option">
+                            <a href="@Url.Action("Login","Home")" class="order_online">
+                                Login
+                            </a>
+                            <a href="@Url.Action("Login","Home")" class="order_online">
+                                Sign Up
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <!-- end header section -->
+        <!-- slider section -->
+        <section class="slider_section ">
+            <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="container ">
+                            <div class="row">
+                                <div class="col-md-7 col-lg-6 ">
+                                    <div class="detail-box">
+                                        <h1>
+                                            Mobile Recharge
+
+                                        </h1>
+                                        <p>
+                                            Mobile recharge is an essential service in today’s digital world. It allows users to add talktime, data, and SMS packs to their mobile numbers quickly and easily. With online mobile recharge services, users can recharge prepaid or postpaid numbers anytime and from anywhere. This service saves time and offers a convenient, secure, and hassle-free way to stay connected, often with additional benefits like discounts and cashback offers.
+                                        </p>
+                                        <div class="btn-box">
+                                            <a href="" class="btn1">
+                                                Contact Us
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item ">
+                        <div class="container ">
+                            <div class="row">
+                                <div class="col-md-7 col-lg-6 ">
+                                    <div class="detail-box">
+                                        <h1>
+                                            DTH Recharge
+                                        </h1>
+                                        <p>
+                                            DTH recharge is an important service that ensures uninterrupted access to television channels and entertainment. It allows users to renew or add channel packs to their DTH connection easily. With online DTH recharge services, users can recharge their accounts anytime without visiting a store. This method is fast, secure, and convenient, helping users enjoy their favorite TV shows, movies, sports, and news without any interruption.
+                                        </p>
+                                        <div class="btn-box">
+                                            <a href="" class="btn1">
+                                                Contact Us
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="container ">
+                            <div class="row">
+                                <div class="col-md-7 col-lg-6 ">
+                                    <div class="detail-box">
+                                        <h1>
+                                            Bill Payment
+
+                                        </h1>
+                                        <p>
+                                            Bill payment services make it easy to pay utility and service bills on time. Users can pay electricity, water, gas, broadband, and other bills online without standing in long queues. Online bill payment is fast, secure, and convenient, helping users avoid late fees and service interruptions. With digital bill payment options, managing monthly expenses becomes simple and hassle-free.
+                                        </p>
+                                        <div class="btn-box">
+                                            <a href="" class="btn1">
+                                                Contact Us
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <ol class="carousel-indicators">
+                        <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
+                        <li data-target="#customCarousel1" data-slide-to="1"></li>
+                        <li data-target="#customCarousel1" data-slide-to="2"></li>
+                    </ol>
+                </div>
+
+
+
+                <div class="service_list">
+
+                    <div class="service_list_box">
+                        <img src="~/img/B mnemonic_PNG.png" />
+                        <p>Bill Payment</p>
+                    </div>
+
+                    <div class="service_list_box">
+                        <img style=" height: 54px;" src="~/MainFrontDesign/Recharge_theme_css/images/phone.jpg" />
+                        <p>Mobile Recharge</p>
+                    </div>
+
+                    <div class="service_list_box">
+                        <img src="~/images/DTH-Offers.png" />
+                        <p>DTH Recharge</p>
+                    </div>
+                    
+                    <div class="service_list_box">
+                        <img src="~/MainFrontDesign/Recharge_theme_css/images/all_uitilites.png" />
+                        <p>All Utilities</p>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+
+        </section>
+        <!-- end slider section -->
+    </div>
+
+
+    @RenderBody()
+
+    <!-- footer section -->
+    <footer class="footer_section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 footer-col">
+                    <div class="footer_contact">
+                        <h4>
+                            Contact Us
+                        </h4>
+                        <div class="contact_link_box">
+                            <a href="">
+                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                <span>
+                                    @Address
+                                </span>
+                            </a>
+                            <a href="">
+                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                <span>
+                                    Call +91 @mobile
+                                </span>
+                            </a>
+                            <a href="">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span>
+                                    @SupportMail
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 footer-col">
+                    <div class="footer_detail">
+                        <h4>
+                            About us
+                        </h4>
+                        <p>
+                            At @Firm_Name, our mission is to provide recharge and bill payment services that are simple, affordable, and easily accessible in a digital way.
+                        </p>
+                        <div class="footer_social">
+                            
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 footer-col" style="">
+                    <h4 style="">
+                        Follow Us
+                    </h4>
+
+                    <div class="footer_social">
+
+                        @if (ViewBag.Afac != "")
+                        {
+                            <a href="@ViewBag.Afac" target="_blank">
+                                <i class="fa fa-facebook" aria-hidden="true"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a> <i class="fa fa-facebook" aria-hidden="true"></i> </a>
+                        }
+
+                        @if (ViewBag.Atwi != "")
+                        {
+                            <a href="@ViewBag.Atwi" target="_blank">
+                                <i class="fa fa-twitter" aria-hidden="true"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a>
+                                <i class="fa fa-twitter" aria-hidden="true"></i>
+                            </a>
+                        }
+
+                        @if (ViewBag.Alinked != "")
+                        {
+                            <a href="@ViewBag.Alinked" target="_blank">
+                                <i class="fa fa-linkedin" aria-hidden="true"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a>
+                                <i class="fa fa-linkedin" aria-hidden="true"></i>
+                            </a>
+                        }
+
+
+
+                        @if (ViewBag.AInstagra != "")
+                        {
+                            <a href="@ViewBag.AInstagra" target="_blank">
+                                <i class="fa fa-instagram" aria-hidden="true"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a>
+                                <i class="fa fa-instagram" aria-hidden="true"></i>
+                            </a>
+                        }
+
+                        @if (ViewBag.APinteres != "")
+                        {
+                            <a href="@ViewBag.APinteres" target="_blank">
+                                <i class="fa fa-pinterest" aria-hidden="true"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a>
+                                <i class="fa fa-pinterest" aria-hidden="true"></i>
+                            </a>
+                        }
+
+                        
+                    </div>
+
+
+                    </div>
+                </div>
+            <div class="footer-info">
+                <div class="footer_menu col-md-6" style=" text-align: left;">
+                    <a style="padding-left:0;" href="@Url.Action("Help", "Home")">Help</a>
+                    <a href="@Url.Action("privacy", "Home")">Privacy</a>
+                    <a href="@Url.Action("termsconditions", "Home")">Terms & Conditions</a>
+                </div>
+                <p class=" col-md-6" style=" text-align: right;">
+                    &copy; <span id="displayYear"></span> All Rights Reserved By
+                    <a href="">@Firm_Name</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    <!-- footer section -->
+    <!-- jQery -->
+    <script src="~/MainFrontDesign/Recharge_theme_css/js/jquery-3.4.1.min.js"></script>
+    <!-- popper js -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <!-- bootstrap js -->
+    <script src="~/MainFrontDesign/Recharge_theme_css/js/bootstrap.js"></script>
+    <!-- owl slider -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <!-- isotope js -->
+    <script src="https://unpkg.com/isotope-layout@3.0.4/dist/isotope.pkgd.min.js"></script>
+    <!-- nice select -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js"></script>
+    <!-- custom js -->
+    <script src="~/MainFrontDesign/Recharge_theme_css/js/custom.js"></script>
+    
+
+</body>
+</html>

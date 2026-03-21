@@ -1,0 +1,479 @@
+﻿
+@model List<Vastwebmulti.Models.money_transfer_report_paging_Result>
+@{
+    Layout = null;
+}
+@*<style>
+        div#trans_id {
+            margin: 20px 0px;
+            border: 1px solid;
+            background: #f3f3f3;
+            width: 100%;
+            float: left;
+        }
+
+            div#trans_id li {
+                color: #262525;
+                width: 81%;
+            }
+
+        .modal-dialog {
+            float: right;
+            margin-top: 11%;
+            text-align: center;
+            width: 64%;
+            margin-right: 13%;
+        }
+    </style>*@
+@if (Model != null && Model.Count > 0)
+{
+    int sno = 0;
+    foreach (var item in Model)
+    {
+        sno += 1;
+        var color = "";
+        var fontsize = "";
+        var dmtytpe = "";
+        var img = "";
+        var style = "";
+        var pendingColor = "";
+
+        if (item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST"))
+        {
+            color = "#673AB7";
+            fontsize = "9px;";
+            style = "";
+            img = "../../ashok-images/undo.svg";
+        }
+        if (item.status.ToUpper().Contains("PENDING"))
+        {
+            double difftime = DateTime.Now.Subtract(item.trans_time.Value).TotalMinutes;
+            if (difftime < 2)
+            {
+                pendingColor = "#ffbf00";
+            }
+            else
+            {
+                pendingColor = "#fff8d1";
+            }
+            color = "#FF9800";
+            img = "../../ashok-images/clkk.png";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.status.ToUpper() == "SUCCESS")
+        {
+            color = "green";
+            img = "../../ashok-images/correct.svg";
+            color = "green";
+            style = "height:20px;width:20px;margin-right:3px;float:left;";
+            style = "font-size:0px !important;float:left;margin-right: 5px;margin-left:0px;";
+        }
+
+        else if (item.status.Contains("Failed To Success"))
+        {
+            color = "green";
+            style = "display:none !important;font-size:9px;";
+            fontsize = "9px;";
+            style = "font-size:12px !important;";
+            color = "green";
+            img = "../../ashok-images/correct.svg";
+
+        }
+        else if (item.status.Contains("Success To Failed"))
+        {
+            color = "red";
+            style = "display:none !important;font-size:9px;";
+            style = "font-size:12px !important;";
+            img = "../../ashok-images/closes.svg";
+
+        }
+
+
+
+        if (item.status.ToUpper() == "FAILED")
+        {
+            color = "red";
+            img = "../../ashok-images/closes.svg";
+
+            style = "height:20px;width:20px;margin-right:3px;float:left;";
+            style = "font-size:0px !important;";
+        }
+        if (item.DmtType == "DMT1")
+        {
+            dmtytpe = "";
+        }
+        if (item.DmtType == "DMT2")
+        {
+            dmtytpe = "";
+        }
+        if (item.status.ToUpper().Contains("RESEND"))
+        {
+
+        }
+        else
+        {
+            <tr style="background-color:@pendingColor">
+                @*<td>@sno</td>*@
+                <td class="cssstart" style="font-weight:700;font-size:@fontsize;padding-right:0;">
+
+
+                    @if (@item.status.Contains("Success To Failed"))
+                    {
+                        var stttt = "";
+                        string[] splitR = item.status.Split('(');
+                        var stss = splitR[0];
+                        var inputt = splitR[1].Replace(")", "");
+
+                        var resultID = System.Text.RegularExpressions.Regex.Match(splitR[1].Replace(")", ""), @"(.{3})\s*$");
+
+
+                        if (stss == "Success To Failed ")
+                        {
+                            stttt = "S > F **" + resultID;
+                        }
+                        <img style="@style background-color:@color;" src=@img />
+                        <strong class="rered">    <span style="@style">  @stttt </span></strong>
+                    }
+                    else if (@item.status.Contains("Failed To Success"))
+                    {
+                        var stttt = "";
+                        string[] splitR = item.status.Split('(');
+                        var stss = splitR[0];
+
+                        var inputt = splitR[1].Replace(")", "");
+
+                        var resultID = System.Text.RegularExpressions.Regex.Match(splitR[1].Replace(")", ""), @"(.{3})\s*$");
+
+                        if (stss == "Failed To Success ")
+                        {
+                            stttt = "F > S**" + resultID;
+                        }
+                        <img style="@style background-color:@color;" src=@img />
+                        <strong class="rered"><span style="@style">  @stttt </span></strong>
+                    }
+                    else if (@item.status.Contains("REFUND AGAINST "))
+                    {
+                        @*var stttt = "";
+                            string[] splitR = item.status.Split('(');
+                            var stss = splitR[0];
+
+                            var inputt = splitR[1].Replace(")", "");
+
+                            var resultID = System.Text.RegularExpressions.Regex.Match(splitR[1].Replace(")", ""), @"(.{3})\s*$");
+
+                            stttt = "**" + resultID;
+
+
+                            <strong class="refundblock">    <span style="@style">  @stttt+"REFF" +  </span></strong>*@
+
+                        <strong class="refundblock">   <span style="@style">  <img style="@style background-color:@color;" src=@img /> @item.status</span></strong>
+                    }
+                    else
+                    {
+                        <img style="@style background-color:@color;" src=@img />
+                        if (item.Trans_type == "IMPS")
+                        {
+                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold;">IMPS</span></p>
+                        }
+                        else if (item.Trans_type == "NEFT")
+                        {
+                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">NEFT</span></p>
+
+                        }
+                        else if (item.Trans_type == "WALLET")
+                        {
+                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">WALLET</span></p>
+                        }
+                        else if (item.Trans_type == "UPI")
+                        {
+                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">UPI</span></p>
+                        }
+                        else if (item.Trans_type == "Credit Card")
+                        {
+                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">Credit Card</span></p>
+                        }
+                        else
+                        {
+                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">Verify</span></p>
+                        }
+
+                        <strong class="refundblock">    <span style="@style">  @item.status </span></strong>
+                    }
+
+
+                </td>
+                <td>@item.senderno</td>
+                <td>@item.accountno</td>
+                <td>@item.recivername</td>
+
+                <td style="display:none;"><span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)</span></td>
+
+                <td>
+                    @{
+                        decimal amount = 0;
+                        decimal customerfee = 0;
+                        decimal total = 0;
+                        decimal debit = 0;
+                        decimal remcomm = 0;
+                        if (item.Trans_type.Contains("IMPS_VERIFY"))
+                        {
+                            amount = Convert.ToDecimal(item.amount);
+                            customerfee = Convert.ToDecimal(item.rem_comm);
+                            customerfee = customerfee - amount;
+                            total = amount + customerfee;
+                            debit = Convert.ToDecimal(item.rem_comm);
+                        }
+                        else
+                        {
+                            amount = Convert.ToDecimal(item.amount);
+                            customerfee = Convert.ToDecimal(item.customer_fee);
+                            total = amount + customerfee;
+                            remcomm = Convert.ToDecimal(item.rem_comm);
+                            debit = amount + remcomm;
+                        }
+                    }
+                    @item.amount&nbsp;
+                </td>
+                <td>
+                    @if (item.status.Contains("REFUND"))
+                    {
+                        <p>-@item.rem_comm</p>
+                    }
+                    else
+                    {
+                        @item.rem_comm
+                    }
+
+                </td>
+                @*<td>Tax</td>*@
+
+
+                <td style="display:none;">@item.totalamount</td>
+
+
+                <td style="display:none;">
+                    @{
+                        int share_rem_comm = 0;
+                        int rem_comm_include_gst = 0;
+                        if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                        {
+
+                            <p></p>
+                        }
+                        else
+                        {
+                            share_rem_comm = Convert.ToInt32(item.share_rem_comm);
+                            rem_comm_include_gst = Convert.ToInt32(item.rem_comm_include_gst);
+                            <p>@share_rem_comm&nbsp;%&nbsp;│&nbsp;@rem_comm_include_gst&nbsp;₹</p>
+                        }
+                    }
+                </td>
+                <td style="display:none;">
+                    @if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                    {
+                        <p></p>
+                    }
+                    else
+                    {
+                        <p>@item.rem_gst&nbsp;│&nbsp;@item.rem_comm_tds</p>
+                    }
+                </td>
+                <td style="display:none;">@item.rem_settlement</td>
+
+                <td>@debit</td>
+                <td>@item.user_remain_pre</td>
+                <td>@item.user_remain</td>
+                @*<td>Earn</td>*@
+                <td><span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)</span></td>
+                <td><span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.response_time)</span></td>
+                <td style="display:none;">&nbsp;@item.trans_id</td>
+                <td>
+                    @item.bank_trans_id
+                </td>
+                <td>
+                    @if (item.DmtType == "DMTN")
+                    {
+                        if (item.status.ToUpper() == "PENDING")
+                        {
+                            <button type="button" class="btn btn-primary" onclick="Refund('@item.trans_id')"> Refund </button>
+                        }
+
+                    }
+                    @if (item.DmtType == "DMTPPI")
+                    {
+                        if (item.status.ToUpper() == "PENDING")
+                        {
+                            <button type="button" class="btn btn-primary" onclick="RefundPPI('@item.trans_id')"> Refund </button>
+                        }
+                    }
+                </td>
+
+
+
+                    <td class="printbuttoncss">
+                    @*@if (item.status.ToUpper().Contains("REFUND") || item.status.ToUpper() == "FAILED")
+                        {
+                            <center style="float:left;">
+                                <button id="but" disabled href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="Click To Print Generate Invoice"><i class="material-icons">print</i></button>
+
+                            </center>
+                        }*@
+                    @if (item.status.ToUpper().Contains("SUCCESS"))
+                    {
+                        <center style="float:left;">
+                            <button id="but" onclick="GotoPDF('@item.trans_common_id')" href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="Click To Print Generate Invoice"><i class="material-icons">print</i></button>
+                        </center>
+                    }
+                    else if (item.status.ToUpper().Contains("PENDING"))
+                    {
+                        <center style="float:left;">
+                            <button id="but" onclick="GotoPDF('@item.trans_common_id')" href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="Click To Print Generate Invoice"><i class="material-icons">print</i></button>
+                            @*<button data-toggle="modal" data-target="#dmtdetails" onclick="Dmt_more_detail('@item.trans_id')" style="width: 27px; height: 25px; border: none; background: #e8e8e8; top: -3px; font-size: 18px; " data-placement="bottom" title="Click To Print Generate Invoice"><b>!</b></button>*@
+                        </center>
+                    }
+
+                </td>
+                <td style="display:none;">
+                    @if (item.DmtType == "DMT2" && item.status.ToUpper().Contains("PENDING") && (item.Trans_type == "IMPS" || item.Trans_type == "NEFT" || item.Trans_type == "UPI"))
+                    {
+                        <center style="margin-top:-21px;">
+                            <button id="but" onclick="GotoView('@item.trans_id')" href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="View Status"><i class="material-icons">visibility</i></button>
+                        </center>
+                    }
+                    else if (item.DmtType == "DMT1" && item.status.ToUpper().Contains("PENDING") && (item.Trans_type == "IMPS" || item.Trans_type == "NEFT" || item.Trans_type == "UPI"))
+                    {
+                        <center style="margin-top:-21px;">
+                            <button id="but" onclick="GotoViewDMT1('@item.trans_id')" href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="View Status"><i class="material-icons">visibility</i></button>
+                        </center>
+                    }
+                </td>
+
+                <td style="display:none;">@item.bank_nm</td>
+
+                <td style="display:none;">&nbsp;@item.trans_common_id</td>
+                <td style="display:none;">@item.ifsccode</td>
+                <td style="display:none;">@item.response_time</td>
+
+            </tr>
+        }
+
+    }
+}
+else
+{
+    <tr class="tfooter-trnone">
+        @if (@ViewBag.checkdata != null)
+        {
+            <td colspan="16"><h3 style="text-align:center;">No Data For Current Search</h3></td>
+        }
+        else
+        {
+            <td colspan="16"><h3 style="text-align:center;">Data Not Found</h3></td>
+        }
+    </tr>
+
+}
+
+<script>
+            var loading = false;
+        function Dmt_more_detail(trans_id) {
+            if (loading == true) return;
+            loading = true;
+            var url= "@Url.Action("Dmt_more_detail")?trans_id=" + trans_id
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    loading = false;
+                    var list = (JSON.parse(data)).Message;
+                    list = list.map(l => `<li style="margin: 10px 0">${l}</li>`)
+                    if (list.length > 0) {
+                        var message = list.join('');
+                        $('#trans_id').html(message);
+                        $('#datacontent22').show()
+                        document.getElementById('Successdatarr').addEventListener('click', () => Dmt_more_Statuschk(trans_id))
+                    }
+                    else {
+                        $('#trans_id').html('<i class=\'fa fa-times\' style=\'color: red; font-size: 115px\'></i>')
+                        $('#datacontent22').hide()
+                    }
+
+                }
+            });
+        }
+</script>
+
+<script>
+            var loading = false;
+    function Dmt_more_Statuschk(trans_id) {
+            if (loading == true) return;
+            loading = true;
+            var url= "@Url.Action("Dmt_more_Statuschk")?trans_id=" + trans_id
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    loading = false;
+                    var list = (JSON.parse(data)).Message;
+                    swal(list);
+                    list = list.map(l => `<li style="margin: 10px 0">${l}</li>`)
+                    if (list.length > 0) {
+                        var message = list.join('');
+                        $('#trans_id').html(message);
+                        $('#datacontent22').show();
+                    }
+                    else {
+                        $('#trans_id').html('<i class=\'fa fa-times\' style=\'color: red; font-size: 115px\'></i>')
+                        $('#datacontent22').hide()
+                    }
+
+                }
+            });
+        }
+</script>
+
+<div class="modal fund-tr-history  in fundtransfer-retailerupi" id="dmtdetails" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="">
+        <div class="modal-content width100 float-left">
+            <div class="modal-header width100  ecomm-pop-head">
+                <h4>
+                    Transaction In Processes / Pending
+
+                </h4>
+
+            </div>
+            <div class="modal-body width100 float-left ecomm-pop-body">
+                <div class="float-left width100">
+
+                    <div id="trans_id">
+                    </div>
+                    <div id="datacontent22">
+                        <p style="color: red; float:left;">
+                            Dear Retail Partner Presently the transaction is pending / in process as our bank is not getting any response from the beneficiary bank. In this case about 90% of the transactions are successful in 02 to 60 minutes and remaining is credited to the beneficiary/sender account within 72 Bank working hours.
+                        </p>
+                        <pre style="text-align:left !important;">
+<h5 style=" margin: -5px;">With your response we can solve this transaction within few minutes. </h5>
+Few easy steps
+1. Tell the customer to check the message.
+2. Customers can get updates by calling Bank Care.
+3. Balance check can be done through micro ATM machine.
+4. You can get the mini statement checked by AEPS.
+5. The customer should check the statement from the nearest ATM machine.
+If the customer has received the money, then you should match the transaction with the bank RRN number and make the transaction successful.
+</pre>
+                        <button type="button" class="btn waves-effect " id="Successdatarr" data-dismiss="modal" style="float: Right; padding: 8px 15px 8px 15px; border: 2px solid #ddd; color: #fff; background: green; font-size: 15px; }">
+                            @*<i class="fa fa-times" aria-hidden="true"></i>*@Go to Success
+                        </button>
+                    </div>
+
+                    <button type="button" class="btn waves-effect " id="close_modal" data-dismiss="modal" style="float: right; padding: 5px 12px 6px 12px; border: 1px solid; font-size: 17px; margin: 2px 11px; ">
+                        @*<i class="fa fa-times" aria-hidden="true"></i>*@Close
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

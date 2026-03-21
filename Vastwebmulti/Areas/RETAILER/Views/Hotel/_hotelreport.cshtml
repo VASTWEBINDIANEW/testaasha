@@ -1,0 +1,108 @@
+﻿@model List<Vastwebmulti.Models.proc_HotelReport_Result>
+@{
+    Layout = null;
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        var sts = "";
+        var color = "";
+        var img = "";
+        var style = "";
+        var pendingColor = "";
+        if (item.TicketStatus.Contains("Pending") || item.TicketStatus.Contains("Proccessed"))
+        {
+            color = "#ff9600";
+            sts = "Pending";
+            img = "../../ashok-images/clkk.png";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+            pendingColor = "#fff8d1";
+        }
+        if (item.TicketStatus.Contains("Success"))
+        {
+            color = "green";
+            sts = "Success";
+            img = "../../ashok-images/correct.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.TicketStatus.ToUpper().Contains("FAILED"))
+        {
+            color = "red";
+            sts = "Failed";
+            img = "../../ashok-images/closes.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+
+        }
+        if (item.TicketStatus.Contains("Refund"))
+        {
+            color = "#9C27B0";
+            sts = "Refund";
+            img = "../../ashok-images/undo.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+    <tr style="background-color:@pendingColor">
+        <td><p style="color:;font-size:15px;font-weight:700;"><img style="@style background-color:@color;" src=@img /><span style="font-size:0px !important;">@sts</span><span style="font-size:13px;text-transform:capitalize;float: left;">@item.HotelName</span></p></td>
+        <td style="display:none;">@item.HotelName</td>
+        <td>@item.NoOfRooms</td>
+        <td>@item.totalOfferedFare</td>
+        <td>@item.rempre</td>
+        <td>@item.rempost</td>
+        <td>@item.reminc</td>
+
+        @if (item.TicketStatus.Contains("Refund"))
+        {
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        }
+        else
+        {
+            <td>@item.BookingId</td>
+        }
+        @if (item.IsVoucherBooking != null && (bool)!item.IsVoucherBooking && item.TicketStatus != "Failed")
+        {
+            <td>@Ajax.ActionLink("Book", "GenerateVoucher", "Hotel", new { Id = item.idno, BId = item.BookingId }, new AjaxOptions { HttpMethod = "Post", OnSuccess = "OnSuccessStatus", OnFailure = "OnFailedStatus", OnComplete = "reloadPage" }) </td>
+        }
+        else
+        {
+            <td>Vouchered</td>
+        }
+        <td>
+            @String.Format("{0:ddd, MMM d, yyyy HH:ss:mm}", item.ticketdate)
+        </td>
+        <td>@Ajax.ActionLink("View Guests", "GuestDetails", "Hotel", new { TXNID = item.TraceId }, new AjaxOptions { HttpMethod = "Post", OnSuccess = "OnSuccess", OnFailure = "OnFailed", UpdateTargetId = "guestDescription" }, new { @class = "btn btn-default", @style = "1px solid #c7c2c2" }) </td>
+        <td>@Ajax.ActionLink("View Price", "HotelPriceDetails", "Hotel", new { TXNID = item.TraceId }, new AjaxOptions { HttpMethod = "Post", OnSuccess = "OnSuccessPrice", OnFailure = "OnFailedPrice", UpdateTargetId = "priceDescription" }, new { @class = "btn btn-default", @style = "1px solid #c7c2c2" }) </td>
+        <td>@Ajax.ActionLink("View Status", "HotelBookingStatus", "Hotel", new { TXNID = item.TraceId }, new AjaxOptions { HttpMethod = "Post", OnSuccess = "OnSuccessStatus", OnFailure = "OnFailedStatus" }, new { @class = "btn btn-default", @style = "1px solid #c7c2c2" }) </td>
+        <td>
+            <a href="@Url.Action("HotelFullDetails", "Hotel", new { TXNID = item.TraceId })" class="btn btn-primary">OPEN</a>
+        </td>
+      
+
+
+        @if (item.HotelBookingStatus == "Confirmed" && item.IsVoucherBooking == true)
+        {
+            <td>
+                @Ajax.ActionLink("CANCEL", "BookingCancallation", "Hotel", new { id = item.idno, BookingId = item.BookingId },
+            new AjaxOptions { HttpMethod = "Post", OnSuccess = "OnSuccessStatus", OnFailure = "OnFailedStatus" }, new { @class = "btn btn-default", @style = "1px solid #c7c2c2" })
+            </td>
+        }
+        else
+        {
+            <td></td>
+        }
+    </tr>
+
+    }
+}
+else
+{
+    <tr>
+        <td colspan="13"><h2 style="text-align:center;">Data Not Found</h2></td>
+
+    </tr>
+
+}

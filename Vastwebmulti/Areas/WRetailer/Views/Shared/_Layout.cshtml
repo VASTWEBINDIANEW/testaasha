@@ -1,0 +1,528 @@
+﻿@using Microsoft.AspNet.Identity
+@using Vastwebmulti.Models;
+<!DOCTYPE html>
+<html>
+<head>
+    @{
+        var favimage = "";
+        VastwebmultiEntities db = new VastwebmultiEntities();
+        string currenturl = HttpContext.Current.Request.Url.Authority;
+        currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+        currenturl = currenturl.ToUpper();
+        var whitelabelid = "";
+        if (currenturl.Contains("LOCALHOST"))
+        {
+            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+        }
+        else
+        {
+            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+        }
+        var faviconlogo = db.tblfavicons.Where(p => p.UserId == whitelabelid).ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            favimage = faviconlogo.SingleOrDefault().faviconimage;
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var userid = User.Identity.GetUserId();
+        var comnyname = "";
+        var companyname = db.tblWhiteContactDatas.Where(p => p.UserId == whitelabelid).ToList();
+        if (companyname.Count > 0)
+        {
+            comnyname = companyname.SingleOrDefault().CompnayName;
+        }
+        else
+        {
+            comnyname = "";
+        }
+        var color = db.changecolors.Where(a => a.UserId == whitelabelid).ToList();
+        var col = color.Count == 0 ? "pink" : color.SingleOrDefault().adminandouterheadercolor;
+
+        var remain = (from nm in db.Whitelabel_Remain_reteller_balance where nm.RetellerId == userid select nm).Single().Remainamount;
+        var image1 = "";
+        var logo = db.tblHeaderLogoes.Where(p => p.UserId == whitelabelid).ToList();
+        if (logo.Count > 0)
+        {
+            image1 = logo.SingleOrDefault().LogoImage;
+        }
+        else
+        {
+            image1 = "images/Default_Logo.png";
+        }
+        ViewBag.complaint = db.whitelabel_complaint_request.Count(a => a.userid == userid && a.sts == "Open");
+    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@ViewBag.companyname</title>
+    <!-- Favicon-->
+
+    <link rel="icon" href="@Url.Content("~/" + favimage)" type="image/x-icon" />
+    <!-- Google Fonts -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Wait Me Css -->
+    <link href="~/AdminDesign/plugins/waitme/waitMe.css" rel="stylesheet" />
+    <!-- Bootstrap Core Css -->
+    <link href="~/AdminDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <!-- Waves Effect Css -->
+    <link href="~/AdminDesign/plugins/node-waves/waves.css" rel="stylesheet" />
+    <!-- Animation Css -->
+    <link href="~/AdminDesign/plugins/animate-css/animate.css" rel="stylesheet" />
+    <!-- Morris Chart Css-->
+    <link href="~/AdminDesign/plugins/morrisjs/morris.css" rel="stylesheet" />
+    <!-- Custom Css -->
+    <link href="~/AdminDesign/css/style.css" rel="stylesheet">
+    <link href="~/fonts/icofont.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+    <link href="~/AdminDesign/css/themes/all-themes.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="~/AdminDesign/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datepicker3.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/daterangepicker.min.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/Areas/WRetailer/WRetailerCss/wretailercss.css" />
+
+    <link href="~/Areas/WHITELABEL/Design/css/whitelabel.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+    }
+    <style>
+        .navbar .navbar-toggle:before {
+            content: '\E8D5';
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+
+        .navbar .navbar-toggle:before {
+            content: '\E8D5';
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+
+        .wretailer-leftsidebar ul li a i {
+    font-size: 12px !important;
+    width: 25px;
+    height: 25px;
+    line-height: normal;
+    text-align: center;
+    border-radius: 4px;
+    background: #3a3f48;
+    padding-top: 5px;
+}
+.wretailer-leftsidebar ul li a span {
+    font-size: 14px !important;
+}
+.wretailer-leftsidebar ul li a:hover i{color:@PageData["GlobalSecond"] !important;text-shadow:@PageData["GlobalSecond"] !important;}
+.wretailer-leftsidebar ul li a:hover i::before{display: inline-block;
+animation: swing ease-in-out 0.5s 1 alternate;}
+.menu-top-custome .whitel-label-manu ul li a i {
+    top: 6px;
+}
+.wretailer-leftsidebar .menu-top-custome ul li a:hover ,.wretailer-leftsidebar .menu-top-custome ul li a.active{background:@PageData["Globalfirst"];}
+
+.menu-top-custome ul li a:hover ,.wretailer-leftsidebar .menu-top-custome ul li a:hover, .wretailer-leftsidebar .menu-top-custome ul li a.active{
+   background: #fff !important;
+border-radius: 20px 0px 0 20px;
+    transition: .4s linear;
+}
+.menu-top-custome ul li a:hover span, .wretailer-leftsidebar .menu-top-custome ul li a.active span{color:#555 !important;}
+.sidebar.wretailer-leftsidebar .menu{height:auto;}
+.menu-top-custome ul li {
+    border-bottom: 1px dashed #fff;
+}
+.menu-top-custome ul li a {
+    border: 0;
+}
+.wretailer-navtoggleclass .navbar-toggle.collapsed::after ,.wretailer-navtoggleclass .navbar-toggle::before{display:none;}
+.wretailer-navtoggleclass .navbar-toggle.collapsed::before{display:block;}
+
+.wretailer-navtoggleclass .navbar-toggle::after {
+    display: block;content: "";width: 15px;height: 15px;
+    background: url('../../ashok-images/closes.svg')no-repeat;
+    background-size: cover;position: relative;top: 11px;left: 5px;
+}
+
+
+@@media screen and (max-width:766px){
+    .whitelabel-header #navbar-collapse{background-image: linear-gradient(to right , @PageData["Globalfirst"], @PageData["GlobalSecond"]) !important;}
+}
+@@media screen and (max-width:480px){
+        .dataall-pagedashbord ul li {width: 50%;border-right: 1px solid #fff;}
+        .dataall-pagedashbord ul li a {border: 0px !important;}
+        .dataall-pagedashbord ul li:nth-child(2), .dataall-pagedashbord ul li:nth-child(4), .dataall-pagedashbord ul li:nth-child(5) {
+    border-right: 0;
+}
+        .dataall-pagedashbord ul li:nth-child(5) {width: 100%;}
+        .home-page-container.home-page-container-page {padding-left: 10px;padding-right: 0px;}
+        .dataall-pagedashbord .wretailer-todaydetails ul li {border-right: 0;float:left;}
+        .dataall-pagedashbord .wretailer-todaydetails ul li:last-child {float: right;padding-right: 10px;}
+
+}
+        .whitelabel-header {
+            width: 100%;
+            float: left;
+            padding: 2px 0;
+            position: fixed;
+            z-index: 99;
+            top: 0;
+        }
+
+    </style>
+</head>
+
+<body class="theme-@col" style="overflow-x:hidden;">
+
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <center><img src="~/images/serachimg.gif" class="img-responsive" style="height:200px;width:200px;" /></center>
+
+        </div>
+    </div>
+
+
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <div class="search-icon">
+            <i class="material-icons">search</i>
+        </div>
+        <input type="text" placeholder="START TYPING...">
+        <div class="close-search">
+            <i class="material-icons">close</i>
+        </div>
+    </div>
+    <!-- #END# Search Bar -->
+    <!-- Top Bar -->
+
+    <div class="whitelabel-header " style="background-image: linear-gradient(to right , @PageData["Globalfirst"], @PageData["GlobalSecond"]) !important;">
+
+        <nav class="navbar">
+            <div class="whitel-label-container wretailer-navtoggleclass">
+                <div class="navbar-header" style="padding:0px 0px;">
+                    <a href="javascript:void(0);" class="dropdown-toggle responsive-toggle-classblock" data-toggle="dropdown" role="button" style="display:none;">
+                        <span class="label-count label-count-second" style="background:none; font-size:13px;padding-top:3px;">Balance</span>
+                        <p style="padding-top:14px;border-left:1px solid; padding-left:8px;"><span id="color">₹&nbsp;</span><span id="balance" style="font-size:11px;">@remain</span></p>
+                    </a>
+
+                    <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                    <a href="javascript:void(0);" class="bars bars-toggle bars-toggle-wretailer"></a>
+                    <a href="~/RETAILER/Home/Dashboard" class="logo-image">
+                        <center>
+                            <img src="@Url.Content("~/"+@image1)" class="img-responsive" style="width: 116px;height: 49px" />
+                        </center>
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <ul id="leftulbar" class="nav navbar-nav navbar-left" style="padding-left:0px;">
+                            <li class="dropdown">
+                                <ul id="leftulbar" class="nav nav-tabs tab-nav-left nav1-tabs1" role="tablist" style="border-bottom:none;">
+                                    <li id="dashboard" role="presentation" style="height:39px;padding:0px;">
+                                        <a href="@Url.Action("Dashboard","Home")" aria-expanded="false" style="background:transparent; cursor:pointer;"><i class="fa fa-home" style="color:white;top:-3px;"></i>Home</a>
+                                    </li>
+                                    <li id="recharge" role="presentation" style="height:39px;padding:0px;">
+                                        <a href="@Url.Action("Index","Home")" id="recharge" aria-expanded="false" style="background:transparent;"><img src="~/ashok-images/validating-ticket.svg" />Prepaid&nbsp;&&nbsp;Utility</a>
+                                    </li>
+                                    <li id="finanical" role="presentation" style="height:39px;padding:0px;">
+                                        <a href="@Url.Action("Money_transfer", "Home")" aria-expanded="true" style="background:transparent;"><img src="~/AdminDesign/images/business.svg" />Financial</a>
+                                    </li>
+                                    <li id="Gift" role="presentation" style="height:39px;padding:0px;">
+                                        <a href="@Url.Action("Gift_Card", "Home")" aria-expanded="true" style="background:transparent;"><img src="~/ashok-images/business(1).png" />Gift Card</a>
+                                    </li>
+
+                                    <li id="Dth" role="presentation" style="height:39px;padding:0px;">
+                                        <a href="@Url.Action("Security_Page", "Home")" aria-expanded="true" style="background:transparent;"><img src="~/ashok-images/computer.png" />Security</a>
+                                    </li>
+                                    <li id="travel" role="presentation" style="height:39px;padding:0px;">
+                                        <a href="@Url.Action("Travel", "Home")" aria-expanded="true" style="background:transparent;"><img src="~/ashok-images/interface.png" />Travel</a>
+                                    </li>
+                                    <li id="ecommerce" role="presentation" style="height:39px;padding:0px; margin-bottom:-27px;">
+                                        <a href="@Url.Action("Index","ECommerce")" aria-expanded="true" style="background:transparent;"><img src="~/ashok-images/interface(1).png" />E-commerce</a>
+                                    </li>
+
+
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <li class="dropdown dropdown-last">
+                            <a href="@Url.Action("Complaint","Home")" aria-expanded="true" style="border-left:1px solid;" data-toggle="tooltip" data-placement="bottom" title="Complaint Request Notification. ">
+                                <i class="material-icons">notifications</i>
+                                @if (ViewBag.complaint != null)
+                                {
+                                    <span class="label-count">@ViewBag.complaint</span>
+                                }
+                                else
+                                {
+                                    <span class="label-count">0</span>
+                                }
+                            </a>
+                        </li>
+
+                        <li class="dropdown dropdown-last responsive-none">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" style="">
+                                <span class="label-count label-count-second" style="background:none; font-size:13px;padding-top:3px;">Balance</span>
+                                <p style="padding-top:14px;border-left:1px solid; padding-left:8px;"><span id="color">₹&nbsp;</span><span id="balance" style="font-size:11px;">@remain</span></p>
+                            </a>
+                        </li>
+
+                        <li class="dropdown dropdown-last">
+                            <a href="javascript:void(0);" class="dropdown-toggle" role="button" data-toggle="tooltip" data-placement="bottom" title="Logout ">
+                                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <center>
+                                        <button type="submit" style="border-left:1px solid; color:white; font-size:28px; background: transparent; border-bottom: none;
+    border-right: none; border-top: none;">
+                                            <span class="glyphicon glyphicon-off"></span>
+                                        </button>
+                                    </center>
+                                }
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+    </div>
+    <!-- #Top Bar -->
+    <section>
+        <!-- Left Sidebar -->
+        <aside id="leftsidebar" class="sidebar whitellabel-leftsidebar wretailer-leftsidebar" style="box-shadow:none;background-image: linear-gradient(to right , @PageData["Globalfirst"], @PageData["GlobalSecond"]) !important;">
+
+            <div class="user-info navbar" style="height:260px;border-bottom:none;">
+                <center>
+                    <div class="image">
+                        <img src="~/AdminDesign/images/user.png" width="48" height="48" alt="User" />
+                    </div>
+                </center>
+                <center>
+                    <div class="legal whitel-label-legal" style="background:none; position:relative; padding:0px;">
+
+                        <div class="name" style="color:white;">John Doe</div>
+                        <div class="email" style="color:white;"></div>
+                        <div style="margin-top:2px;width:100%;float:left;display:none">
+                            <a href="#" class="btn btn-info profile-singout" style="float:left;">Profile</a>
+                            <div style="float:right;">
+
+                                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="submit" value="Sign out" class="btn btn-danger profile-singout" style="display:none;" />
+                                }
+                            </div><br />
+                            <center style="margin-top:10px;display:none;"><a href="~/RETAILER/Home/ChangePassword" style="color:white; text-decoration:none;"><i class="material-icons" style="font-size:16px;">https</i><span>Change Password</span></a></center>
+                        </div>
+
+                    </div>
+
+                </center>
+            </div>
+            <!-- #User Info -->
+            <!-- Menu -->
+            <div class="menu-top-custome">
+                <div class="menu whitel-label-manu" style="">
+                    <ul class="list list-reports-wr">
+                        <li class="">
+                            <a href="~/ADMIN/Home/Dashboard">
+                                <i class="fa fa-home" style=""></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("RechargeReport","Home")" class="menu-toggle">
+
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>Prepaid&nbsp;&&nbsp;Utility</span>
+                            </a>
+
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Money_Transfer_Report","Home")" class="menu-toggle">
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>Financial&nbsp;Report</span>
+                            </a>
+
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("Giftcard_Report","Home")">
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>Gift&nbsp;Card&nbsp;Report</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>Security&nbsp;Report</span>
+                            </a>
+
+                        </li>
+                        <li class="travel-reportactive">
+                            <a href="@Url.Action("Flight_Report","Home")" class="menu-toggle">
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>Travel&nbsp;Report</span>
+                            </a>
+
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Ecommerce_Report","Home")" class="menu-toggle">
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>E-commerce&nbsp;Report</span>
+                            </a>
+
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("FundTransferRetailer","Home")" class="menu-toggle">
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>Request&nbsp;Manualy&nbsp;Wallet</span>
+                            </a>
+
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("UPITRANSFER","Home")" class="menu-toggle">
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>Add&nbsp;By&nbsp;UPI&nbsp;Wallet</span>
+                            </a>
+
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("wallethistory","Home")" class="menu-toggle">
+                                <i class="fa fa-folder-open folder-active" aria-hidden="true"></i>
+                                <span>Wallet&nbsp;History&nbsp;Wallet</span>
+                            </a>
+
+                        </li>
+
+                        @*<li>
+                                <a href="@Url.Action("Fund_Transfer_Retailer_To_Retailer","Home")" class="menu-toggle">
+                                    <img src="~/ashok-images/wallet(1).svg" />
+                                    <span>Transfer&nbsp;R<sup>2</sup>R&nbsp;Wallet</span>
+                                </a>
+
+                            </li>*@
+
+                    </ul>
+                </div>
+            </div>
+
+            <!-- #Footer -->
+
+        </aside>
+
+    </section>
+    @RenderBody()
+
+    <!-- Jquery Core Js -->
+
+    <script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+    <script src="~/Swalalert/datatablejquery.js"></script>
+    <!-- Bootstrap Core Js -->
+    <script src="~/AdminDesign/plugins/bootstrap/js/bootstrap.js"></script>
+    <!-- Autosize Plugin Js -->
+    <script src="~/AdminDesign/plugins/autosize/autosize.js"></script>
+    <!-- Select Plugin Js -->
+    <!-- Slimscroll Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <!-- Waves Effect Plugin Js -->
+    <script src="~/AdminDesign/plugins/node-waves/waves.js"></script>
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-countto/jquery.countTo.js"></script>
+    <!-- Morris Plugin Js -->
+    <script src="~/AdminDesign/plugins/raphael/raphael.min.js"></script>
+    <script src="~/AdminDesign/plugins/morrisjs/morris.js"></script>
+    <!-- ChartJs -->
+    <!-- Flot Charts Plugin Js -->
+    <script src="~/AdminDesign/plugins/flot-charts/jquery.flot.js"></script>
+
+    <!-- Sparkline Chart Plugin Js -->
+    <!-- Custom Js -->
+
+    <script src="~/AdminDesign/js/admin.js"></script>
+    <script src="~/AdminDesign/js/pages/index.js"></script>
+    <!-- Demo Js -->
+    <script src="~/AdminDesign/js/demo.js"></script>
+    <script src="~/AdminDesign/plugins/moment.min.js"></script>
+    <script src="~/AdminDesign/plugins/daterangepicker.js"></script>
+    <!--data table -->
+    <script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+    <script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+    <script src="~/AdminDesign/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    <script src="~/AdminDesign/plugins/sweetalert/sweetalert.min.js"></script>
+    <link href="~/Swalalert/datatable.css" rel="stylesheet" />
+
+    <script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+    <script src="~/ClanderCss/bootstrap-datepicker.min.js"></script>
+    <script src="~/ClanderCss/bootstrap-datetimepicker.min.js"></script>
+
+</body>
+</html>
+
+
+<!--Redirect to Index view with javascript-->
+<script>
+
+    window.onload = function () {
+
+        var pathname = window.location.pathname;
+        $('.nav > li > a[href="' + pathname + '"]').parent().addClass('active');
+        $('.nav > li > a[href="' + pathname + '"]').parent().addClass('btn  waves-effect');
+    }
+</script>
+<script>
+    $(function () {
+        var current = location.pathname;
+        $('.menu-top-custome ul li a').each(function () {
+            var $this = $(this);
+            // if the current path is like this link, make it active
+            if ($this.attr('href').indexOf(current) !== -1) {
+                $this.addClass('active');
+            }
+        })
+    })
+</script>
+
+<script>
+
+    $(".bars.bars-toggle.bars-toggle-wretailer").click(function () {
+        $(this).toggleClass("main-togglemain");
+        $("#leftsidebar.sidebar.whitellabel-leftsidebar").slideToggle('slow');
+    });
+
+
+</script>
+
+

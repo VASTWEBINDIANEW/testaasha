@@ -1,0 +1,404 @@
+﻿@model Vastwebmulti.Areas.WRetailer.ViewModels.WhitelabelRetailerFundtransfer
+
+@{ decimal? runningTotal = 0M; decimal? Totalcharges = 0M; decimal? TotalNetTransfer = 0M; decimal? total = 0M; }
+
+@if (Model != null && Model.selectremtoremreports != null)
+{
+    <table id="tbldata" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Transfer&nbsp;To</th>
+                <th>Transfer&nbsp;Amt</th>
+                <th>Retailer&nbsp;Old&nbsp;Bal</th>
+                <th>Retailer&nbsp;New&nbsp;Bal</th>
+                <th>Your&nbsp;Old&nbsp;Bal</th>
+                <th>Your&nbsp;New&nbsp;Bal</th>
+
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.selectremtoremreports.OrderByDescending(a => a.trans_date))
+            {
+                runningTotal = Model.selectremtoremreports.Sum(x => x.value);
+                //Totalcharges += item.commistion;
+
+                var parentsfarmname = item.transfertofrmname == null || item.transfertofrmname == "" ? item.transfertoretailername : item.transfertofrmname;
+
+                <tr data-toggle="modal" onclick="tablerowshowdetail('@parentsfarmname','@item.value','@item.whitelabel_rem_from_new','@item.whitelabel_remfrom_old_bal','@item.whitelabel_rem_to_old_bal',@item.whitelabel_rem_to_new,'@item.comment','@item.trans_date')" data-target="#m-d-fund-transfer" style="background:no-repeat;">
+
+
+                    <td><p style="margin-top:6px;">  @parentsfarmname</p></td>
+
+
+
+
+                    <td><p style="margin-top:6px;">@item.value</p></td>
+                    <td><p style="margin-top:6px;">@item.whitelabel_rem_to_old_bal</p></td>
+                    <td><p style="margin-top:6px;">@item.whitelabel_rem_to_new</p></td>
+                    <td><p style="margin-top:6px;">@item.whitelabel_remfrom_old_bal</p></td>
+                    <td><p style="margin-top:6px;">@item.whitelabel_rem_from_new</p></td>
+
+
+                    @*
+                        <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                    @*
+                        <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                    <td><p style="margin-top:6px;">@item.trans_date</p></td>
+                    @*
+                        <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+
+                </tr>
+            }
+
+            @if (Model.selectremtoremreports.Count() > 0)
+            {
+                <tr><td colspan="1">Total</td><td>@runningTotal</td><td colspan="5"></td></tr>
+            }
+            else
+            {
+                <tr><td style="text-align:center" colspan="7">No Data Found</td></tr>
+
+            }
+        </tbody>
+    </table>
+
+}
+
+else if (Model != null && Model.selectrem_purchase_order_reports != null)
+{
+    decimal chargesapply = 0;
+    <table class="table table-bordered table-striped table-hover">
+        <thead style="background-color:whitesmoke;">
+            <tr>
+                <th>Status </th>
+                <th>Order&nbsp;No</th>
+
+                <th>Request To</th>
+                <th><center>Amount</center></th>
+                <th><center>Charge</center></th>
+                <th>Final Amount</th>
+                @*<th>To&nbsp;Acc&nbsp;No </th>*@
+                @*<th>UtrNo/SlipNo </th>*@
+                <th>Request&nbsp;Date </th>
+                @*<th>Response&nbsp;Date</th>
+                    <th>Comment</th>
+                    <th>Screenshot </th>*@
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.selectrem_purchase_order_reports.OrderByDescending(x => x.reqdate))
+            {
+
+                var cashdepositecharges = Model.cashdepositecharges.Where(x => x.chargefrom == item.frm && x.userid == item.remid && x.type == item.paymode).FirstOrDefault();
+                if (cashdepositecharges == null)
+                {
+                    chargesapply = 0;
+                }
+                else
+                {
+                    chargesapply = cashdepositecharges.charges.Value;
+                }
+
+                chargesapply = Math.Round(Convert.ToDecimal(item.amount * chargesapply / 100), 2);
+                var finalvalues = item.amount - chargesapply;
+
+                runningTotal = Model.selectrem_purchase_order_reports.Sum(x => x.amount);
+                //Totalcharges += item.commistion;
+
+                // finalvalues += finalvalues;
+                Totalcharges += chargesapply;
+                TotalNetTransfer += finalvalues;
+
+                var color = "";
+                var stscolor = "";
+                if (item.type_ == "cash")
+                {
+                    color = "green";
+                }
+                if (item.type_ == "Credit" || item.type_ == "credit")
+                {
+                    color = "red";
+                }
+                if (item.sts == "Pending")
+                {
+                    stscolor = "#FF9800";
+
+                }
+                if (item.sts == "APPROVED")
+                {
+                    stscolor = "green";
+
+                }
+                if (item.sts == "REJECTED")
+                {
+                    stscolor = "red";
+
+                }
+
+                <tr data-toggle="modal" data-target="#m-d-fund-transfer12" style="background:no-repeat;" onclick="tablerowshowdetail22( '@item.FrmName','@item.orderno','@item.sts','@item.paymode','@item.utrno','@item.details','@item.amount','@item.reqdate','@item.responsedate','@chargesapply','@finalvalues','@item.Headtype')">
+
+                    <td><p style="margin-top:6px;">@item.sts</p></td>
+                    <td><p style="margin-top:6px;">  @item.orderno</td>
+
+
+
+
+                    <td><p style="margin-top:6px;">@item.order_to</p></td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p> </td>
+                    <td><p style="font-size:12px;text-align:center;">@chargesapply</p> </td>
+                    <td>@finalvalues</td>
+                    <td>@Html.DisplayFor(modelItem => item.reqdate)<img src="~/ashok-images/rightaeps.svg" data-toggle="modal" data-target="#m-d-fund-transfer" style="width:13px;cursor:pointer;" /></td>
+
+
+                </tr>
+
+            }
+            @if (Model.selectrem_purchase_order_reports.Count() > 0)
+            {
+                <tr><td colspan="3">Total</td><td>@runningTotal</td><td>@Totalcharges</td><td>@TotalNetTransfer</td><td></td></tr>
+
+            }
+            else
+            {
+                <tr><td style="text-align:center" colspan="7">No Data Found</td></tr>
+
+            }
+        </tbody>
+    </table>
+}
+
+
+else if (Model != null && Model.showdatafundrecivefromwhitelabel != null)
+{
+
+    <table class="table table-bordered table-striped table-hover">
+        <thead style="background-color:whitesmoke;">
+
+
+            <tr>
+
+                <th>Recive From </th>
+                <th>Head</th>
+
+                <th>P_ Mod</th>
+                <th><center>Net Transfer</center></th>
+                <th><center>Charge</center></th>
+
+                @*<th>To&nbsp;Acc&nbsp;No </th>*@
+                @*<th>UtrNo/SlipNo </th>*@
+                <th>RechargeDate </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.showdatafundrecivefromwhitelabel)
+            {
+
+
+                <tr data-toggle="modal" onclick="tablerowshowdetailorderrecive('','@item.Name','@item.baltype','@item.balance','@item.Commission','@item.comment','@item.cr','@item.oldcrbal','@item.Fundvalue','@item.transfer_date','@item.retaileridpre','@item.retaileridpost','@item.retaileridpre','@item.retaileridpre','@item.Head','@item.balance','@item.CollectionBy')" data-target="#m-d-fund-orderRecive" style="background:no-repeat;">
+
+                    <td>@item.Name</td>
+                    <td><p style="margin-top:6px;">  @item.Head</td>
+
+                    <td><p style="margin-top:6px;">@item.baltype</p></td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.Fundvalue)</p> </td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.Commission)</p> </td>
+
+                    <td>@Html.DisplayFor(modelItem => item.transfer_date)<img src="~/ashok-images/rightaeps.svg" style="width:13px;cursor:pointer;" /></td>
+                    @*<td>
+                            <div class="row">
+                                @if (item.sts == "Pending")
+                                {
+                                    <div class="col-xs-6" style="margin-bottom:0px;">
+                                        <center>
+                                            <button type="button" name="type" onclick="return funin('@item.id','APP')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa fa-check" style="color:green;"></li> </button>
+                                        </center>
+                                    </div>
+                                    <div class="col-xs-6" style="margin-bottom:0px;">
+                                        <center>
+                                            <button type="button" name="type" onclick="return funin('@item.id','REJ')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa  fa-ban" style="color:red;"></li> </button>
+                                        </center>
+                                    </div>
+                                }
+                                else
+                                {
+
+                                }
+                            </div>
+                        </td>*@
+
+                </tr>
+
+
+            }
+        </tbody>
+    </table>
+
+
+}
+
+else if (Model != null && Model.showdatafundrecivefromdealer != null)
+{
+
+    <table class="table table-bordered table-striped table-hover">
+        <thead style="background-color:whitesmoke;">
+
+
+            <tr>
+
+                <th>Recive From </th>
+                <th>Head</th>
+
+                <th>P_ Mod</th>
+                <th><center>Net Transfer</center></th>
+                <th><center>Charge</center></th>
+
+                @*<th>To&nbsp;Acc&nbsp;No </th>*@
+                @*<th>UtrNo/SlipNo </th>*@
+                <th>RechargeDate </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.showdatafundrecivefromdealer)
+            {
+
+
+                <tr data-toggle="modal" onclick="tablerowshowdetailorderrecive('','@item.DealerName','@item.bal_type','@item.balance','@item.commission','@item.comment','@item.cr','@item.oldcrbalance','@item.balance','@item.RechargeDate','@item.remain_pre_amount','@item.remain_amount','@item.remain_pre_amount','@item.remain_amount','@item.Head','@item.TotalBal','@item.CollectionBy')" data-target="#m-d-fund-orderRecive" style="background:no-repeat;">
+
+                    <td>@item.DealerName</td>
+                    <td><p style="margin-top:6px;"> </td>
+
+                    <td><p style="margin-top:6px;">@item.bal_type</p></td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.balance)</p> </td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.commission)</p> </td>
+
+                    <td>@Html.DisplayFor(modelItem => item.RechargeDate)<img src="~/ashok-images/rightaeps.svg" style="width:13px;cursor:pointer;" /></td>
+                    @*<td>
+                    <div class="row">
+                        @if (item.sts == "Pending")
+                        {
+                            <div class="col-xs-6" style="margin-bottom:0px;">
+                                <center>
+                                    <button type="button" name="type" onclick="return funin('@item.id','APP')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa fa-check" style="color:green;"></li> </button>
+                                </center>
+                            </div>
+                            <div class="col-xs-6" style="margin-bottom:0px;">
+                                <center>
+                                    <button type="button" name="type" onclick="return funin('@item.id','REJ')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa  fa-ban" style="color:red;"></li> </button>
+                                </center>
+                            </div>
+                        }
+                        else
+                        {
+
+                        }
+                    </div>
+                </td>*@
+
+                </tr>
+
+
+            }
+        </tbody>
+    </table>
+
+
+}
+else if (Model != null && Model.retailer_credit_report_by_Wadmin != null)
+{
+
+
+    <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+        <thead style="background-color:whitesmoke;">
+            <tr>
+                <th>SR.NO</th>
+                <th>Farm Name</th>
+                <th>Name</th>
+                <th>Last&nbsp;Transaction&nbsp;Date</th>
+                <th>Last&nbsp;Transaction&nbsp;Type</th>
+                <th>Live&nbsp;Balance</th>
+                <th>Current&nbsp;Outstanding</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i = 1;}
+            @foreach (var item in Model.retailer_credit_report_by_Wadmin)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.AdminEmail</td>
+                    <td>@item.Name</td>
+                    <td>@item.transfer_date</td>
+                    <td>@item.baltype</td>
+                    <td>@item.remain_amount</td>
+                    <td>@item.cr</td>
+                </tr>
+                i++;
+            }
+        </tbody>
+        <tfoot style="background-color:whitesmoke;">
+            <tr>
+                <td><p style="font-size:17px;">Total</p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><p style="font-size:17px;">@Model.retailer_credit_report_by_Wadmin.Sum(a => a.cr)</p></td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+
+
+else if (Model != null && Model.retailer_credit_report_by_dealer != null)
+{
+
+    <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+        <thead style="background-color:whitesmoke;">
+            <tr>
+                <th>SR.NO</th>
+                <th>Farm Name</th>
+                <th>Name</th>
+                <th>Last&nbsp;Transaction&nbsp;Date</th>
+                <th>Last&nbsp;Transaction&nbsp;Type</th>
+                <th>Live&nbsp;Balance</th>
+                <th>Current&nbsp;Outstanding</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i = 1;}
+            @foreach (var item in Model.retailer_credit_report_by_dealer)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.DLMEmail</td>
+                    <td>@item.DealerName</td>
+                    <td>@item.RechargeDate</td>
+                    <td>@item.bal_type</td>
+                    <td>@item.remain_amount</td>
+                    <td>@item.cr</td>
+                </tr>
+                i++;
+            }
+        </tbody>
+        <tfoot style="background-color:whitesmoke;">
+            <tr>
+                <td><p style="font-size:17px;">Total</p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><p style="font-size:17px;">@Model.retailer_credit_report_by_dealer.Sum(a => a.cr)</p></td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+

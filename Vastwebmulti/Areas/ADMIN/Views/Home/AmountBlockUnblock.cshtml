@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewBag.Title = "AmountBlockUnblock";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+
+    .form-inline .bootstrap-select.btn-group, .form-horizontal .bootstrap-select.btn-group, .form-group .bootstrap-select.btn-group {
+        height: 26px;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="">
+                        <div class="col-md-8">
+                            <div style="margin-left:-13px;">
+                                @Html.Partial("_menuoperatorcode")
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card" style="background-color:whitesmoke;">
+                    <div class="" style="margin-top:-17px;">
+                        <div class="col-md-12" style="margin-top: -1px;">
+                            @using (Html.BeginForm("AmountBlockUnblock", "Home", FormMethod.Post))
+                            {
+                                <div class="row" style="margin-top:2px;">
+                                            <div class="col-md-3">
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class="" style="margin-top:6px;padding-bottom:4px;">
+                                                        @Html.DropDownList("optnm", ViewBag.optnm as SelectList, "Select Operator", new { id = "optnm", @class = "selectpicker form-control border-0", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;",@required="" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class="" style="margin-top:6px;">
+                                                        @Html.TextBox("txtamount", "", new { id = "txtamount", @style = "margin-top:0px;padding-right:0px;height:31px;", @placeholder = "Enter Amount", @class = "form-control", onkeypress = "return isNumber(event)" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    <div class="col-md-1">
+                                        <center>
+                                            <button type="submit" id="btn" class="btn" style="margin-top:8px; margin-left:1px; height:31px;border:1px solid #c7c2c2;background:#dedddd;">
+                                                <span style="top:-1px;color:black;">Submit</span>
+                                            </button>
+
+                                        </center>
+
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:0px;">
+                <div class="card" style="margin-top:14px;">
+
+                    <div class="body" style="margin-top:-31px;padding:7px;">
+                        <div class="table-responsive" style="position:inherit;">
+                            <table class="table table-bordered" style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        @*<th style="padding-left:2px;">Recharge&nbsp;From</th>
+                                        <th style="padding-left:2px;">Port&nbsp;No</th>*@
+                                        <th style="padding-left:2px;">Operator&nbsp;Name</th>
+                                        <th style="padding-left:2px;">Amount</th>
+                                        @*<th style="padding-left:2px;">Recharge&nbsp;To</th>*@
+                                        <th style="padding-left:2px;">Status</th>
+                                        <th style="padding-left:2px;">Delete</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.blockamount)
+                                    {
+                                        <tr>
+                                            <td>@item.OperatorName</td>
+                                            <td>@item.Amount</td>                                          
+                                            <td>
+                                                @if (item.status == "N")
+                                                {
+                                                    <center>
+                                                        <a href="@Url.Action("rch_splamountblock", "Home", new { id = item.idno })" style="text-decoration:none;">
+                                                            <img src="~/images/reportimage/switchoff.png" style="margin-top:2px;height:23px;" />
+                                                        </a>
+                                                    </center>
+
+                                                }
+                                                else
+                                                {
+                                                    <center>
+                                                        <a href="@Url.Action("rch_splamountblock", "Home", new { id = item.idno })" style="text-decoration:none;">
+                                                            <img src="~/images/reportimage/switch_on.png" style="margin-top:2px;height:23px;" />
+                                                        </a>
+                                                    </center>
+
+                                                }
+                                            </td>
+                                            <td>
+                                                <button id="DeleteBtn" onclick="Delete('@item.idno')" style="background-color:transparent; border:none;">
+                                                    <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Delete</p>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+
+
+<!--Delete Recharge spical-->
+
+<script type="text/javascript">
+    function Delete(e) {
+        //alert(e)
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete block Amount " + e + " !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+    $.ajax({
+        type: "POST", url: "del_splblockamount", data: { 'idno': e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("Deleted!", "Deleted Successfully.", "success");
+                var url = '@Url.Action("AmountBlockUnblock", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("AmountBlockUnblock", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+    }
+
+</script>
+<script>
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        var message = '@TempData["save"]'
+        if (message != "" && message != null) {
+            if (message.includes("Successfully")) {
+                swal("Good job!", message, "success");
+            }
+            else {
+                swal("Ooops !", message, "error");
+            }
+        }
+    });
+</script>
+
+

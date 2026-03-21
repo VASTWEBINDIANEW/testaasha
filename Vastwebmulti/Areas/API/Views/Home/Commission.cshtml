@@ -1,0 +1,501 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.Operater_Commission
+@{
+    ViewBag.Title = "Commission";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<style>
+    .rechargepdfexal {
+        width: 100%;text-align:right;
+    }
+    .commission-api-class .select2.select2-container {
+        width: 100% !important;
+    }
+
+    @@media only screen and (max-width:766px) {
+        .ls-closed section.content {
+            margin-left: 0px;
+            padding: 0px 10px;
+        }
+
+        .commission-filter .col-md-7 {
+            padding: 0px;
+        }
+
+            .commission-filter .col-md-7 p {
+                font-size: 17px !important;
+margin-bottom: 10px;
+            }
+
+        .commission-filter .col-md-2 .select2 {
+            width: 100% !important;
+        }
+
+        .commission-filter .col-md-1 {
+            padding: 0px !important;
+            width: 50%;
+            float: left;
+            margin: 5px 0px;
+        }
+        .commission-filter .col-md-1 button{width:100%;}
+        .commission-filter .commission-filter-inner{padding:0px;float:left;width:50%;margin:5px 0px;}
+        .commission-filter-table{padding:0px;}
+    }
+</style>
+<script>
+    $(function () {
+        var chh = '@ViewData["type"]';
+        $('#' + chh + '').show();
+    });
+</script>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Show Operator Wise Commission Details</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                @*<li><a href="javascript:void(0);">Basic Setting&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>*@
+                <li><a href="javascript:void(0);">Commission</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card" style="margin-bottom:10px;">
+                    @using (Html.BeginForm("Commission", "Home", FormMethod.Post))
+                    {
+                        <div class="row commission-filter">
+                            <div class="col-md-7">
+                                <div class="form-group" style="margin-top: 2px;margin-bottom:0px;">
+                                    <div class="bread-same-all-page breadsameall-second" style="width:100%;float:left;">
+                                        <ul class="">
+                                            <li class="smli">
+                                                <a href="@Url.Action("Dashboard","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                                    Dashboard&nbsp;<img src="../../ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;">
+                                                </a>
+                                            </li>
+                                            <li class="fullbodydycolorbg tmw-total-color-one">
+                                                Show Operator Wise Commission Details
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                            <div class="col-md-2 commission-api-class" style="padding:0px;">
+                                <div class="form-group" style="margin-bottom:0px;">
+                                    @Html.DropDownList("ddlcomm", new List<SelectListItem>
+                                {
+                               new SelectListItem{ Text="Select One",Value="Select",},
+                                new SelectListItem{Text="Prepaid & Dth",Value="Prepaid"},
+                                new SelectListItem{Text="Utilities",Value="Utility"},
+                                new SelectListItem{Text="Money",Value="Money"},
+                                new SelectListItem{Text="Pancard",Value="Pancard"},
+                                new SelectListItem{Text="AEPS",Value="AEPS"},
+                                new SelectListItem{Text="INDO-NEPAL",Value="INDONEPAL"},
+                                new SelectListItem{Text="Broadband",Value="Broadband"},
+                                new SelectListItem{Text="Loan",Value="Loan"},
+                                new SelectListItem{Text="Water",Value="Water"},
+                                 new SelectListItem{Text="Insurance",Value="Insurance"},
+                                }, new { @class = "form-control for-select2" })
+
+                                </div>
+                            </div>
+                            <div class="col-md-1" style="padding:0px 5px;">
+                                <button type="submit" id="btntype" name="btntype" class="btn  waves-effect" style="height:32px; border:1px solid #ddd;background:transparent;">
+                                    <i class="fa fa-search" style="top:1px;font-size:15px;"></i>
+                                    <span style="top:0px;">Search</span>
+                                </button>
+                            </div>
+                            <div class="col-md-2 commission-filter-inner">
+                                <div class="rechargepdfexal" style="float:right;">
+                                    <span><img src="~/ashok-images/pdf.png"><input type="button" id="btnPDF" value="PDF" style="border:0px;background:transparent"></span>
+                                    <span>
+                                        <img src="~/ashok-images/xls.png"><input type="button" id="btnExport" value="Export" style="border:0px;background:transparent;">
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 commission-filter-table tableseconddes-master">
+                <div class="card">
+                    <div>
+                        <div id="Prepaid" class="table-responsive " style="position:inherit; display:none;">
+                            <table class="table table-bordered table-striped table-hover third-design-table">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        @{
+                                            var range1 = Convert.ToInt32(@Model.AmountRange[0].maximum1);
+                                            var range2 = Convert.ToInt32(@Model.AmountRange[0].maximum2);
+                                            var rangee1 = range1 + 1;
+                                            var rangee = range2 + 1;
+                                        }
+                                        <th>Status</th>
+                                        <th>Operator&nbsp;Name</th>
+                                        <th>Operator&nbsp;Type</th>
+                                        <th>Operator&nbsp;Code</th>
+                                        <th style="text-align:center;"><span class="rangeone_123">Range One</span><p>1 To @range1</p></th>
+                                        <th style="text-align:center;"><span class="rangeone_123">Range Two</span><p>@rangee1 To @range2</p></th>
+                                        <th style="text-align:center;"><span class="rangeone_123">Range Three</span><p>@rangee and Above</p></th>
+                                        <th>Block&nbsp;Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Prepaid)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (item.Status == "Y")
+                                                {
+                                                    <p style="color: #fff; font-size: 15px; float: left; width: 85px; margin: 0; background: green; border: 1px solid #555; padding: 3px 2px; text-align: center;">✓&nbsp;Active</p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="color: #fff; font-size: 15px; float: left; width: 85px; margin: 0; background: red; border: 1px solid #555; padding: 3px 2px; text-align: center;">✕&nbsp;InActive</p>
+                                                }
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorType)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorCode)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Commission)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Commission1)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Commission2)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.BlockTime)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="Utility" class="table-responsive " style="position:inherit; display:none;">
+                            <table class="table table-bordered table-striped table-hover third-design-table">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Operator&nbsp;Name</th>
+                                        <th>Operator&nbsp;Type</th>
+                                        <th>Operator&nbsp;Code</th>
+
+                                        <th>Block&nbsp;Time</th>
+                                        <th>Commission</th>
+                                        <th>GST</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Electricity_comm)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (item.Status == "Y")
+                                                {
+                                                    <p style="color: #fff; font-size: 15px; float: left; width: 85px; margin: 0; background: green; border: 1px solid #555; padding: 3px 2px; text-align: center;">✓&nbsp;Active</p>
+                                                    @*<a href="#" style="text-decoration:none;"><i class="icofont icofont-toggle-on icofont-3x" style="color:green;font-size:46px;"></i></a>*@
+                                                }
+                                                else
+                                                {
+                                                    <p style="color: #fff; font-size: 15px; float: left; width: 85px; margin: 0; background: red; border: 1px solid #555; padding: 3px 2px; text-align: center;">✕&nbsp;InActive</p>
+                                                    @*<a href="#" style="text-decoration:none;"><i class="icofont icofont-toggle-off icofont-3x" style="color:red;font-size:46px;"></i></a>*@
+                                                }
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorType)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorCode)</td>
+
+                                            <td>@Html.DisplayFor(modelItem => item.BlockTime)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Commission)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Gst)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="Money" class="table-responsive " style="position:inherit; display:none;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Verify&nbsp;Comm</th>
+                                        <th>Comm&nbsp;0&nbsp;-&nbsp;1000</th>
+                                        <th>Comm&nbsp;1001&nbsp;-&nbsp;2000</th>
+                                        <th>Comm&nbsp;2001&nbsp;-&nbsp;3000</th>
+                                        <th>Comm&nbsp;3001&nbsp;-&nbsp;4000</th>
+                                        <th>Comm&nbsp;4001&nbsp;-&nbsp;5000</th>
+                                        <th>GST</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Money)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.Verifycomm)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.comm_1000)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.comm_2000)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.comm_3000)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.comm_4000)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.comm_5000)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.gst)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="Pancard" class="table-responsive " style="position:inherit; display:none;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+
+                                        <th style="padding-left:0px;text-align:center">Token&nbsp;Digital&nbsp;Value</th>
+                                        <th style="padding-left:0px;text-align:center">Token&nbsp;Physical&nbsp;Value</th>
+                                        <th style="padding-left:0px;text-align:center">Digital&nbsp;Commission</th>
+                                        <th style="padding-left:0px;text-align:center">Physical&nbsp;Commission</th>
+                                        <th style="padding-left:0px;text-align:center">GST</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Pencard_comm)
+                                    {
+                                        <tr>
+                                            <td style="text-align:center;"> @Html.DisplayFor(modelItem => item.TokenValueDigital)</td>
+                                            <td style="text-align:center;"> @Html.DisplayFor(modelItem => item.TokenValuePhysical)</td>
+                                            <td style="text-align:center;"> @Html.DisplayFor(modelItem => item.CommissionDigital)</td>
+                                            <td style="text-align:center;"> @Html.DisplayFor(modelItem => item.CommissionPhysical)</td>
+                                            <td style="text-align:center;"> @Html.DisplayFor(modelItem => item.Gst)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="INDONEPAL" class="table-responsive " style="position:inherit; display:none;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Min&nbsp;Value&nbsp;(₹)</th>
+                                        <th>Max&nbsp;Value&nbsp;(₹)</th>
+                                        <th>Charge</th>
+                                        <th>Margin</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.INDONEPAL)
+                                    {
+                                        <tr>
+
+                                            <td>@item.min</td>
+                                            <td>@item.max</td>
+                                            <td>@item.charge</td>
+                                            <td>@item.margin</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="Broadband" class="table-responsive " style="position:inherit; display:none;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Operator&nbsp;Name</th>
+                                        <th>Operator&nbsp;Type</th>
+                                        <th>Operator&nbsp;Code</th>
+                                        <th>Status</th>
+                                        <th>Block&nbsp;Time</th>
+                                        <th>Commission</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Broadband)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorType)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorCode)</td>
+                                            <td>
+                                                @if (item.Status == "Y")
+                                                {
+                                                    <p style="color:green;font-size:15px;">Active</p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="color:red;font-size:15px;">InActive</p>
+                                                }
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.BlockTime)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Commission)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="Loan" class="table-responsive " style="position:inherit; display:none; margin-top:-17px;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Operator&nbsp;Name</th>
+                                        <th>Operator&nbsp;Type</th>
+                                        <th>Operator&nbsp;Code</th>
+
+                                        <th>Block&nbsp;Time</th>
+                                        <th>Commission</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Loan)
+                                    {
+                                    <tr>
+                                        <td>
+                                            @if (item.Status == "Y")
+                                            {
+                                                <p style="color: #fff; font-size: 15px; float: left; width: 85px; margin: 0; background: green; border: 1px solid #555; padding: 3px 2px; text-align: center;">✓&nbsp;Active</p>
+                                            }
+                                            else
+                                            {
+                                                <p style="color: #fff; font-size: 15px; float: left; width: 85px; margin: 0; background: red; border: 1px solid #555; padding: 3px 2px; text-align: center;">✕&nbsp;InActive</p>
+                                            }
+                                        </td>
+                                        <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.OperatorType)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.OperatorCode)</td>
+
+                                        <td>@Html.DisplayFor(modelItem => item.BlockTime)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Commission)</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="Water" class="table-responsive " style="position:inherit; display:none;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Operator&nbsp;Name</th>
+                                        <th>Operator&nbsp;Type</th>
+                                        <th>Operator&nbsp;Code</th>
+                                        <th>Status</th>
+                                        <th>Block&nbsp;Time</th>
+                                        <th>Commission</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Water)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorType)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.OperatorCode)</td>
+                                            <td>
+                                                @if (item.Status == "Y")
+                                                {
+                                                    <p style="color:green;font-size:15px;">Active</p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="color:red;font-size:15px;">InActive</p>
+                                                }
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.BlockTime)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Commission)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="Insurance" class="table-responsive " style="position:inherit; display:none;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Operator&nbsp;Name</th>
+                                        <th>Operator&nbsp;Type</th>
+                                        <th>Operator&nbsp;Code</th>
+
+                                        <th>Block&nbsp;Time</th>
+                                        <th>Commission</th>
+                                        <th>GST</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Insurance)
+                                    {
+                                    <tr>
+                                        <td>
+                                            @if (item.Status == "Y")
+                                            {
+                                                <p style="color: #fff; font-size: 15px; float: left; width: 85px; margin: 0; background: green; border: 1px solid #555; padding: 3px 2px; text-align: center;">✓&nbsp;Active</p>
+                                            }
+                                            else
+                                            {
+                                                <p style="color: #fff; font-size: 15px; float: left; width: 85px; margin: 0; background: red; border: 1px solid #555; padding: 3px 2px; text-align: center;">✕&nbsp;InActive</p>
+
+                                            }
+                                        </td>
+                                        <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.OperatorType)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.OperatorCode)</td>
+
+                                        <td>@Html.DisplayFor(modelItem => item.BlockTime)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Commission)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Gst)</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+
+</script>
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script>
+    var jq = $.noConflict();
+    jq('.for-select2').select2();
+</script>

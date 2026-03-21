@@ -1,0 +1,65 @@
+﻿@using Vastwebmulti.Models;
+@{
+    ViewBag.Title = "Confirm Email";
+}
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    string currenturl = HttpContext.Current.Request.Url.Authority;
+    currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+    currenturl = currenturl.ToUpper();
+    var whitelabelid = "";
+    if (currenturl.Contains("LOCALHOST"))
+    {
+        whitelabelid = db.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+    }
+    else
+    {
+        whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+    }
+    var image = db.tblWhiteLabelLoginBackImages.Where(p => p.Role == "WHITELABEL" && p.UserID == whitelabelid).ToList();
+    if (image.Count > 0)
+    {
+        ViewBag.image = image.SingleOrDefault().ImageUrl;
+    }
+    else
+    {
+        ViewBag.image = "img39.png";
+    }
+}
+<style>
+    .navbar-default {
+        background-color: transparent;
+        border-color: transparent;
+    }
+</style>
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+@if (!HttpContext.Current.Request.IsLocal)
+{
+    <!-- To Disable Inspect Element -->
+    <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+}
+
+<div class="section secondary-section" style="background:url(@Url.Content("~/FooterImages/"+ViewBag.image)">
+    <div class="container centered">
+        <center>
+            <p class="large-text" style="font-weight:700; font-size: 42px; padding: 32px; color:black;">
+                <i class="fa fa-thumbs-o-up"></i>&nbsp;Congratulations ! Your Email Verification Successfully ..
+            </p>
+        </center>
+
+
+        <div class="row-fluid" style="margin-top:80px; margin-bottom:30px;">
+            <div class="span3"></div>
+            <div class="span7">
+                <p style="color:black; font-size:22px;">
+                    Thank you for confirming your email. Please<b> @Html.ActionLink("Click here to Log in", "NewLogin", "Home", routeValues: null, htmlAttributes: new { id = "loginLink" })</b>
+                </p>
+            </div>
+            <div class="span2"></div>
+
+        </div>
+    </div>
+</div>

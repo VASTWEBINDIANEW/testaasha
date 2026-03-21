@@ -1,0 +1,369 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Retailer_Cr_Dr_Report_Result>
+@{
+    ViewBag.Title = "DealerLedger";
+    Layout = "~/Areas/DEALER/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 75px !important;
+    }
+    @@media screen and (max-width:990px){
+        .dealer-ladgerpage .col-md-7{float:left;width:30%;padding-right:0;}
+        .dealer-ladgerpage .col-md-2 {float: left;width: 20%;}
+        .dealer-ladgerpage .col-md-1{width:12%;float:left;}
+        .dealer-ladgerpage .col-md-2.pdf-totalbuttonclass {padding-right: 15px;float: right;width: auto;padding-left: 0;}
+        .dealer-ladgerpage .col-md-7 p {font-size: 16px !important;}
+    }
+    @@media screen and (max-width:768px){
+        .dealer-ladgerpage .col-md-7{width:100%;}
+        .dealer-ladgerpage .col-md-2{width:30%;float:left;}
+        .dealer-ladgerpage .col-md-2 {width: 30%;float: left;padding-left: 16px !important;}
+        .dealer-ladgerpage .col-md-2.pdf-totalbuttonclass .dt-buttons {padding: 0;}
+        .dealer-ladgerpage table tr th:last-child {padding-right: 132px;}
+        #m-d-fund-transfer .modal-dialog.modal-dialog-reportclass {width: 100% !important;float: left;}
+        .dealer-ladgerpage .table-responsive{border:0;}
+        .dealer-ladgerpage .table-responsive tr td ,.dealer-ladgerpage tr th ,.dealer-ladgerpage tr td p ,.dealer-ladgerpage tr td span{font-size:13px !important;}
+        .dealer-ladgerpage table tr th:last-child {padding-right: 145px;}
+        #m-d-fund-transfer .modal-dialog.modal-dialog-reportclass {width: 100% !important;float: left !important;}
+        .card.all-reporttable-css .table-responsive {
+    padding-bottom: 15px;
+}
+    }
+
+    @@media screen and (max-width:580px) {
+
+        .dealer-income-date {
+            width: 100% !important;
+            float: left !important;
+            margin-top: 10px;
+            padding-right: 15px !important;
+        }
+
+        .dealer-ladgerpage .actualdealer-title p {
+            font-size: 12px !important;
+        }
+
+        .recharge-report-dealer input {
+            font-size: 12px;
+        }
+    }
+
+   
+
+</style>
+<section class="content dealer-ladgerpage">
+    <div class="container-fluid full-dealer-secondanimation">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Dealer Ledger</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Account Active 2&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Dealer Ledger</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-7 actualdealer-title dealer-none-fourclass" style="width:auto;float:left;">
+                            <p style="font-size: 20px; margin-top: 1px; color: #555; font-weight: 700; "> Ledger Report</p>
+                        </div>
+
+                        <div class="col-md-2 recharge-report-dealer" style="width:auto;float:right;padding-left:5px;">
+                            <div class="form-group" style="margin-bottom:0px;width:100%;float:left;">
+                                <div style="padding-top:0px;float:right">
+                                    @*<button class="white-success-button" style="height:32px;border:1px solid #b1a6a638;background:#b1a6a638;float: right;padding: 0px 4px;margin-top:-1px;" onclick="findtotal()">Total</button>*@
+                                    <div class="web-white-filter fil" style="float: left;margin-right: 0px;margin-top:0px;">
+                                        <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;">
+                                        <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 dealer-income-date" style="float:right;width:auto;padding-right:0px;">
+                            @using (Html.BeginForm("DealerLedger", "Home", FormMethod.Post))
+                            {
+
+
+                                <div class="col-md-8 col-sm-8 col-xs-8" style="padding:0px 5px;">
+                                    <div class="input-daterange input-group for-web-date" style="width:100%;">
+                                        <div class="custom-date-icon" style="height: 32px;">
+                                            <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                        </div>
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; height:32px;" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-4" style="padding:0px;">
+                                    <center>
+                                        <button type="submit" class="btn  waves-effect" style="width:100%; height:32px;">
+
+                                            <span style="top:0px;color:#555;"><i class="fa fa-search" style="top:0px;font-size:13px;color:black;" aria-hidden="true"></i> Search</span>
+                                        </button>
+                                    </center>
+                                </div>
+
+                            }
+
+                        </div>
+                        <div class="for-search tablesearch-second" style="position:static;float:right;width:auto;padding-left: 5px;">
+                            <div class="search-after-third">
+                                <input id="myInput" type="text" name="myInput" placeholder="Search..." onkeyup="myFunction()" style="height: 32px; border: 1px solid #ccc; padding: 5px 8px;" />
+                            </div>
+                        </div>
+                        <div class="col-md-2 pdf-totalbuttonclass" style="display:none;">
+                            <div class="web-white-filter" style="float:right;">
+                                <table class="dataTable js-exportable ">
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card all-reporttable-css">
+                    <div>
+                        <div class="table-responsive tableseconddes-dealer" style="position: inherit;">
+                            <table class="table table-bordered " style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Sr.No</th>
+                                        <th>Request&nbsp;Id</th>
+                                        <th>Particular</th>
+                                        <th>₹&nbsp;Amount</th>
+                                        <th>Credit</th>
+                                        <th>Debit</th>
+                                        <th>Balance</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trow">
+                                    @{int i = 1;}
+                                    @foreach (var item in Model)
+                                    {
+
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@Html.DisplayFor(modelItem => item.RequestId)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Particulars)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.credit)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.debit)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Balance)</td>
+                                            <td class="leger-report-modal">@Html.DisplayFor(modelItem => item.Date)&nbsp;@*<img src="~/ashok-images/rightaeps.svg" data-toggle="modal" data-target="#m-d-fund-transfer" style="width: 11px;margin-top: 6px;float: right;" />*@</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- model for table -->
+<div class="modal fund-tr-history in" id="m-d-fund-transfer" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-reportclass" role="document" style="margin:0px;float:right;">
+
+        <div class="modal-content width100">
+            <div class="modal-header width100 float-left dealer-pop-head">
+                <h5>Ledger Report</h5>
+                <button type="button" class="btn waves-effect " data-dismiss="modal" style="float:right;border:0px;color:var(--main-bg-lcolor);padding:0px; height:auto;background:transparent;">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+
+
+            </div><!--.modal-header-->
+            <div class="modal-body width100 float-left dealer-pop-body">
+                <div class="float-left width100">
+                    <form class="first-form">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label> Firm Name</label>
+
+                                    <input class="form-control" readonly="readonly" required="required" type="text" value="">
+
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label>Retailer Name</label>
+
+                                    <input class="form-control" readonly="readonly" required="required" type="text" value="">
+
+                                </div>
+                            </div>
+
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Recharge No</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Amount</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Operator</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Operator Type</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Distributor Income</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Retailer Income</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase;" type="text" value="">
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Recharge Type</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Operator ID</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                    </form>
+
+                    <!--=============-->
+
+                </div><!--.modal-body-->
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+               $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+
+
+        });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print'
+            ]
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#trow tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+
+<script>
+    $("#btnExport").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var url = '@Url.Action("ExcelDealerLedger", "Home")?txt_frm_date=' + txt_frm_date;
+        location.href = url;
+});
+</script>

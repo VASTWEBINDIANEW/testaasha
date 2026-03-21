@@ -1,0 +1,259 @@
+﻿
+@{
+    ViewBag.Title = "WalletToBankSlab";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+
+<style>
+    tr th {
+        text-align: center;
+    }
+</style>
+<style>
+    #loader {
+        background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 999999;
+    }
+
+    .loader_innner {
+        position: fixed;
+        z-index: 999999;
+        height: 100%;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+    }
+</style>
+
+<style>
+    .slab-setting-menu li a.activee {
+
+    background:linear-gradient(to right, @PageData["Globalfirst"],@PageData["GlobalSecond"]);
+
+    }
+
+    
+</style>
+<div id="div_Loader" style="display:none;">
+    <div class="loader_innner">
+        <img src="~/offerimg/moneyload.gif" style="margin-top:15%;margin-left:46%;" class="img-responsive" />
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="">
+                            <div class="col-md-4">
+                                @Html.Partial("_partial_unload_wallet")
+                            </div>
+
+                            <div class="col-md-8">
+                                <button id="btnAdd" type="button" class="btn  waves-effect pull-right" style="color:#fff;   background:linear-gradient(to right, @PageData["Globalfirst"],@PageData["GlobalSecond"]);" data-toggle="modal" data-target="#myModal" onclick="clearForm()">Add New</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive" style="margin-top:4px;">
+                        <div id="dataTable" class="table-responsive   web-white-table" style="position:inherit;">
+                            @using (Html.BeginForm("AepsSlab", "Home", FormMethod.Post, new { id = "EditFormComm" }))
+                            {
+                                @Html.Action("_WalletToBankSlabList", "Home")
+                            }
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="float:right;margin:0px;">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" >Add New Slab</h4>
+            </div>
+            @using (Ajax.BeginForm("AddWalletToBankSlab", "Home", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "dataTable", InsertionMode = InsertionMode.Replace, OnSuccess = "OnSuccess", LoadingElementId = "div_Loader" }))
+            {
+            @*@using (Html.BeginForm("AddWalletToBankSlab", "Home", FormMethod.Post))
+            {*@
+                @Html.AntiForgeryToken()
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        <form id="form_validation" method="POST">
+                            <h3 style="text-align: center;
+    background-color: whitesmoke;">
+                                General
+                            </h3>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Amount From</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("amtFromGeneral", "", new { @class = "form-control", placeholder = "Enter From Amount", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Amount To</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("amtToGeneral", "", new { @class = "form-control", placeholder = "Enter To Amount", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Charge</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("chargeGeneral", "", new { @class = "form-control", placeholder = "Enter Charge", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Time</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("TimeTakesGeneral", "", new { @class = "form-control", placeholder = "Enter Time in Hours HH:MMM:SSS", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 style="text-align: center;
+    background-color: whitesmoke;">
+                                Tatkal
+                            </h3>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Amount From</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("amtFromTatkal", "", new { @class = "form-control", placeholder = "Enter From Amount", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Amount To</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("amtToTatkal", "", new { @class = "form-control", placeholder = "Enter To Amount", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Charge</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("chargeTatkal", "", new { @class = "form-control", placeholder = "Enter Charge", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Time</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("TimeTakesTatkal", "", new { @class = "form-control", placeholder = "Enter Time in Hours HH:MMM:SSS", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" style="padding-right:0px;">
+                                <button type="button" class="btn bg-grey waves-effect" id="closebtn" style="color:#000;" data-dismiss="modal">CLOSE</button>
+                                <button type="submit" class="btn  waves-effect" style="color:#fff; background:linear-gradient(to right, @PageData["Globalfirst"],@PageData["GlobalSecond"]);">Save</button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<!--Window Load-->
+<script>
+    window.onload=function()
+    {
+       // alert();
+    }
+    function reloadTable()
+    {
+        var url = '@Url.Action("_WalletToBankSlabList", "Home")';
+        $("#div_Loader").show();
+        $.ajax({
+            url: url,
+            dataType: "html",
+            success: function(data)
+            {
+                $("#div_Loader").hide();
+                $("#dataTable").html(data);
+            },
+            error:function()
+            {
+                $("#div_Loader").hide();
+                alert("Error");
+            }
+        });
+        //alert();
+
+    }
+    function OnSuccess()
+    {
+        $('#closebtn').click();
+
+    }
+    function clearForm()
+    {
+        $("#form0").trigger("reset");
+    }
+</script>
+
+

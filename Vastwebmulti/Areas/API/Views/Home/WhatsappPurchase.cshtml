@@ -1,0 +1,190 @@
+﻿
+@Model Vastwebmulti.Areas.API.Models.Whatsapp_purchase_new
+@{
+    ViewBag.Title = "WhatsappPurchase";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 style="font-size: 24px;">WhatsApp Service Purchase </h2>
+                                <input type="checkbox" id="gst1" name="gst1">
+                                <label for="gst1"> GST Enable</label><br>
+                                <div class="table-responsive" style="margin-bottom:10px;">
+                                    <table id="simple-table" class="table  table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>1 Month</th>
+                                                <th>3 Month</th>
+                                                <th>6 Month</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.userwise)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <label id="P1">@item.P1</label>
+                                                        <button class="btn btn-danger right" onclick="show('1')">Purchase</button>
+                                                    </td>
+                                                    <td>
+                                                        <label id="P2">@item.P2</label>
+                                                        <button class="btn btn-danger right" onclick="show('2')">Purchase</button>
+                                                    </td>
+                                                    <td>
+                                                        <label id="P3">@item.P3</label>
+                                                        <button class="btn btn-danger right" onclick="show('3')">Purchase</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 style="font-size: 24px;">Purchase Report </h2>
+                                <div class="table-responsive" style="margin-bottom:10px;">
+                                    <table id="simple-table" class="table  table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Plan Name</th>
+                                                <th>Plan Price</th>
+                                                <th>Status</th>
+                                                @*<th>GST</th>*@
+                                                <th>Remain Pre</th>
+                                                <th>Remain Post</th>
+                                                <th>Purchase Date</th>
+                                                <th>Expire Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Report)
+                                            {
+                                                var color = ""; var fcolor = "";
+                                                if (item.status.ToUpper() == "SUCCESS")
+                                                {
+                                                    color = "green";
+                                                    fcolor = "White";
+                                                }
+                                                else if (item.status.ToUpper() == "FAILED" || item.status.Contains("Refund"))
+                                                {
+                                                    color = "Red";
+                                                    fcolor = "White";
+                                                }
+                                                <tr style="background-color:@color;color:@fcolor">
+                                                    <td>@item.planname</td>
+                                                    <td>@item.planprice</td>
+                                                    <td>@item.status</td>
+                                                    @*<td>@item.gst</td>*@
+                                                    <td>@item.remainpre</td>
+                                                    <td>@item.remainpost</td>
+                                                    <td>@item.purchasedate.ToString("dd-MM-yyyy hh:mm:ss tt")</td>
+                                                    <td>@item.renewaldate.ToString("dd-MM-yyyy hh:mm:ss tt")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">WhatsApp Service Purchase</h4>
+            </div>
+            <div class="modal-body">
+                <input id="hideid" type="hidden" />
+                <span>Price :  </span> <label id="valshow"> </label>
+                <br />
+                <span>Price include GST: </span>  <label id="valtotalshow"> </label>
+                <button class="btn btn-danger right" onclick="purchase()">Purchase</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    show = (idno) => {
+
+        var gstenable = $('#gst1').prop("checked");
+        var P1 = $('#P1').text();
+        var P2 = $('#P2').text();
+        var P3 = $('#P3').text();
+        var final1 = P1;
+        var final2 = P2;
+        var final3 = P3;
+        if (gstenable) {
+            final1 = parseInt(P1) + (parseInt(P1) * 18) / 100
+            final2 = parseInt(P2) + (parseInt(P2) * 18) / 100
+            final3 = parseInt(P3) + (parseInt(P3) * 18) / 100
+        }
+
+        if (idno == "1") {
+            $('#valshow').text(P1);
+            $('#valtotalshow').text(final1);
+        }
+        else if (idno == "2") {
+            $('#valshow').text(P2);
+            $('#valtotalshow').text(final2);
+        }
+        else {
+            $('#valshow').text(P3);
+            $('#valtotalshow').text(final3);
+        }
+
+        $('#hideid').val(idno);
+        $('#myModal').modal('show'); 
+    }
+</script>
+<script>
+    purchase = () => {
+        var idno = $('#hideid').val();
+        var enable = $('#gst1').prop("checked");
+        var url = '@Url.Action("WhatsappPurchase", "Home")';
+        var datachk = { "idno": idno, "gsten": enable };
+        var inputchk = JSON.stringify(datachk);
+        $("#overlay").fadeIn(300);
+        fetch(url, {
+            method: "post",
+            headers: { "content-type": "application/json" },
+            body: inputchk
+        }).then(response => response.json())
+            .then(resp => {
+                $("#overlay").fadeOut(300);
+                $('#myModal').modal('hide'); 
+                if (resp == "OK") {
+                   window.location.reload(true)
+                }
+                else {
+                    alert(resp);
+                }
+            }).catch(err => alert(err))
+    }
+</script>

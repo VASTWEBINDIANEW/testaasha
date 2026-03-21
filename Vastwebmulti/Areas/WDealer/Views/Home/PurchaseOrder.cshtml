@@ -1,0 +1,472 @@
+﻿@model IEnumerable<Vastwebmulti.Models.select_whitelabel_dlm_pur_order_Result>
+@{
+    ViewBag.Title = "Orders";
+    Layout = "~/Areas/WDealer/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .nav-tabs li.active a {
+        background: none;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card" style="margin-top:-10px;">
+                    @using (Html.BeginForm("PurchaseOrder", "Home", FormMethod.Post))
+                    {
+                        <div class="">
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-top: 2px;">
+                                    <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:-12px;">
+                                        <li class="active" style="color:#a79f9f; font-size:15px;font-weight:700;">Purchase Order Details</li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-bottom:0px;">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-exchange"></i>
+                                        </span>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <center>
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;">
+                                        <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                        <span style="top:-2px;color:black;">Search</span>
+                                    </button>
+                                </center>
+
+                            </div>
+                            <div class="col-md-2">
+                                <center>
+                                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-toggle="modal" data-target="#addmodel">
+                                        <i class="fa fa-plus" style="top:-1px;font-size:16px;color:black;"></i>
+                                        <span style="top:-2px;color:black;">New&nbsp;Purchase&nbsp;Req.</span>
+                                    </button>
+                                </center>
+
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-38px;">
+                <div class="card">
+                    <div class="">
+                        <h2 style="color:black; font-size:16px;padding-top:9px; padding-left:22px;"></h2>
+                    </div>
+                    <div class="body">
+                        <div class="table-responsive" style="position:inherit;margin-top:-35px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>Order&nbsp;No</th>
+                                        <th>Status </th>
+                                        <th>From</th>
+                                        <th><center>Amount</center></th>
+                                        <th>PayMent&nbsp;Mode</th>
+                                        <th>To&nbsp;Acc&nbsp;No </th>
+                                        <th>UtrNo/SlipNo </th>
+                                        <th>Request&nbsp;Date </th>
+                                        <th>Response&nbsp;Date</th>
+                                        <th>Comment</th>
+                                        <th>Screenshot </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var color = "";
+                                        var stscolor = "";
+                                        if (item.type_ == "Cash")
+                                        {
+                                            color = "green";
+                                        }
+                                        if (item.type_ == "Credit")
+                                        {
+                                            color = "red";
+                                        }
+                                        if (item.sts == "Pending")
+                                        {
+                                            stscolor = "#FF9800";
+
+                                        }
+                                        if (item.sts == "APPROVED")
+                                        {
+                                            stscolor = "green";
+
+                                        }
+                                        if (item.sts == "REJECTED")
+                                        {
+                                            stscolor = "red";
+
+                                        }
+
+                                        <tr>
+                                            <td><p style="font-size:12px;">@item.orderno&nbsp;⇒&nbsp;<span style="color:@color;font-weight:600;">@item.type_.ToUpper()</span></p></td>
+                                            <td><p style="font-size:12px;text-align:center;"><span style="color:@stscolor;font-weight:600;">@item.sts.ToUpper()</span></p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.frm).ToString().ToUpper()</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p> </td>
+                                            <td><p style="font-size:11px;">@Html.DisplayFor(modelItem => item.paymode).ToString().ToUpper()</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.Toaccountno)</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.utrno).ToString().ToUpper()</p></td>
+                                            <td>@Html.DisplayFor(modelItem => item.reqdate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.respodate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.details)</td>
+
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(item.Slip))
+                                                {
+                                                    <img src="@Url.Content("~/" + item.Slip)" height="60" width="60" />
+                                                }
+                                            </td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot style="background-color:whitesmoke;">
+                                    <tr>
+                                        <td><p style="font-size:17px;">Total</p></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><p style="font-size:18px;text-align:center;">@Model.Sum(a => a.amount)</p></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!--Add New Modal-->
+<div class="modal fade" id="addmodel" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Add New Purchase Order</h4>
+            </div>
+
+            <div class="modal-body" style="margin-top:-26px;">
+                <div class="body">
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card" style="box-shadow: none">
+
+                                <div class="body">
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs tab-nav-right" role="tablist" style="position: initial; border-bottom:none;">
+                                        <li role="presentation" class="active" style="background-color:#4CAF50;"><a href="#FUND" data-toggle="tab" aria-expanded="false" class="btn bg-green waves-effect"><span style="color:white;font-weight:700;">CASH&nbsp;TRANSFER&nbsp;REQUEST</span> </a></li>
+                                        <li role="presentation" style="background-color:#FF9800; margin-left:2px;"><a href="#CREDIT" data-toggle="tab" aria-expanded="false" class="btn bg-orange waves-effect"><span style="color:white;font-weight:700;">CREDIT REQUEST</span> </a></li>
+                                        <li role="presentation" class="" style="float:right;">
+                                            <a data-toggle="tab" aria-expanded="false" class="btn btn-default waves-effect"><span style="color:red; font-weight:700;">Old Credit:&nbsp;@ViewData["oldcredit"]</span></a>
+                                        </li>
+                                    </ul>
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane fade active in" id="FUND">
+                                            @using (Html.BeginForm("purchageorder", "Home", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                                            {
+                                                @Html.ValidationSummary()
+                                                <form id="form_validation" method="POST" novalidate="novalidate">
+                                                    @Html.Hidden("type", "Cash")
+
+                                                    <div class="row clearfix">
+                                                        <div class="form-group" style="margin-bottom:0px; ">
+                                                            <div class="form-line" style="top: 10px; border-bottom: none;">
+                                                                <div class="col-md-4">
+                                                                    <input name="Paymode" type="radio" id="radio_1" class="with-gap" value="IMPS_RTGS_NEFT" checked>
+                                                                    <label for="radio_1">IMPS/RTGS/NEFT</label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <input name="Paymode" type="radio" id="radio_2" class="with-gap" value="CASH">
+                                                                    <label for="radio_2">CASH</label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <input name="Paymode" type="radio" id="radio_3" class="with-gap" value="3rdParty">
+                                                                    <label for="radio_3">3<sup>rd</sup> PARTY</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                            <label for="balance" class="">Balance</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("balance", "", new { @class = "form-control", placeholder = "Enter Balance", autocomplete = "off", @required = "required", @pattern = "[0-9]{0,20}", @title = "Only number is allowed" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("balance", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                            <label for="RefNo">Reffrence&nbsp;ID</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("utrno", "", new { @class = "form-control", placeholder = "Enter UTR/Slip No", @required = "required" })
+                                                                </div>
+                                                                @Html.ValidationMessage("utrno", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                            <label for="firstname" class="">Account</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.DropDownList("accountno", ViewBag.account as SelectList, "Select Admin Account No", new { id = "accountno1", @class = "form-control acc", @required = "required" })
+                                                                </div>
+                                                                @Html.ValidationMessage("accountno", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                            <label for="balance" class="">Comment</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("Comment", "", new { @class = "form-control", placeholder = "Enter Comment or remark", autocomplete = "off" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("Comment", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                            <label for="balance" class="">Screenshot</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("file", "", new { @type = "file", @class = "form-control", autocomplete = "off" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("file", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer" style="margin-top:-15px;">
+                                                        <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;" onclick="return confirm('Are you sure?');">
+                                                            <span style="top:-2px;color:black;">Save Change</span>
+                                                        </button>
+                                                        <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                                            <span style="top:-2px;color:black;">Close</span>
+                                                        </button>
+                                                    </div>
+
+                                                </form>
+
+                                            }
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane fade" id="CREDIT">
+                                            @using (Html.BeginForm("purchageorder", "Home", FormMethod.Post))
+                                            {
+                                                <form id="form_validation" method="POST">
+                                                    @Html.Hidden("type", "Credit")
+
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                            <label for="balance" class="">Balance</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("balance", "", new { @class = "form-control", placeholder = "Enter Balance", autocomplete = "off", @required = "required", @pattern = "[0-9]{0,20}", @title = "Only number is allowed" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("balance", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="row clearfix">
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                            <label for="balance" class="">Comment</label>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                            <div class="form-group">
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.TextBox("Comment", "", new { @class = "form-control", placeholder = "Enter Comment or remark", autocomplete = "off" })
+
+                                                                </div>
+                                                                @Html.ValidationMessage("Comment", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer" style="margin-top:-15px;">
+                                                        <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;" onclick="return confirm('Are you sure?');">
+                                                            <span style="top:-2px;color:black;">Save Change</span>
+                                                        </button>
+                                                        <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                                            <span style="top:-2px;color:black;">Close</span>
+                                                        </button>
+                                                    </div>
+
+                                                </form>
+
+                                            }
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+
+</script>
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+@*<script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>*@
+
+<script type="text/javascript">
+    function GenerateInvoice(DistOldBal, Value, DistNewBal, Date) {
+        //alert(ReciveFrom + '' + OldRemain + '' + Value + '' + Commission + '' + FinalValue + '' + NewRemain + '' + Date)
+        var url = '@Url.Action("GotoInvoicePDF", "Home")?Value=' + Value + '&DistOldBal=' + DistOldBal + '&DistNewBal=' + DistNewBal + '&Date=' + Date + '';
+        window.open(url, "_blank");
+    }
+</script>
+<script>
+    $(document).ready(function()
+    {
+            $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+    })
+</script>
+
+<script type="text/jscript">
+    $(function () {
+        var error = '@ViewData["show"]';
+        var success = '@ViewData["success"]';
+        if (error != "") {
+            sweetAlert("Oops...", error, "error");
+        }
+        if(success !="" && success !=null)
+        {
+            swal("Good job!", success, "success");
+        }
+        })
+
+    $('#radio_6').on('click', function () {
+        if ((this.value) == "3rdParty") {
+            $("#accountno2").replaceWith($('<input/>', { 'type': 'text', 'name': 'accountno', 'required': "", 'placeholder': 'Enter Account Number', 'class': 'form-control' }));
+        }
+    });
+    $('#radio_3').on('click', function () {
+        if ((this.value) == "3rdParty") {
+            $("#accountno1").replaceWith($('<input/>', { 'type': 'text', 'name': 'accountno', 'required': "",'placeholder' :'Enter Account Number', 'class': 'form-control' }));
+        }
+    });
+
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#balance").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                // Allow: Ctrl+A, Command+A
+                (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: home, end, left, right, down, up
+                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+
+    });
+
+</script>
+
+

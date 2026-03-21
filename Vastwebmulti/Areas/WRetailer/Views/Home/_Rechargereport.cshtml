@@ -1,0 +1,139 @@
+﻿@model List<Vastwebmulti.Models.Sp_Recharge_info_LazyLoad_Result>
+@{
+    Layout = null;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        var sts = item.Rstaus;
+        var img = "";
+        var style = "";
+        var color = "";
+        var pendingColor = "";
+        var rchIcon = "";
+        if (item.Rstaus.ToUpper().Contains("REQ"))
+        {
+            sts = "Pending";
+            color = "#FF9800";
+            img = "../../ashok-images/clkk.png";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+            pendingColor = "#fff8d1";
+        }
+        if (item.Rstaus.ToUpper().Contains("SUCCESS"))
+        {
+            color = "green";
+            img = "../../ashok-images/clkk.png";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.Rstaus.ToUpper().Contains("RESEND"))
+        {
+            color = "#673AB7";
+            img = "../../ashok-images/undo.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.Rstaus.ToUpper().Contains("REFUND"))
+        {
+            color = "#673AB7";
+            img = "../../ashok-images/undo.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.Rstaus.ToUpper().Contains("FAILED"))
+        {
+            color = "red";
+            img = "../../ashok-images/closes.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.rch_type.ToUpper().Contains("ONLINE"))
+        {
+            rchIcon = "../../ashok-images/seo-and-web.svg";
+        }
+        else if (item.rch_type.ToUpper().Contains("APP"))
+        {
+            rchIcon = "../../ashok-images/social-media(1).svg";
+        }
+
+
+        <tr style="background-color:@pendingColor">
+            <td>
+
+
+                @if (item.Rstaus.ToUpper().Contains("REFUND"))
+                {
+                    var stttt = "";
+                    string[] splitR = item.Rstaus.Split('(');
+                    var stss = splitR[0];
+
+                    var inputt = splitR[1].Replace(")", "");
+
+                    var resultID = System.Text.RegularExpressions.Regex.Match(splitR[1].Replace(")", ""), @"(.{3})\s*$");
+
+                    stttt = "**" + resultID;
+
+
+                    <img style="@style background-color:@color;" src=@img /><span style="font-size:13px;">@stttt</span>
+                }
+                else
+                {
+                    <img style="@style background-color:@color;" src=@img /><span style="font-size:0px !important;">@sts</span>@item.Operator_type
+                }
+
+
+
+            </td>
+            <td>@item.Mobile</td>
+            <td><span class="app-web"><img src=@rchIcon /></span> @item.operator_Name</td>
+
+
+
+            @*<td>@item.Operator_type</td>*@
+
+            <td>@item.amount</td>
+            <td>Debit</td>
+            <td>@item.income</td>
+            <td>@item.Remain</td>
+            @*<td>@item.rch_type</td>*@
+
+            @*<td>@item.OPt_id</td>*@
+
+            <td>@item.Rch_time</td>
+            <td>@item.Resp_time</td>
+            <td>@item.OPt_id</td>
+            <td class="noExl noExlss">
+
+                @if ((item.Rstaus.ToUpper().Contains("SUCCESS") || item.Rstaus.ToUpper() == "MANUAL SUCCESS") && item.sts == null)
+                {
+                    <button id="disp-@item.idno" type="button" style="background-color:transparent; border:none;" title="dispute" onclick="confirm('@item.idno')">
+                        <i class="material-icons">gavel</i>
+                    </button>
+                    <button id="confirm-@item.idno" class="sure-newadd" type="button" style="background-color:transparent; border:none;display:none" title="ARE YOU SURE" onclick="disputedata('@item.idno')">
+                        <i class="material-icons" style="display:none;">check</i>Sure&nbsp;?
+                    </button>
+                    <button class="displaynoneadd" id="close-@item.idno" type="button" style="background-color:transparent;border:none;display:none" title="CANCEL" onclick="cancel('@item.idno')">
+                        <i class="material-icons">close</i>
+                    </button>
+                }
+                else if (item.sts == "Pending")
+                {
+                    <span class="resultclickafter"> @item.sts <img style="@style background-color:#FF9800;" src=@img /></span>
+                }
+                @if (item.Rstaus.ToUpper().Contains("SUCCESS") || item.Rstaus.ToUpper() == "MANUAL SUCCESS" || item.Rstaus.ToUpper().Contains("REQ"))
+                {
+                    <center>
+                        <button id="but" onclick="GotoPDFRecharge('@item.idno')" href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="Click To Print Generate Invoice"><i class="material-icons">print</i></button>
+                    </center>
+                }
+            </td>
+
+        </tr>
+    }
+}
+
+else
+{
+    <tr>
+        <td colspan="13"><h2 style="text-align:center;">Data Not Found</h2></td>
+
+    </tr>
+
+}

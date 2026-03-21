@@ -1,0 +1,715 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+@using Vastwebmulti.Models;
+@{
+    ViewBag.Title = "Contect_Content";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var allcontactdata = db.tblWhiteFront_ContactData.ToList();
+    ViewBag.allco = allcontactdata;
+}
+    <link href="~/AdminDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .scroll {
+        width: 100%;
+        max-height: 530px;
+        overflow: auto;
+    }
+
+        .scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scroll::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .scroll::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+        }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-2">
+                <div class="row clearfix">
+
+                    <div class="card">
+                        <div class="body scroll" style="max-height:572px;">
+                            <div class="demo-button ">
+                                <div class="row">
+                                    <div class="col-md-12" ">
+                                        @Html.Partial("ColorPartialView")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-10">
+
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:20px;">
+                        <div class="card" style="    background: #f5f5f5;">
+                            <div class="">
+                                <h2 style="color:#00000094; font-size:16px;background:  #c7c7c7;margin: 0px;padding: 15px;">
+                                    All Contact Us Details
+                                </h2>
+                                <button type="button" class="btn  waves-effect" style="float:right; margin-top:-40px;margin-right:6px;border:1px solid #c7c2c2;background:#dedddd;" data-toggle="modal" data-target="#defaultModal">
+                                    <i class="fa fa-plus" style="top:1px;font-size:15px;"></i>
+                                    <span style="top:0px;">Add New</span>
+                                </button>
+                            </div>
+                            <div class="body">
+                                <div class="row">
+                                    <div style="position:inherit;margin-top:-20px;">
+                                        <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                            <thead style="color:#555;position:inherit;background:#f9f9f9;">
+                                                <tr>
+                                                    <th>Company Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Email-Id</th>
+                                                    <th>Address.</th>
+                                                    <th>Landline&nbsp;No</th>
+
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in ViewBag.contect)
+                                                {
+                                                    <tr>
+                                                        <td>@item.CompnayName</td>
+                                                        <td>@item.phone</td>
+                                                        <th>@item.Email</th>
+                                                        <td>@item.Address</td>
+                                                        <td>@item.LandlineNo</td>
+
+                                                        <td>
+                                                            <button type="button" class="btn btn-default waves-effect" style="background-color:transparent; border:none;border:1px solid #c7c2c2;" onclick="delContect('@item.Id')">
+                                                                Delete
+                                                            </button>
+
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="folower-setting">
+                            @using (Html.BeginForm("Contect_Content", "Home", FormMethod.Post))
+                            {
+                                <h2>Followers Setting</h2>
+
+                            <fieldset>
+                                <legend>Select Social Media</legend>
+                                <div class="custom-district">
+                                    @Html.DropDownList("ddlSocial", new List<SelectListItem>
+                                    {
+                                       new SelectListItem{ Text="Select Media",Value="",},
+                                       new SelectListItem{ Text="Facebook",Value="Facebook",},
+                                       new SelectListItem{Text="Twitter",Value="Twitter"},
+                                       new SelectListItem{Text="Instagram",Value="Instagram"},
+                                       new SelectListItem{Text="LinkedIn",Value="LinkedIn"},
+                                       new SelectListItem{Text="Skype",Value="Skype"},
+                                       new SelectListItem{Text="Youtube",Value="Youtube"},
+                                       new SelectListItem{Text="Pinterest",Value="Pinterest"},
+                                       new SelectListItem{Text="Blogger",Value="Blogger"},
+                                       new SelectListItem{Text="Tumblr",Value="Tumblr"}
+                                     }, new { @required = "required" })
+                                </div>
+                                <input type="url" id="urlLink" placeholder="Enter Social Media Link" required>
+                                <button class="fullbodydycolorbg" onclick="SaveSocialAc()">Save Link</button>
+                            </fieldset>
+                            }
+                            <div class="social-history">
+                                <table id="social-list" class="table table-bordered table-striped table-hover" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Media&nbsp;Type</th>
+                                            <th>Social Media Link</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.linkcontact.Count > 0)
+                                        {
+                                            foreach (var item in ViewBag.linkcontact)
+                                            {
+                                                <tr>
+                                                    <td>@item.FooterType</td>
+                                                    <td>@item.FooterLink</td>
+                                                    <td>
+                                                        <button onclick="delSocialAc('@item.Id')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="Badges-setting folower-setting">
+                            <h2>Badges Setting</h2>
+                            <fieldset>
+                                <legend>Select Badges</legend>
+                                <div class="custom-district">
+                                    @Html.DropDownList("ddlBadges", new List<SelectListItem>
+                                    {
+                                       new SelectListItem{ Text="Select Media",Value="",},
+                                       new SelectListItem{ Text="Appfutura",Value="Appfutura",},
+                                       new SelectListItem{Text="Applancher",Value="Applancher"},
+                                       new SelectListItem{Text="Badush",Value="Badush"},
+                                       new SelectListItem{Text="Extract",Value="Extract"},
+                                       new SelectListItem{Text="Freelancer",Value="Freelancer"},
+                                       new SelectListItem{Text="Good-firms",Value="Good-firms"},
+                                       new SelectListItem{Text="Mobile-app",Value="Mobile-app"},
+                                       new SelectListItem{Text="Trustpilot",Value="Trustpilot"},
+                                     }, new { @required = "required" })
+                                </div>
+                                <input type="url" id="BadgeLink" placeholder="Enter Badges Link">
+                                <button class="fullbodydycolorbg" onclick="SaveBadge()">Save Link</button>
+                            </fieldset>
+                            <div class="social-history">
+                                <table id="Badge-list" class="table table-bordered table-striped table-hover" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Badges&nbsp;Type</th>
+                                            <th>Badges Link</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.Badges.Count > 0)
+                                        {
+                                            foreach (var item in ViewBag.Badges)
+                                            {
+                                                <tr>
+                                                    <td>@item.BadgeType</td>
+                                                    <td>@item.Url_Link</td>
+                                                    <td>
+                                                        <button onclick="delBadge('@item.Id')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<div class="row clearfix">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-67px;">
+                            <div class="card">
+                                <div class="">
+                                    <h2 style="color:#00000094; font-size:16px;padding-top:9px; padding-left:22px;">
+                                        All Contact Social Links Details
+                                    </h2>
+                                    <button type="button" class="btn  waves-effect" style="float:right; margin-top:-34px;margin-right:6px;border:1px solid #c7c2c2;background:#dedddd;" data-toggle="modal" data-target="#defaultModal1">
+                                        <i class="fa fa-plus" style="top:1px;font-size:15px;"></i>
+                                        <span style="top:0px;">Add New</span>
+                                    </button>
+
+                                </div>
+                                <div class="body">
+                                    <div class="row">
+                                        <div  style="position:inherit;margin-top:-20px;">
+                                            <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                                <thead class="navbar" style="color:white;position:inherit;">
+                                                    <tr>
+                                                        <th>Link Name</th>
+                                                        <th>Link Url</th>
+                                                        <th>Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in ViewBag.linkcontact)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.FooterType</td>
+                                                            <td>@item.FooterLink</td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-default waves-effect" style="background-color:transparent; border:none;border:1px solid #c7c2c2;" onclick="delfooterlink('@item.Id')">
+                                                                    Delete
+                                                                </button>
+
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                @*<div class="row clearfix">
+                        <div class="col-md-12" style="margin-top:-30px; margin-bottom:30px;">
+                            <div class="card">
+                                <div class="">
+                                    <h2 style="color:white; font-size:16px;padding-top:11px; padding-left:22px;padding-bottom:9px;background:linear-gradient(to right,@ViewData["first"],@ViewData["second"]);">
+                                        OUTSIDE CONTACT US BACKGROUND COLOR
+                                    </h2>
+                                </div>
+                                <div class="body">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="form-group" style="border:1px solid #dddddd;">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon colorpicker-element" style="background:#dddddd; color:#000000b8;border:1px solid #dddddd;padding-top:7px;border-radius:0px;">
+                                                        <label>&nbsp;HEX CODE&nbsp;</label> <input type="color" id="color1" value="#ff0000">
+                                                    </div>
+                                                    <input type="text" id="txtcolor" name="txtcolor" class="form-control" autocomplete="off" style="border:1px solid #dddddd;padding-left:9px; height:45px;">
+                                                    <div class="input-group-addon" style="padding-top:0px;">
+                                                        <button type="button" id="btn" onclick="fun()" class="btn  waves-effect" style="height:45px;border:1px solid #c7c2c2;background:#dedddd; margin:0px -12px -6px -5px;border-radius:0px;">&nbsp;Set Color</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group" style="border:1px solid #dddddd;">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon colorpicker-element" style="background:#dddddd; color:#000000b8;border:1px solid #dddddd;padding-top:7px;border-radius:0px;">
+                                                        <label>&nbsp;RGB CODE&nbsp;</label> <input type="color" id="color2" value="#ff0000">
+                                                    </div>
+                                                    <input type="text" id="txtcolor1" name="txtcolor1" class="form-control" autocomplete="off" style="border:1px solid #dddddd;padding-left:9px; height:45px;">
+                                                    <div class="input-group-addon" style="padding-top:0px;">
+                                                        <button type="button" id="btn" onclick="fun()" class="btn  waves-effect" style="height:45px;border:1px solid #c7c2c2;background:#dedddd; margin:0px -13px -6px -5px;border-radius:0px;">&nbsp;Set Color</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <br />
+                                            <button type="button" id="btn" name="btnsave" onclick="Savecolor()" class="btn" style="margin-top:-19px;height:45px;border:1px solid #c7c2c2;background:#dedddd;">Save Color</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+
+            </div>
+        </div>
+
+
+    </div>
+</section>
+
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="margin: 0px;right: 0px;position: absolute;">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Add Contact Us Content</h4>
+            </div>
+            @using (Html.BeginForm("Contect_Content", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        @*// @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Company Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextBoxFor(m => m.SuperstokistName, "", new { @class = "form-control", @style = "color:black", placeholder = "Enter Name" })
+                                            @Html.ValidationMessageFor(m => m.SuperstokistName, "", new { @class = "text-danger" })
+                                            <input type="hidden" id="detail" name="detail" value="Yes" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextAreaFor(m => m.Address, new { @class = "form-control", placeholder = "Enter Address " })
+                                            @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Office Landline No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Landline Number" })
+                                            @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Mobile Number", maxlength = "10" })
+                                            @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Email</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control", placeholder = "Enter Email-id", required = "required" })
+                                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer" id="silder1">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+@*<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Add Social Link Content</h4>
+            </div>
+            @using (Html.BeginForm("Contect_Content", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Select Link</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.DropDownList("ddllink", new List<SelectListItem>
+                         {
+   new SelectListItem{ Text="Please Select",Value="",},
+   new SelectListItem{ Text="Facebook",Value="Facebook",},
+   new SelectListItem{Text="Twitter",Value="Twitter"},
+   new SelectListItem{Text="Google+",Value="Google+"},
+   new SelectListItem{Text="LinkedIn",Value="LinkedIn"},
+   new SelectListItem{Text="Skype",Value="Skype"}
+   }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Enter Link Url</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <input type="text" id="txtlink" name="txtlink" class="form-control" required="" placeholder="Enter Link Url" />
+                                            <input type="hidden" id="link" name="link" value="Yes" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" id="silder1">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;" onclick="return check()">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>*@
+
+
+
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+
+<script>
+    $('.first-delet').click(function () {
+        $(this).hide();
+        $(this).next('.second-delet').show();
+    });
+    
+</script>
+
+<script>
+    $(document).ready(function () {
+        var succ = '@TempData["success"]';
+
+        if (succ != null && succ != "") {
+            if (succ.includes("Successfully")) {
+                //swal("Data Upload!", succ, "success");
+            }
+            else {
+                //swal("Oops!", succ, "error");
+            }
+        }
+        var first = '@ViewData["first"]';
+        var second = '@ViewData["second"]';
+        if (first != "" && second != "") {
+            $("#color1").val(first);
+            $("#color2").val(second);
+            $("#txtcolor").val(first);
+            $("#txtcolor1").val(second);
+        }
+    });
+</script>
+<script type="text/javascript">
+
+    function delContect(e) {
+  
+    $.ajax({
+        type: "POST", url: '@Url.Action("delContect", "Home")', data: { Id: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+               // swal("Deleted!", "Content Us Data Deleted Successfully.", "success");
+                var url = '@Url.Action("Contect_Content", "Home")';
+                window.location.href = url;
+            }
+            else {
+                //swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Contect_Content", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+
+
+    }
+
+</script>
+
+<script>
+    function fun() {
+        var col = document.getElementById("color1").value;
+        $("#txtcolor").val(col);
+        var col = document.getElementById("color2").value;
+        $("#txtcolor1").val(col);
+    }
+</script>
+<script>
+    function Savecolor() {
+        var vv = $("#txtcolor").val();
+        var col = $("#txtcolor1").val();
+        vv = vv.replace('#', "");
+        col = col.replace('#', "");
+        var url = '@Url.Action("OuterContectColorchange", "Home")?first=' + vv + '&second='+ col + '';
+        location.href = url;
+    }
+</script>
+<script type="text/javascript">
+
+    function delfooterlink(e) {
+      
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("delfooterlink", "Home")', data: { Id: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                //swal("Deleted!", "Footer Links Data Deleted Successfully.", "success");
+                var url = '@Url.Action("Contect_Content", "Home")';
+                window.location.href = url;
+            }
+            else {
+               // swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Contect_Content", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+
+
+    }
+
+</script>
+<script>
+    function SaveSocialAc() {
+        var social = $('#ddlSocial').val();
+        if (social != "") {
+            var txt = $('#urlLink').val();
+        var re = /(http(s)?:\\)?([\w-]+\.)+[\w-]+[.com|.in|.org]+(\[\?%&=]*)?/
+        if (re.test(txt)) {
+            $.ajax({
+                type: "GET",
+               url: '@Url.Action("SocialMedia", "Home")',
+                    data: { socialType: $('#ddlSocial').val(), link: $('#urlLink').val() },
+                success: function (response) {
+
+                var i = 0;
+                var mdtblHtml = "";
+                $.each(response, function (a, b) {
+                    mdtblHtml += "<tr><td>" + b.FooterType + "</td>";
+                    mdtblHtml += "<td>" + b.FooterLink + "</td>";
+                    mdtblHtml += "<td>" + '<button onclick="delSocialAc('+b.Id+')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>' + "</td>";
+                    i++;
+                });
+                $('#social-list > tbody').html(mdtblHtml);
+                }
+
+            });
+            }
+            else {
+            alert('Not a Valid Url !');
+        }
+        }
+
+        else {
+            alert('Select Social Account Type');
+        }
+    }
+</script>
+<script>
+    function delSocialAc(e) {
+        if (e != "") {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("delfooterlink", "Home")',
+                data: { Id: e },
+                dataType: 'json',
+                cache: false,
+                success: function (response) {
+                var i = 0;
+                var mdtblHtml = "";
+                $.each(response, function (a, b) {
+                    mdtblHtml += "<tr><td>" + b.FooterType + "</td>";
+                    mdtblHtml += "<td>" + b.FooterLink + "</td>";
+                    mdtblHtml += "<td>" + '<button onclick="delSocialAc('+b.Id+')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>' + "</td>";
+                    i++;
+                });
+                $('#social-list > tbody').html(mdtblHtml);
+                }
+
+            });
+        }
+        else {
+            alert('');
+        }
+    }
+</script>
+
+
+<script>
+    function SaveBadge() {
+        var Badge = $('#ddlBadges').val();
+        if (Badge != "") {
+            var txt = $('#BadgeLink').val();
+        var re = /(http(s)?:\\)?([\w-]+\.)+[\w-]+[.com|.in|.org]+(\[\?%&=]*)?/
+        if (re.test(txt)) {
+            $.ajax({
+                type: "GET",
+               url: '@Url.Action("BadgeMedia", "Home")',
+                    data: { BadgeType: $('#ddlBadges').val(), Badgelink: $('#BadgeLink').val() },
+                success: function (response) {
+
+                var i = 0;
+                var BadgeHtml = "";
+                $.each(response, function (a, b) {
+                    BadgeHtml += "<tr><td>" + b.BadgeType + "</td>";
+                    BadgeHtml += "<td>" + b.Url_Link + "</td>";
+                    BadgeHtml += "<td>" + '<button onclick="delBadge('+b.Id+')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>' + "</td>";
+                    i++;
+                });
+                $('#Badge-list > tbody').html(BadgeHtml);
+                }
+
+            });
+            }
+            else {
+            alert('Not a Valid Url !');
+        }
+        }
+
+        else {
+            alert('Select Badge Type');
+        }
+    }
+</script>
+<script>
+    function delBadge(e) {
+        if (e != "") {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("delBadgesMedia", "Home")',
+                data: { Id: e },
+                dataType: 'json',
+                cache: false,
+                success: function (response) {
+                var i = 0;
+                var BadgeHtml = "";
+                $.each(response, function (a, b) {
+                    BadgeHtml += "<tr><td>" + b.BadgeType + "</td>";
+                    BadgeHtml += "<td>" + b.Url_Link + "</td>";
+                    BadgeHtml += "<td>" + '<button onclick="delBadge('+b.Id+')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>' + "</td>";
+                    i++;
+                });
+                $('#Badge-list > tbody').html(BadgeHtml);
+                }
+
+            });
+        }
+        else {
+            alert('');
+        }
+    }
+</script>

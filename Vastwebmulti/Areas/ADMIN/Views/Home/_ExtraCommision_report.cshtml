@@ -1,0 +1,127 @@
+﻿
+@model Vastwebmulti.Areas.ADMIN.ViewModel.NillPortalViewmodel
+<table class="table table-bordered table-striped table-hover js-exportable example-second" style="width:99.5%;margin-top:0 !important;">
+    <thead style="background-color:whitesmoke;">
+        <tr >
+            <th>Operator&nbsp;Name</th>
+            <th>Min</th>
+            <th>Max</th>
+            <th>Commision(%)</th>
+            <th>Change Time</th>
+
+            <th>Status</th>
+            <th>Edit</th>
+            <th>DEL</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.rangewisecomm_report)
+        {
+        <tr>
+            <td>@item.operator_Name</td>
+            <td class="clsshowdata showdata_@item.idno">@item.minamount</td>
+            <td class="clsnotshowdata notshowdata_@item.idno" style="display:none;"><input type="text" id="txtminamnt_@item.idno" value="" /></td>
+
+            <td class="clsshowdata showdata_@item.idno">@item.maxamnt </td>
+            <td class="clsnotshowdata notshowdata_@item.idno" style="display:none"><input type="text" id="txtmaxamnt_@item.idno" value="" /></td>
+            <td class="clsshowdata showdata_@item.idno">@item.Com_in_per </td>
+            <td class="clsnotshowdata notshowdata_@item.idno" style="display:none"><input type="text" id="txtcommextraamnt_@item.idno" value="" /></td>
+            <td >@item.last_status_changedate</td>
+            <td>
+                <div class="onoffswitch onoffswitch-secondclass">
+
+                    <div style="display: @(item.statuss == false?"block":"none")">
+                        <span class="custom-off custom-off-secondbutton" onclick="UpdateStatusExtraRangewise('@item.idno',true)">off</span>
+
+                    </div>
+                    <div style="display: @(item.statuss == true?"block":"none")">
+                        <span class="costom-on custom-on-secondbutton" onclick="UpdateStatusExtraRangewise('@item.idno',false)">on</span>
+                    </div>
+
+
+
+                </div>
+            </td>
+            <td class="clsshowdata showdata_@item.idno">
+                <button type="button" class="switch-edit-button deletebuttoback-second" onclick="EditModeExtraRangewise(@item.idno)">
+                    Edit
+                </button>
+                @*<button type="button" class="switch-edit-button"  data-toggle="modal" data-target="#defaultModal1" onclick="animation('@item.idno','@item.operator_Name','@item.min','@item.max' )">
+                <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Edit</p>
+            </button>*@
+            </td>
+            <td class="clsnotshowdata notshowdata_@item.idno" style="display:none">
+                <button type="button" class="switch-edit-button deletebuttoback-second" onclick="SaveModeExtraRangewise(@item.idno, '@item.opratorcode')">
+                    Save
+                </button>
+                @*<button type="button" class="switch-edit-button"  data-toggle="modal" data-target="#defaultModal1" onclick="animation('@item.idno','@item.operator_Name','@item.min','@item.max' )">
+                <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Edit</p>
+            </button>*@
+            </td>
+            <td>
+                <button id="DeleteBtn" class="custom-loading waves-effect bt btnssl special-iii" onclick="DeltenillcomExtraRangewise('@item.idno')" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+
+                    <img src="~/MainFrontDesign/images/delete.svg">
+                </button>
+                @*<button class="custom-loading waves-effect bt btnssl special-iii" onclick="DeltenillcomExtraRangewise('@item.idno')" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+
+                <img src="~/MainFrontDesign/images/delete.svg" />
+            </button>*@
+            </td>
+        </tr>
+
+
+
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('.second-design .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>
+<script>
+   
+    var clsshowdata = ".clsshowdata";
+    var clsnotshowdata = ".clsnotshowdata";
+    function EditModeExtraRangewise(idno) {
+       
+        var showdata = ".showdata_"+idno;
+        var notshowdata = ".notshowdata_"+idno;
+        var txtminamnt = "#txtminamnt_"+idno;
+        var txtmaxamnt = "#txtmaxamnt_"+idno;
+        var txtcommextraamnt = "#txtcommextraamnt_"+idno;
+
+        $(txtminamnt).val('')
+        $(txtmaxamnt).val('')
+        $(txtcommextraamnt).val('')
+
+        $(clsshowdata).show()
+        $(clsnotshowdata).hide()
+         $.ajax({
+                type: 'POST',
+             url: '@Url.Action("GetExtraComm_mix_min","Home")',
+             data: { idno: idno },
+             success: function (data) {
+                 
+               
+                 $(txtminamnt).val(data.minamount)
+                 $(txtmaxamnt).val(data.maxamnt)
+                 $(txtcommextraamnt).val(data.Com_in_per)
+                 $(showdata).hide()
+                 $(notshowdata).show()
+              
+                },
+
+            });
+
+
+    }
+</script>

@@ -1,0 +1,163 @@
+﻿@model Vastwebmulti.Models.RCH_Details
+@{
+    ViewBag.Title = "Edit_Profile";
+    Layout = "~/Areas/RCH/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                @using (Html.BeginForm("Edit_Profile", "Home", FormMethod.Post,new { encType = "multipart/form-data" }))
+{
+                    <div class="card">
+                        <div class="header" style="padding:10px;">
+                            <h2>
+                                <span style="font-size:21px;"></span> Update Profile
+                            </h2>
+                        </div>
+                        <div class="row">
+                            <div class="body">
+                                <div class="col-md-6">
+                                    @Html.HiddenFor(model=>model.RCHId)
+                                    <label for="email_address">Email-Id</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="setbox">Name</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(model => model.RCHName, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="package">Frim Name</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(model => model.FarmName, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="amount">Mobile Number</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(model => model.Mobile, new { @class = "form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="fullname">Full Address</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="fullname">Pincode Number</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Pincode, new { @class = "form-control" , onkeypress = "return isNumber(event)", maxlength = "6" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="mobileno">State </label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownListFor(m => m.State, (IEnumerable<SelectListItem>)ViewBag.Sate, "-- Select State--", new { @class = "selectpicker form-control", data_live_search = "true", @required = "required", @onchange = "FillDistict()" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="pincode">District</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownListFor(m => m.District, (IEnumerable<SelectListItem>)ViewBag.District, "-- Select District--", new { @class = "form-control",@required="" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="address">Joining Date </label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.JoinDate, new { @class = "form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="address">Upload Image</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="file" id="file" name="file" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-info">Update</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+}
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    function FillDistict() {
+        var State_id = $('#State').val();
+    $.ajax({
+       // url: '/Home/FillCity',
+        url: '@Url.Action("FillDistict", "Home")',
+        type: "GET",
+        dataType: "JSON",
+
+        data: { State: State_id },
+        success: function (cities) {
+            $("#District").html(""); // clear before appending new list
+            $.each(cities, function (i, District) {
+                $("#District").append(
+                    $('<option></option>').val(District.Dist_id).html(District.Dist_Desc));
+            });
+        }
+    });
+  }
+</script>
+<script>
+    $(document).ready(function () {
+
+        $('#State').val(@Model.State);
+        $('#District').val(@Model.District);
+
+    })
+</script>
+<script type="text/javascript">
+        function isNumber(evt) {
+            var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+                return false;
+            return true;
+        }
+</script>
+
+

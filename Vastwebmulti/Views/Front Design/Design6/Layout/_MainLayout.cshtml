@@ -1,0 +1,1128 @@
+﻿<!DOCTYPE html>
+@using Vastwebmulti.Models;
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>@ViewBag.compnay</title>
+    @{
+        var favimage = "";
+        VastwebmultiEntities db2 = new VastwebmultiEntities();
+        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+            }
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var admindetail = db2.Admin_details.ToList();
+        var mailid = admindetail.SingleOrDefault().email;
+        var mobile = admindetail.SingleOrDefault().mobile;
+        var Address = admindetail.SingleOrDefault().Address;
+        var Firm_Name = admindetail.SingleOrDefault().Companyname;
+        var SupportMail = admindetail.SingleOrDefault().email1;
+        var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
+        var PinCode = admindetail.SingleOrDefault().pincode;
+
+        int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
+        int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
+        var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
+        var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+
+        var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+        var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+        var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+
+    }
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/fonticons.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/fonts/stylesheet.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/jquery.fancybox.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/plugins.css" />
+    <link rel="stylesheet" href="~/MainFrontDesign/css/style.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/responsive.css" />
+    <link href="~/CSS/model.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/slick.css" rel="stylesheet" />
+
+
+    <link href="~/MainFrontDesign/css/Custom-style.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+    <script src="~/MainFrontDesign/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+    }
+    @{
+        var selectedcolor = "";
+        var menucolor = "";
+        VastwebmultiEntities db1 = new VastwebmultiEntities();
+        var allcolor = db1.tblMenuColors.ToList();
+        if (allcolor.Count > 0)
+        {
+            selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+            menucolor = allcolor.SingleOrDefault().MenuColor;
+        }
+        else
+        {
+            selectedcolor = "Green";
+            menucolor = "White";
+        }
+
+        //var selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+        //var menucolor = allcolor.SingleOrDefault().MenuColor;
+    }
+    <style>
+        * {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .navbar.navbar-sixdesign {
+            float: right;
+            min-height: inherit;
+        }
+
+        .navbar-sixdesign ul {
+            margin: 0;
+            padding: 0px;
+        }
+
+            .navbar-sixdesign ul li {
+                display: inline-block;
+                list-style: none;
+            }
+
+                .navbar-sixdesign ul li a {
+                    font-size: 16px;
+                    color: #fff;
+                    text-transform: capitalize;
+                    margin-left: 5px;
+                    padding: 3px 15px 3px 15px;
+                    font-family: 'Open Sans', sans-serif;
+                    white-space: nowrap;
+                    border-radius: 50px;
+                    display: flex;
+                }
+
+                .navbar-sixdesign ul li.active a {
+                    background: #fff;
+                    color: #000;
+                }
+
+                .navbar-sixdesign ul li a:first-child {
+                    margin-left: 0px;
+                }
+
+        .logi-six-de {
+            float: left;
+        }
+
+            .logi-six-de img.sixdesign-logo {
+                max-width: 114px;
+            }
+
+        .sixdesign-header {
+            padding: 9px 0;
+        }
+
+        .container.flex-sixclass .flex-sixclass-first {
+            width: 100%;
+            float: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sixdesign-header.sixdesign-headerfixed {
+            width: 100%;
+            float: left;
+        }
+
+        .sixdesign-header.sixdesign-headerfixed {
+            position: fixed;
+            top: 0;
+            z-index: 99;
+        }
+
+        .footer-fullclass {
+            background: #313a46;
+        }
+
+        .footer-title {
+            font-size: 15px;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            font-family: "Poppins", sans-serif;
+            font-weight: 400;
+            color: #fff;
+        }
+
+        .footer-title {
+            display: block;
+            line-height: normal;
+            border-bottom: 1px solid #6f6f6f;
+            padding-bottom: 10px;
+            position: relative;
+            margin-bottom: 30px;
+            transition: all .4s linear;
+        }
+
+            .footer-title::after {
+                content: "";
+                display: block;
+                width: 30px;
+                height: 2px;
+                background: #727cf5;
+                position: absolute;
+                bottom: -1.5px;
+                left: 0;
+                transition: all .4s linear;
+            }
+
+        .footer-fullclass {
+            padding-top: 50px !important;
+        }
+
+            .footer-fullclass .col-md-3:hover .footer-title::after {
+                width: 100%;
+            }
+
+        .footer-content ul li::before {
+            content: "\f095";
+        }
+
+        .footer-content ul li {
+            font: normal normal normal 14px/1 FontAwesome;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+            .footer-content ul li::before {
+                content: "\f095";
+                background: #727cf5;
+                width: 25px;
+                height: 25px;
+                display: block;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                position: absolute;
+                left: 0;
+                font: normal normal normal 14px/1 FontAwesome;
+                transition: all .4s linear;
+            }
+
+        .footer-content ul li {
+            padding-left: 35px;
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+            .footer-content ul li a, .footer-content ul li {
+                color: #fff;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 13px;
+                letter-spacing: 1px;
+            }
+
+                .footer-content ul li:nth-child(2)::before {
+                    content: "\f199";
+                }
+
+                .footer-content ul li:nth-child(3)::before {
+                    content: "\f1c6";
+                }
+
+                .footer-content ul li:nth-child(4)::before {
+                    content: "\f3c5";
+                }
+
+                .footer-content ul li:nth-child(5)::before {
+                    content: "\f3c5";
+                }
+
+        .footer-content-news .footer-social li::before {
+            display: none;
+        }
+
+        .footer-content-news ul.footer-social li a {
+            background: #727cf5;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-content-news ul.footer-social li {
+            display: inline-block;
+            padding: 0;
+            padding-right: 0px;
+            margin: 0;
+            width: auto;
+            padding-right: 15px;
+            transition: all .4s linear;
+        }
+
+            .footer-content-news ul.footer-social li:last-child {
+                padding-right: 0px;
+            }
+
+            .footer-content-news ul.footer-social li a:hover {
+                background: #fff;
+            }
+
+                .footer-content-news ul.footer-social li a:hover i {
+                    color: #000;
+                }
+
+        .footer-content ul li:hover::before {
+            color: #000;
+            background: #fff;
+        }
+
+        .footer-iteam h5 {
+            margin-bottom: 5px;
+            color: #fff;
+            font-family: "Poppins", sans-serif;
+            text-transform: capitalize;
+            font-size: 16px;
+            line-height: normal;
+        }
+
+        .footer-iteam ul li {
+            list-style: none;
+            display: inline-block;
+            color: #fff;
+            padding-right: 5px;
+            font-size: 12px;
+            text-transform: capitalize;
+        }
+
+        .footer-iteam {
+            border-bottom: 1px solid #6f6f6f;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .footerhelplink ul li {
+            float: left;
+            padding-right: 15px;
+        }
+
+            .footerhelplink ul li:last-child {
+                padding-right: 0px;
+            }
+
+            .footerhelplink ul li a, .footercopyrightsix p {
+                font-family: 'Open Sans', sans-serif;
+                color: #fff;
+                font-size: 13px;
+                text-transform: capitalize;
+            }
+
+        .footercopyrightsix {
+            float: right;
+        }
+
+        .footerhelplink {
+            float: left;
+        }
+
+        .footer-help {
+            padding: 20px 0;
+            margin-top: 50px;
+            margin-bottom: 0px;
+        }
+
+        .term-pop.for-help-pop {
+            z-index: 99999;
+        }
+
+        .sixdesign-header .container.flex-sixclass {
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .responsivemenu {
+            transition: all .4s linear;
+            border: 0;
+            background: transparent;
+        }
+
+            .responsivemenu span {
+                width: 20px;
+                height: 2px;
+                background: #fff;
+                display: block;
+                margin-bottom: 6px;
+                transition: all .4s linear;
+            }
+
+                .responsivemenu span:last-child {
+                    margin-bottom: 0px;
+                }
+
+        .responsivemenu-show span {
+            transform: rotate(45deg);
+        }
+
+            .responsivemenu-show span:nth-child(3) {
+                transform: rotate(-45deg);
+                position: absolute;
+                top: 0px;
+            }
+
+            .responsivemenu-show span:nth-child(2) {
+                transform: translate(602%);
+            }
+
+        @@media screen and (max-width:991px) {
+            .footer-content-same {
+                transform: translateX(-401%);
+                height: 0;
+                transition: all .4s linear;
+            }
+
+            .footer-title-show ~ .footer-content-same {
+                transform: translateX(0);
+                height: auto;
+                transition: all .4s linear;
+            }
+
+            .logi-six-de img.sixdesign-logo {
+                max-width: 58px;
+            }
+
+            .responsivemenu {
+                display: block !important;
+            }
+
+            .responsivemenu-nav li {
+                display: block;
+                float: none;
+                width: 100%;
+                margin-bottom: 0;
+            }
+
+                .responsivemenu-nav li a {
+                    border-radius: 0 !important;
+                    padding: 10px 15px !important;
+                }
+
+            .responsivemenu-nav {
+                position: fixed;
+                background: #313a46;
+                top: 46px;
+                right: 0;
+                transform: translate(700%);
+                transition: all .4s linear;
+            }
+
+            .responsivemenu-show + .responsivemenu-nav {
+                transform: translate(0);
+            }
+        }
+
+        @@media screen and (max-width:766px) {
+            .footer-help {
+                margin-top: 0;
+            }
+
+                .footer-help div {
+                    width: 100%;
+                    text-align: center;
+                }
+
+                .footer-help .footerhelplink ul {
+                    text-align: center;
+                    width: 100%;
+                    float: left;
+                    margin-bottom: 15px;
+                }
+
+                    .footer-help .footerhelplink ul li {
+                        float: none;
+                        display: inline-block;
+                    }
+
+            .app-linkdesign a {
+                margin-right: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    var col = "";
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "#da097d";
+    }
+    if (col == "")
+    {
+        col = "#da097d";
+    }
+    var color = col;
+
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var logoimage = "";
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    var vv = from tbl in db.tblMenus
+             where tbl.Status == "Y" && tbl.Role == "ADMIN"
+             select new
+             {
+                 tbl.MenuName
+             };
+    ViewBag.menuname = vv;
+
+
+
+    List<Vastwebmulti.JsonData.Hlp_TC_Privacy> people = new List<Vastwebmulti.JsonData.Hlp_TC_Privacy>();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("PrivacyAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Privacy = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("OutHelpForAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Help = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("TnCAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var TC = people.ToList();
+
+    var Great_Help_News = db.Message_top.Where(a => a.users == "Outer").ToList();
+
+    var statuschkGreat = Great_Help_News.Where(aa => aa.name == "Great News" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+    var statuschkNeed = Great_Help_News.Where(aa => aa.name == "Need Help" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+
+    JSONReadWrite readWrit1e = new JSONReadWrite();
+    dynamic people1 = Newtonsoft.Json.JsonConvert.DeserializeObject(readWrit1e.Read("LogoBackgroundColor.json", "~/Areas/ADMIN/Models/JsonData/"));
+    string logoBgColor = people1.ColorCode;
+}
+<body data-spy="scroll" data-target=".navbar-collapse">
+    @*<div class='preloader'><div class='loaded'>&nbsp;</div></div>*@
+    @*Header Section Start*@
+
+    <header class="sixdesign-header" style="background:#313a46;">
+        <div class="container flex-sixclass">
+            <div class="flex-sixclass-first">
+                <div class="logi-six-de">
+                    <img src="@Url.Content("~/"+@logoimage)" class="sixdesign-logo" style="padding:2px;" />
+                </div>
+                <div id="bs-exa-collapse-1" class="navbar navbar-sixdesign navbar-collapse">
+                    <button class="responsivemenu" style="display:none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <ul class="nav navbar-nav navbar-right responsivemenu-nav">
+                        <li>
+                            <a href="#hero" class="">home</a>
+                        </li>
+                        <li>
+                            <a href="#android">Android</a>
+                        </li>
+                        <li>
+                            <a href="#about">about</a>
+                        </li>
+                        <li>
+                            <a href="#service">service</a>
+                        </li>
+                        <li>
+                            <a href="#works">works</a>
+                        </li>
+                        @if (Card != "Y")
+                        {
+                            <li><a href="#CARDS">cards</a></li>
+                        }
+                        @if (Travel != "Y")
+                        {
+                            <li><a href="#TRAVEL">travel</a></li>
+                        }
+                        <li>
+                            <a href="#whychooseus">why choose us</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Login","Home",new { id="singin" })">LOGIN</a>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    @*Header Section End*@
+
+
+    @RenderBody()
+
+    @*Footer Section Start*@
+
+    <footer id="footer-six">
+        <section class="all-section-space page-section" style="padding-top:0px;">
+            <div class="footer-fullclass six-design-full" style="padding:0 20px;">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h2 class="footer-title">Location</h2>
+                        <div class="footer-content footer-content-same">
+                            <ul>
+                                <li><a href="tel:91+@CustCareNo">@CustCareNo</a></li>
+                                <li><a href="mailto:@SupportMail">@SupportMail</a></li>
+                                <li>Zip code: @PinCode</li>
+                                <li id="pcity"></li>
+                                <li>
+                                    Office Address
+                                    <span id="paddress"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h2 class="footer-title">News & Updates</h2>
+                        <div class="footer-content footer-content-news footer-content-same">
+                            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                                <div class="">
+                                    <div class="item-one-1 active">
+                                        @if (statuschkGreat != null)
+                                        {
+                                            <h2 class="news">
+                                                <img src="~/AdminDesign/images/great-news.svg" style="width:16px;margin-top:2px;margin-left:12px;" /> @statuschkGreat.name
+
+                                            </h2>
+                                            <span>
+                                                @statuschkGreat.message
+                                            </span>
+                                        }
+                                    </div>
+                                    <div class="item-two-2">
+                                        @if (statuschkNeed != null)
+                                        {
+                                            <h2 class="help">
+                                                <img src="~/AdminDesign/images/question.svg" style="width:16px;margin-top:2px;margin-left:12px;" />  @statuschkNeed.name
+                                            </h2>
+                                            <span>
+                                                @statuschkNeed.message
+                                            </span>
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <ul class="footer-social">
+                                @if (ViewBag.Afac != "")
+                                {
+                                    <li><a href="@ViewBag.Afac" target="_blank"><i class="fa fa-facebook-f"></i></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0);"><i class="fa fa-facebook-f"></i></a></li>
+                                }
+
+
+                                @if (ViewBag.Atwi != "")
+                                {
+                                    <li><a href="@ViewBag.Atwi" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
+                                }
+
+
+                                @if (ViewBag.AInstagra != "")
+                                {
+                                    <li><a href="@ViewBag.AInstagra" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0);"><i class="fa fa-instagram"></i></a></li>
+                                }
+
+
+                                @if (ViewBag.Alinked != "")
+                                {
+                                    <li><a href="@ViewBag.Alinked" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0);"><i class="fab fa-linkedin-in"></i></a></li>
+                                }
+
+
+                                @if (ViewBag.APinteres != "")
+                                {
+                                    <li><a href="@ViewBag.APinteres" target="_blank"><i class="fa fa-pinterest"></i></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0);"><i class="fa fa-pinterest"></i></a></li>
+                                }
+
+
+                                @if (ViewBag.AYoutub != "")
+                                {
+                                    <li><a href="@ViewBag.AYoutub" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0);"><i class="fab fa-youtube"></i></a></li>
+                                }
+
+
+                                @if (ViewBag.ABlogge != "")
+                                {
+                                    <li><a href="@ViewBag.ABlogge" target="_blank"><i class="fab fa-blogger"></i></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0);"><i class="fab fa-blogger"></i></a></li>
+                                }
+
+
+                                @if (ViewBag.ATumbl != "")
+                                {
+                                    <li><a href="@ViewBag.ATumbl" target="_blank"><i class="fa fa-tumblr"></i></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="javascript:void(0);"><i class="fa fa-tumblr"></i></a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h2 class="footer-title">Services</h2>
+                        <div class="footer-service-six six-design-full footer-content-same">
+                            <div class="footer-iteam six-design-full">
+                                <h5>Prepaid</h5>
+                                <ul>
+                                    <li>Airtel</li>
+                                    <li>Idea</li>
+                                    <li>Jio</li>
+                                    <li>Vodafone</li>
+                                    <li>BSNL</li>
+                                    <li>MTNL</li>
+                                </ul>
+                            </div>
+                            <div class="footer-iteam six-design-full">
+                                <h5>DTH</h5>
+                                <ul>
+                                    <li>Airtel Dth</li>
+                                    <li>Dish Tv</li>
+                                    <li> Tata Sky</li>
+                                    <li>Videocon D2h</li>
+                                    <li>Sun Tv</li>
+
+                                </ul>
+                            </div>
+                            <div class="footer-iteam six-design-full">
+                                <h5>Utilities</h5>
+                                <ul>
+                                    <li>Postpaid</li>
+                                    <li>Landline</li>
+                                    <li>Broadband</li>
+                                    <li>Electricity</li>
+                                    <li>Gas</li>
+                                    <li>Water</li>
+                                    <li>Cable Tv</li>
+                                    <li>Insurance</li>
+                                    <li>Fastag</li>
+                                </ul>
+                            </div>
+                            <div class="footer-iteam six-design-full">
+                                <h5>Financial</h5>
+                                <ul>
+                                    @*<li>Money Transfer</li>*@
+                                    <li>AEPS</li>
+                                    <li>m-Pos (micro ATM)</li>
+                                    <li>Pancard</li>
+
+                                </ul>
+                            </div>
+                            @if (Travel != "Y")
+                            {
+                                <div class="footer-iteam six-design-full">
+                                        <h5>Travels & Hotel</h5>
+                                        <ul>
+                                            <li>Flight Booking</li>
+                                            <li>Bus Booking</li>
+                                            <li>Hotel Booking</li>
+                                        </ul>
+                                    </div>
+                            }
+                                <div class="footer-iteam six-design-full">
+                                    <h5>Others</h5>
+                                    <ul>
+                                        @if (Card != "Y")
+                                        {
+                                            <li>Digital Gift Cards</li>
+
+                                        }
+                                        <li>Security</li>
+                                        <li>Ecommerce</li>
+                                        <li>Services</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h2 class="footer-title">badges</h2>
+                        <div class="footer-content-same">
+                            <img class="imgfooterlast" src="~/AdminDesign/images/guarantee.svg" style="width:100%;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid" style="padding:20px 40px;">
+                    <div class="footerhelplink">
+                        <ul class="end-footer" style="float:left;">
+                            <li>
+                                <a id="Helpbutton" href="Javascript:void(0);">Help</a>
+                            </li>
+                            <li>
+                                @*<a id="Tcbutton" href="Javascript:void(0);">Terms & Conditions</a>*@
+                                <a href="@Url.Action("termsconditions", "Home")">Terms & Conditions</a>
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("privacy", "Home")">Privacy</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                        <div class="footercopyrightsix end-footer">
+                            <p style="line-height: 3.375rem;">© 2019 - @DateTime.Now.Year All Rights Reserved | @Firm_Name </p>
+                        </div>
+                    
+                    
+                </div>
+
+            </div>
+        </section>
+    </footer>
+
+    <div class="term-pop for-help-pop" style="display:none;">
+        <div class="term-pop-in">
+            <h2 class="help-foot-head">Help</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p id="helpContent"></p>
+        </div>
+
+    </div>
+    <div class="term-pop for-term-pop" style="display:none;">
+        <div class="term-pop-in" style="overflow-y:scroll;">
+            <h2 class="help-foot-head">Terms & Conditions</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p id="TcContent"></p>
+        </div>
+
+    </div>
+    <div class="term-pop for-privacy-pop" style="display:none;">
+        <div class="term-pop-in">
+            <h2 class="help-foot-head">Privacy</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p id="Privacycontent"></p>
+        </div>
+
+    </div>
+
+    @*Footer Section End*@
+
+    <div class="scrollup fullbodydycolorbg" href="#"><i class="fa fa-chevron-up"></i></div>
+    <script src="https://kit.fontawesome.com/4eb3ded1c6.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            var url = '@Url.Action("Officeaddress", "Home")'
+            $.ajax({
+                url: url,
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    $('#pfirmname').text(data.Firmname);
+                    $('#paddress').text(data.address);
+                        $('#pcity').text(data.DistirictName + "," + data.StateName);
+                },
+                error: function (reponse) {
+                    //alert("error : " + reponse);
+                }
+            });
+        });
+    </script>
+    <script>
+        // scrolltop
+        $('.scrollup').click(function () {
+            $("html,body").animate({
+                scrollTop: 0
+            }, 1000);
+            return false;
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#Helpbutton').click(function () {
+                $('.for-help-pop').fadeIn();
+            });
+            $('#Tcbutton').click(function () {
+                $('.for-term-pop').fadeIn();
+            });
+            $('#Privacybutton').click(function () {
+                $('.for-privacy-pop').fadeIn();
+            });
+
+
+
+            $('.term-pop-close').click(function () {
+                $('.term-pop').fadeOut();
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Add smooth scrolling to all links
+            $(".mouse").on('click', function (event) {
+
+                // Make sure this.hash has a value before overriding default behavior
+                if (this.hash !== "") {
+                    // Prevent default anchor click behavior
+                    event.preventDefault();
+
+                    // Store hash
+                    var hash = this.hash;
+
+                    // Using jQuery's animate() method to add smooth page scroll
+                    // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+                    $('html, body').animate({
+                        scrollTop: $(hash).offset().top
+                    }, 800, function () {
+
+                        // Add hash (#) to URL when done scrolling (default click behavior)
+                        window.location.hash = hash;
+                    });
+                } // End if
+            });
+        });
+
+
+
+
+
+        //bottom to top
+
+        // fadeIn fadeOut
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 400) {
+                $('.scrollup').fadeIn();
+            } else {
+                $('.scrollup').fadeOut();
+            }
+        });
+    </script>
+
+
+
+
+    @{
+        <input type="button" value="sleep" id="btnsleep" data-toggle="modal" data-target="#sleep-modal" style="display:none;">
+        <div class="modal fade" id="sleep-modal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img src="@Url.Content("~/Deskrop Sleep Mode.png")" id="mImage" class="img-responsive" />
+                    </div>
+                    <div>
+                        <span style="font-size:15px; margin-left:15px;">Mail-id :-<b style="color:red;"> @mailid</b> </span>
+                        <br />
+                        <span style="font-size:15px; margin-left:15px;">Mobile No :-<b style="color:red;"> @mobile</b></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color:darkgray; font-size:16px;">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    @*<script src="~/MainFrontDesign/js/vendor/jquery-1.11.2.min.js"></script>*@
+    <script src="~/MainFrontDesign/js/vendor/bootstrap.min.js"></script>
+    @*<script src="~/MainFrontDesign/js/jquery.magnific-popup.js"></script>*@
+    <script src="~/MainFrontDesign/js/jquery.mixitup.min.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.easing.1.3.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.masonry.min.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.fancybox.pack.js"></script>
+    <script src="~/MainFrontDesign/js/plugins.js"></script>
+    <script src="~/MainFrontDesign/js/main.js"></script>
+    <script src="~/MainFrontDesign/js/slick.js"></script>
+
+
+    <script>
+        var HelpElement = @Html.Raw(Json.Encode(Help.SingleOrDefault().Name));
+        $('#helpContent').html(decodeURIComponent(HelpElement))
+
+        var TcElement = @Html.Raw(Json.Encode(TC.SingleOrDefault().Name));
+        $('#TcContent').html(decodeURIComponent(TcElement))
+
+        var PrivacyElement = @Html.Raw(Json.Encode(Privacy.SingleOrDefault().Name));
+        $('#Privacycontent').html(decodeURIComponent(PrivacyElement))
+
+    </script>
+
+    <script type="text/javascript">
+        var val1 = "";
+        function animation(type) {
+
+            var url = '@Url.Action("pagecontetn","Home")'
+            $.ajax({
+                url: url,
+                data: { type: type },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    if (data != "") {
+                        document.getElementById("shoppingBasket").innerHTML = data;
+                        $('#defaultModal').modal('show');
+                    }
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+
+        }
+    </script>
+    <script>
+        window.onload=function()
+        {
+            var block = '@ViewData["msg"]';
+            if (block == "websiteblock") {
+                $('#btnsleep').click();
+                $("#sleep-modal").modal('show');
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyALrSTy6NpqdhIOUs3IQMfvjh71td2suzY&ver=3.exp"></script>
+    <script type="text/javascript">
+        navigator.geolocation.getCurrentPosition(
+            function (position) { // success cb
+                console.log(position);
+
+            },
+            function () { // fail cb
+            }
+        );
+
+        $(document).ready(function () {
+
+            /* HTML5 Geolocation */
+            navigator.geolocation.getCurrentPosition(
+                function (position) { // success cb
+
+                    /* Current Coordinate */
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+
+                    var google_map_pos = new google.maps.LatLng(lat, lng);
+
+                    /* Use Geocoder to get address */
+                    var google_maps_geocoder = new google.maps.Geocoder();
+
+                    google_maps_geocoder.geocode(
+                        { 'latLng': google_map_pos },
+                        function (results, status) {
+                            if (status == google.maps.GeocoderStatus.OK && results[0]) {
+                                console.log(results[0].formatted_address);
+                                alert(results[0].formatted_address)
+                            }
+                        }
+                    );
+                },
+                function () { // fail cb
+                }
+            );
+        });
+    </script>
+
+    @*Sticky Script*@
+    <script>
+        $(window).scroll(function () {
+            var sticky = $('.sixdesign-header'),
+                scroll = $(window).scrollTop();
+
+            if (scroll >= 40) {
+                sticky.addClass('sixdesign-headerfixed');
+            }
+            else {
+                sticky.removeClass('sixdesign-headerfixed');
+
+            }
+        });
+    </script>
+    <script>
+        $('#contact-us-pop-button').click(function () {
+            $('#contact-us-pop').fadeIn('slow');
+        })
+        $('#contact-us-pop-close').click(function () {
+            $('#contact-us-pop').fadeOut('3000');
+        })
+    </script>
+
+    <script>
+        $(".footer-fullclass .col-md-3 .footer-title").click(function () {
+            $(this).addClass("footer-title-show").siblings().removeClass("footer-title-show");
+        });
+    </script>
+
+    <script>
+        $(".responsivemenu").click(function () {
+            $(this).toggleClass("responsivemenu-show");
+        });
+    </script>
+
+</body>
+</html>
+

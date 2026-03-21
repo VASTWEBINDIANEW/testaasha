@@ -1,0 +1,92 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.upiChargeAndgateway
+<style>
+    .wallet-bank-input input[readonly="readonly"] {
+        background: #f5f5f5;
+    }
+    .edit-table-getway tr td input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -moz-appearance: textfield;
+        border: 1px solid #aaa4a4;
+        padding: 4px 2px;
+    }
+
+</style>
+@if (Model.msg != "DONE")
+{
+    <label style="color:red;">@Model.msg</label>
+}
+<button id="EditBtn" onclick="editsetting()" class="btn btn-default" style="float: right; margin-bottom: 10px;">Edit</button>
+
+
+<table id="Showdata" class="table table-bordered" style="margin: 0px;width: 100%;border-top:medium;">
+    <tbody>
+        <tr>
+            <th>PayMent Type</th>
+            <th>Minimum</th>
+            <th>Maximum</th>
+        </tr>
+
+        @foreach (var item in Model.Paymentgateway_min_maxs)
+        {
+            <tr>
+                <td>@item.Paymenttype</td>
+                <td>@item.minval</td>
+                <td>@item.maxval</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+@using (Ajax.BeginForm("_PaymentGateway_setting", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess1", OnFailure = "onfailed", UpdateTargetId = "divEditFormComm", InsertionMode = InsertionMode.Replace }))
+{
+    <input type="submit" class="btn btn-default" value="Update" id="Updatebtn" style="display:none;float: right;margin-bottom: 10px;" />
+    <table id="Editdata" class="table table-bordered edit-table-getway" style="margin: 0px;width: 100%;border-top:medium;display:none;">
+        <tbody>
+            <tr>
+                <th>PayMent Type</th>
+                <th>Minimum</th>
+                <th>Maximum</th>
+            </tr>
+
+            @for (int i = 0; i < Model.Paymentgateway_min_maxs.Count; i++)
+            {
+                <tr>
+                    @Html.HiddenFor(a => a.Paymentgateway_min_maxs[i].idno)
+                    <td>
+                        @Html.DisplayFor(a => a.Paymentgateway_min_maxs[i].Paymenttype, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.Paymentgateway_min_maxs[i].Paymenttype)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Paymentgateway_min_maxs[i].minval, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.Paymentgateway_min_maxs[i].minval)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Paymentgateway_min_maxs[i].maxval, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.Paymentgateway_min_maxs[i].maxval)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<script>
+    function editsetting() {
+        $('#Showdata').hide();
+        $('#Editdata').show();
+        $('#Updatebtn').show();
+        $('#EditBtn').hide();
+    }
+</script>
+<script>
+    function OnSuccess1() {
+        $('#myModalNew').modal('toggle');
+    }
+</script>
+<script>
+    function onfailed() {
+        $('#myModalNew').modal('toggle');
+    }
+</script>
+

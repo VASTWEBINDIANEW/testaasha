@@ -1,0 +1,110 @@
+﻿@model List<Vastwebmulti.Models.Sp_Recharge_info_LazyLoad_Result>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF Recharge Report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <table class="table table-bordered table-striped table-hover third-design-table" style="width:100%; font-size:12px;">
+        <thead style="background-color:whitesmoke;">
+            <tr>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Status</th>
+                <th style="padding-left: 2px;padding-right: 2px;text-align: center;">Consumer&nbsp;/&nbsp;Circle</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Operator</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Opt&nbsp;Type</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Rch&nbsp;Amt</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Debit&nbsp;Credit</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Income</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Remain Pre</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Remain Pos</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Type</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Operator&nbsp;ID</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Rch&nbsp;Date</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Resp&nbsp;Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                DateTime Rch_time = Convert.ToDateTime(item.Rch_time);
+                DateTime Resp_time = Convert.ToDateTime(item.Resp_time);
+
+                var duedate = item.BillDueDate;
+                var billdueinfo = "Due Date " + duedate;
+
+                var Circle = item.Circle;
+                var Circleinfo = "Circle " + Circle;
+                var sts = item.Rstaus;
+
+                var amt = item.amount;
+                var amtde = item.income;
+                decimal? amtdec = 0;
+                if (sts.ToUpper().Contains("REFUND"))
+                {
+                    amtdec = amt - amtde;
+                    amtdec = +amtdec;
+                }
+                else
+                {
+                    amtdec = amt - amtde;
+                    amtdec = -amtdec;
+                }
+                if (item.Rstaus.ToUpper().Contains("REQ"))
+                {
+                    sts = "Pending";
+                }
+                <tr>
+                    <td>@sts</td>
+                    <td>
+                        @item.Mobile <br />
+                        @if (!string.IsNullOrWhiteSpace(Circle))
+                        {
+                            <span style="font-size:10px;">@Circleinfo</span>
+                        }
+                    </td>
+                    <td>
+                        @item.operator_Name <br />
+                        @if (!string.IsNullOrWhiteSpace(duedate))
+                        {
+                            <span style="font-size:10px;">@billdueinfo</span>
+                        }
+                    </td>
+                    <td>@item.Operator_type</td>
+                    <td>@item.amount</td>
+                    <td>@amtdec</td>
+                    <td>@item.income</td>
+                    <td>@item.user_remain_pre</td>
+                    <td>@item.Remain</td>
+                    <td>@item.rch_type</td>
+                    <td>@item.OPt_id</td>
+                    <td>@Rch_time.ToString("d-MMM-yyyy HH:mm:ss")</td>
+                    @if (item.Resp_time != null)
+                    {
+                        <td>@Resp_time.ToString("d-MMM-yyyy HH:mm:ss")</td>
+                    }
+                    else
+                    {
+                        <td>@item.Resp_time</td>
+                    }
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</body>
+</html>

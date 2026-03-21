@@ -1,0 +1,779 @@
+﻿@using Microsoft.AspNet.Identity
+@using Vastwebmulti.Models;
+<!DOCTYPE html>
+<html>
+<head>
+    @{
+        VastwebmultiEntities db = new VastwebmultiEntities();
+        string currenturl = HttpContext.Current.Request.Url.Authority;
+        currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+        currenturl = currenturl.ToUpper();
+        var whitelabelid = "";
+        if (currenturl.Contains("LOCALHOST"))
+        {
+            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+        }
+        else
+        {
+            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+        }
+        var comnyname = "";
+        var companyname = db.tblWhiteContactDatas.Where(p => p.UserId == whitelabelid).ToList();
+        if (companyname.Count > 0)
+        {
+            comnyname = companyname.SingleOrDefault().CompnayName;
+        }
+        else
+        {
+            comnyname = "";
+        }
+        var col = "";
+        var color = db.changecolors.Where(p => p.Role == "WHITELABEL" && p.UserId == whitelabelid).ToList();
+        if (color.Count > 0)
+        {
+            if (color.SingleOrDefault().Role == "WHITELABEL")
+            {
+                col = color.Where(p => p.Role == "WHITELABEL" && p.UserId == whitelabelid).SingleOrDefault().adminandouterheadercolor;
+            }
+        }
+        else
+        {
+            col = "pink";
+        }
+
+
+
+
+        var image1 = "";
+        var logo = db.tblHeaderLogoes.Where(p => p.UserId == whitelabelid).ToList();
+        if (logo.Count > 0)
+        {
+            image1 = logo.SingleOrDefault().LogoImage;
+        }
+        var userid = User.Identity.GetUserId();
+        var emailid1 = db.Users.Where(a => a.UserId == whitelabelid).FirstOrDefault().Email;
+        var currentlogintime = db.Login_info.Where(a => a.UserId == emailid1).OrderByDescending(a => a.Idno).ToList();
+        var logintime = currentlogintime.FirstOrDefault().CurrentLoginTime;
+
+        var virremain = db.whitelabel_virtual_remain.Where(p => p.whitelabelid == whitelabelid).FirstOrDefault().ParmanentValue;
+        var realremail = db.White_label_remainbal.Where(p => p.userid == whitelabelid).SingleOrDefault().remainbal;
+        var image = "";
+        var backimage = db.tblWhiteLabelLoginBackImages.Where(p => p.Role == "WHITELABEL" && p.UserID == whitelabelid).ToList();
+        if (backimage.Count > 0)
+        {
+            image = backimage.FirstOrDefault().ImageUrl;
+        }
+        else
+        {
+            image = "img24.png";
+        }
+        var favimage = "";
+
+        var faviconlogo = db.tblfavicons.Where(p => p.UserId == whitelabelid).ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            favimage = faviconlogo.SingleOrDefault().faviconimage;
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var cont = (from nm in db.whitelabel_dispute_list where nm.sts == "Pending" && nm.Userid == whitelabelid select nm).Count();
+        var complant = (from nm in db.whitelabel_complaint_request where nm.sts == "Open" select nm).Count();
+        var email = db.Users.Where(a => a.UserId == userid).Single().Email;
+        //count purcahseorder request
+        var pp = db.show_whitelabel_purchaserequest_totalcount(email).SingleOrDefault();
+        ViewBag.purchasereq = pp.Totalcount;
+        var WalletUloadCount = db.Whitelabel_WalletToBankAmountTransferRequests.Count(a => a.Status == "Pending");
+    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@comnyname</title>
+    <!-- Favicon-->
+
+
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/4eb3ded1c6.js" crossorigin="anonymous"></script>
+    <!-- Wait Me Css -->
+    <link href="~/AdminDesign/plugins/waitme/waitMe.css" rel="stylesheet" />
+    <!-- Bootstrap Core Css -->
+    <link href="~/AdminDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <!-- Waves Effect Css -->
+    <link href="~/AdminDesign/plugins/node-waves/waves.css" rel="stylesheet" />
+    <!-- Animation Css -->
+    <link href="~/AdminDesign/plugins/animate-css/animate.css" rel="stylesheet" />
+    <!-- Morris Chart Css-->
+    <link href="~/AdminDesign/plugins/morrisjs/morris.css" rel="stylesheet" />
+    <!-- Custom Css -->
+    <link href="~/fonts/icofont.css" rel="stylesheet" />
+    <link href="~/AdminDesign/css/style.css" rel="stylesheet">
+
+    <link href="~/AdminDesign/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+    <link href="~/AdminDesign/css/themes/all-themes.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="~/AdminDesign/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <link href="~/AdminDesign/all-themes.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datepicker3.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/daterangepicker.min.css" rel="stylesheet" />
+    <link href="~/Areas/WHITELABEL/Design/css/whitelabel.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/Dashcustom.css" rel="stylesheet" />
+    <link href="~/AdminDesign/css/style.css" rel="stylesheet" />
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+    }
+    @*<link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />*@
+
+
+
+    <style>
+        .navbar .navbar-toggle:before {
+            content: '\E8D5';
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+
+        .navbar .navbar-toggle:before {
+            content: '\E8D5';
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+    </style>
+    <style>
+        .sidebar .menu .list a span {
+            color: white;
+        }
+
+        .sidebar .menu .list a {
+            color: white;
+        }
+
+        .navbar .navbar-toggle:before {
+            /*content: '\E8D5';*/
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+
+        .navbar .navbar-toggle:before {
+            /*content: '\E8D5';*/
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+    </style>
+    <style>
+        .activee {
+            background-color: #393d56;
+            color: white;
+        }
+
+        .kkkkk {
+            background-color: #393d56;
+        }
+
+        .sidebar .menu .list.white-menu-custom .ml-menu li a {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            padding-left: 25px;
+            font-size: 12px;
+        }
+
+        /*======================*/
+        .nav-toggle span {background: #fff;height: 3px;width: 35px;display: block;margin-top: 7px;transition: .5s linear;}
+        .navbar-heaer, .nav-toggle, .white-logo{float: left;}
+        .nav-toggle {margin-right: 15px;cursor: pointer;}
+        .left-sidebar {margin-left: -200px;top: 56px;}
+        section.content {margin: 70px 0px 0 0px;}
+        .left-sidebar.open-one {margin-left: 0px;}
+        .nav-toggle.open span:nth-child(1) {opacity: 0;}
+        .nav-toggle.open span:nth-child(2) {transform: rotate(45deg);margin: 7px 0px -10px 0px;}
+        .nav-toggle.open span:nth-child(3) {transform: rotate(-45deg);}
+        .right-drop img{width:30px; height: 30px;margin-top:12px;}
+        .right-dropdown img{margin:0;}  
+        .right-dropdown {position: absolute;background: linear-gradient(to right, @PageData["Globalfirst"], @PageData["GlobalSecond"] );width: 217px;right: -235px;top: 56px;transition: .5s linear;}
+        .right-drop.open .right-dropdown {right: -15px;}
+        .navbar-right li a {margin-top: 0 !important;}
+        .navbar-right .right-dropdown li a {width: 100%;text-align: left;float: left;padding: 0px !important;height: auto !important;}
+        .navbar-right .right-dropdown li {width: 100%;float: left;border-bottom: 2px solid #fff;padding: 5px 10px;}
+        .nav .open > a, .nav .open > a:hover, .nav .open > a:focus, .nav > li > a:hover, .nav > li > a:focus  {background-color: transparent;}
+        .drop-in-responcive{display: none;}
+        .drop-in-fullscreen {float: left;}
+        .drop-in-fullscreen li {float: left;}
+        .fullbodydycolorbg{background-image: linear-gradient(to right , @PageData["Globalfirst"], @PageData["GlobalSecond"]) !important;}
+        .left-sidebar .slimScrollDiv ul li a{padding: 3px 7px !important;}
+        .left-sidebar .slimScrollDiv ul li a i {font-size: 12px !important;width: 25px;height: 25px;line-height: normal;text-align: center;border-radius: 4px;background: #3a3f48;padding-top: 5px;}
+        .account-menu,  .menu .hhu, .kkli {padding-left: 0 !important;}
+        .tmw-dashaboard .info-box-4{border-top: 1px solid @PageData["Globalfirst"];border-left: 1px solid @PageData["Globalfirst"];border-right: 1px solid @PageData["GlobalSecond"];border-bottom: 1px solid @PageData["GlobalSecond"];}
+        @@media only screen and (max-width: 1170px) {
+            .ls-closed .sidebar {display: block;}
+            .navbar-header .bars{display: none !important;}
+            #leftsidebar{width: auto !important;}
+        }
+        @@media only screen and (max-width: 767px) {
+            .drop-in-responcive {display: block;float: right;}
+            .drop-in-responcive li {float: left;}
+            .drop-in-fullscreen{display: none;}
+            .right-drop img{margin: 0px;}
+            .navbar .navbar-toggle {padding: 0;margin: -5px 10px;}
+            .right-dropdown li {display: block;width: 100%;padding: 0px 10px;}
+            body #navbar-collapse, .nav.navbar-nav.navbar-right{margin: 0px;padding: 0px;}
+        }
+        @@media only screen and (max-width: 520px) {
+            #leftsidebar {margin-left: -300px !important;top: 70px;}
+            #leftsidebar.open-one {margin-left: 0px !important;}
+            .ls-closed section.content {margin-left: 0;}
+            .admin-tabs {margin: 0 15px;}
+            .admin-tabs .col-lg-2.col-md-2.col-sm-6.col-xs-6{padding: 0px;}
+            .navbar .navbar-toggle {padding: 0;margin: -2px 5px;}
+            .balance-none{display: none;}
+            .all-tabels-right li {width: 100% !important;}
+            .all-tabels-right li a{margin: 5px 0px !important}
+            .dropdown-toggle {margin: 0 5px !important;padding: 4px 5px !important;}
+            }
+            /*======================*/
+    </style>
+</head>
+<body class="theme">
+
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <center><img src="~/images/serachimg.gif" class="img-responsive" style="height:200px;width:200px;" /></center>
+
+        </div>
+    </div>
+
+
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <div class="search-icon">
+            <i class="material-icons">search</i>
+        </div>
+        <input type="text" placeholder="START TYPING...">
+        <div class="close-search">
+            <i class="material-icons">close</i>
+        </div>
+    </div>
+    <!-- #END# Search Bar -->
+    <!-- Top Bar -->
+    <nav class="navbar" style="background:linear-gradient(to right,@PageData["Globalfirst"],@PageData["GlobalSecond"])">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                <a href="javascript:void(0);" class="bars"></a>
+                <a class="white-logo" href="~/ADMIN/Home/Dashboard">
+                    <center>
+                        <img src="@Url.Content("~/"+@image1)" class="img-responsive" style="width:100px;max-width:100%;max-height:36px;" />
+                    </center>
+                </a>
+                <div class="drop-in-responcive">
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" style="margin: 0 10px;text-align: center;float: left;padding: 4px 10px;border: 2px solid #fff;border-radius: 5px;display: block;">
+                            <span class="balance-none" style="color: #fff;float: left;">Balance :</span>
+                            <p style="float: left;margin: 0;margin-left: 5px;"><span style="color: #fff;" id="color">₹&nbsp;</span><span style="color: #fff;">@realremail</span></p>
+                        </a>
+                    </li>
+                    <li class="right-drop">
+                        @if (ViewBag.image != null && ViewBag.image != "")
+                        {
+                            <div class="image" style="">
+                                <img id="Adminimage" src="@Url.Content("~/"+ ViewBag.image )" class="img-circle" alt="User" width="100" height="100" title="Click Me Upload Profile Image" style="cursor:pointer;" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="image" style="">
+                                <img id="Adminimage" src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" title="Click Me Upload Profile Image" style="cursor:pointer;">
+                            </div>
+                        }
+                        <ul class="right-dropdown">
+                            <li class="active" style="">
+                                <a href="~/WHITELABEL/Home/Profile">
+                                    <img src="~/AdminDesign/images/files-and-folders.svg" style="width:22px;" />
+                                    <span style="color:white;margin-left:5px;font-size: 16px;">My Profile</span>
+                                </a>
+                            </li>
+                            <li class="dropdown">
+                                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <button style="border: 0;padding: 5px 5px 2px 4px;vertical-align: middle;background: none;">
+                                        <span style="color: #fff;margin-right: 5px;" class="glyphicon glyphicon-off"></span>
+                                        <span style="font-size: 16px;color: #fff;">Log Out</span>
+                                    </button>
+                                }
+                            </li>
+
+                        </ul>
+                    </li>
+                </div>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href='@Url.Action("WalletUnloadReport", "Home", new { type = "Pending" })' title="Bank Wallet Transfer Request." role="button" style="height:48px; margin-top:11px;">
+                            <i class="material-icons" style="padding-top:8px;">account_balance</i>
+                            <span class="label-count" style="top:13px;color: #fff;">@WalletUloadCount</span>
+                        </a>
+
+                    </li>
+                    <li class="dropdown">
+                        <a href="@Url.Action("FundTransfer","Home")" title="Purchase Order Request." role="button" style="height:48px; margin-top:11px;">
+                            <i class="material-icons" style="padding-top:8px;">account_balance_wallet</i>
+                            <span class="label-count" style="top:13px;color: #fff;">@ViewBag.purchasereq</span>
+                        </a>
+
+                    </li>
+                    <li class="dropdown">
+                        <a href="@Url.Action("Complaint","Home")" title="All Complain's Request" role="button" style="height:48px; margin-top:11px;">
+                            <i class="material-icons" style="padding-top:8px;">forum</i>
+                            <span class="label-count" style="top:13px;color: #fff;">@complant</span>
+
+                        </a>
+
+                    </li>
+                    <li class="dropdown">
+                        <a href="@Url.Action("Dispute_list","Home")" title="All Dispute's" role="button" style="height:48px; margin-top:11px;">
+                            <i class="material-icons" style="padding-top:8px;">gavel</i>
+                            <span class="label-count" style="top:13px;color:#fff;">@cont</span>
+                        </a>
+
+                    </li>
+                    @*<li class="dropdown">
+                            <a href="@Url.Action("DealercrReport","Home")" title="DealercrReport's" role="button" style="height:48px; margin-top:11px;">
+                                DealercrReport    <i class="fa fa-archive" style="padding-top:8px; font-size:20px"></i>
+                                <span class="label-count" style="top:13px;">@cont</span>
+                            </a>
+
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="@Url.Action("RetailercrReport","Home")" title="RetailercrReport's" role="button" style="height:48px; margin-top:11px;">
+                                RetailercrReport  <i class="fa fa-money" style="padding-top:8px; font-size:20px"></i>
+                                <span class="label-count" style="top:13px;">@cont</span>
+                            </a>
+
+                        </li>*@
+                <div class="drop-in-fullscreen">
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" style="margin: 10px !important;text-align: center;float: left;padding: 4px 10px;border: 2px solid #fff;border-radius: 5px;display: block;">
+                            <span style="color: #fff;float: left;">Balance :</span>
+                            <p style="float: left;margin: 0;margin-left: 5px;"><span style="color: #fff;" id="color">₹&nbsp;</span><span style="color: #fff;">@realremail</span></p>
+                        </a>
+                    </li>
+                    <li class="right-drop">
+                        <!--<div class="image" style="">
+        <img id="Adminimage" src="/Retailer_image/d7398200-d0dc-4a84-a3da-7f15822a23fb_3UDu2lL-winter-wallpaper-1920x1080.jpg" class="img-circle" alt="User" title="Click Me Upload Profile Image" style="cursor:pointer;"-->
+                        @*onclick="uploadimage(28)"*@
+                        <!--width="100" height="100">
+    </div>-->
+                                @if (ViewBag.image != null && ViewBag.image != "")
+                                {
+                                    <div class="image" style="">
+                                        <img id="Adminimage" src="@Url.Content("~/"+ ViewBag.image )" class="img-circle" alt="User" width="100" height="100" title="Click Me Upload Profile Image" style="cursor:pointer;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="image" style="">
+                                        <img id="Adminimage" src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" title="Click Me Upload Profile Image" style="cursor:pointer;">
+                                    </div>
+                                }
+                        <ul class="right-dropdown">
+                            <li class="active" style="">
+                                <a href="~/WHITELABEL/Home/Profile">
+                                    <img src="~/AdminDesign/images/files-and-folders.svg" style="width:22px;" />
+                                    <span style="color:white;margin-left:5px;font-size: 16px;">My Profile</span>
+                                </a>
+                            </li>
+                            <li class="dropdown">
+                                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <button style="border: 0;padding: 5px 5px 2px 4px;vertical-align: middle;background: none;">
+                                        <span style="color: #fff;margin-right: 5px;" class="glyphicon glyphicon-off"></span>
+                                        <span style="font-size: 16px;color: #fff;">Log Out</span>
+                                    </button>
+                                }
+                            </li>
+
+                        </ul>
+                    </li>
+                </div>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- #Top Bar -->
+    <section>
+        <!-- Left Sidebar -->
+        <aside id="leftsidebar" class="sidebar navbar left-sidebar" style="background:linear-gradient(to right,@PageData["Globalfirst"],@PageData["GlobalSecond"])">
+
+            @{
+                var emailid = "";
+                using (VastwebmultiEntities db1 = new VastwebmultiEntities())
+                {
+                    var currentuser = User.Identity.GetUserId();
+                    emailid = db1.Users.Where(a => a.UserId == currentuser).SingleOrDefault().Email.ToString();
+                }
+            }
+
+            <!-- #User Info -->
+            <!-- Menu -->
+            <div class="menu">
+                <ul class="list white-menu-custom">
+                    
+                    <li class="active" style="padding:8px 10px;">
+                        <a href="~/WHITELABEL/Home/Dashboard">
+                            <img src="~/AdminDesign/images/dashboard.svg" style="width:17px;margin-left: 3px;">
+                            <span style="color:white;">Dashboard</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript:void(0);" class="llkj">
+                            <i class="fa fa-file-text-o" style="color:white;margin:6px 0;font-size:17px;"></i>
+                            <span style="margin-top:7px;">Important Trans. Reports</span>
+                        </a>
+                        <ul class="account-menu hhu kkli">
+
+                            <li>
+                                <a href="@Url.Action("Operator_report_new","Home")">
+                                    <i class="fa fa-plug" style="color:white;margin-top:5px;font-size:18px;"></i>
+                                    <span>Prepaid&nbsp;&&nbsp;Utility</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("Money_transfer_Report","Home")">
+                                    <i class="fa fa-globe" style="color:white;margin-top:6px;font-size:20px;"></i>
+                                    <span>Financial&nbsp;Services</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                                    <span>Travel&nbsp;&&nbsp;Hotel</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                                    <span>E-commerce</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                                    <span>Other&nbsp;Services</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript:void(0);" class="llkj">
+                            <i class="fa fa-user-circle" style="color:#fff;margin:6px 0;"></i>
+                            <span style="margin-top:7px;">Wallet&nbsp;&&nbsp;Accounts Activity</span>
+                        </a>
+                        <ul class="account-menu hhu kklii2">
+                            <li>
+                                <a href="@Url.Action("Fund_transfer","Home")">
+                                    <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                                    <span>Fund Transfer</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Fund_User","Home")">
+                                    <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                                    <span>Fund User<sup style="left: 2px;">2</sup>&nbsp;User</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("UpiCharges","Home")">
+                                    <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                                    <span>Upi / QR</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    @*<li style="padding:8px 10px;border-top: 3px solid #fff;">
+                            <a href="javascript:void(0);">
+
+                                <img src="~/AdminDesign/images/rupee-2.svg" style="width:20px;">
+                                <span style="margin: 5px 0px 5px 10px;">Account</span>
+                            </a>
+                            <ul class="ml-menu" style="display:block;">
+                                <li>
+                                    <a href="~/WHITELABEL/Home/FundTransferWDlm">FundTransfer</a>
+                                </li>
+
+                                <li>
+                                    <a href="~/WHITELABEL/Home/WalletUnloadReportWhitelabel">Unload&nbsp;Wallet</a>
+                                </li>
+
+                                <li>
+                                    <a href="~/WHITELABEL/Home/WhitelabelEarning">Earning&nbsp;Report</a>
+                                </li>
+
+                                <li>
+                                    <a href="~/WHITELABEL/Home/Gst_Invocing_Whitelabel_report">Invoice&nbsp;Report</a>
+                                </li>
+
+                            </ul>
+                        </li>*@
+
+
+
+
+
+                    @*<li>
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons">perm_data_setting</i>
+                                <span>Slab&nbsp;Settings</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li>
+                                    <a href="@Url.Action("Prepaid_Slab_setting","Home")">Prepaid & DTH Slab</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("PostpaidUtility_Slab_setting","Home")">Postpaid & Utility</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Money_Transfer_Slab","Home")">Money Transfer</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("AepsSlab","Home")">AEPS Service Slab</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("M_Poss","Home")">M-Pos Service Slab</a>
+                                </li>
+
+                                <li>
+                                    <a href="@Url.Action("Pancard_Slab_Setting","Home")">Pancard Slab</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Broadband_Slab_setting","Home")">Broadband Comm</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Water_Slab_setting","Home")">Water Comm</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Insurance_Slab_setting","Home")">Insurance Comm</a>
+                                </li>
+
+
+                            </ul>
+                        </li>*@
+
+
+
+
+
+                    @*<li>
+                            <a href="~/WHITELABEL/Home/Bank_info">
+                                <i class="material-icons">account_balance</i>
+                                <span>Bank Info</span>
+                            </a>
+                        </li>*@
+
+                </ul>
+            </div>
+            <!-- #Menu -->
+            <!-- Footer -->
+            <div class="legal" style="background: #fff;">
+                <div class="copyright" style="margin-top:-4px;">
+                    Copyright&nbsp;&nbsp;2019 - <span>@DateTime.Now.Year.ToString()</span>
+                </div>
+                <div class="copyright">
+                    <a href="javascript:void(0);" style="color: #555 !important;">@comnyname</a>.
+                </div>
+                <div class="navbar" style="position:inherit;margin-top:52px; height:33px;">
+
+                </div>
+            </div>
+            <!-- #Footer -->
+        </aside>
+    </section>
+    @RenderBody()
+    <!-- Jquery Core Js -->
+    <!-- Jquery Core Js -->
+    <script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+    <script src="~/Swalalert/datatablejquery.js"></script>
+    <!-- Bootstrap Core Js -->
+    <script src="~/AdminDesign/plugins/bootstrap/js/bootstrap.js"></script>
+    <!-- Autosize Plugin Js -->
+    <script src="~/AdminDesign/plugins/autosize/autosize.js"></script>
+    <!-- Select Plugin Js -->
+    <!-- Slimscroll Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <!-- Waves Effect Plugin Js -->
+    <script src="~/AdminDesign/plugins/node-waves/waves.js"></script>
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-countto/jquery.countTo.js"></script>
+    <!-- Morris Plugin Js -->
+    <script src="~/AdminDesign/plugins/raphael/raphael.min.js"></script>
+    <script src="~/AdminDesign/plugins/morrisjs/morris.js"></script>
+    <!-- ChartJs -->
+    <!-- Flot Charts Plugin Js -->
+    <script src="~/AdminDesign/plugins/flot-charts/jquery.flot.js"></script>
+
+    <!-- Sparkline Chart Plugin Js -->
+    <!-- Custom Js -->
+    <script src="~/AdminDesign/js/admin.js"></script>
+    <script src="~/AdminDesign/js/pages/index.js"></script>
+    <!-- Demo Js -->
+    <script src="~/AdminDesign/js/demo.js"></script>
+    <script src="~/AdminDesign/plugins/moment.min.js"></script>
+    <script src="~/AdminDesign/plugins/daterangepicker.js"></script>
+    <!--data table -->
+    <script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+    <script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+    <script src="~/AdminDesign/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    <script src="~/AdminDesign/plugins/sweetalert/sweetalert.min.js"></script>
+    <link href="~/Swalalert/datatable.css" rel="stylesheet" />
+
+    <script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+    <script src="~/ClanderCss/bootstrap-datepicker.min.js"></script>
+    <script src="~/ClanderCss/bootstrap-datetimepicker.min.js"></script>
+
+    <script>
+        function apna(dienb) {
+            var bt = document.getElementById('start_button');
+            if (dienb.value != '') {
+                bt.disabled = false;
+            }
+            else {
+                bt.disabled = true;
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function validate(evt) {
+            var theEvent = evt || window.event;
+
+            // Handle paste
+            if (theEvent.type === 'paste') {
+                key = event.clipboardData.getData('text/plain');
+            } else {
+                // Handle key press
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode(key);
+            }
+            var regex = /[0-9]|\./;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
+    </script>
+    <!--  Disable Enable By Class Name  -->
+    <script>
+        $('.searchInput').keyup(function () {
+            if ($(this).val() == '') {
+
+                $('.enableOnInput').prop('disabled', true);
+            } else {
+
+                $('.enableOnInput').prop('disabled', false);
+            }
+        });
+    </script>
+
+    <script>
+        function apna(dienb) {
+            var bt = document.getElementById('start_button');
+            if (dienb.value != '') {
+                bt.disabled = false;
+            }
+            else {
+                bt.disabled = true;
+            }
+        }
+    </script>
+    <script>
+        function manages(txts) {
+            var bt = document.getElementById('btSubmits');
+            if (txts.value != '') {
+                bt.disabled = false;
+            }
+            else {
+                bt.disabled = true;
+            }
+        }
+    </script>
+    <!--   All Tabs -->
+    <script type="text/javascript">
+        $('ul.tabs li').click(function () {
+            var tab_id = $(this).attr('data-tab');
+
+            $('ul.tabs li').removeClass('current');
+            $('.tab-content').removeClass('current');
+
+            $(this).addClass('current');
+            $("#" + tab_id).addClass('current');
+        })
+
+
+    </script>
+
+    <script type="text/javascript">
+
+
+        $('ul.tabs2 li').click(function () {
+            var tab_id = $(this).attr('data-tab');
+
+            $('ul.tabs2 li').removeClass('current2');
+            $('.tab-content2').removeClass('current2');
+
+            $(this).addClass('current2');
+            $("#" + tab_id).addClass('current2');
+        })
+
+
+    </script>
+    <script>
+        $('.nav-toggle').click(function () {
+            $(this).toggleClass('open');
+            $('.left-sidebar').toggleClass('open-one');
+        })
+    </script>
+    <script>
+        $('.right-drop').click(function () {
+            $(this).toggleClass('open');
+        })
+    </script>
+</body>
+</html>

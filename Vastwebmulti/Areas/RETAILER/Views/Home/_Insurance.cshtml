@@ -1,0 +1,518 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.remmulti
+
+<style>
+
+    .loader {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+</style>
+<div id="insurinfo" class="row" style="padding-left: 4px;">
+    <div class="col-md-2 elecpay-first insurinfo-class">
+        <div style="height:28px;position:absolute;">
+            <p id="insurancemessage22" style="margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="input-group">
+
+                @Html.DropDownList("insuranceddltype", ViewBag.insurance as SelectList, "Select Insurance Company", new { id = "insuranceddltype", @class = "form-control", required = "required", onchange = "insuranceddl(this)" })
+
+                <div class="input-group-addon in-addon">
+
+                </div>
+            </div>
+            <!-- /.input group -->
+        </div>
+
+    </div>
+
+    <div class="col-md-2">
+        <div>
+            <p id="insurancemessage" class="insurancemessage22" style="top:-16px !important;  margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="txtelectricity1" style="margin-top:-1px; height:37px;">
+                <input type="text" id="txtpolicyno" name="txtpolicyno" class="form-control" placeholder="Enter Policy Number" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div>
+            <p id="Emailmessage" class="insurancemessage22" style="top:-16px !important;  margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="txtelectricity1" style="margin-top:-1px; height:37px;">
+                <input type="text" id="txtemail" name="txtemail" class="form-control" placeholder="Enter Email" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2" id="divbob">
+        <div>
+            <p id="dobinsurancemessage" class="insurancemessage22" style="margin-top: 6px; top:-16px !important;  color: #E91E63; font-size: 10px; padding-left: 1px;"></p>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="txtelectricity1" style="margin-top:-5px;height:37px;">
+                <div class="input-daterange input-group" style="margin-left:-13px;">
+                    @Html.TextBox("txtDOB", "", new { @class = "form-control", required = "required", style = " margin-top:4px;height:37px;text-align: left;padding-left: 5px;", placeholder = "Select DOB Ex: yyyy/mm/dd", autocomplete = "off" })
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2" id="gasamount-input-right">
+        <div>
+            <p id="insuranceamountmessage" class="insurancemessage22" style="top:-16px !important;  margin-top: 10px; color: #E91E63; font-size: 10px; padding-left: 1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="txtelectricity1" style="margin-top:-1px; height:37px;">
+                <input type="text" id="insuranceamount" name="insuranceamount" class="form-control" placeholder="Amount" style="padding-left:5px;" onkeypress="return isNumber(event)" />
+                <!--Add Button View-->
+                <div class="col-md-1 wamount-input-type">
+                    <center>
+                        <div class="form-group" style="margin-bottom:0px;">
+                            <div class="form-line" style="border-bottom:none;">
+                                <input type="submit" id="btnnn4" class="btn bg-blue-grey" value="View Bill" style="        height: 37px;
+        margin-left: -15px;
+" onclick="GetInsuranceviewbill('insuranceddltype')" />
+                            </div>
+                        </div>
+                    </center>
+
+                </div>
+                <!--Add Button View-->
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-1 gasamount-input-before">
+        <center>
+            <div class="form-group" style="margin-bottom:0px;">
+                <div class="form-line" style="margin-top:-1px !important; border-bottom:none;">
+                    <input type="submit" id="btn4" class="btn bg-blue-grey" value="Continue" style="height:37px;margin-left:-15px;" onclick="getinsurancecontinuebtn('insuranceddltype')" />
+                </div>
+            </div>
+        </center>
+
+    </div>
+    <!--View Bill button-->
+    <!--
+
+    <div class="col-md-1">
+        <center>
+            <div class="form-group" style="margin-bottom:0px;">
+                <div class="form-line" style="margin-top:39px; border-bottom:none;">
+                    <input type="submit" id="btnnn" class="btn bg-blue-grey" value="View Bill" style="height:37px;margin-left:-15px;" onclick="GetInsuranceviewbill('insuranceddltype')" />
+                </div>
+            </div>
+        </center>
+
+    </div>
+
+    -->
+
+</div>
+<div id="insurmsgBox" style="margin-top:10px;"></div>
+
+<table id="confirminsur" class="for-prepaid" style="width:100%;margin-top:-11px !important;display:none;">
+    <tr>
+        <th style="width:10%;"></th>
+        <th style="width:25%;">Operator</th>
+        <th style="width:25%;">Recharge to</th>
+        <th style="width:10%;">amount</th>
+        <th style="width:15%;">Service Fee </th>
+        @if (Model.Ispin == true)
+        {
+            <th style="width:15%;">PIN</th>
+        }
+        <th style="width:15%;">Action</th>
+    </tr>
+    <tr>
+        <td>
+            <button style="padding: 5px 20px;" onclick="backinsur()"><img src="~/AdminDesign/images/back.svg" style="width:18px;" /></button>
+        </td>
+        <td style="font-size:15px;
+">
+            <b><span id="showoptinsur"></span> </b>
+        </td>
+        <td class="border-centerbe" style="font-size: 20px;"><b> <span id="shownumberinsur"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 20px;"><b><span id="showamountinsur"></span></b></td>
+        <td>
+            <input type="number" class="form-control" id="servicefeeinsurance" placeholder="Enter Fee" />
+            <input type="hidden" name="insuranceduedate" id="insuranceduedate" />
+        </td>
+        @if (Model.Ispin == true)
+        {
+            <td style="font-size: 24px;">
+                <input style=" width: 160px; " type="password"
+                       id="InsurRechargepin"
+                       class="form-control text-center"
+                       placeholder="Enter PIN"
+                       maxlength="6"
+                       autocomplete="off" />
+                <span id="insurpinError"
+                      style="color:red; font-size:13px; display:none; margin-top:5px;">
+                </span>
+            </td>
+        }
+
+        <td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="insurprocessToPay()">Procces To Pay</button></td>
+
+
+        @*<td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="insurrechargeconfirm()">Procces To Pay</button></td>*@
+
+    </tr>
+</table>
+<table id="rechargeconfirminsur" class="for-prepaid" style="width:100%;margin-top:-11px !important;display:none;">
+    <tr>
+        <th style="width:25%;">Recharge Status</th>
+        <th style="width:37%;">Message</th>
+        <th style="width:11%;">Action</th>
+    </tr>
+    <tr>
+        <td style="font-size: 20px;"><b> <span id="rchstatuschkinsur"></span> </b></td>
+        <td class="border-centerbe border-centerbess" style="font-size: 20px;"><b><span id="rchmsginsur"></span></b></td>
+        <td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="Rechargeagaininsur()">Recharge Again</button></td>
+    </tr>
+</table>
+<div class="loader loaderwww"></div>
+
+
+
+
+
+<script>
+    var isPinOn = @Model.Ispin.ToString().ToLower();
+
+    function insurprocessToPay() {
+
+        if (isPinOn) {
+
+            var pin = $('#InsurRechargepin').val();
+
+
+            if (!pin) {
+                alert('Please enter transaction PIN');
+                $('#InsurRechargepin').focus();
+                return;
+            }
+
+            insurrechargeconfirm(pin);
+        }
+        else {
+            insurrechargeconfirm('');
+        }
+    }
+</script>
+
+<script>
+    function showMsg(msg, type) {
+
+        var color = (type === "success") ? "green" : "red";
+
+        $('#insurmsgBox').html(
+            '<div style="color:' + color + '; font-weight:bold;">' + msg + '</div>'
+        );
+
+        setTimeout(function () {
+            $('#insurmsgBox').html('');
+        }, 5000);
+    }
+</script>
+
+
+<script>
+    j('#insuranceddltype').select2();
+</script>
+
+
+<!--Insurance View Bill-->
+<script>
+    function GetInsuranceviewbill(ins) {
+        var e = document.getElementById(ins);
+        var insuranceddl = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var txtpolicyno = $("#txtpolicyno").val();
+        var insuranceamount = $("#insuranceamount").val();
+        var dob = $("#txtDOB").val();
+        /*call function */
+        var sts = getinsurancecontiunebtn(insuranceddl, txtpolicyno, dob, "10");
+        console.log('sts', sts);
+        if (sts == true) {
+            viewbillinsur(insuranceddl, eleddlvalue, txtpolicyno, "10", dob, "", "", "");
+            event.preventDefault();
+            return false
+        }
+        else {
+            event.preventDefault();
+            return false
+        }
+    }
+</script>
+<script>
+    function viewbillinsur(optname, optvalue, mobileno, amount, optional1, optional2, optional3, optional4) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("viewbill", "Home")",
+            data: { OperatorName: optname, OptCode: optvalue, mobileno: mobileno, Amount: amount, optional1: optional1, optional2: optional2, optional3: optional3, optional4: optional4 },
+            cache: false,
+            dataType: 'json',
+            closeOnConfirm: true,
+            beforeSend: function () {
+                $('.loader').show();
+            },
+            success: function (result) {
+                $('.loader').hide();
+                $('#insurCustomerTbl').html('');
+                var message = result.Message;
+                if (message == "Operator Code MissMatch") {
+                    $('#insuranceamount').val(0);
+                    $('#insuranceduedate').val('');
+
+                    var newRow =
+                        "<div class='col-sm-4 text-danger' style='text-align: left;'>" +
+                        "" + message + ""
+                    "</div>"
+                    $('#insurCustomerTbl').append(newRow);
+                    $('#insurCustomerInfo').css('display', 'block');
+                    return;
+                }
+                if (result.Response == 'SUCCESS') {
+                    var price = result.Price;
+                    var BIllduedate = result.billduedate;
+                    var name = JSON.parse(result.DisplayValues);
+                    name = name[0].value;
+
+                    if (price != "") {
+                        $('#insuranceamount').val(price);
+                        $('#insuranceduedate').val(BIllduedate);
+
+                        var newRow = "<li style='list-style-type: none;'>Name: " + name + "</li>";
+                        newRow += "<li style='list-style-type: none;'>Amount: " + price + "</li>";
+                        newRow += "<li style='list-style-type: none;'>Due Date: " + result.billduedate + "</li>";
+
+                        $('#insurCustomerTbl').append(newRow);
+                        $('#insurCustomerInfo').css('display', 'block');
+                    }
+                    else {
+                        $('#insuranceamount').val(0);
+                        $('#insuranceduedate').val('');
+
+                        var newRow =
+                            "<div class='col-sm-4' style='text-align: left;'>" +
+                            "" + message + ""
+                        "</div>"
+                        $('#insurCustomerTbl').append(newRow);
+                        $('#insurCustomerInfo').css('display', 'block');
+                    }
+
+                }
+                else {
+                    $('#insuranceamount').val(0);
+                    $('#insuranceduedate').val('');
+
+                    var newRow =
+                        "<div class='col-sm-4 text-danger' style='text-align: left;'>" +
+                        "" + message + ""
+                    "</div>"
+                    $('#insurCustomerTbl').append(newRow);
+                    $('#insurCustomerInfo').css('display', 'block');
+                }
+            }
+        })
+    }
+</script>
+<script>
+    function backinsur() {
+        $('#insurCustomerInfo').show();
+        $('#insureinfo').show();
+        $('#confirminsur').hide();
+    }
+</script>
+<!--Insurance continue button function-->
+<script>
+    function getinsurancecontinuebtn(ins) {
+        var e = document.getElementById(ins);
+        var insuranceddl = e.options[e.selectedIndex].text;
+        var insurancevalue = e.options[e.selectedIndex].value;
+        var txtpolicyno = $("#txtpolicyno").val();
+        var insuranceamount = $("#insuranceamount").val();
+        var duedate = $("#insuranceduedate").val();
+        var dob = $("#txtDOB").val();
+        var email = $("#txtemail").val();
+
+        /*call function */
+        var sts = getinsurancecontiunebtn(insuranceddl, txtpolicyno, dob, insuranceamount);
+        if (sts == true) {
+            $('#showoptinsur').text(insuranceddl);
+            $('#shownumberinsur').text(txtpolicyno);
+            $('#showamountinsur').text(insuranceamount);
+            $('#insuranceduedate').text(duedate);
+            $('#insurCustomerInfo').hide();
+            $('#insurinfo').hide();
+            $('#confirminsur').show();
+
+            //  Recharge(insuranceddl, insurancevalue, txtpolicyno, insuranceamount, dob, "", "", "", "0");
+            event.preventDefault();
+            return false;
+        }
+        else {
+            event.preventDefault();
+            return false;
+        }
+    }
+</script>
+
+<script>
+    function insurrechargeconfirm(pinValue) {
+
+        var e = document.getElementById("insuranceddltype");
+        var insuranceddl = e.options[e.selectedIndex].text;
+        var insurancevalue = e.options[e.selectedIndex].value;
+        var txtpolicyno = $("#txtpolicyno").val();
+        var insuranceamount = $("#insuranceamount").val();
+        var duedate = $("#insuranceduedate").val();
+        var dob = $("#txtDOB").val();
+        var email = $("#txtemail").val();
+        var servicefeeinsurance = $("#servicefeeinsurance").val();
+        if (servicefeeinsurance != "") {
+            /*call function */
+            var sts = getinsurancecontiunebtn(insuranceddl, txtpolicyno, dob, insuranceamount);
+            if (sts == true) {
+                  $("#servicefeeinsurance").css("border-color", "#00000");
+                //$("#txtpolicyno").val("");
+                //$("#insuranceamount").val("");
+               // if (txtpolicyno != "" && insuranceamount != "") {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Recharge","Home")",
+                        data: { OperatorName: insuranceddl, OptCode: insurancevalue, mobileno: txtpolicyno, Amount: insuranceamount, optional1: dob, optional2: email, optional3: "", optional4: "", comm: "", BillRefId: "", servicefee: servicefeeinsurance, billduedate: duedate, Rechargepin: pinValue },
+                        cache: false,
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('.loader').show();
+                        },
+                        success: function (result) {
+
+
+                            // 🔴 Clear old PIN error every time
+                            $('#insurpinError').hide().text("");
+
+                            /* 🔴 PIN ERROR — SAME PAGE */
+                            if (result.status && (
+                                result.status === "PIN_REQUIRED" ||
+                                result.status === "INVALID_PIN" ||
+                                result.status === "PIN_NOT_SET")) {
+
+                                $('#insurpinError').text(result.message).show();
+                                $('.loader').hide();
+                                return; // 🚫 STOP ONLY FOR PIN ERROR
+                            }
+
+
+                            var status = result.Response;
+                            var message = result.Message;
+                            if (status == "GATEWAY") {
+                                window.open(message, "_self");
+                                $('#rchstatuschkinsur').text("Pending");
+                                $('#rchmsginsur').text("Please Wait While Redirect The Gateway");
+                            }
+                            else {
+                                $('#rchstatuschkinsur').text(status);
+                                $('#rchmsginsur').text(message);
+
+                                $("#txtpolicyno").val("");
+                                $("#insuranceamount").val("");
+                            }
+
+                            $('#confirminsur').hide();
+                            $('#rechargeconfirminsur').show();
+                        },
+                        complete: function () {
+                            $("#remainretailer").load(location.href + " #remainretailer");
+                            $('.loader').hide();
+                            $.ajax({
+                                url: '@Url.Action("showrecentrecharge", "Home")',
+                                type: 'GET',
+                                dataType: "html",
+                                data: { type: "Insurance" },
+                                success: function (data) {
+                                    $('#reportchk').html(data);
+                                },
+                                error: function (data) {
+
+                                }
+                            });
+                        },
+                        error: function () {
+                            $("#remainretailer").load(location.href + " #remainretailer");
+                            $('.loader').hide();
+                        }
+                    })
+               // }
+            }
+        }
+        else {
+              $("#servicefeeinsurance").css("border-color", "#FF0000");
+        }
+    }
+</script>
+
+<script>
+    function Rechargeagaininsur() {
+        $('#insurinfo').show();
+        $('#confirminsur').hide();
+        $('#rechargeconfirminsur').hide();
+        j('#insuranceddltype').val("");
+        j('#insuranceddltype').select2().trigger('change');
+        $('#txtpolicyno').val("");
+        $('#insuranceamount').val("");
+        $('#txtDOB').val("");
+        $('#txtemail').val("");
+    }
+</script>

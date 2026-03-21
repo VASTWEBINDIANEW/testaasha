@@ -1,0 +1,572 @@
+﻿@model Vastwebmulti.Models.tblSilder
+@{
+    ViewBag.Title = "Outside_Silder";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Ckeditor/ckeditor.js"></script>
+<script src="~/Ckeditor/adapters/jquery.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript"> CKEDITOR.replace('txtedit'); </script>
+
+<link href="~/CSS/StyleSheet1.css" rel="stylesheet" />
+<style>
+    .scroll {
+        width: 100%;
+        max-height: 530px;
+        overflow: auto;
+    }
+
+        .scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scroll::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .scroll::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+        }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-2">
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="body scroll" style="max-height:572px;">
+                                <div class="demo-button ">
+                                    <div class="row">
+                                        <div class="col-md-12" style="margin-top:-10px;">
+                                            @Html.Partial("ColorPartial")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                    <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-20px;">
+                        <div class="card">
+                            <div class="">
+                                <h2 style="color:#00000096; font-size:16px;padding-top:9px; padding-left:22px;">
+                                    All Silder Details
+                                </h2>
+                                <button type="button" class="btn  waves-effect" style="float:right; margin-top:-34px; margin-right:7px;border:1px solid #c7c2c2;background:#dedddd;" data-toggle="modal" data-target="#defaultModal">
+                                  <i class="fa fa-plus" style="font-size:15px;top:1px;"></i>
+                                    <span style="top:-1px;">Add New</span>
+                                </button>
+                            </div>
+                            <div class="body">
+                                <div class="row">
+                                    <div class="table-responsive" style="position:inherit;margin-top:-20px;">
+                                        <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                            <thead style="background-color:whitesmoke;">
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Silder Heading</th>
+                                                    <th>Content</th>
+                                                    <th>Silder Image</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(ViewBag.showimg != null)
+                                                {
+                                                    foreach (var item in ViewBag.showimg)
+                                                    {
+                                                        var p = item.Content;
+                                                        var q = "";
+                                                        if (p.Length > 50)
+                                                        {
+                                                            q = p.Substring(0, 50);
+                                                        }
+                                                        else
+                                                        {
+                                                            q = p;
+                                                        }
+                                                    <tr>
+                                                        <td>@item.SilderType</td>
+                                                        <td>@item.ImageHeading</td>
+                                                        <td>@Html.Raw(q)</td>
+                                                        <td> <img src="@Url.Content("~/"+item.ImagePath)" width="100" height="70" /></td>
+                                                        <td>
+                                                            <button type="button" style="background-color:transparent; border:none;" onclick="delSilder('@item.SilderId')">
+                                                                <i class="fa fa-trash" style="font-size:23px; color:red;"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><p style="font-size:22px;margin-top:-5px;text-align:center;color:#e0dddd;font-weight:700;">No Data Found !</p></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-30px;">
+                        <div class="card">
+                            <div class="">
+                                <h2 style="color:#00000096; font-size:16px;padding-top:9px; padding-left:22px;">
+                                    Select Any Silder
+                                </h2>
+                            </div>
+                            <div class="body">
+                                <div class="row">
+                                    <div class="col-md-5 col-lg-5 col-xs-5 col-xs-5">
+                                        <div class="row">
+                                            <div class="col-md-5 col-lg-5 col-xs-5 col-xs-5">
+                                                <p style="font-size:15px;"><b>Silder First</b></p>
+                                            </div>
+                                            <div class="col-md-4 col-lg-4 col-xs-4 col-xs-4">
+
+                                            </div>
+                                            <div class="col-md-3 col-lg-3 col-xs-3 col-xs-3">
+                                                @{
+                                                    var itemsilder1 = ViewBag.silderstatus1;
+                                                }
+                                                @if (itemsilder1 == "Y")
+                                                {
+
+                                                    <center>
+                                                        <a href="@Url.Action("SilderIsStatus", new { type="Silder1",sts="N" })" style="text-decoration:none;">
+                                                            <img src="~/images/reportimage/switch_on.png" style="margin-top:2px;height:23px;" />
+                                                        </a>
+                                                    </center>
+                                                }
+                                                else
+                                                {
+                                                    <center>
+                                                        <a href="@Url.Action("SilderIsStatus", new { type="Silder1",sts="Y" })" style="text-decoration:none;">
+                                                            <img src="~/images/reportimage/switchoff.png" style="margin-top:2px;height:23px;" />
+                                                        </a>
+                                                    </center>
+                                                   }
+
+                                            </div>
+                                        </div>
+
+                                        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+
+                                            <ol class="carousel-indicators">
+                                                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                                                <li data-target="#myCarousel" data-slide-to="1"></li>
+                                                <li data-target="#myCarousel" data-slide-to="2"></li>
+                                            </ol>
+                                            <div class="carousel-inner">
+                                                @{int count1 = 0;
+                                                    string activeclass1 = "";
+
+                                                }
+
+                                                @foreach (var item in ViewBag.showsilder1)
+                                                {
+                                                    if (count1 == 0)
+                                                    {
+                                                        activeclass1 = "item active";
+                                                        count1++;
+                                                    }
+                                                    else
+                                                    {
+                                                        activeclass1 = "item";
+                                                    }
+                                                    var p = item.Content;
+                                                    var q = "";
+                                                    if (p.Length > 50)
+                                                    {
+                                                        q = p.Substring(0, 50);
+                                                    }
+                                                    else
+                                                    {
+                                                        q = p;
+                                                    }
+                                                    <div class="item @activeclass1">
+                                                        <img src="@Url.Content("~/" + item.ImagePath)" alt="Los Angeles" style="width:100%;" />
+                                                        <div class="carousel-caption">
+                                                            <h3>@item.ImageHeading</h3>
+                                                            <p>@Html.Raw(q)</p>
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                            </div>
+                                            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1 col-lg-1 col-xs-1 col-xs-1">
+                                    </div>
+                                    <div class="col-md-5 col-lg-5 col-xs-5 col-xs-5">
+                                        <div class="row">
+                                            <div class="col-md-5 col-lg-5 col-xs-5 col-xs-5">
+                                                <p style="font-size:15px;"><b>Silder Second</b></p>
+                                            </div>
+                                            <div class="col-md-4 col-lg-4 col-xs-4 col-xs-4">
+
+                                            </div>
+                                            <div class="col-md-3 col-lg-3 col-xs-3 col-xs-3">
+                                                @{
+                                                    var itemsilder2 = ViewBag.silderstatus2;
+                                                }
+                                                @if (itemsilder2 == "Y")
+                                                {
+                                                    <center>
+                                                        <a href="@Url.Action("SilderIsStatus", new { type="Silder2",sts="N" })" style="text-decoration:none;">
+                                                            <img src="~/images/reportimage/switch_on.png" style="margin-top:2px;height:23px;" />
+                                                        </a>
+                                                    </center>
+
+                                                }
+                                                else
+                                                {
+                                                    <center>
+                                                        <a href="@Url.Action("SilderIsStatus", new { type="Silder2",sts="Y" })" style="text-decoration:none;">
+                                                            <img src="~/images/reportimage/switchoff.png" style="margin-top:2px;height:23px;" />
+                                                        </a>
+                                                    </center>
+
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                        <div class="carousel fade-carousel slide" data-ride="carousel" data-interval="4000" id="bs-carousel">
+                                            <div class="overlay"></div>
+                                            <ol class="carousel-indicators">
+                                                <li data-target="#bs-carousel" data-slide-to="0" class="active"></li>
+                                                <li data-target="#bs-carousel" data-slide-to="1"></li>
+                                                <li data-target="#bs-carousel" data-slide-to="2"></li>
+                                            </ol>
+
+
+                                            <div class="carousel-inner">
+                                                @{int count = 0;
+                                                    string activeclass = "";
+
+                                                }
+
+                                                @foreach (var item in ViewBag.showsilder2)
+                                                {
+                                                    if (count == 0)
+                                                    {
+                                                        activeclass = "item active";
+                                                        count++;
+                                                    }
+                                                    else
+                                                    {
+                                                        activeclass = "item";
+                                                    }
+                                                    var p = item.Content;
+                                                    var q = "";
+                                                    if (p.Length > 50)
+                                                    {
+                                                        q = p.Substring(0, 50);
+                                                    }
+                                                    else
+                                                    {
+                                                        q = p;
+                                                    }
+
+                                                    <div class="item carousel-inner @activeclass">
+                                                        <img src="@Url.Content("~/" + item.ImagePath)" alt="Los Angeles" style="width:100%;">
+                                                        <div class="hero">
+                                                            <hgroup>
+                                                                <h3>@item.ImageHeading</h3>
+                                                                <p>@Html.Raw(q)</p>
+                                                            </hgroup>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-lg-1 col-xs-1 col-xs-1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        </div>
+</section>
+
+<!--Add New  modal-->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add New Silder</h4>
+            </div>
+            @using (Html.BeginForm("Outside_Silder", "Home", FormMethod.Post,new {encType="multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Select Type</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.DropDownList("ddlType", new List<SelectListItem>
+                         {
+   new SelectListItem{ Text="Please Select",Value="",},
+   new SelectListItem{ Text="Silder First",Value="Silder1",},
+   new SelectListItem{Text="Silder Second",Value="Silder2"}
+
+   },new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Silder Heading</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <input type="text" id="txtheading" name="txtheading" class="form-control" required="" placeholder="Silder Heading" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Enter Content</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <textarea id="txtedit" name="txtedit" class="ckeditor" required=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Select Image</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <input type="file" name="file" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p style="color:red; font-size:16px;margin-left:49px;">Note:- Image Size Must be 1350 x 500</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer" id="silder1" >
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;" onclick="return check()">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                         
+                            </div>
+                        
+
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Edit Silder</h4>
+            </div>
+            @using (Html.BeginForm("Edit_Outside_Silder", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Select Type</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.DropDownList("ddlType", new List<SelectListItem>
+                         {
+   new SelectListItem{ Text="Please Select",Value="",},
+   new SelectListItem{ Text="Silder First",Value="Silder1",},
+   new SelectListItem{Text="Silder Second",Value="Silder2"}
+
+   }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Silder Heading</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <input type="text" id="txtheading" name="txtheading" class="form-control" required="" placeholder="Silder Heading" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Enter Content</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <textarea id="txtedit" name="txtedit" class="ckeditor" required=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Select Image</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <input type="file" name="file" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" id="silder1">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;"  onclick="return check()">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<script>
+    $(document).ready(function () {
+
+        var succ = '@ViewData["success"]';
+
+        if (succ != null && succ != "") {
+            if (succ.includes("successfully")) {
+                swal("File Uploaded!", succ, "success");
+            }
+            else {
+                swal("Oops!", succ, "error");
+            }
+        }
+    });
+
+    function check() {
+        var hh = $('#ddlType').val();
+        if (hh != "")
+        {
+            return true;
+        }
+        else
+        {
+            swal("Opsssss!", "Please Select One", "error");
+            return false;
+        }
+    }
+</script>
+
+<script type="text/javascript">
+
+    function delSilder(e) {
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Slider Data " + e + " !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("delSilder", "Home")', data: { SilderId: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("File Removed!", "Silder Data Deleted Successfully.", "success");
+                var url = '@Url.Action("Outside_Silder", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Outside_Silder", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>

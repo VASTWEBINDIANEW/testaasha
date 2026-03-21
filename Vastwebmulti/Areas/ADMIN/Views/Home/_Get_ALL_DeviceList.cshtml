@@ -1,0 +1,205 @@
+﻿@model Vastwebmulti.Areas.ADMIN.ViewModel.GetAllDeviceinfo
+
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    .onofswich-admin label.switch span.slider {
+        border-radius: 20px;
+        border: 1px solid #555;
+        width: 85px;
+        float: left;
+        height: 29px;
+        background: red;
+    }
+
+    input:checked + .slider {
+        background: green !important;
+    }
+
+    .onofswich-admin .slider:before {
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+    }
+
+    input:checked + .slider:before {
+        float: right;
+        left: auto;
+        right: 30px !important;
+    }
+
+    .onofswich-admin label.switch span.active, .onofswich-admin label.switch span.deactive {
+        font-size: 13px;
+        color: #fff;
+        position: relative;
+        top: 5px;
+        left: 5px;
+    }
+
+    .onofswich-admin label.switch span.deactive {
+        float: right;
+        left: auto;
+        right: -19px;
+    }
+
+    .onofswich-admin label.switch span.active {
+        left: 11px;
+    }
+
+    .onofswich-admin label.switch span.slider {
+        border-radius: 0;
+        color: #fff;
+        text-align: center;
+        display: grid;
+        align-content: center;
+    }
+
+        .onofswich-admin label.switch span.slider::before {
+            display: none;
+        }
+</style>
+<div>
+    @if (Model.msg != "DONE")
+    {
+        <label class="texterroradd" style="color:red;">@Model.msg</label>
+    }
+</div>
+
+<table class="table table-bordered" id="mdList">
+    <thead>
+        <tr>
+            <th>Device&nbsp;ID</th>
+            <th>Plan&nbsp;Name</th>
+            <th>Firm&nbsp;Name</th>
+            <th>Mobile</th>
+            <th>Inserted&nbsp;Date</th>
+            <th>Start&nbsp;Date</th>
+            <th>Expire&nbsp;Date</th>
+            <th>Remain&nbsp;Days</th>
+            <th>Charge&nbsp;Type</th>
+            @*<th>Del</th>*@
+            <th>Edit</th>
+
+        </tr>
+    </thead>
+
+
+    <tbody id="body">
+        @if (Model.devicelist != null)
+        {
+            foreach (var item in Model.devicelist)
+            {
+                string paymenttype = "";
+                int totalremainday = 0;
+                System.TimeSpan diffResult;
+                if (item.expdate == null)
+                {
+                    paymenttype = "Full Payment Mode";
+
+                }
+                else
+                {
+                    diffResult = item.expdate.Value - DateTime.Now.Date;
+                    if (diffResult.Days < 1)
+                    {
+                        paymenttype = "Full Payment";
+
+                    }
+                    else
+                    {
+                        paymenttype = "";
+                        totalremainday = diffResult.Days;
+                    }
+                }
+
+                <tr class="tr">
+                    <td>@item.deviceid</td>
+                    <td>@item.planname</td>
+                    <td id="selectfrm_@item.idno">@item.Frm_Name</td>
+                <td>@item.Mobile</td>
+                <td> @item.inseteddate</td>
+                <td> @item.startdate</td>
+                <td> @item.expdate</td>
+                <td>
+                    @if (paymenttype == "")
+                    {
+                        <span>  @totalremainday</span>
+                    }
+                    else
+                    {
+                        <span>  @paymenttype</span>
+
+                    }
+                </td>
+                    <td>
+                        @item.chargetype
+                    </td>
+
+                @*<td>
+                        <button id="DeleteBtn" class="custom-loading" style="border:none" onclick="Deletebyamount('@item.idno')" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                            <img src="~/MainFrontDesign/images/delete.svg" height="20px">
+                        </button>
+                    </td>*@
+                <td>
+                    <button class="btn btn default micro-edit-button" id="EditBtn_@item.idno" onclick="Editbyamount('@item.idno')" style="background-color:transparent;height: auto;padding: 3px 10px; border:none;border: 1px solid #aaa4a4;" title="Edit Information">
+                        <span id="editmicro_@item.idno">Edit</span>
+                        <span class="editbutton-spinclass" id="microloader_@item.idno"></span>
+                    </button>
+
+                </td>
+            </tr>
+        }
+
+    }
+    </tbody>
+</table>

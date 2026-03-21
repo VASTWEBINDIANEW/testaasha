@@ -1,0 +1,905 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/FrontapplicationDesign/css/animate.css" rel="stylesheet" />
+<link href="~/Ckeditor/contents.css" rel="stylesheet" />
+<link href="~/CSS/Slieder.css" rel="stylesheet" />
+<link href="~/MainFrontDesign/css/plugins.css" rel="stylesheet" />
+<link href="~/CSS/custom-guest.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<link href="~/CSS/boostrapslider.css" rel="stylesheet" />
+<link href="~/CSS/aaaaa.css" rel="stylesheet" />
+<link href="~/CSS/StyleSheet1.css" rel="stylesheet" />
+<link href="~/CSS/dist/css/AdminLTE.css" rel="stylesheet" />
+<link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<link href="~/Areas/WHITELABEL/Design/css/whitelabel.css" rel="stylesheet" />
+@{
+
+    var correctString = "";
+    var col = "";
+    var raj = "";
+    var whitelabelid = "";
+    using (VastwebmultiEntities db = new VastwebmultiEntities())
+    {
+        string currenturl = HttpContext.Current.Request.Url.Authority;
+
+        currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+        currenturl = currenturl.ToUpper();
+
+        if (currenturl.Contains("LOCALHOST"))
+        {
+            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+        }
+        else
+        {
+            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+        }
+        var color = db.changecolors.Where(p => p.UserId == whitelabelid).ToList();
+        if (color.Count > 0)
+        {
+            col = color.SingleOrDefault().multipaloutercolor;
+            if (col != "")
+            {
+                String s = col;
+                Char charRange = ',';
+                int startIndex = s.IndexOf(charRange);
+                int endIndex = s.LastIndexOf(charRange);
+                int length = endIndex - startIndex + 1;
+                var res = s.Substring(startIndex, length);
+                raj = res.Trim(',');
+            }
+            else
+            {
+                col = "linear-gradient(to right,#ff0000,#000000)";
+                String s = col;
+                Char charRange = ',';
+                int startIndex = s.IndexOf(charRange);
+                int endIndex = s.LastIndexOf(charRange);
+                int length = endIndex - startIndex + 1;
+                var res = s.Substring(startIndex, length);
+                raj = res.Trim(',');
+            }
+        }
+        else
+        {
+            col = "";
+        }
+        var image = db.tblSilderWhiteBackImages.Where(p => p.UserId == whitelabelid).ToList();
+        if (image.Count > 0)
+        {
+            var image2 = db.tblSilderWhiteBackImages.Where(p => p.UserId == whitelabelid).FirstOrDefault().SilderBackImage;
+            correctString = image2.Replace(@"\", @"/");
+        }
+        else
+        {
+            correctString = "";
+        }
+        ViewBag.aboutimage1 = db.tblAboutUsContents.Where(p => p.UserId == whitelabelid).ToList();
+        ViewBag.alltravelbus1 = db.tblTravels.Where(p => p.UserId == whitelabelid).ToList();
+        ViewBag.companyname1 = db.tblWhiteContactDatas.Where(p => p.UserId == whitelabelid).ToList();
+        var silder = db.tblWhitlabelSilders.ToList();
+        ViewBag.silder = db.tblWhitlabelSilders.ToList();
+        if (silder.Count > 0)
+        {
+            ViewBag.indexsilder = silder.Where(p => p.UserId == whitelabelid).ToList();
+        }
+
+    }
+
+}
+
+<style>
+    .da-slider {
+    opacity: 0.99;
+    width: 100%;
+    min-width: 320px;
+    height: 607px !important;
+    position: relative;
+    margin:0 auto;
+    overflow: hidden;
+    background: transparent url('./@correctString') repeat-x 0% center;
+    background-size:auto 100%;
+    -webkit-transition: background-position 1s ease-out 0.3s;
+    -moz-transition: background-position 1s ease-out 0.3s;
+    -o-transition: background-position 1s ease-out 0.3s;
+    -ms-transition: background-position 1s ease-out 0.3s;
+    transition: background-position 1s ease-out 0.3s;
+}
+    .da-slider .mask {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: @ViewBag.silderback;
+    opacity:0.60;
+    filter: alpha(opacity=85);
+}
+     .viewmorebutton{
+        min-width: 125px;
+        height: 35px;
+        margin-top: 23px;
+        font-size: 20px;
+        letter-spacing: 1px;
+        color: white;
+        text-align:center;
+        padding:0px;
+        font-family: initial;
+        border-color:white;
+        }
+    .kkkk {
+        transition: transform .2s;
+        }
+        .kkkk:hover {
+        -ms-transform: scale(0.8);
+        -webkit-transform: scale(0.8);
+        transform: scale(0.8);
+        border-radius:10px;
+        }
+     .radhe {
+        transition: transform .5s;
+    }
+        .radhe:hover {
+            transform: scale(0.9);
+        }
+    p {
+    /* padding: 10px; */
+    font-weight: 100;
+    color: black;
+    margin-left: 10px;
+    margin-right: 10px;
+    line-height: 20px;
+    padding:10px;
+}
+    .setform{
+    padding-bottom: 0px;
+     margin-top: 0px;
+    width: 100%;
+float: left;
+    position:relative;
+    }
+    #ABOUT .title h1::before ,.header-about-top h2::before{
+    content: '';
+border-top: 25px solid @PageData["GlobalSecond"];
+width: 19px;
+height: 20px;
+border-left: 17px solid
+transparent;
+border-right: 17px solid
+transparent;
+display: block;
+float: left;
+margin: 8px 5px 0px 0px;
+}
+    .our-service-w li {
+    border: 1px dotted  @PageData["GlobalSecond"];
+    }
+
+.our-service-w li {
+    border: 2px dashed @PageData["GlobalFirst"];}
+     .our-service-w .first-service{background: @PageData["GlobalFirst"];}
+
+    .HOME-layer{ position: absolute;
+    display: block;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-image: linear-gradient(to right , @PageData["GlobalFirst"], @PageData["GlobalSecond"]);opacity: .5;
+    }
+
+</style>
+<style>
+    #HOME {
+        background: url(../AdminDesign/images/second-wl-banner.jpg)no-repeat top center;
+        background-size: cover;
+        height: 100vh;
+        width: 100%;
+        position: relative;
+    }
+
+    #SERVICES {
+        background: url(../AdminDesign/images/service-wl-bg.jpg)no-repeat top center;
+        background-size: 100% 100%;
+        width: 100%;
+        position: relative;
+    }
+
+    .home-inner {
+        position: absolute;
+        color: #fff;
+        width: 40%;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        background: rgba(0,0,0,.5);
+        padding: 40px;
+        border: 4px solid #fff;
+    }
+
+        .home-inner p {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 22px;
+            color: #fff;
+        }
+
+        .home-inner h2 {
+            font-size: 28px;
+            margin-top: 0px;
+        }
+
+    .our-service-w {
+        width: 100%;
+    }
+
+    .service-section {
+        width: 100%;
+        float: left;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+        .service-section span {
+            font-size: 16px;
+            margin: 0px 20px;
+            cursor: pointer;
+            transition: .5s linear;
+        }
+
+            .service-section span.active {
+                background: #FECE1A;
+                color: #fff;
+                padding: 5px 20px;
+                border-radius: 20px;
+            }
+
+    .our-service-w li:nth-child(3n-1) {
+        margin: auto 0%;
+        margin-left: 1.3%;
+    }
+
+    .our-service-w li {
+        margin-left: 1.3%;
+        background: rgba(0,0,0,.6);
+        color: #fff;
+    }
+
+    .second-service h2 {
+        margin-bottom: 15px;
+        font-size: 28px;
+        margin-top: 10px;
+        border-color: #fff;
+    }
+
+    .header-about-top1 h2 {
+        display: block;
+        margin: 0px;
+        margin-bottom: 30px;
+        color: #fff;
+        text-align: center;
+    }
+
+    .thumbnail:hover .mask {
+        left: 0;
+    }
+
+    .thumbnail .mask {
+        top: 0px;
+        left: 100%;
+    }
+
+    .third-service {
+        padding: 0px 15px 15px;
+    }
+
+    #ABOUT {
+        background: #645f5f;
+        background-size: cover;
+    }
+
+    @@media screen and (max-width:980px) {
+        .home-inner {
+            width: 75%;
+        }
+
+        .nav-collapse {
+            width: auto;
+            overflow: visible;
+        }
+
+        .navbar .container {
+            padding: 0px 15px;
+        }
+    }
+
+    @@media screen and (max-width:767px) {
+        .our-service-w li {
+            width: 48%;
+        }
+
+        .footer-wl-one {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+            .footer-wl-one > li {
+                width: 50%;
+            }
+
+        .for-outer-in {
+            width: 80%;
+            height: 85%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .for-outer-close {
+            right: 0px;
+            top: 0px;
+        }
+    }
+
+    @@media screen and (max-width:470px) {
+        #top-navigation > li:first-child,#top-navigation > li:nth-child(2){display:none;}
+        .team .span7{margin-top:10px;}
+        .footer-wl-in > .row-fluid{width:100% !important;}
+        .our-service-w li {
+    width: 100%;
+}
+        .footer-wl-in > .row-fluid ~ span{width:100%;}
+        .service-section span{margin: 0px 5px;}
+        .footer-wl-one > li {
+    width: 100%;
+}
+        .social{text-align:center;}
+        .home-inner{padding: 5px;}
+        .home-inner p{padding:0px;}
+        #ABOUT .team p{padding:5px !important;}
+        .section .container {
+            padding-top: 20px;
+        }
+
+        .verify-form .digit-group {
+            width: 95%;
+        }
+
+            .verify-form .digit-group input {
+                height: 39px;
+                font-size: 35px;
+            }
+
+        .login-form h2, .create-form h2, .forget-form h2, .verify-form h2 {
+            font-size: 28px;
+        }
+
+        .verify-form button {
+            padding: 8px 15px;
+            font-size: 20px;
+        }
+
+        .second-service h2 {
+            font-size: 22px;
+        }
+    }
+</style>
+
+
+
+@{
+    if (ViewBag.OTPSendNotify != null)
+    {
+        PageData["OpenOtpBox"] = ViewBag.OTPSendNotify;
+    }
+    else if (ViewBag.InvalidCode != null)
+    {
+        PageData["InvalidCode"] = ViewBag.InvalidCode;
+    }
+    <div id="HOME">
+        <div class="HOME-layer"></div>
+
+        <div class="home-inner">
+            <h2>Lorem Ipsum</h2>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+        </div>
+        @*<div id="da-slider" class="da-slider">
+
+
+                <div class="container">
+
+                    <div class="da-slide">
+
+                        <div class="da-img">
+                            <img src="~/AdminDesign/images/bus.jpg" class="img-responsive" />
+                        </div>
+                    </div>
+                    <div class="da-slide">
+
+                        <div class="da-img">
+                            <img src="~/AdminDesign/images/flight-tickit-booking.jpg" class="img-responsive" />
+                        </div>
+                    </div>
+                    <div class="da-slide">
+
+                        <div class="da-img">
+                            <img src="~/AdminDesign/images/mobile and dth.jpg" class="img-responsive" />
+
+                        </div>
+                    </div>
+                    <div class="da-slide">
+
+                        <div class="da-img">
+                            <img src="~/AdminDesign/images/hotel booking.jpg" class="img-responsive" />
+
+                        </div>
+                    </div>
+
+                    <div class="da-arrows">
+                        <span class="da-arrows-prev"></span>
+                        <span class="da-arrows-next"></span>
+                    </div>
+                </div>
+            </div>*@
+    </div>
+
+    List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs> Abot = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs>();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    Abot = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs>>(readWrite.Read("AboutUs.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
+    var ABOUTUS = Abot.Where(a => a.UserId == whitelabelid).ToList();
+    if (ABOUTUS.Count() > 0)
+    {
+        <div class="section secondary-section" id="ABOUT">
+            <div class="container">
+                <div class="header-about-top1">
+                    <h2 style="color:#fff;">About Us</h2>
+                </div>
+                <div class="row-fluid team" style="display:flex;flex-wrap:wrap;">
+                    <div class="span5">
+                        <img src="~/AdminDesign/images/about-wl.png" />
+                    </div>
+                    <div class="span7">
+                        <div class="thumbnail" style="padding:0px;background: transparent;color:#fff;">
+                            @Html.Raw(ABOUTUS.SingleOrDefault().AboutContent)
+                            @*<img src="@Url.Content("~/" + @ViewBag.aboutimage)" alt="team 1" style="border: 10px solid #f5f5f5;">*@
+                            <div class="mask" style="opacity:0.70;">
+                                @*<h3>@ViewBag.aboutheading</h3>*@
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    }
+    <div class="section primary-section" id="SERVICES">
+        <div class="HOME-layer"></div>
+        <div class="container" style="position:relative;">
+            <div class="header-about-top1">
+                <h2>Our Main Services</h2>
+            </div>
+
+            <ul class="our-service-w">
+                <li class="other-service all">
+                    @*<div class="first-service">
+
+                            <img src="~/AdminDesign/images/prepaid.svg" />
+                        </div>*@
+                    <div class="second-service"><h2>Prepaid&nbsp;&&nbsp;DTH</h2></div>
+                    <div class="third-service">
+                        We are leading online DTH and Prepaid recharge service provider in India. We provide DTH online recharge for an array of companies including Airtel DTH, Reliance DTH, Dish TV, Tata Sky, and Sun Direct.
+                    </div>
+                </li>
+                <li class="other-service all">
+                    @*<div class="first-service">
+                            <img src="~/AdminDesign/images/utilities.svg" />
+                        </div>*@
+                    <div class="second-service"><h2>All&nbsp;Utilities</h2></div>
+                    <div class="third-service">
+                        Utilities (water, electricity and gas) are essential services that play a vital role in economic and social development. Quality utilities are a prerequisite for effective poverty eradication. Governments are ultimately responsible for ensuring reliable universal access of service under accountable regulatory frameworks.
+
+                    </div>
+                </li>
+                <li class="other-service all">
+                    @*<div class="first-service">
+                            <img src="~/AdminDesign/images/micro.svg" />
+
+                        </div>*@
+                    <div class="second-service"><h2>Micro&nbsp;ATM</h2></div>
+                    <div class="third-service">
+                        Micro ATM is a mini version of an ATM. Micro ATMs are like the modified point of sales terminals this terminal can connect to banking network via GPRS to perform banking transactions. This machine contains a card swipe facility and a fingerprint scanner.
+
+                    </div>
+                </li>
+                <li class="other-service all">
+                    @*<div class="first-service">
+                            <img src="~/AdminDesign/images/aeps.svg" />
+                        </div>*@
+                    <div class="second-service"><h2>Aeps&nbsp;Service</h2></div>
+                    <div class="third-service">
+                        Aadhaar Enabled Payment System or AEPS is a new payment service offered by the National Payments Corporation of India to banks and financial institutions using ‘Aadhaar’. Aadhaar is a unique identification number issued by the Unique Identification Authority of India (UIDAI).
+
+                    </div>
+                </li>
+                <li class="other-service all">
+                    @*<div class="first-service">
+                            <img src="~/AdminDesign/images/bank.svg" />
+                        </div>*@
+                    <div class="second-service"><h2>(DMT)&nbsp;Money&nbsp;Transfer</h2></div>
+                    <div class="third-service">
+                        Domestic Money transfer available 365 days round the clock The transfer has done via IMPS / NEFT to any bank. The transfer is done from Customer Wallet to Bank account within seconds The highly secure platform assures the safety of your transactions                    Domestic Money transfer is a boon to the un-banked masses Led by a team of experts
+
+                    </div>
+                </li>
+                <li class="travel-service all">
+                    @*<div class="first-service">
+                            <img src="~/AdminDesign/images/flight.svg" />
+                        </div>*@
+                    <div class="second-service"><h2>Flight Booking</h2></div>
+                    <div class="third-service">
+                        Online flight booking, cheap air tickets for domestic & international flight ticket booking. Grab deals & offers on online flight booking
+
+                    </div>
+                </li>
+                <li class="travel-service all">
+                    @*<div class="first-service">
+                            <img src="~/AdminDesign/images/bus.svg" />
+                        </div>*@
+                    <div class="second-service"><h2>Bus Booking</h2></div>
+                    <div class="third-service">
+                        World's largest online bus ticketing platform offers bus travels, AC Volvo bus, carpooling & bus hire at best rates. Easy cancellation & Instant refund.
+
+                    </div>
+                </li>
+                <li class="travel-service all">
+                    @*<div class="first-service">
+                            <img src="~/AdminDesign/images/hotel.svg" />
+                        </div>*@
+                    <div class="second-service"><h2>Hotel Booking</h2></div>
+                    <div class="third-service">
+                        Online hotel reservations are a popular method for booking hotel rooms. Travellers can book rooms on a computer and mobile apps by using online security to protect their privacy and financial information and by using several online travel agents to compare prices and facilities at different hotels.
+
+                    </div>
+                </li>
+                <li class="other-service all">
+                    @*<div class="first-service">
+                            <img src="~/AdminDesign/images/purchase.svg" />
+                        </div>*@
+                    <div class="second-service"><h2>E-Commerce</h2></div>
+                    <div class="third-service">
+                        Ecommerce, also known as electronic commerce or internet commerce, refers to the buying and selling of goods or services using the internet, and the transfer of money and data to execute these transactions.
+
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+
+
+    if (ViewBag.newupdatasts == "Y")
+    {
+        if (ViewBag.newupdate.Count > 0)
+        {
+            <div id="NEWUPDATE" class="section secondary-section" style="background:#fff;">
+                <div class="container">
+                    <div class="header-about-top">
+                        <h2 style="color:#000;">New Update News</h2>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="nav-tabs-custom" style="border-radius:5px;outline: 5px solid @PageData["GlobalSecond"];outline-offset: 10px;background: #b9bdb9;-moz-outline-radius: 5px;">
+
+
+                                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                    <br>
+                                    <div class="carousel-inner">
+                                        @{int count1 = 0;
+                                            string activeclass1 = "";
+
+                                        }
+                                        @foreach (var item in ViewBag.newupdate)
+                                        {
+                                            if (count1 == 0)
+                                            {
+                                                activeclass1 = "item active";
+                                                count1++;
+                                            }
+                                            else
+                                            {
+                                                activeclass1 = "item";
+                                            }
+                                            var xx1 = item.UpdateContent;
+                                            var pp1 = xx1;
+                                            var q1 = "";
+                                            if (pp1.Length > 1300)
+                                            {
+                                                q1 = pp1.Substring(0, 1300) + " .....";
+                                            }
+                                            else
+                                            {
+                                                q1 = pp1;
+                                            }
+                                            <div class="item @activeclass1">
+                                                <div class="row-fluid">
+                                                    <div class="span12">
+                                                        <div class="thumbnail" style="border:none; background:transparent; text-align:inherit; margin-bottom:10px;">
+                                                            <div class="span3">
+                                                                <img class="media-object  img-responsive" src="@Url.Content("~/" + @item.Image)" style="border: 1px solid #cfcccc;margin: auto;border-radius: 50%;width:200px;height:200px;">
+                                                            </div>
+                                                            <div class="span9">
+                                                                <div class="caption" style="padding:15px;">
+                                                                    <span class="fa fa-commenting-o for-quote" style="color:black; text-align:justify;">@Html.Raw(q1)</span>
+                                                                    <br>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+
+    if (ViewBag.contactsts == "Y")
+    {
+        if (ViewBag.companyname1.Count > 0)
+        {
+            <div id="CONTECTUS" class="contact">
+                <div class="section secondary-section" style="background:#f5f5f5;">
+
+
+                    <div class="container">
+                        <div class="row-fluid">
+
+
+
+
+                            <div class="span12" style="height:auto; ">
+                                @*
+                                    <span class="fa fa-envelope" style="font-size:17px; color:black; margin-top:26px;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Email :-</b> </span><span style="font-size:16px; margin-top:5px;"> @ViewBag.emil</span>
+                                    <br />*@
+                                <div class="row-fluid">
+
+                                    <div class="span6" style="text-align:center;">
+
+                                        <img src="~/AdminDesign/images/android-1.svg" style="width:500px;" />
+
+                                        <div>
+                                            <a href="#" style="background:@PageData["GlobalFirst"];display: inline-block;margin-top: 20px;padding: 6px 24px;border-radius: 2px">Download APK</a>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <h3 style="text-align:center;color:#555;">Get In Touch With Us</h3>
+                                        @using (Html.BeginForm("AllWhiteContect_Data", "Home", FormMethod.Post))
+                                        {
+                                            <div class="form-group setform">
+                                                @Html.TextBoxFor(m => m.SuperstokistName, "", new { @class = "form-control", @style = "color:#555", placeholder = "Enter Name", required = "required" })
+                                                @Html.ValidationMessageFor(m => m.SuperstokistName, "", new { @class = "text-danger", @style = "color:red" })
+                                            </div>
+                                            <div class="form-group setform">
+                                                @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control", @style = "color:#555", placeholder = "Enter Email-id", required = "required" })
+                                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger", @style = "color:red" })
+                                            </div>
+                                            <div class="form-group setform">
+                                                @Html.TextBoxFor(m => m.SuperstokistName, "", new { @class = "form-control", @style = "color:#555", placeholder = "Enter Subject", required = "required" })
+                                                @Html.ValidationMessageFor(m => m.SuperstokistName, "", new { @class = "text-danger", @style = "color:red" })
+                                            </div>
+                                            <div class="form-group setform">
+                                                @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Mobile Number", @style = "color:#555", onkeypress = "return isNumber(event)", maxlength = "10", required = "required" })
+                                                @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger", @style = "color:red" })
+                                            </div>
+                                            <div class="form-group setform" style="width: 100%;margin: auto;display: block;float: none;clear: both;">
+                                                @Html.TextAreaFor(m => m.Address, new { @class = "form-control", placeholder = "Enter Message ", @style = "color:#555; height: 80px;", @onkeypress = "javascript:return AddValidation(event)", required = "required" })
+                                                @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger", @style = "color:red" })
+                                            </div>
+                                            <div class="">
+                                                <input type="submit" value="Get In Touch" class="btn" style="background:@PageData["GlobalFirst"];color:#fff;">
+                                            </div>
+                                        }
+
+                                        <div class="">
+                                            <h3 style="color:#fff;background:#64798a;margin:0px;padding: 0px 10px;">We Are Social</h3>
+                                        </div>
+
+                                        <div class="row-fluid centered" style="background:#64798a;">
+                                            <ul class="social">
+                                                <li>
+                                                    @if (ViewBag.fac != "")
+                                                    {
+                                                        <a href="@ViewBag.fac" target="_blank"><span class="icon-facebook-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-facebook-circled"></span></div>
+                                                    }
+                                                </li>
+                                                <li>
+                                                    @if (ViewBag.twi != "")
+                                                    {
+                                                        <a href="@ViewBag.twi" target="_blank"><span class="icon-twitter-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-twitter-circled"></span></div>
+                                                    }
+                                                </li>
+                                                <li>
+                                                    @if (ViewBag.Instagra != "")
+                                                    {
+                                                        <a href="@ViewBag.Instagra" target="_blank"><span class="icon-instagram-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-instagram-circled"></span></div>
+                                                    }
+                                                </li>
+                                                <li>
+                                                    @if (ViewBag.linked != "")
+                                                    {
+                                                        <a href="@ViewBag.linked" target="_blank"><span class="icon-linkedin-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-linkedin-circled"></span></div>
+                                                    }
+                                                </li>
+                                                <li>
+                                                    @if (ViewBag.skyp != "")
+                                                    {
+                                                        <a href="@ViewBag.skyp" target="_blank"><span class="icon-skype-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-skype-circled"></span></div>
+                                                    }
+                                                </li>
+                                                <li>
+                                                    @if (ViewBag.Pinteres != "")
+                                                    {
+                                                        <a href="@ViewBag.Pinteres" target="_blank"><span class="icon-pinterest-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-pinterest-circled"></span></div>
+                                                    }
+                                                </li>
+                                                <li>
+                                                    @if (ViewBag.Youtub != "")
+                                                    {
+                                                        <a href="@ViewBag.Youtub" target="_blank"><span class="icon-Youtube-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-Youtube-circled"></span></div>
+                                                    }
+                                                </li>
+                                                <li>
+                                                    @if (ViewBag.Blogge != "")
+                                                    {
+                                                        <a href="@ViewBag.Blogge" target="_blank"><span class="icon-Blogger-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-Blogger-circled"></span></div>
+                                                    }
+                                                </li>
+                                                <li>
+                                                    @if (ViewBag.Tumbl != "")
+                                                    {
+                                                        <a href="@ViewBag.Tumbl" target="_blank"><span class="icon-Tumblr-circled"></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div><span class="icon-Tumblr-circled"></span></div>
+                                                    }
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        }
+    }
+}
+<script src="~/AdminDesign/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="~/MainFrontDesign/js/vendor/bootstrap.min.js"></script>
+<script src="~/CSS/multislider.js"></script>
+<script>
+    $("#readmore").click(function () {
+        var collapse_content_selector = $(this).attr('href');
+        var toggle_switch = $(this);
+        $(collapse_content_selector).toggle(function () {
+            if ($(this).css('display') == 'none') {
+                toggle_switch.html('Read More');
+            }
+            else {
+                toggle_switch.html('Read Less');
+            }
+        });
+    });
+</script>
+<script>
+    $('button').click(function () {
+        if (this.id == 'viewmore') {
+            $('#allcard').show();
+            $('#silderid').hide();
+            $('#viewless').show();
+            $('#viewmore').hide();
+        }
+        else {
+            $('#allcard').hide();
+            $('#silderid').show();
+            $('#viewless').hide();
+            $('#viewmore').show();
+        }
+    })
+</script>
+<script>
+    $('#basicSlider').multislider({
+        continuous: true,
+        duration: 2000
+    });
+    $('#mixedSlider').multislider({
+        duration: 750,
+        interval: 3000
+    });
+</script>
+<script>
+    window.onload = function () {
+        var succ = '@TempData["front"]';
+        if (succ != null && succ != "") {
+            if (succ.includes("Successfully")) {
+                swal("Good job!", succ, "success");
+            }
+            else {
+                swal("Oops!", succ, "error");
+            }
+        }
+    }
+</script>
+<script>
+    $(function () {
+        var selectedClass = "";
+        $(".service-section span").click(function () {
+            $(".service-section span").removeClass('active');
+            $(this).addClass('active');
+            selectedClass = $(this).attr("data-rel");
+            $(".our-service-w").fadeTo(100, 0.1);
+            $(".our-service-w li").not("." + selectedClass).fadeOut();
+            setTimeout(function () {
+                $("." + selectedClass).fadeIn();
+                $(".our-service-w").fadeTo(500, 1);
+            }, 500);
+
+        });
+    });
+</script>

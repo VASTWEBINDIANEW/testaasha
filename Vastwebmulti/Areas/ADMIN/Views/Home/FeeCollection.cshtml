@@ -1,0 +1,132 @@
+﻿@model Vastwebmulti.Areas.FeeCollector.Models.FeeDepositModel
+@{
+    ViewBag.Title = "Fee Deposit";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<section class="content" style="">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="col-md-6">
+                        <div style="margin-left:-13px;margin-top:1px;">
+                            @Html.Partial("_finicalmenureport")
+                        </div>
+                       
+                    </div>
+                    <div class="col-md-6">
+                        @using (Html.BeginForm("FeeCollection", "Home", FormMethod.Post))
+                        {
+                      <div class="row">
+                          <div class="col-md-4">
+                              <div class="input-group" style="border:1px solid #bfbebe;margin-top:6px;margin-left:-13px;width:108%;">
+                                  <span class="input-group-addon">
+                                      <i class="fa fa-search" style="margin-left:3px;"></i>
+                                  </span>
+                                  <div class="">
+                                      @Html.TextBox("stdRollNO", "", new { @class = "form-control", placeholder = "Roll No",@style="height:30px;" })
+                                  </div>
+                                  @Html.ValidationMessage("stdRollNO", "", new { @class = "text-danger" })
+                              </div>
+                          </div>
+
+                          <div class="col-md-5">
+                              <div class="form-group" style="margin-bottom:0px;margin-left:-2px;margin-top:2px;">
+                                  <div class="input-daterange input-group">
+                                      @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:32px;", autocomplete = "off" })
+                                      <span class="input-group-addon">
+                                          <i class="fa fa-exchange"></i>
+                                      </span>
+                                      @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:32px;", autocomplete = "off" })
+                                  </div>
+                               
+                              </div>
+                          </div>
+                       
+                          <div class="col-md-2">
+                              <center>
+                                  <button type="submit" class="btn" style="margin-top: 6px; margin-left: -3px; height:32px;border:1px solid #c7c2c2;background:#dedddd;">
+                                      <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                      <span style="top:-2px;color:black;">Search</span>
+                                  </button>
+                              </center>
+                          </div>
+                      </div>
+                        }
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-18px;">
+                <div class="card">
+                
+                    <div class="body" style="padding:7px;">
+                        <div class="table-responsive" style="position:inherit;margin-top:-4px;">
+                            <table class="table table-bordered" style="width:100%;">
+                                <thead  style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th style="padding-left:2px;">Roll&nbsp;No</th>
+                                        <th style="padding-left:2px;">₹&nbsp;Amount</th>
+                                        <th style="padding-left:2px;">InstalMent No</th>
+                                        <th style="padding-left:2px;">Particulars</th>
+                                        <th style="padding-left:2px;">Date</th>
+                                        <th style="padding-left:2px;">#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.lstFeedeposit)
+                                    {
+                                        <tr>
+                                            <td>@item.RollNo</td>
+                                            <td>@string.Format("{0:C2}", item.Amount)</td>
+                                            <td>@item.InstallmentNo</td>
+                                            <td>@item.Perticular</td>
+                                            <td>@item.InvoiceDate</td>
+                                            <td title="Generate receipt!">
+                                                <a id="but" href="@Url.Action("InvoicePDF","Home",new { invoiceNo = item.InvoiceID})" style="background-color:transparent;color:#03a9f4; border:none;">
+                                                    <i class="icofont icofont-file-alt" style="font-size:24px;color:#673ab7;"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<script>
+    $(document).ready(function(){
+   $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "bottom auto",
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+
+    });
+</script>

@@ -1,0 +1,299 @@
+﻿@model IEnumerable<Vastwebmulti.Models.switch_State_wise_Result>
+@{
+    ViewBag.Title = "SwichStateWise";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+     .form-inline .bootstrap-select.btn-group, .form-horizontal .bootstrap-select.btn-group, .form-group .bootstrap-select.btn-group {
+        height: 26px;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div style="margin-left:1px;">
+                                @Html.Partial("_menunillcom")
+                            </div>
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
+           </div>
+        <div class="row clearfix">
+            @using (Html.BeginForm("SwichStateWise", "Home", FormMethod.Post))
+            {
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"  style="margin-top:-18px;">
+                    <div class="card" style="background-color:whitesmoke;">
+                        <div class="">
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-top:6px; margin-bottom:0px;">
+                                    <div class="form-line" style="padding-bottom:4px;">
+                                        @Html.DropDownList("state", ViewBag.state as SelectList, "Select Sate Name", new { @class = "selectpicker form-control border-0", data_live_search = "true", required = "required" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-top:6px; margin-bottom:0px;">
+                                    <div class="form-line" style="padding-bottom:4px;">
+                                        @Html.DropDownList("Operator", ViewBag.operatorcode as SelectList, "Select Operator", new { @class = "selectpicker form-control border-0", data_live_search = "true", required = "required" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-top:6px; margin-bottom:0px;">
+                                    <div class="form-line" style="padding-bottom:4px;">
+                                        @Html.DropDownList("Apinm", ViewBag.Apinm as SelectList, "Select Api", new { @class = "selectpicker form-control border-0", data_live_search = "true", required = "required" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-top:6px; margin-bottom:0px;">
+                                    <div class="">
+                                        @Html.TextBox("amount", "",new { @class = "form-control", @placeholder="Enter Amount",@style="height:30px;"})
+                                        @*@Html.DropDownList("Apinm", ViewBag.Apinm as SelectList, "Select Api", new { @class = "selectpicker form-control", data_live_search = "true", required = "required" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <button type="submit" id="submit" class="btn"  style="margin-top:7px; margin-left:1px; height:31px;border:1px solid #c7c2c2;background:#dedddd;">
+                                        <span style="top:-1px;color:black;">Move Operator</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-18px;">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-5">
+                           
+                        </div>
+                        <div class="col-md-7">
+                            <h4 style="color:Red;padding-top:16px;float:right; font-size:14px;"> @ViewData["output"] </h4>
+                        </div>
+
+                    </div>
+                    <div class="body" style="margin-top:-20px;">
+                        <div class="row">
+                            <div class="table-responsive" style="position:inherit;">
+                                <table class="table table-bordered ">
+                                    <thead style="background-color:whitesmoke;">
+                                        <tr>
+                                            <th>State Name</th>
+                                            <th>Operator Name</th>
+                                            <th>Api Name</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.State_name)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.operator_Name)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.api_name)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.amount)</td>
+                                                <td>
+                                                    @if (item.sts == "Y")
+                                                    {
+                                                        <center>
+                                                            <a href="@Url.Action("Switchstatus",new { id = item.idno})" style="text-decoration:none;">
+                                                                <img src="~/images/reportimage/switch_on.png" style="margin-top:2px;height:23px;" />
+                                                            </a>
+                                                        </center>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <center>
+                                                            <a href="@Url.Action("Switchstatus",new { id = item.idno})" style="text-decoration:none;">
+                                                                <img src="~/images/reportimage/switchoff.png" style="margin-top:2px;height:23px;" />
+                                                            </a>
+                                                        </center>
+                                                  
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <button id="but" onclick="animation('@item.stateid','@item.optid','@item.api_name','@item.amount','@item.idno')" style="background-color:transparent;color:#03a9f4; border:none;">
+                                                        <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Edit</p>
+                                                    </button>
+                                                </td>
+                                                <th>
+                                                    <button id="but" onclick="delete1('@item.idno')" style="background-color:transparent;color:#03a9f4; border:none;">
+                                                        <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Delete</p>
+                                                    </button>
+                                                </th>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Edit Master Distributor</h4>
+            </div>
+            @using (Html.BeginForm("Update_Swich", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+
+                            <div class="row clearfix">
+                                <input type="text" id="txtSSID" name="txtSSID" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">State Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.Hidden("idnochk")
+                                            @Html.DropDownList("state1", ViewBag.state as SelectList, "Select Sate Name", new { @class = "form-control", required = "required" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <input type="text" id="txtSSID" name="txtSSID" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Operator Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownList("Operator1", ViewBag.operatorcode as SelectList, "Select OPerator", new { @class = "form-control", required = "required" })
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Api Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownList("Apinm1", ViewBag.Apinm as SelectList, "Select Api", new { @class = "form-control", required = "required" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Amount</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("amount1", "", new { @class = "form-control", @placeholder = "Enter Amount" })
+                                                    </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<script>
+        function animation(state, operator, apiname,amount,idno) {
+            $('#state1').val(state).trigger('change');
+            $('#Operator1').val(operator).trigger('change');
+            $('#Apinm1').val(apiname).trigger('change');
+            $('#amount1').val(amount);
+            $('#idnochk').val(idno);
+            $('#defaultModal1').modal('show');
+        }
+</script>
+<script>
+    function delete1(idno)
+    {
+        var r = confirm("Are You Sure , You Want to Delete !");
+        if (r == true) {
+            $.ajax({
+                type: "POST", url: '@Url.Action("deleteswitch", "Home")', data: { idno: idno }, dataType: 'json', cache: false, success: function (result) {
+                    if (result == "Success") {
+                        swal("Deleted!", "Deleted Successfully.", "success");
+                        var url = '@Url.Action("SwichStateWise", "Home")';
+                        window.location.href = url;
+                    }
+                    else {
+                        swal("Failed!", "Something went wrong.", "error");
+                        var url = '@Url.Action("SwichStateWise", "Home")';
+                        window.location.href = url;
+                    }
+                }
+            });
+        }
+    }
+</script>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        var msg = '@ViewBag.msg';
+        if(msg!="")
+        {
+            if (msg == "Succesfully Assign.")
+            {
+                swal("SUCCESS !", msg, "success");
+            }
+            else
+            {
+                swal("ERROR !", msg, "error");
+            }
+        }
+
+    });
+</script>

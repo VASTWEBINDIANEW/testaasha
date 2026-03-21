@@ -1,0 +1,258 @@
+﻿@using Vastwebmulti.Models;
+
+@model Vastwebmulti.Areas.RETAILER.Models.Buspdfmodel
+@{
+    Layout = null;
+}
+
+@{ 
+    var logoimage = "";
+    var com = "";
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        logoimage = logo.SingleOrDefault().LogoImage;
+    }
+    else
+    {
+        logoimage = "";
+    }
+    var websiteurl = db.Admin_details.SingleOrDefault().WebsiteUrl;
+    var companyname = db.tblContects.ToList();
+    if (companyname.Count > 0)
+    {
+        com = companyname.SingleOrDefault().CompnayName;
+    }
+    else
+    {
+        com = "";
+    }
+}
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>
+        @com
+    </title>
+
+        
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+    <link href="~/AdminDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet" />
+</head>
+<body style="float:none;">
+
+
+    <div id="ticketData">
+        <div style="margin:25px auto; width:815px;">
+       
+            <table cellpadding="0" cellspacing="0" align="center" style="padding:0px; margin:0px; width:100%;font-size:12px; font-family:Arial, Helvetica, sans-serif; background:#fff; border: 1px solid #ddd;">
+           
+                <tr>
+                    <td colspan="2" style="padding: 10px 0px;border-bottom:1px solid #dddddd">
+                        <h1 style="margin: 0; padding: 10px 0; float:left; width:99%; text-align:center; font-size: 30px; font-weight: normal;">
+                            Bus Ticket
+                        </h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%; padding: 10px 10px;">
+                        <img src="@Url.Content("~/" +logoimage)" class="img-responsive" data-holder-rendered="true" height="80" width="140" />
+                      
+                    </td>
+                    <td style="width:78%; padding: 10px 10px; text-align:right;">
+                        <div style="width:100%; float: left; text-align: right; padding:5px;">
+                            <span>Company Name: <b>@Model.AdminCompanyName</b></span>
+                            <br /><br />
+                            <span>Name: @Model.retailerName</span>
+
+                            <br /><span>Phone: @Model.retailerMobile</span>
+
+                            <br /><span>Email: @Model.retailerEmail</span>
+                            <br /><span>Address: @Model.retailerAddress</span>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:10px 10px;">
+                        <b>Ticket Reservation</b> Please take a print of this ticket. A copy of the ticket has to be produced at the time of boarding. Please be present atleast 15 mins prior to time of departure at the boarding point
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding: 5px 0px;">
+                        <table cellpadding="0" cellspacing="0" align="center" style="padding:0px; margin:0px; width:100%; font-family:inherit; background:#fff; ">
+                            <tr bgcolor="#f1f1f1">
+                                <th style="text-align:left; padding:5px 8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px;">Pax Details</th>
+                                <th style="text-align:center; padding:5px 8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px; width:25%;">Ticket Number</th>
+                                <th style="text-align:center; padding:5px 8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px; width:25%;">Seat Number</th>
+                                <th style="text-align:center; padding:5px 8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px; width:25%;">Price</th>
+                            </tr>
+                            @foreach (var item in Model.BookingDetails.Content.Addinfo.Itinerary.Passenger)
+                            {
+                            <tr>
+                                <td style="text-align:left;padding:10px 8px 0 8px;">@item.Title @item.FirstName @item.LastName</td>
+                                <td style="text-align:center;padding:10px 8px 0 8px;">@Model.BookingDetails.Content.Addinfo.Itinerary.TicketNo</td>
+                                <td style="text-align:center;padding:10px 8px 0 8px;">@item.Seat.SeatName</td>
+                                <td style="text-align:center;padding:10px 8px 0 8px;">Rs @string.Format("{0}", item.Seat.Price.PublishedPriceRoundedOff + Model.Markup)</td>
+                            </tr>
+                            }
+
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:5px 0px;">
+                        <table cellpadding="0" cellspacing="0" align="center" style="padding:0px; margin:0px; width:100%; text-align:left; font-family:inherit; background:#fff; ">
+                            <tr bgcolor="#f1f1f1">
+                                <th colspan="4" style="text-align:left; padding:8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px;">Bus Details</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 0px 0px 8px; width:12%; font-weight:bold;">From:</td>
+                                <td style="padding:10px 8px 0 8px; width:38%;">@Model.BookingDetails.Content.Addinfo.Itinerary.Origin</td>
+                                <td style="padding:10px 0px 0px 8px; width:12%; font-weight:bold;">To:</td>
+                                <td style="padding:10px 8px 0 8px; width:38%;">@Model.BookingDetails.Content.Addinfo.Itinerary.Destination</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 0px 0px 8px; font-weight:bold;">Travels:</td>
+                                <td style="padding:10px 8px 0 8px;">@Model.BookingDetails.Content.Addinfo.Itinerary.TravelName</td>
+                                <td style="padding:10px 0px 0px 8px; font-weight:bold;">Bus Type:</td>
+                                <td style="padding:10px 8px 0 8px;">@Model.BookingDetails.Content.Addinfo.Itinerary.BusType</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 0px 0px 8px; font-weight:bold;">Journey Date:</td>
+                                <td style="padding:10px 8px 0 8px;">@string.Format("{0:dddd, dd MMMM  yyyy}", Model.BookingDetails.Content.Addinfo.Itinerary.DateOfJourney)</td>
+                                <td style="padding:10px 0px 0px 8px; font-weight:bold;">Dep time:</td>
+                                <td style="padding:10px 8px 0 8px;">@string.Format("{0:hh:mm tt}", Model.BookingDetails.Content.Addinfo.Itinerary.DepartureTime)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 0px 0px 8px; font-weight:bold;">PNR: </td>
+                                <td style="padding:10px 8px 0 8px;">@Model.BookingDetails.Content.Addinfo.Itinerary.TravelOperatorPnr</td>
+                                <td style="padding:10px 0px 0px 8px; font-weight:bold;">Price:</td>
+                                <td style="padding:10px 8px 0 8px;">@string.Format("{0}", Model.BookingDetails.Content.Addinfo.Itinerary.Passenger.Sum(a => a.Seat.Price.PublishedPriceRoundedOff) + Model.Markup)</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:5px 0px;">
+                        <table cellpadding="0" cellspacing="0" align="center" style="padding:0px; margin:0px; width:100%; text-align:left; font-family:inherit;background:#fff; ">
+                            <tr bgcolor="#f1f1f1">
+                                <th style="text-align:left; padding:8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px;">Boarding Address</th>
+                                <th style="text-align:left; padding:8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px;">&nbsp;</th>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:top; width:50%;">
+                                    <table cellpadding="0" cellspacing="0" align="center" style="padding:0px; margin:0px; width:100%; text-align:left; font-family:inherit; background:#fff; ">
+                                        <tr>
+                                            <td style="padding:10px 0px 0px 8px; font-weight:bold;">Location:</td>
+                                            <td style="padding:10px 8px 0 8px;">@Model.BookingDetails.Content.Addinfo.Itinerary.BoardingPointdetails.CityPointLocation</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:10px 0px 0px 8px; width:11%; font-weight:bold;">Landmark:</td>
+                                            <td style="padding:10px 8px 0 8px; width:39%;">@Model.BookingDetails.Content.Addinfo.Itinerary.BoardingPointdetails.CityPointLandmark</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:10px 0px 0px 8px; font-weight:bold;">Address:</td>
+                                            <td style="padding:10px 8px 0 8px;">@Model.BookingDetails.Content.Addinfo.Itinerary.BoardingPointdetails.CityPointAddress</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:10px 0px 0px 8px; font-weight:bold;">Boarding time:</td>
+                                            <td style="padding:10px 8px 0 8px;">@string.Format("{0:dd MMMM  yyyy hh:mm:ss tt}", Model.BookingDetails.Content.Addinfo.Itinerary.BoardingPointdetails.CityPointTime)</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:10px 0px 0px 8px; font-weight:bold;">Contact number:</td>
+                                            <td style="padding:10px 8px 0 8px;">@Model.BookingDetails.Content.Addinfo.Itinerary.BoardingPointdetails.CityPointContactNumber</td>
+                                        </tr>
+
+                                    </table>
+                                </td>
+                                <td style="vertical-align:top; width:50%;">
+                                   
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding: 5px 0px;">
+                        <table cellpadding="0" cellspacing="0" align="center" style="padding:0px; margin:0px; width:100%; text-align:left; font-family:inherit; background:#fff; ">
+                            <tr bgcolor="#f1f1f1">
+                                <th style="text-align:left; padding:8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px;">Cancellation Details</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul style="width:100%; list-style: none; margin: 0; padding: 0; float:left;">
+
+                                        <li style="width:50%; float:left; margin: 0; padding:10px 10px 0px;"><b>Cancellation time</b></li>
+                                        <li style="width:50%; float:left; margin: 0; padding:10px 10px 0px;"><b>Cancellation charges</b></li>
+                                       
+                                        @foreach(var item in Model.BookingDetails.Content.Addinfo.Itinerary.CancelPolicy)
+                                        {
+                                            var type = "";
+                                            if(item.CancellationChargeType==2)
+                                            {
+                                                type = "%";
+                                            }
+                                            else
+                                            {
+                                                type = "₹";
+                                            }
+                                        <li style="width:50%; float: left; margin: 0; padding:5px 10px;">
+                                            <span>@item.PolicyString</span>
+                                        </li>
+
+
+                                        <li style="width:50%; float: left; margin: 0; padding:5px 10px;">
+                                            @item.CancellationCharge @type
+                                        </li>
+                                        }                               
+                                                                                
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                @*<tr>
+                    <td colspan="2" style="padding: 5px 0px;">
+                        <table cellpadding="0" cellspacing="0" align="center" style="padding:0px; margin:0px; width:100%; text-align:left; font-family:inherit; background:#fff; ">
+                            <tr bgcolor="#f1f1f1">
+                                <th style="text-align:left; padding:8px;border-bottom:1px solid #a7a7a7;border-top:1px solid #a7a7a7; font-size:14px;">Contact Details</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px; line-height:25px;">
+
+                                    <b>Name: </b>
+                                    @Model.retailerName
+                                    <br />
+                                    <b>Phone:</b>
+                                    @Model.retailerMobile
+                                    <br />
+
+                                    <b>Email:</b>
+                                    @Model.retailerEmail
+                                    <br />
+                                    <b>Address</b>
+                                    @Model.retailerAddress
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>*@
+            </table>
+         
+        
+            <div style="clear:both;">&nbsp;</div>
+        </div>
+    </div>
+     
+</body>
+</html>

@@ -1,0 +1,175 @@
+﻿@model IEnumerable<Vastwebmulti.Models.GST_Monthly_API_Result>
+@using Vastwebmulti.Models;
+@{
+    ViewBag.Title = "Gst_Invocing_API_report";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Api").ToList();
+    var favimage = "";
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Api")
+        {
+            favimage = usernname.SingleOrDefault().NickName;
+
+
+        }
+    }
+}
+
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+
+    .rechargepdfexal {
+        width: 100%;
+        text-align: right;
+    }
+
+    @@media only screen and (max-width:480px) {
+        .api-gst .col-md-8 {
+            padding-left: 0px;
+        }
+
+        .api-gst .col-md-2 {
+            width: 50%;
+            float: left;
+            padding: 0px;
+            padding-right: 15px;
+        }
+
+        .api-gst-table {
+            padding-left: 0px;
+        }
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:0px;">
+                <div class="card" style="margin-bottom:10px;">
+                    <div class="row api-gst">
+                        <div class="col-md-8">
+                            <p style="font-size:20px;margin-top:2px;color:#555;font-weight:600;">@favimage GST Invoice Report</p>
+                        </div>
+
+
+                        <div class="col-md-2">
+                            <p style="font-size:20px;color: var(--main-bg-lcolor);border: 1px solid var(--main-bg-lcolor);width: auto;margin: 0px;text-align: center;background: #eeebeb;padding: 1px;">Month&nbsp;-&nbsp;<span>@ViewBag.OldMonth</span></p>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="rechargepdfexal" style="float:right;">
+                                <span><img src="~/ashok-images/pdf.png"><input type="button" id="btnPDF" value="PDF" style="border:0px;background:transparent"></span>
+                                <span>
+                                    <img src="~/ashok-images/xls.png"><input type="button" id="btnExport" value="Export" style="border:0px;background:transparent;">
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 api-gst-table">
+                <div class="card">
+
+                    <div>
+                        <div class="table-responsive" style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover " style="width:100%; font-size:12px;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Sr.No</th>
+                                        <th>Email&nbsp;ID</th>
+                                        <th>Name</th>
+                                        <th>Frim&nbsp;Name</th>
+                                        <th>Account Transfer&nbsp;Comm</th>
+                                        <th>Account Transfer&nbsp;GST</th>
+                                        <th>RCH&nbsp;Comm</th>
+                                        <th>RCH&nbsp;GST</th>
+                                        <th>Total GST</th>
+                                        <th>Print</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var i = 1;
+                                    }
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td><p style="font-size:12px;">@item.emailid</p></td>
+                                            <td><p style="font-size:12px;">@item.username</p></td>
+                                            <td><p style="font-size:12px;">@item.farmname</p></td>
+                                            <td><p style="font-size:12px;">@item.dmtcomm</p></td>
+                                            <td><p style="font-size:12px;">@String.Format("{0:0.0#}", item.dmtgst)</p></td>
+                                            <td><p style="font-size:12px;">@item.rchcomm</p></td>
+                                            <td><p style="font-size:12px;">@item.rchgst</p></td>
+                                            <td><p style="font-size:12px;">@item.total</p></td>
+                                            <td><a href="@Url.Action("GST_Invocing_Report_Pdf","Home")" style="font-size:14px;color:blue;font-weight:500;" target="_blank">Print</a></td>
+                                        </tr>
+                                        i++;
+                                    }
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+
+
+<script>
+    $("#btnExport").click(function () {
+
+        var url = @Url.Action("ExcelGst_Invocing_API_report", "Home");
+        location.href = url;
+});
+</script>

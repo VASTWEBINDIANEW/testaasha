@@ -1,0 +1,417 @@
+﻿@*@model Vastwebmulti.Areas.WDealer.Models.Money_transfer_Report_whitelabel*@
+@{
+    ViewBag.Title = "Money_Transfer_Report";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+
+
+<style>
+    .mytext {max-width: 150px !important;}
+    .mytext p {text-overflow: ellipsis;overflow: hidden;}
+    .slab-setting-menu li a.activee {background:linear-gradient(to right, @PageData["Globalfirst"],@PageData["GlobalSecond"]);}
+    .responcive-fifty button {height: 30px !important;}
+    .responcive-padding button, .responcive-padding input {padding: 0px 15px;height: 32px;border: 1px solid #c7c2c2 !important;background: #dedddd;}
+    .datepicker-dropdown.datepicker {margin-top: 70px !important;}
+    #divEditFormComm table thead tr, .web-white-table table thead tr {background: 0;}
+    .white-success {
+        padding: 0;
+        top: 0;
+    }
+
+    @@media only screen and (max-width: 992px) {
+        .responcive-fifty, .responcive-padding {
+            width: 49% !important;
+            float: left;
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+            .responcive-fifty:nth-last-child(2n+2) {
+                margin-right: 3px !important;
+            }
+
+            .responcive-fifty:nth-child(2n+2) {
+                margin-left: 3px !important;
+            }
+
+        .responcive-full {
+            width: 99% !important;
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+        .responcive-fifty:last-child {
+            margin-left: 0 !important;
+        }
+        .responcive-fifty ul {
+            margin: 0;
+        }
+        .responcive-fifty input {
+            width: 100%;
+            text-align: left;
+        }
+        .responcive-padding .white-l-search-nine{width: 100%;}
+        .responcive-fifty ul{width: 100%;}
+        .responcive-fifty ul li {
+            width: 24.5%;
+            text-align: center;
+            margin-right: 2px;
+        }
+    }
+
+    @@media only screen and (max-width: 480px) {
+        .responcive-fifty button {
+            margin: 0 !important;
+        }
+
+        .responcive-fifty, .responcive-padding {
+            width: 48%;
+        }
+
+            .responcive-padding button, .responcive-padding input {
+                padding: 0px 4px;
+            }
+        .white-l-search-ten.responcive-fifty {
+            width: 100% !important;
+        }
+        .responcive-fifty ul li {
+            width: 24%;
+        }
+        }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card" style="margin-bottom:10px;">
+
+                    <div class="white-l-search-imps">
+
+                        <div class="white-l-search-ten responcive-fifty">
+                            <div style="margin-left:0px;">
+                                @Html.Partial("_Financial_partial_view")
+                            </div>
+                        </div>
+
+                        <div class="">
+                            @using (Html.BeginForm("Money_Transfer_Report", "Home", FormMethod.Post))
+                            {
+                                <div class="white-l-search-one responcive-fifty">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("ddlusers", new List<SelectListItem>
+                                          {
+                                               new SelectListItem{ Text="All",Value="Admin"},
+                                               new SelectListItem{Text="Distributor",Value="Dealer"},
+                                               new SelectListItem{Text="Retailer",Value="Retailer"},
+                                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "height:36px; margin-top:0px; padding:0px;text-align:center;", @onchange = "answers()" })
+
+                                    </div>
+                                </div>
+
+
+                                <div class="white-l-search-two responcive-fifty" style="display:none;" id="dlm">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("alldealer", ViewBag.alldealer as SelectList, " All Distubutor", new { id = "alldealer", @class = "selectpicker form-control", data_live_search = "true", @style = "height:36px;margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                    </div>
+                                </div>
+                                <div class="white-l-search-two responcive-fifty" style="display:none;" id="rem">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "height:36px;margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                    </div>
+                                </div>
+
+
+                                <div class="white-l-search-three responcive-fifty">
+                                    <div class="" style="width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                        {
+                                            new SelectListItem{ Text="Status",Value="ALL",},
+                                            new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                                            new SelectListItem{Text="Pending",Value="PENDING"},
+                                            new SelectListItem{Text="FAILED",Value="FAILED"}
+                                             }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                    </div>
+                                </div>
+
+                                <div class="white-l-search-six responcive-full">
+                                    <div class="form-group for-web-date" style="margin-bottom:0px;width:100%;">
+                                        <div class="input-daterange input-group">
+                                            <div class="whitelable-alldatereport date-leftclass">
+                                                <div class="custom-date-icon" style="">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; height:34px;padding-left:20px;", autocomplete = "off" })
+                                            </div>
+                                            @*<span class="input-group-addon">
+                            <i class="fa fa-exchange" style="padding-top:5px;"></i>
+                        </span>*@
+                                            <div class="whitelable-alldatereport date-rightclass">
+                                                <div class="custom-date-icon" style="">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; height:34px;padding-left:20px;", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="white-l-search-eight responcive-fifty">
+                                    <center>
+                                        <input name="btntype" type="submit" value="Search" class="btn" onclick="serch()" style="height:34px;border:1px solid #c7c2c2;background:transparent;" />
+                                    </center>
+                                </div>
+                            }
+                            <div class="responcive-padding" style="position: relative;">
+                                <div class="white-l-search-nine">
+                                    <div style="float:right;" class="web-white-filter">
+                                        <input type="button" id="btnExport" value="Export" style="margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;" />
+                                        <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;" />
+                                        <button class="white-success-button" onclick="findtotal()">Total</button>
+                                    </div>
+                                </div>
+
+                                <div class="white-success" style="display:none;">
+                                    <button class="white-success-button" onclick="findtotal()" style="position: absolute;top: -6px;right: -1px;height: 20px;width: 20px;font-size: 16px;padding: 0;z-index: 9;color: #000;">X</button>
+                                    <span id="successtotal" class="btn btn-success waves-effect" style="font-size: 13px;padding:9px; color:white;font-weight:600;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Failedtotal" class="btn btn-danger waves-effect" style="font-size: 13px;padding:9px; color:white;font-weight:600;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Pendingtotal" class="btn btn-warning waves-effect" style="font-size: 13px;padding:9px;color:white; font-weight:600;" title="Total  Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i> </span>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div>
+                        <div class="table-responsive   web-white-table" style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover  " style="width:100%; font-size:12px;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th style="width:110px;">Live&nbsp;Status</th>
+                                        <th>Sender&nbsp;Number</th>
+                                        <th>Beneficiary&nbsp;A/C</th>
+                                        <th>User's&nbsp;Firm</th>
+                                        <th>Type</th>
+                                        <th>&nbsp;Request&nbsp;Time</th>
+                                        <th>⇙&nbsp;Response</th>
+                                        <th>Net&nbsp;Tr&nbsp;</th>
+                                        <th>Total&nbsp;Tr&nbsp;</th>
+                                        <th>User&nbsp;Debit&nbsp;</th>
+                                        <th>Bank&nbsp;UTR&nbsp;/&nbsp;Transaction&nbsp;Id&nbsp;</th>
+
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trow">
+                                    @{
+                                        Html.RenderAction("_Money_Transfer_Report", "Home", new { Model = Model });
+                                    }
+                                </tbody>
+                            </table>
+
+                            <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:16px;">
+                                <img src="~/img/ajax-loader.gif" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+        answers();
+    });
+</script>
+
+<script type="text/javascript">
+    function answers() {
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer") {
+            document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("allretailer").selectedIndex = "0";
+        }
+
+        else if (answer == "Admin") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+            document.getElementById("alldealer").selectedIndex = "0";
+            document.getElementById("allretailer").selectedIndex = "0";
+        }
+        else if (answer == "Retailer") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+            document.getElementById("alldealer").selectedIndex = "0";
+            document.getElementById("allretailer").selectedIndex = "0";
+        }
+    }
+</script>
+
+<!--Generate Print-->
+<script type="text/javascript">
+            function GotoPDF(e) {
+                // alert(e)
+                var idno = e.toString(); ;
+                var url = '@Url.Action("GeneratePDF", "Home")?Idno=' + idno + '';
+                //window.location.href = url,;
+                window.open(url, '_blank');
+            }
+</script>
+<script>
+    $('.white-success-button').click(function () {
+        $('.white-success').toggle();
+    });
+</script>
+
+
+<script>
+    var txt_frm_date = $('#txt_frm_date').val();
+    var txt_to_date = $('#txt_to_date').val();
+    var ddlusers = $('#ddlusers').val();
+    var ddl_status = $('#ddl_status').val();
+    var alldealer = $('#alldealer').val();
+    var allretailer = $('#allretailer').val();
+        var pageindex = 2;
+        var NoMoredata = false;
+        var inProgress = false;
+    $(window).scroll(function () {
+            if ($(window).scrollTop() > Number($("#tbldata").height()) / 4 && !NoMoredata && !inProgress) {
+                inProgress = true;
+                $("#loadingdiv").show();
+                $.post("@Url.Action("MoneyInfiniteScroll","Home")",
+                    { "pageindex": pageindex, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date, "ddlusers": ddlusers, "ddl_status": ddl_status, "alldealer": alldealer, "allretailer": allretailer },
+                    function (data) {
+                        pageindex = pageindex + 1;
+                        NoMoredata = data.NoMoredata;
+                        $("#trow").append(data.HTMLString);
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    });
+            }
+        });
+</script>
+
+<script>
+    function findtotal() {
+         var txt_frm_date = $('#txt_frm_date').val();
+         var txt_to_date = $('#txt_to_date').val();
+         var ddl_status = $('#ddl_status').val();
+
+             $.post("@Url.Action("MoneyFindTotal", "Home")",
+             {"txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date,"ddl_status":ddl_status},
+                 function (data) {
+                     $('#successtotal').text("₹. " + data.success);
+                     $('#Failedtotal').text("₹. " + data.failed);
+                     $('#Pendingtotal').text("₹. " + data.pending);
+                  });
+    }
+</script>
+<script>
+    $("#btnExport").click(function(){
+   var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+        var alldealer = $('#alldealer').val();
+        var allretailer = $('#allretailer').val();
+        var url = '@Url.Action("ExcelMoneyReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers' + ddlusers + '&ddl_status=' + ddl_status + '&alldealer=' + alldealer + '&allretailer=' + allretailer;
+        location.href = url;
+});
+</script>
+<script>
+    $("#btnPDF").click(function () {
+     var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+        var alldealer = $('#alldealer').val();
+        var allretailer = $('#allretailer').val();
+        var url = '@Url.Action("PDFMoneyReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers' + ddlusers + '&ddl_status=' + ddl_status + '&alldealer=' + alldealer + '&allretailer=' + allretailer;
+        window.open(url,'_blank');
+    });
+</script>
+
+
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    //Assign Click event to Plus Image.
+    $("body").on("click", "img[src*='double-down.png']", function () {
+        $(this).closest("tr").after("<tr><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+        $(this).attr("src", "/images/double-up.png");
+    });
+    //Assign Click event to Minus Image.
+    $("body").on("click", "img[src*='double-up.png']", function () {
+        $(this).attr("src", "/images/double-down.png");
+        $(this).closest("tr").next().remove();
+    });
+
+</script>
+

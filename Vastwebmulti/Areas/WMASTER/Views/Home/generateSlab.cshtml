@@ -1,0 +1,153 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.ResultSetViewModel
+@{
+    ViewBag.Title = "generateSlab";
+    Layout = "~/Areas/WMASTER/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card" style="margin-top:2px;">
+                @using (Html.BeginForm("AddSlabname", "Home", FormMethod.Post, new { id = "CreateForm" }))
+                {
+                        <div class="">
+                            <div class="col-md-4">
+                                <div class="form-group" style="margin-top:3px;">
+                                    <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:-10px;">
+                                        <li><a href="javascript:void(0);" style="font-weight:100; font-size:15px;">Slab Setting</a></li>
+                                        <li class="active" style="color:#607d8b; font-size:15px;font-weight:700;">Create A New Slab</li>
+                                    </ol>
+                                </div>
+                            
+                            </div>
+                            <div class="col-md-4">
+                         
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group" style="margin-bottom:0px;margin-top:4px;">
+                                    <div class="input-group">
+
+                                        @Html.TextBoxFor(Model => Model.AccountVM.Slab_Name, "", new { @class = "form-control", placeholder = "  Enter New Slab Name", @style = "border:1px solid #dddddd;border-radius:0px;" })
+                                        <div class="input-group-addon">
+                                            <input id="submit" type="submit" value="Generate Slab" class="btn bg-blue-grey waves-effect" style="margin-top:-6px; margin-left:-1px; height:34px;border-radius:0px;">
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.AccountVM.Slab_Name, "", new { @class = "text-danger" })
+
+                                </div>
+
+                            </div>
+                                                    
+
+                        </div>
+                }
+                </div>
+            </div>
+
+           </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-41px;">
+                <div class="card">
+                    <div class="">
+                        <h2 style="color:black; font-size:16px;padding-top:9px; padding-left:22px;">
+                                            </h2>
+                    </div>
+                    <div class="body">
+                        <div class="table-responsive " style="position:inherit;margin-top:-24px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                              
+                                        <th style="padding-left:0px;text-align:center">Slab Name</th>
+                                        <th style="padding-left:0px;text-align:center">Slab Type</th>
+                                        <th style="padding-left:0px;text-align:center">Create Date</th>
+                                        <th style="padding-left:0px;text-align:center">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ResultSet)
+                                    {
+                                        <tr>
+                                        <td> @Html.DisplayFor(modelItem => item.SlabName)</td>
+                                            <td> @Html.DisplayFor(modelItem => item.SlabFor)</td>
+                                            <td> @Html.DisplayFor(modelItem => item.cdate)</td>
+                                           <td>
+                                                <label>
+                                                    <a href="@Url.Action("Delete_slabName", new { id=item.idno,slabfor=item.SlabFor,slabname=item.SlabName })" style="text-decoration:none;" Onclick="ConfirmDelete()"><span class="fa fa-trash-o fa-2x" style="color:red;"></span></a>
+                                                </label>
+                                            </td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<script>
+    $(function () {
+        var msg = '@ViewData["msg"]';
+        if (msg.includes("Successfully")) {
+            swal("Good job!", msg, "success")
+        }
+        else if(msg!="")
+        {
+            swal("Failure !", msg, "error")
+        }
+        var msg1 = '@TempData["api"]';
+        if (msg1 != "" && msg1 != null) {
+            swal("Oops..!", msg1, "error");
+        }
+        var msg2 = '@TempData["successmsg"]';
+        if (msg2.includes("Successfully")) {
+            swal("Good job!", msg2, "success");
+        }
+    });
+
+</script>
+<!--confrimed message-->
+<script>
+    
+    function ConfirmDelete()
+    {
+        var x = confirm("Are you sure you want to delete?");
+        if (x) {
+            return true;
+        }
+        else {
+            event.preventDefault();
+  
+        }
+    }
+</script>

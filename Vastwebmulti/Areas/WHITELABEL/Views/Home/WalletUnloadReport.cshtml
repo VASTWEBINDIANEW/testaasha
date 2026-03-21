@@ -1,0 +1,391 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Whitelabel_WalletToBankAmountTransferRequests>
+@{
+    ViewBag.Title = "Wallet Unload";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .dataTables_wrapper .dt-buttons a.dt-button {
+        padding: 7px 10px 8px 8px;
+    }
+
+    .ss :hover {
+        color: green;
+    }
+
+    .ff :hover {
+        color: red;
+    }
+
+    .form-inline .bootstrap-select.btn-group, .form-horizontal .bootstrap-select.btn-group, .form-group .bootstrap-select.btn-group {
+        height: 26px;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                <div class="card" style="margin-top:2px;">
+                    @using (Html.BeginForm("WalletUnloadReport", "Home", FormMethod.Post))
+                    {
+                        <div class="">
+
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-bottom:8px; margin-top:4px;">
+                                    <div class="" style="padding-top:3px;border:1px solid #dddddd;padding-bottom:4px;">
+                                        @Html.DropDownList("RetailerId", (IEnumerable<SelectListItem>)ViewBag.allretailer, "Select Retailer", new { @class = "selectpicker form-control", data_live_search = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-bottom:8px; margin-top:4px;">
+                                    <div class="" style="padding-top:3px;border:1px solid #dddddd;padding-bottom:4px;">
+                                        @Html.DropDownList("ddlstatus", new List<SelectListItem>
+                              {
+                          new SelectListItem{ Text="Select Status",Value="ALL"},
+                           new SelectListItem{ Text="Pending",Value="Pending"},
+                           new SelectListItem{Text="Success",Value="Success"},
+                           new SelectListItem{Text="Rejected",Value="Rejected"}
+                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;", @onchange = "answers()" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-bottom:0px;margin-top:2px;">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:2px;height:35px;", autocomplete = "off" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-exchange" style="padding-top:7px;"></i>
+                                        </span>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:2px;height:35px;", autocomplete = "off" })
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <center>
+                                    <button type="submit" class="btn  waves-effect" style="margin-top:4px; margin-left: -21px; height:35px;border:1px solid #c7c2c2;background:#dedddd;">
+                                        <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                        <span style="top:-2px;color:black;">Search</span>
+                                    </button>
+                                </center>
+                            </div>
+                            <div class="col-md-2">
+                                <center>
+                                    <a href="#" class="btn" style="margin-top: 5px; margin-left: -22px; height:31px;border:1px solid #c7c2c2;background:#dedddd;" onclick="Wallentunloadsts('WAdmin')">
+                                        <i class="fa fa-thumbs-o-down" style="top:0px;font-size:16px;" id="faWAdmin"></i>
+                                        <span style="top:-1px;color:black;">Wallet&nbsp;WAdmin</span>
+                                    </a>
+                                </center>
+                            </div>
+                            <div class="col-md-2">
+                                <center>
+                                    <a href="#" class="btn" style="margin-top: 5px; margin-left: -22px; height:31px;border:1px solid #c7c2c2;background:#dedddd;" onclick="Wallentunloadsts('Admin')">
+                                        <i class="fa fa-thumbs-o-down" style="top:0px;font-size:16px;" id="faAdmin"></i>
+                                        <span style="top:-1px;color:black;">Wallet&nbsp;Admin</span>
+                                    </a>
+                                </center>
+                            </div>
+
+
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="" style="margin-top:-20px;">
+                        <div class="body table-responsive " style="position:inherit;padding:12px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;font-size:12PX;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>Live&nbsp;Status</th>
+                                        <th>Email&nbsp;Id</th>
+                                        <th>Bank&nbsp;Name</th>
+                                        <th>Bank&nbsp;Account</th>
+                                        <th>Ifsc&nbsp;Code</th>
+                                        <th>Acc&nbsp;Holder</th>
+                                        <th>Amount</th>
+                                        <th>Charge</th>
+                                        <th>Type</th>
+                                        <th>Remain&nbsp;Pre</th>
+                                        <th>Remain&nbsp;Post</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Wallet&nbsp;Type</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in Model)
+                                {
+                                    var color = "";
+                                    var sts = "";
+                                    if (item.Status.Contains("Pending"))
+                                    {
+                                        color = "#FF9800";
+                                        sts = "Pending";
+                                    }
+                                    if (item.Status.Contains("Success"))
+                                    {
+                                        color = "green";
+                                        sts = "Success";
+                                    }
+                                    if (item.Status.Contains("Rejected"))
+                                    {
+                                        color = "red";
+                                        sts = "Rejected";
+                                    }
+                                    if (item.Status.Contains("Refund"))
+                                    {
+                                        color = "#3F51B5";
+                                        sts = "Refund";
+                                    }
+                                    <tbody>
+                                        <tr>
+                                            <td><p style="color:@color;font-weight:700;">@sts</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.Email)</p></td>
+                                            <td><p style="font-size:12px;">@item.BankName</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.BankAccount)</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.IfscCode)</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.accountholder)</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.Amount)</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.ProcessingCharge)</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.TransferType)</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.RemPre)</p></td>
+                                            <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.RemPost)</p></td>
+                                            <td>
+                                                @if (item.Type == "Admin" || item.Type == null)
+                                                {
+
+                                                }
+                                                else
+                                                {
+                                                    <div class="row">
+                                                        @if (item.Status == "Pending" || item.Status == "FAILED")
+                                                        {
+                                                            <div class="col-xs-2">
+                                                                <button class="" onclick="Accept('@item.Idno')" style="font-size:31px;border:none; background:transparent; margin-top:-9px;" title="Success"><i class="material-icons" style="color:green;">done_all</i></button>
+                                                            </div>
+                                                        }
+                                                        @if (item.Status == "Pending" || item.Status == "SUCCESS")
+                                                        {
+                                                            <div class="col-xs-2">
+                                                                <button type="button" style="background-color:transparent; border:none;" title="Refund" onclick="Reject('@item.Idno')">
+                                                                    <i class="fa fa-times" style="color:red; font-size:24px;margin-left:20px;"></i>
+                                                                </button>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.RequestDate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                                        </tr>
+                                    </tbody>
+                                }
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<!--Wallet Unload Status ON And OFF-->
+<script>
+    function Wallentunloadsts(type)
+    {
+           swal({
+               text: "<p style=''>Are you sure You Want to Change Walletunload Status ?</p>",
+                html: true,
+                title: "",
+                showCancelButton: true,
+                confirmButtonColor: "#f9a7a7",
+                confirmButtonText: "Yes!",
+                closeOnConfirm: false
+            },
+          function (isConfirm) {
+              if (isConfirm) {
+                  $.ajax({
+                      type: "POST",
+                      url: '@Url.Action("WalletUnloadStatus", "Home")',
+                      data: { type: type },
+                      cache: false,
+                      dataType: 'json',
+                      async: true,
+                      success: function (result) {
+                          if (result == "Success") {
+                              swal({ title: "Wallet Status !", text: "WalletUnload Status Change Successfully.", type: "success" },
+                                 function () {
+                                     location.reload();
+                                 }
+                              );
+                          }
+
+                      }
+                  });
+              }
+          });
+
+    }
+</script>
+<script>
+    window.onload = function () {
+        var sts = '@ViewBag.sts';
+        var type = '@ViewBag.type';
+        if (sts == "Y" && type == "WAdmin") {
+            document.getElementById("faWAdmin").style.color = "green";
+            document.getElementById("faAdmin").style.color = "red";
+            document.getElementById("faWAdmin").className = "fa fa-thumbs-o-up";
+        }
+        else {
+            document.getElementById("faWAdmin").style.color = "red";
+            document.getElementById("faAdmin").style.color = "green";
+            document.getElementById("faAdmin").className = "fa fa-thumbs-o-up";
+        }
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+        answers();
+       }
+</script>
+<!--Calendar Javascript-->
+<script>
+    $(document).ready(function () {
+
+        var succ = '@ViewData["success"]';
+        var error = '@ViewData["error"]';
+        if (succ != null && succ != "")
+        {
+            swal("Good job!", succ,"success");
+        }
+        if (error != null && error != "")
+        {
+            swal("Oops!", error, "error");
+        }
+
+        var from = '@ViewBag.fromdate';
+        var to = '@ViewBag.todate';
+        fundreciveonload(from, to);
+
+    });
+    function OnSuccess(data)
+    {
+        //alert("Success");
+        var respose = JSON.parse(data);
+        console.log(data);
+        if (respose.status == "Success")
+        {
+            swal("Good job!", respose.Message, "success");
+        } else if (respose.status == "Failed") {
+            swal("Oops!", respose.Message, "error");
+        }
+        setTimeout(function () {
+            location.reload();
+        }, 2000);
+    }
+    function OnFailed()
+    {
+        swal("Oops!", "Internal Error,contact to admin", "error");
+    }
+    function Accept(id)
+    {
+
+        var url = '@Url.Action("AcceptWalletToBank", "Home")';
+        $.post(url, { idNo: id }, function (data) {
+            console.log(data);
+            var responseJson = JSON.parse(data);
+            if (responseJson.status == "Success")
+            {
+                swal("Good Job!", responseJson.Message, "success");
+                setInterval(function () { location.reload(); }, 1000);
+            } else {
+                swal("Oops", responseJson.Message, "error");
+            }
+        }).fail(function () {
+            swal("Oops", "Internal Error", "error");
+        });
+    }
+    function Reject(id)
+    {
+        var url = '@Url.Action("RefundWalletToBank", "Home")';
+        $.post(url, { idNo: id }, function (data) {
+            var responseJson = JSON.parse(data);
+            if (responseJson.status == "Success") {
+                swal("Good Job!", responseJson.Message, "success");
+                setInterval(function () { location.reload(); }, 1000);
+            } else {
+                swal("Oops", responseJson.Message, "error");
+            }
+        }).fail(function () {
+            swal("Oops", "Internal Error", "error");
+        });
+    }
+</script>
+
+
+
+

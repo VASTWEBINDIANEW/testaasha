@@ -1,0 +1,358 @@
+﻿@model Vastwebmulti.Areas.FeeCollector.Models.FeeDepositModel
+<!--core first + styles last-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBox("RollNO", "", new { @class = "form-control", placeholder = "Enter Roll No", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessage("RollNO", "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="demo-button">
+                                    <div class="col-md-5">
+                                        <button type="submit" class="btn bg-indigo waves-effect" style="float:left;" onclick="getFee(event)">
+                                            <i class="material-icons">group</i>
+                                            <span>Fee&nbsp;Deposit</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                        @using (Html.BeginForm("FeeDeposit", "Home", FormMethod.Post))
+                        {
+                            <form>
+                                <div class="row clearfix">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                @Html.TextBox("stdRollNO", "", new { @class = "form-control", placeholder = "Roll No" })
+                                            </div>
+                                            @Html.ValidationMessage("stdRollNO", "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" id="txt_frm_date" name="txt_frm_date" class="datepicker form-control" placeholder="Select From Date" style="text-align:center;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" id="txt_to_date" name="txt_to_date" class="datepicker form-control" placeholder="Select From Date" style="text-align:center;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="demo-button">
+                                        <div class="col-md-3">
+                                            <button type="submit" class="btn bg-indigo waves-effect" style="float:left;">
+                                                <i class="material-icons">group</i>
+                                                <span>Search</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-33px;">
+                <div class="card">
+                    <div class="">
+                        <h2 style="color:black; font-size:16px;padding-top:9px; padding-left:22px;">
+                            All Fee Deposit Details
+                        </h2>
+                    </div>
+                    <div class="body">
+                        <div class="table-responsive" style="position:inherit;margin-top:-20px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th style="padding-left:2px;">Roll&nbsp;No</th>
+                                        <th style="padding-left:2px;">Amount</th>
+                                        <th style="padding-left:2px;">InstalMent No</th>
+                                        <th style="padding-left:2px;">Particulars</th>
+                                        <th style="padding-left:2px;">Date</th>
+                                        <th style="padding-left:2px;">#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.lstFeedeposit)
+                                    {
+                                        <tr>
+                                            <td>@item.RollNo</td>
+                                            <td>@string.Format("{0:C2}", item.Amount)</td>
+                                            <td>@item.InstallmentNo</td>
+                                            <td>@item.Perticular</td>
+                                            <td>@item.InvoiceDate</td>
+                                            <td title="Generate receipt!">
+                                                <a id="but" href="@Url.Action("InvoicePDF","Home",new { invoiceNo = item.InvoiceID})" style="background-color:transparent;color:#03a9f4; border:none;">
+                                                    <i class="icofont icofont-file-alt"  style="font-size:24px;color:#673ab7;"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--View all Details-->
+<div class="modal fade" id="largeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar">
+                <h4 class="modal-title" id="largeModalLabel" style="color:white;">Student Fee Details<span id="AcadmicSession"></span></h4>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("InsertFeeDeposit", "Home",FormMethod.Post))
+                {
+                @Html.Hidden("txtRollNo");
+                <div class="body" style="margin-top:50px;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" style="border:none; background-color:white; display:none;" class="form-control" id="idno" name="idno" readonly="">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Name :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="Name" name="Name" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" style="border:none; background-color:white; display:none;" class="form-control" id="idno" name="idno" readonly="">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Class/Section :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="stdClass" name="stdClass" readonly="">
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Paid Installment/Total Installment :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="TotalInstallment" name="TotalInstallment" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Discounted Fee/Actual Fee :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="FeeAmont" name="FeeAmont" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Fixed Charge :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="FixedCharges" name="FixedCharges" readonly="">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" style="border:none; background-color:white; display:none;" class="form-control" id="idno" name="idno" readonly="">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Father Name :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="FatherName" name="FatherName" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Address :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="address" name="address" readonly="">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Fee Installment :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="InsAmount" name="InsAmount" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Bus Installment :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="InsBusAmount" name="InsBusAmount" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Discounted Bus Fee/Actual Bus Fee :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="BusFeeAmont" name="BusFeeAmont" readonly="">
+                                </div>
+                            </div>
+                            
+
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary waves-effect pull-right">Proceed to pay</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<!--Insert Popuop-->
+<script>
+    window.onload = function () {
+        var message = '@TempData["msgrem"]'
+        if (message != "" && message != null) {
+            swal("Good job!", message, "success");
+
+        }
+        var mobileconfrimation = '@TempData["mobileno"]'
+        if (mobileconfrimation != "" && mobileconfrimation != null) {
+            swal("Oops...", mobileconfrimation, "error");
+
+        }
+
+        var mailconfrimation = '@TempData["emailconfrim"]'
+        if (mailconfrimation != "" && mailconfrimation != null) {
+            swal("Oops...", mailconfrimation, "error");
+
+        }
+        //Edit Message
+        var editdata = '@TempData["edit"]'
+        if (editdata != null && editdata != "") {
+            swal("Good job!", editdata, "success");
+        }
+
+    }
+</script>
+
+<script>
+    function getFee(event) {
+        event.preventDefault();
+        var rollNo = $('#RollNO').val();
+        var url = '@Url.Action("getInstallmentAmount", "Home")'
+        $.ajax({
+            url: url,
+            data: { rollno: rollNo },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                //alert("Success");
+                var respo = JSON.parse(data);
+                //console.log(respo);
+                //console.log(respo.Status);
+                //alert(respo.Status);
+                if (respo.Status == "Failed") {
+                    swal("Oops...", respo.Message, "error");
+                }
+                else {
+
+                    $("#address").val(respo.Message.Address);
+                    $("#Name").val(respo.Message.Name);
+                    $("#FatherName").val(respo.Message.FName);
+                    $("#stdClass").val(respo.Message.stdClass + '/' + respo.Message.Section);
+                    $("#Section").val(respo.Message.Section);
+                    $("#InsAmount").val(respo.Message.Amount);
+                    $("#InsBusAmount").val(respo.Message.AmountBus);
+                    $("#FixedCharges").val(respo.Message.FixedCharge);
+                    $("#TotalInstallment").val(respo.Message.PaidInstallment + '/' + respo.Message.NumberOfInstallments);
+                    $("#FeeAmont").val(respo.Message.DiscountedFee + '/' + respo.Message.ActualFee);
+                    $("#BusFeeAmont").val(respo.Message.DiscountedBusFee + '/' + respo.Message.ActualBusFee);
+                    $("#txtRollNo").val(rollNo);
+                    $("#AcadmicSession").html('(' + respo.Message.Session + ')');
+
+
+
+                    $('#largeModal').modal('show');
+                }
+
+
+            }
+        });
+        //alert(rollNo);
+    }
+</script>
+<script>
+    window.onload = function () {
+
+        var from = '@ViewBag.fromdate';
+        var to = '@ViewBag.todate';
+        if (from != "" && to != "") {
+            $('#txt_frm_date').val(from);
+            $('#txt_to_date').val(to);
+        }
+        else {
+            var month = new Array("Jan", "Feb", "Mar",
+    "Apr", "May", "Jun", "Jul", "Aug", "Sep",
+    "Oct", "Nov", "Dec");
+
+            var d = new Date();
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth();
+            var curr_year = d.getFullYear();
+            var tt = curr_date + "-" + month[curr_month]
+            + "-" + curr_year;
+            document.getElementById("txt_frm_date").value = tt;
+            document.getElementById("txt_to_date").value = tt;
+        }
+        var dateformat = '@ViewBag.format';
+        if (dateformat != null && dateformat != "") {
+            swal("Oops...", dateformat, "error");
+        }
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+

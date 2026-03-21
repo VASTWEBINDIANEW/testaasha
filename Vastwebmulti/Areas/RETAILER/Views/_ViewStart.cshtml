@@ -1,0 +1,68 @@
+﻿@using Vastwebmulti.Models;
+@{
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    VastwebmultiEntities DB = new VastwebmultiEntities();
+    var color = DB.changecolors.FirstOrDefault(a => a.Role == "ADMIN");
+    var col = "";
+    if (color != null && color.ToString() != "")
+    {
+        col = color.multipaloutercolor;
+    }
+    else
+    {
+        col = "pink";
+    }
+    PageData["globalColREM"] = col;
+}
+<input type="hidden" id="hdlatitudevaluealltrans" name="hdlatitudevaluealltrans" />
+<input type="hidden" id="hdlongitudevaluealltrans" name="hdlongitudevaluealltrans" />
+<script>
+    var latitudevaluealltrans;
+    var longitudevaluealltrans;
+    function success(data) {
+        
+        let latitude = data.coords.latitude;
+        let longitude = data.coords.longitude;
+        $('#hdlatitudevaluealltrans').val(latitude)
+        $('#hdlongitudevaluealltrans').val(longitude)
+    }
+    if (navigator.geolocation) {
+        window.navigator.geolocation
+            .getCurrentPosition(success, showError);
+    }
+    function showError(error) {
+
+        var urlll = '';
+            $('#lblerrormsg').text('')
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                 //   alert("User denied the request for Geolocation.")
+                    $('#login-error2').text("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                  //  alert("Location information is unavailable.")
+                   //
+                    $('#login-error2').text("Location information is unavailable.")
+                    break;
+                case error.TIMEOUT:
+                  //  alert("The request to get user location timed out.")
+                   //  urlll='@Url.Action("Dashboard")'
+                     $('#login-error2').text("The request to get user location timed out.")
+                    break;
+                case error.UNKNOWN_ERROR:
+                    $('#login-error2').text("An unknown error occurred.")
+                  //  alert("An unknown error occurred.")
+
+                    break;
+        }
+     // location.href = urlll;
+
+    }
+
+
+
+
+</script>

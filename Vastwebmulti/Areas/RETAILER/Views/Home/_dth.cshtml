@@ -1,0 +1,499 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.remmulti
+
+<style>
+
+    .loader {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+</style>
+<div id="dthrchform" class="row" style="padding-left:4px;">
+    <div class="col-md-3 dthrchform-class">
+        <div style="visibility:inherit;">
+            <p id="dthoperator" style="color:#E91E63; font-size:10px; position: absolute;bottom: 30px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;margin-top: 0px;">
+            <div class="form-line">
+                @Html.DropDownList("dthddl", ViewBag.dth as SelectList, "Select Operators", new { id = "dthddl", @class = "form-control", onchange = "dthddltype(this)" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 dthrchform-first">
+        <div style="height:28px;position:absolute;">
+            <p id="dthmessage" style="margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;margin-bottom: 0;padding-top: 8px;text-align:left;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom: 0px;">
+            <div class="" style="margin-top:-1px; height:37px;">
+                <input type="text" id="txtdthcardno" name="txtdthcardno" class="form-control" placeholder="Enter Customer Id (start with 3)" onkeypress="return isNumber(event)" />
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-2 dthrchform-second">
+        <div style="height:28px;position:absolute;">
+            <p id="dthamtmessage" style="margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;padding-top:8px;margin-bottom:0;text-align:left;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="" style="margin-top:-1px; height:37px;">
+                <input type="text" id="txtdthamount" name="txtdthamount" class="form-control" placeholder="Enter Amount" onkeypress="return isNumber(event)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-1 dthrchform-three" id="checkplan" style="display:none;">
+        <div class="form-group" style="margin-bottom:0px;margin-top:0px;">
+            <div class="" style="border-bottom:none;float:left;width:100%;">
+                <a href="#" style="text-decoration:none; font-size:11px;border:1px solid #ff9600 ; padding:11px 4px 11px 4px; color: #ff9600 ;" onclick="getbestViewofferplandth()">Check&nbsp;Plan's</a>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-1 dthrchform-for" id="dthtvviewplan" style="display:none;">
+        <div class="form-group" style="margin-bottom:0px;margin-top:7px;">
+            <div class="" style="border-bottom:none;float:left;width:100%;">
+                <a href="#" id="dthplaan" style="text-decoration:none; font-size:11px;border:1px solid green; padding:11px 4px 11px 4px; color: green;" onclick="getdthviewofferplan()">View&nbsp;Plan's</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-1 dthrchform-five">
+        <div class="form-group" style="margin-bottom:0px;margin-top:-2px;">
+            <div class="form-line" style="border-bottom:none;">
+                <input type="button" id="btn" class="btn bg-blue-grey" value="Continue" style="height:35px; margin-left:-29px;" onclick="getdthcontinuebtn('dthddl')" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loader loaderwww"></div>
+
+<div id="DthmsgBox" style="margin-top:10px;"></div>
+
+  
+
+<table id="confirmDTH" class="for-prepaid" style="width:100%;margin-top:-11px;display:none;">
+    <tr>
+        <th style="width:10%;"></th>
+        <th style="width:30%;">Operator</th>
+        <th style="width:30%;">Recharge to</th>
+        <th style="width:15%;">amount</th>
+        @if (Model.Ispin == true)
+        {
+            <th style="width:15%;">pin</th>
+        }
+
+        <th style="width:15%;">Action</th>
+    </tr>
+    <tr>
+        <td>
+            <button style="padding: 5px 20px;" onclick="backDTH()"><img src="~/AdminDesign/images/back.svg" style="width:18px;" /></button>
+        </td>
+        <td style="font-size: 24px;"><b><span id="showoptdth"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 24px;"><b> <span id="shownumberdth"></span> </b></td>
+        <td style="font-size: 24px;"><b><span id="showamountdth"></span></b></td>
+        @if (Model.Ispin == true)
+        {
+            <td style="font-size: 24px;">
+                <input style=" width: 120px; " type="password"
+                       id="DTHRechargepin"
+                       name="DTHRechargepin"
+                       class="form-control text-center"
+                       placeholder="Enter PIN"
+                       maxlength="6"
+                       autocomplete="off" />
+                <span id="DthpinError"
+                      style="color:red; font-size:13px; display:none; margin-top:5px;">
+                </span>
+            </td>
+        }
+        <td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="DthprocessToPay()">Procces To Pay</button></td>
+
+        
+        @*<td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="DTHrechargeconfirm()">Procces To Pay</button></td>*@
+
+    </tr>
+</table>
+<table id="rechargeconfirmDTH" class="for-prepaid" style="width:100%;margin-top:-11px !important;display:none;">
+    <tr>
+        <th style="width:25%;">Recharge Status</th>
+        <th style="width:37%;">Message</th>
+        <th style="width:11%;">Action</th>
+    </tr>
+    <tr>
+        <td style="font-size: 20px;"><b> <span id="rchstatuschkdth"></span> </b></td>
+        <td class="border-centerbe border-centerbess" style="font-size: 20px;"><b><span id="rchmsgdth"></span></b></td>
+        <td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="RechargeagainDTH()">Recharge Again</button></td>
+    </tr>
+</table>
+
+
+
+<script>
+    var isPinOn = @Model.Ispin.ToString().ToLower();
+
+    function DthprocessToPay() {
+
+        if (isPinOn) {
+
+            var pin = $('#DTHRechargepin').val();
+         
+            if (!pin) {
+                alert('Please enter transaction PIN');
+                $('#DTHRechargepin').focus();
+                return;
+            }
+
+            DTHrechargeconfirm(pin);
+        }
+        else {
+            DTHrechargeconfirm('');
+        }
+    }
+</script>
+
+
+
+<script>
+    function showMsg(msg, type) {
+
+        var color = (type === "success") ? "green" : "red";
+
+        $('#msgBox').html(
+            '<div style="color:' + color + '; font-weight:bold;">' + msg + '</div>'
+        );
+
+        setTimeout(function () {
+            $('#DthmsgBox').html('');
+        }, 5000);
+    }
+</script>
+
+<script src="~/Retailerjavascript/Rechargepaybill/Dth.js"></script>
+<script>
+    j('#dthddl').select2();
+</script>
+<!--select DTH dropdown text for placeholder -->
+<script>
+    function dthddltype(l) {
+        var p = l.options[l.selectedIndex].text;
+        /*call dth function */
+        getdthdropdowntext(p);
+        showdthplanandhideplan(p);
+    }
+</script>
+<script>
+    function backDTH() {
+        $('#showoptdth').text("");
+        $('#shownumberdth').text("");
+        $('#showamountdth').text("");
+        $('#confirmDTH').hide();
+        $('#dthrchform').show();
+    }
+</script>
+<!--dth contiune button javascript-->
+<script>
+    function getdthcontinuebtn(dth) {
+        var e = document.getElementById(dth);
+        var ddldth = e.options[e.selectedIndex].text;
+        var optvalue = e.options[e.selectedIndex].value;
+        var custromerid = $("#txtdthcardno").val();
+        var dthamount = $("#txtdthamount").val();
+        /* call continue btn function */
+        var sts = getdthcontiunebtn(ddldth, custromerid, dthamount);
+
+        if (sts == true) {
+            $('#showoptdth').text(ddldth);
+            $('#shownumberdth').text(custromerid);
+            $('#showamountdth').text(dthamount);
+            $('#confirmDTH').show();
+            $('#dthrchform').hide();
+            $('#DTHCustomerInfo').hide();
+
+            //  Recharge(ddldth, optvalue, custromerid, dthamount, "", "", "", "", "0");
+            event.preventDefault();
+            return false;
+        }
+        else {
+            event.preventDefault();
+            return false;
+        }
+
+    }
+</script>
+
+<script>
+    function DTHrechargeconfirm(pinValue) {
+
+         var e = document.getElementById("dthddl");
+        var ddldth = e.options[e.selectedIndex].text;
+        var optvalue = e.options[e.selectedIndex].value;
+        var custromerid = $("#txtdthcardno").val();
+        var dthamount = $("#txtdthamount").val();
+
+        //     $("#txtdthcardno").val("");
+        //$("#txtdthamount").val("");
+        //if (custromerid != "" && dthamount != "") {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Recharge","Home")",
+                data: { OperatorName: ddldth, OptCode: optvalue, mobileno: custromerid, Amount: dthamount, optional1: "", optional2: "", optional3: "", optional4: "", comm: "", BillRefId: "", Rechargepin: pinValue },
+                cache: false,
+                dataType: 'json',
+                beforeSend: function () {
+                    $('.loader').show();
+                },
+                success: function (result) {
+
+
+                    // 🔴 Clear old PIN error every time
+                    $('#DthpinError').hide().text("");
+
+                    /* 🔴 PIN ERROR — SAME PAGE */
+                    if (result.status && (
+                        result.status === "PIN_REQUIRED" ||
+                        result.status === "INVALID_PIN" ||
+                        result.status === "PIN_NOT_SET")) {
+
+                        $('#DthpinError').text(result.message).show();
+                        $('.loader').hide();
+                        return; // 🚫 STOP ONLY FOR PIN ERROR
+                    }
+
+                    var status = result.Response;
+                    var message = result.Message;
+                    if (status == "GATEWAY") {
+                        window.open(message, "_self");
+                        $('#rchstatuschkdth').text("Pending");
+                        $('#rchmsgdth').text("Please Wait While Redirect The Gateway");
+                    }
+                    else {
+                        $('#rchstatuschkdth').text(status);
+                        $('#rchmsgdth').text(message);
+
+                        $("#txtdthcardno").val("");
+                        $("#txtdthamount").val("");
+                    }
+
+                    $('#confirmDTH').hide();
+                    $('#rechargeconfirmDTH').show();
+                },
+                complete: function () {
+                    $("#remainretailer").load(location.href + " #remainretailer");
+                    $('.loader').hide();
+                                              $.ajax({
+            url: '@Url.Action("showrecentrecharge", "Home")',
+            type: 'GET',
+            dataType: "html",
+            data: { type: "DTH" },
+                success: function (data) {
+                $('#reportchk').html(data);
+            },
+            error: function (data) {
+
+            }
+        });
+                },
+                error: function () {
+                    $("#remainretailer").load(location.href + " #remainretailer");
+                    $('.loader').hide();
+                }
+            })
+       // }
+
+    }
+</script>
+<script>
+    function RechargeagainDTH() {
+        $('#numbershowmobile').text("");
+        $("#txtdthcardno").val("");
+        $("#txtdthamount").val("");
+        j('#dthddl').val("");
+        j('#dthddl').select2().trigger('change');
+        $('#rechargeconfirmDTH').hide();
+        $('#dthrchform').show();
+    }
+</script>
+
+<!--get Dth View Plans-->
+<script>
+    function getdthviewofferplan()
+    {
+        $('.loader').show();
+        var e = document.getElementById("dthddl");
+        optname = e.options[e.selectedIndex].text;
+        optvalue = e.options[e.selectedIndex].value;
+        var textvalue = $("#txtdthcardno").val();
+        //function call
+        var sts = validationbsetoffer(optname, textvalue);
+      if(sts==true)
+        {
+          $('#dthoffertable').html('');
+          $('#airteldthoffertable').html('');
+          $('#Videoconoffertable').html('');
+          $.ajax({
+              url: '@Url.Action("RechargeBestofferplan", "Home")',
+              type: 'GET',
+              dataType: "json",
+              data: { optname: optname, mobileno: textvalue },
+
+              success: function (response) {
+                  $('.loader').hide();
+                  $('#DTHCustomerTbl').empty();
+                  if (optname == "Dish TV") {
+                      var sts = response.status;
+
+
+                      if (sts == "SUCCESS") {
+                          var jsonObj = response.Response;
+
+                          var newRow = "<div class='col-sm-4' style='text-align: left;'>" + "Name :" + jsonObj.SubscriberName + "</br> SubBalance : " + jsonObj.SubsBalance + "</br> Address : " + jsonObj.address + "," + jsonObj.State + "</div>";
+                          newRow += "<div class='col-sm-4' style = 'text-align: left;' > " +
+                              "Activated ON : " + jsonObj.ActivatedOn + "</br> SchemeName : " + jsonObj.SchemeName +  "</div>";
+                            newRow += "<div class='col-sm-4' style = 'text-align: left;' > " +
+                              "Status : " + jsonObj.StatusName + "</br> Payterm Name : " + jsonObj.PaytermName + "</br> Package Price : " + jsonObj.PackagePrice + "</div>";
+
+                          $('#DTHCustomerTbl').append(newRow);
+                          $('#DTHCustomerInfo').css('display', 'block');
+                      }
+                  }
+                  if(optname == "Airtel Digital TV")
+                  {
+                      var sts = response.status;
+
+                          if (sts == "SUCCESS") {
+                          var jsonObj = response.Response;
+
+                          var newRow =
+                              "<div class='col-sm-4' style='text-align: left;'>" +
+                                  "<td>Name :" + jsonObj.name + "</br> Current Balance : " + jsonObj.currentbalance + "</br> valid Till : " + jsonObj.validTill + "</td>"
+                              "</div>"
+
+                              $('#DTHCustomerTbl').append(newRow);
+                              $('#DTHCustomerInfo').css('display', 'block');
+                      }
+                  }
+
+                  if (optname == "Videocon D2H") {
+                      var sts = response.status;
+                      if (sts == "SUCCESS") {
+                          var jsonObj = response.Response;
+
+                          var newRow = "<div class='col-sm-4' style='text-align: left;'>" + "Name :" + jsonObj.customerName + "</br> Recharge DueDate : " + jsonObj.rechargedueDate + "</div>";
+                          newRow += "<div class='col-sm-4' style = 'text-align: left;' > " +
+                          "Monthly Recharge : " + jsonObj.monthlyRecharge + "</br> Customer Status : " + jsonObj.customerStatus +  "</div>";
+
+                          $('#DTHCustomerTbl').append(newRow);
+                          $('#DTHCustomerInfo').css('display', 'block');
+                      }
+                  }
+                  if (optname == "Tata Sky") {
+                      var sts = response.status;
+
+                      if (sts == "SUCCESS") {
+
+                          var jsonObj = response.Response;
+
+                          var newRow = "<div class='col-sm-4' style='text-align: left;'>" + "Name :" + jsonObj.customerName + "</br> Balance : " + jsonObj.balance + "</br> Recharge DueDate : " + jsonObj.rechargedueDate + "</div>"
+                          newRow += "<div class='col-sm-4' style = 'text-align: left;' > " +
+                          "Monthly Recharge : " + jsonObj.monthlyRecharge + "</br> Customer Status : " + jsonObj.customerStatus +  "</div>";
+                          $('#DTHCustomerTbl').append(newRow);
+                          $('#DTHCustomerInfo').css('display', 'block');
+                      }
+                  }
+                  if (optname == "Sun Direct") {
+                      var sts = response.status;
+
+                      if (sts == "SUCCESS") {
+
+                          var jsonObj = response.Response;
+
+                          var newRow = "<div class='col-sm-4' style='text-align: left;'>" + "Name :" + jsonObj.customerName + "</br> Balance : " + jsonObj.balance + "</br> Recharge DueDate : " + jsonObj.rechargedueDate + "</div>"
+                          newRow += "<div class='col-sm-4' style = 'text-align: left;' > " +
+                              "Monthly Recharge : " + jsonObj.monthlyRecharge + "</br> Customer Status : " + jsonObj.customerStatus + "</div>";
+                          $('#DTHCustomerTbl').append(newRow);
+                          $('#DTHCustomerInfo').css('display', 'block');
+                      }
+                  }
+                  if (response.status == 'FAILED') {
+                      $('.loader').hide();
+                      var jsonObj = response.Response;
+                      var newRow = "<div class='col-sm-4' style='text-align: left; color: red;'>" + "Error : " + jsonObj +  "</div>"
+                      $('#DTHCustomerTbl').append(newRow);
+                      $('#DTHCustomerInfo').css('display', 'block');
+                  }
+
+
+                  //if (optname == "Sun Direct") {
+                  //    var sts = response.status;
+
+                  //    if (sts == "1") {
+
+                  //        var jsonObj = response.records;
+
+                  //        var newRow = "<div class='col-sm-4' style='text-align: left;'>" + "Name :" + jsonObj[0].customerName + "</br> Balance : " + jsonObj[0].Balance + "</br> Recharge DueDate : " + jsonObj[0].NextRechargeDate + "</div>"
+                  //        newRow += "<div class='col-sm-4' style = 'text-align: left;' > " +
+                  //            "Monthly Recharge : " + jsonObj[0].MonthlyRecharge + "</br> Customer Status : " + jsonObj[0].status + "</div>";
+                  //        $('#DTHCustomerTbl').append(newRow);
+                  //        $('#DTHCustomerInfo').css('display', 'block');
+
+                  //    }
+                  //}
+
+              },
+              error: function (data) {
+
+              }
+          });
+          return true;
+        }
+         else {
+          return false;
+            }
+
+    }
+</script>

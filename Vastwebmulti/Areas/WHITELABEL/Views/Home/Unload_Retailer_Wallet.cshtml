@@ -1,0 +1,399 @@
+﻿@model Vastwebmulti.Areas.WHITELABEL.Models.Whitelabel_CashDepositeAndBank_Info_VM
+
+<style>
+    .action-design table tr td:last-child button::after{display:none;}
+   .action-design .btn:not(.btn-link):not(.btn-circle) i{top:0px;}
+   
+</style>
+<div class="row clearfix">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+
+            @*<div class="">
+                    <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                        <li class="active" style="color:#9E9E9E; font-size:12px;">WALLET TO BANK TRANSFER REPORT&nbsp;></li>
+                    </ol>
+                </div>*@
+
+            <div class="body" style="padding:0;float:left;width:100%;">
+
+
+                <!-- Static Data Start-->
+                <div class="table-responsive action-design" style="padding: 0px 10px;height: 62vh !important;background:var(--second-bg-color) !important;overflow: auto;">
+                    <table class="table table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>ReQ&nbsp;Status</th>
+                                <th>User&nbsp;Firm</th>
+                                <th>Transfer&nbsp;Type</th>
+                                <th>Bank&nbsp;Account</th>
+                                <th>TF&nbsp;Amount</th>
+                                <th>Charge</th>
+                                <th>Bank&nbsp;RRN</th>
+                                <th>Action&nbsp;&&nbsp;View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Whitelabel_WalletUnloadReport.Count() > 0)
+                            {
+                                foreach (var item in Model.Whitelabel_WalletUnloadReport)
+                                {
+                                    var i = item.Idno;
+                                    var idno = "MNLSuccess";
+                                    idno = idno + i;
+                                    var idno1 = "MNLFailed";
+                                    idno1 = idno1 + i;
+
+                                    var color = ""; var sts = ""; var src = "";
+                                    if (item.Status.ToUpper().Contains("PENDING"))
+                                    {
+                                        color = "#ff9f3a";
+                                        sts = "Pending";
+                                        src = "../../images/reportimage/wall-clock.svg";
+                                    }
+                                    else if (item.Status.ToUpper().Contains("SUCCESS"))
+                                    {
+                                        color = "#2b982b";
+                                        sts = "Success";
+                                        src = "../../images/reportimage/check.svg";
+                                    }
+                                    else if (item.Status.ToUpper().Contains("REJECTED"))
+                                    {
+                                        color = "#fb483a";
+                                        sts = "Rejected";
+                                        src = "../../images/reportimage/close.svg";
+                                    }
+                                    else if (item.Status.ToUpper().Contains("REFUND"))
+                                    {
+                                        color = "#fb483a";
+                                        sts = "Refund";
+                                        src = "../../images/reportimage/close.svg";
+                                    }
+                            <tr>
+                                <td><img src=@src style="font-size: 14px;float: left;width: 20px;background:@color;padding: 5px;border-radius: 50%;" /><p>&nbsp;@sts</p></td>
+                                <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.FirmName)</p></td>
+                                <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.TransferType)</p></td>
+                                <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.BankAccount)</p></td>
+                                <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.Amount)</p></td>
+                                <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.ProcessingCharge)</p></td>
+                                <td><p style="font-size:12px;">@Html.DisplayFor(modelItem => item.BankRRN)</p></td>
+                                <td>
+                                    @if (item.Status.ToUpper().Contains("PENDING"))
+                                    {
+                                        <button type="button" class="btn checks" id="@idno" onclick="ManualSuccessAction('@item.Idno')" title="Manual Success">
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="btn time" onclick="ManualReject('@item.Idno')" title="Manual Reject">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button disabled type="button" class="btn checks" id="@idno" title="Manual Success">
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </button>
+                                        <button disabled type="button" class="btn time" title="Manual Reject">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </button>
+                                    }
+
+                                    <input type="hidden" id="HdIdno" value="0" />
+                                    <button type="button" onclick="Actions('@item.Idno')" class="btn special-iii" style="border:0;background:#ededed;color:#000;padding:2px 12px;border:1px solid #bbb;" data-toggle="modal"> &nbsp;<i class="fa fa-chevron-right tmw-total-color-one fullbodydycolorbg" aria-hidden="true" style="font-size:12px;top:1px;"></i></button>
+                                </td>
+                            </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Static Data End-->
+                <!-- Table for modal -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Manual Success Modal Start -->
+<div class="modal fade Un-rwls-modal" id="ManualSuccessModal" tabindex="-1" role="dialog" aria-labelledby="ManualSuccessModalLabel" aria-hidden="true" style="width:500px; position:absolute; left:406px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Approve Request</h4>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="idNo" name="idNo" class="form-control" style="display:none;" />
+            <input type="text" id="RRN" name="RRN" class="form-control" required="" placeholder="Enter Bank RRN" />
+            <textarea id="txtcomment" name="txtcomment" class="form-control" placeholder="Enter Remark (Optional)"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="button" onclick="ManualAccept()" id="btn" class="btn btn-primary" value="Submit">Submit</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Start -->
+<div class="modal fade Un-rwls-modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4><span id="ActionHeader"></span></h4>
+                <button type="button" class="close" style="float:right;" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="row clearfix">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Request ID</label>
+                                @*<input type="text" class="datas" id="ReqId" readonly />*@
+                                <span class="datas" id="ReqId" readonly>N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Bank Account</label>
+                                <span class="datas" id="bnkAc">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Account Holder Name</label>
+                                <span class="datas" id="AcHldr">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>IFSC Code</label>
+                                <span class="datas" id="Ifcd">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Bank Name</label>
+                                <span class="datas" id="BnkNm">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Amount</label>
+                                <span class="datas" id="Amt">N/A</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="row clearfix">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Charge</label>
+                                <span class="datas" id="chrg">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Pre Remain</label>
+                                <span class="datas" id="PreRm">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Debit Amount</label>
+                                <span class="datas" id="Dbt">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Post Remain</label>
+                                <span class="datas" id="PostRm">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Bank RRN</label>
+                                <span class="datas" id="BnkRrn">N/A</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <label>Date & Time</label>
+                                <span class="datas" id="DtTm">N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--.row-->
+                <!-- Status Field Start -->
+                @*<fieldset id="Manual_SuccessFailed" style="display:none;">
+                        <legend>Status --> Pending</legend>
+                        <div class="row clearfix">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+
+                                <div class="threestatus first">
+                                    <button type="button" class="btn checks" id="Manual-Success" title="Manual Success">
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn time" onclick="ManualReject()" title="Manual Reject">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset id="myApproveRequest" style="display:none">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Approve Request</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" id="idNo" name="idNo" class="form-control" style="display:none;" />
+                                <input type="text" id="RRN" name="RRN" class="form-control" required="" placeholder="Enter Bank RRN" />
+                                <textarea id="txtcomment" name="txtcomment" class="form-control" placeholder="Enter Remark (Optional)"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" onclick="ManualAccept()" id="btn" class="btn btn-primary" value="Submit">Submit</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </fieldset>*@
+                <!-- Status Field End -->
+            </div><!--.modal-body-->
+        </div>
+    </div>
+</div>
+<!-- Modal End -->
+<!-- Script For Loder -->
+<script>
+    $('.btnssl2233').on('click', function () {
+        var $this = $(this);
+        $this.button('loading');
+        setTimeout(function () {
+            $this.button('reset');
+        }, 500);
+    });
+</script>
+
+<script>
+    function Actions(Idno) {
+        
+        $('#HdIdno').val(Idno);
+        $.ajax({
+            url: '@Url.Action("WLActionReport","Home")',
+            type: "POST",
+            data: {
+                Idno: Idno,
+                UserType: "Retailer"
+            },
+            dataType: "json",
+            success: function (data) {
+                $("#exampleModal .modal-body #ReqId").html(data[0].RequestId);
+                $("#exampleModal .modal-header #ActionHeader").html(data[0].FirmName);
+                $("#exampleModal .modal-body #bnkAc").html(data[0].BankAccount);
+                $("#exampleModal .modal-body #AcHldr").html(data[0].accountholder);
+                $("#exampleModal .modal-body #Ifcd").html(data[0].IfscCode);
+                $("#exampleModal .modal-body #BnkNm").html(data[0].BankName);
+                $("#exampleModal .modal-body #Amt").html(data[0].Amount);
+                $("#exampleModal .modal-body #chrg").html(data[0].ProcessingCharge);
+                $("#exampleModal .modal-body #PreRm").html(data[0].RemPre);
+                $("#exampleModal .modal-body #Dbt").html(data[0].Total_Debit);
+                $("#exampleModal .modal-body #PostRm").html(data[0].RemPost);
+                $("#exampleModal .modal-body #BnkRrn").html(data[0].BankRRN);
+            /*************************Start JSON Date Convertion*******************/
+                var MyDate_String_Value = data[0].RequestDate;
+                var value = new Date
+                    (
+                        parseInt(MyDate_String_Value.replace(/(^.*\()|([+-].*$)/g, ''))
+                    );
+                var dat = value.getMonth() +
+                    1 +
+                    "/" +
+                    value.getDate() +
+                    "/" +
+                    value.getFullYear();
+
+            /**********************************End JSON Date Convertion**************/
+                $("#exampleModal .modal-body #DtTm").html(dat);
+
+                //if (data[0].Status == "Pending") {
+                //    $('#Manual_SuccessFailed').css('display', 'block');
+                //    $('#myApproveRequest').css('display', 'none');
+                //}
+                //else {
+                //    $('#Manual_SuccessFailed').css('display', 'none');
+                //    $('#myApproveRequest').css('display', 'none');
+                //}
+                $("#exampleModal").modal("show");
+
+            },
+            error: function (error) {
+                console.log(`Error ${error}`);
+            }
+        });
+    }
+
+</script>
+<script>
+    function ManualAccept() {
+        $.ajax({
+            url: '@Url.Action("AcceptWalletToBank","Home")',
+            type: "POST",
+            data: {
+                idNo: $('#HdIdno').val(),
+                RRN: $('#RRN').val(),
+                txtcomment :$('#txtcomment').val()
+            },
+            dataType: "json",
+            success: function (data) {
+                var responseJson = JSON.parse(data);
+                if (responseJson.status == "Success") {
+                    $("#exampleModal").modal("hide");
+                    //$('#myApproveRequest').css('display', 'none');
+                    $("#ManualSuccessModal").modal("hide");
+                    $.ajax({
+                        url: '@Url.Action("Unload_Retailer_Wallet","Home")',
+                        type: 'POST',
+                        data: { ddlusers: "Retailer", RetailerId: $("#RetailerId").val(), ddlstatus: $("#ddlstatus").val(), txt_frm_date: $('#txt_frm_date').val(), txt_to_date: $('#txt_to_date').val() },
+                        success: function (response) {
+
+                            $('#RetailerSearchList').html(response);
+
+                        }
+                    })
+                }
+                else {
+                    alert(responseJson.Message)
+                }
+            },
+            error: function (error) {
+                console.log(`Error ${error}`);
+            }
+        });
+
+        $('#HdIdno').val('')
+        $('#RRN').val('')
+        $('#txtcomment').val('')
+    }
+
+
+    function ManualReject(Idno) {
+        $('#HdIdno').val(Idno);
+        $.ajax({
+            url: '@Url.Action("RefundWalletToBank","Home")',
+            type: "POST",
+            data: {
+                idNo: $('#HdIdno').val()
+            },
+            dataType: "json",
+            success: function (data) {
+                $("#exampleModal").modal("hide");
+                var responseJson = JSON.parse(data);
+                if (responseJson.status == "Success") {
+                $.ajax({
+                    url: '@Url.Action("Unload_Retailer_Wallet","Home")',
+                    type: 'POST',
+                    data: { ddlusers: "Retailer",RetailerId: $("#RetailerId").val(),ddlstatus: $("#ddlstatus").val(), txt_frm_date: $('#txt_frm_date').val(), txt_to_date: $('#txt_to_date').val() },
+                    success: function (response) {
+
+                    $('#RetailerSearchList').html(response);
+
+
+                    }
+                  })
+                }
+            },
+            error: function (error) {
+                console.log(`Error ${error}`);
+            }
+        });
+
+        $('#HdIdno').val('')
+    }
+
+    $('#Manual-Success').on('click', function () {
+        $('#myApproveRequest').css('display', 'block');
+    });
+
+
+    function ManualSuccessAction(Idno) {
+        $('#HdIdno').val(Idno);
+        $("#ManualSuccessModal").modal("show");
+    }
+</script>

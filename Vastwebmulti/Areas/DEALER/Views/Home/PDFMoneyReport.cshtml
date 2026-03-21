@@ -1,0 +1,162 @@
+﻿@model IEnumerable<Vastwebmulti.Models.money_transfer_report_paging_Result>
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF MONEY report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        thead {
+            display: table-header-group
+        }
+
+        tfoot {
+            display: table-row-group
+        }
+
+        tr {
+            page-break-inside: avoid
+        }
+    </style>
+</head>
+<body>
+    <table cellspacing="0">
+        <thead style="background-color: whitesmoke; display:table-header-group;">
+            <tr>
+                <th>Sr</th>
+                <th style="width:100px;">Status</th>
+                <th>Type</th>
+
+                <th>Beneficiary&nbsp;Account&nbsp;</th>
+                <th>Sender&nbsp;No</th>
+                <th>Net&nbsp;T/F</th>
+                <th>Total&nbsp;Transfer&nbsp;</th>
+                <th>User&nbsp;INC</th>
+                <th>My&nbsp;Pre</th>
+                <th>My&nbsp;InC</th>
+                <th>My&nbsp;Post</th>
+
+                <th>Request&nbsp;Date</th>
+
+
+
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                int sr = 0;
+                foreach (var item in Model)
+                {
+                    sr += 1;
+                    var color = "";
+                    var fontsize = "";
+                    var rchtype = "";
+                    var rchtypeicon = "";
+                    var dmtytpe = "";
+                    var icon = "";
+
+
+                    var sts = item.status;
+                    if (item.status.Contains("Pending"))
+                    {
+                        double difftime = DateTime.Now.Subtract(item.trans_time.Value).TotalMinutes;
+                        if (difftime < 2)
+                        {
+                            sts = "In Process";
+                        }
+                    }
+
+                    <tr>
+                        <td>@sr</td>
+                        <td>
+                            @sts
+
+                            <span style="color:black;font-weight;">@item.frm_name</span>
+
+                        </td>
+                        <td>
+                            @if (item.Trans_type == "IMPS")
+                            {
+
+
+                                <span style="font-size:12px;font-weight:bold;">IMPS</span>
+
+                            }
+                            else if (item.Trans_type == "NEFT")
+                            {
+
+
+                                <span style="font-size:12px;font-weight:bold">NEFT</span>
+
+                            }
+                            else
+                            {
+
+
+                                <span style="font-size:12px;font-weight:bold">Verify</span>
+
+                            }
+                        </td>
+
+                        <td>@item.accountno</td>
+                        <td>@item.senderno</td>
+                        <td>@item.totalamount</td>
+                        <td>
+                            @{
+                                decimal amount = 0;
+                                decimal customerfee = 0;
+                                decimal total = 0;
+                                decimal debit = 0;
+                                decimal remcomm = 0;
+                                if (item.Trans_type.Contains("IMPS_VERIFY"))
+                                {
+                                    amount = Convert.ToDecimal(item.amount);
+                                    customerfee = Convert.ToDecimal(item.rem_comm);
+                                    customerfee = customerfee - amount;
+                                    total = amount + customerfee;
+                                    debit = Convert.ToDecimal(item.rem_comm);
+                                }
+                                else
+                                {
+                                    amount = Convert.ToDecimal(item.amount);
+                                    customerfee = Convert.ToDecimal(item.customer_fee);
+                                    total = amount + customerfee;
+                                    remcomm = Convert.ToDecimal(item.rem_comm);
+                                    debit = amount + remcomm;
+
+                                }
+                            }
+                            @debit
+                        </td>
+
+                        <td>@item.income</td>
+
+                        <td>@item.dlm_remain_pre</td>
+
+                        <td>@item.dlm_income</td>
+
+                        <td>@item.dlm_remain</td>
+
+
+                        @*<td>@item.totalamount</td>*@
+                        <td>@item.response_time</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</body>
+</html>

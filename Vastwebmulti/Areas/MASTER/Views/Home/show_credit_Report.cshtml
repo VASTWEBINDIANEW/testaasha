@@ -1,0 +1,194 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Models.Show_master_credit_report_by_admin_Result>
+@{
+    ViewBag.Title = "show_credit_Report";
+    Layout = "~/Areas/MASTER/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "master").ToList();
+    var favimage = "";
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "master")
+        {
+            favimage = usernname.SingleOrDefault().NickName;
+
+
+        }
+    }
+}
+
+<style>
+
+    @@media screen and (max-width:766px) {
+        .showcreditreport-master .col-md-12 {
+            padding: 0px;
+        }
+
+        .container-fluid.full-master-secondanimation {
+            padding-left: 0;
+        }
+
+        .table-responsive > .table-bordered {
+            border: 1px solid var(--border-color);
+        }
+    }
+
+    @@media screen and (max-width:480px) {
+        .masterladgerclass {
+            width: 100% !important;
+            float: left !important;
+            margin: 10px 0px;
+        }
+
+            .masterladgerclass .col-md-7 {
+                width: 70% !important;
+                float: left;
+            }
+
+            .masterladgerclass .col-md-5 {
+                width: 30% !important;
+            }
+
+            .masterladgerclass .col-md-7 input {
+                width: 100% !important;
+                text-align: center !important;
+            }
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid full-master-secondanimation">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Show Credit Report</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                <li><a href="javascript:void(0);">Basic Setting&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                <li><a href="javascript:void(0);">My Credit</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix showcreditreport-master" style="margin:0px;">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:0px;">
+                <div class="card">
+                    <div class="dealer-none-fourclass" style="float:left;">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:0px;margin-top:0px;padding:0;">
+                            <li class="active" style="color:#555; font-size:14px;font-weight:600;">My CREDIT</li>
+                        </ol>
+                    </div>
+
+                    <div class="col-md-2" style="padding: 0px;float:right; width: auto;padding-left:5px;">
+                        <div class="form-group">
+                            <div style="float:right">
+
+                                <input type="button" id="btnExport" value="Excel" style="margin-left:0px;font-size: 14px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                <input type="button" id="btnPDF" value="PDF" style="margin-left:2px;font-size: 14px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                <button class="white-success-button" style="height:32px;font-size: 14px;padding: 0px 4px;height: 32px;border: 1px solid #b1a6a638;float: left;margin-left: 2px;background: #b1a6a638;" onclick="findtotal()">Total</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 masterladgerclass" style="padding: 0px;float: right;width:auto;">
+                        @using (Html.BeginForm("MasterLedger", "Home", FormMethod.Post))
+                        {
+                            <div class="col-md-7 jjp" style="padding: 0px;float:left;width:auto;padding-right:5px;">
+                                <div class="input-daterange input-group" style="">
+                                    <div class="custom-date-icon ner">
+                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                    </div>
+                                    @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; width: 100% !important;margin-top:0px;height:36px;text-align:center !important;" })
+                                </div>
+                            </div>
+                            <div class="col-md-5" style="padding: 0px;width:auto;float:right;">
+                                <center>
+                                    <button type="submit" class="btn bg-grey waves-effect" style=" background: transparent !important;border: 1px solid #ddd !important;width:100% !important;">
+                                        <i class="fa fa-search" style="top:1px;font-size:16px;color:black;"></i>
+                                        <span style="top:0px;color:black;">Search</span>
+                                    </button>
+                                </center>
+                            </div>
+                        }
+                    </div>
+                    <div class="body" style="margin-top:0px;padding:0px;width:100%;float:left;">
+                        <div class="table-responsive tableseconddes-master" style="position:inherit;overflow:hidden;width:100%;float:left;margin-top:20px;">
+                            <table class="table table-bordered table-striped table-hover " style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>SR.NO</th>
+                                        <th>@favimage&nbsp;Information</th>
+                                        <th>Last&nbsp;Transaction&nbsp;Date</th>
+                                        <th>Last&nbsp;Transaction&nbsp;Type</th>
+                                        <th>Live&nbsp;Balance</th>
+                                        <th>Current&nbsp;Outstanding</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ int i = 1;}
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>
+                                                @if (item.FarmName == null)
+                                                {
+                                                    @item.SuperstokistName
+                                                }
+                                                else
+                                                {
+                                                    @item.FarmName
+                                                }
+                                            </td>
+                                            <td>@item.RechargeDate</td>
+                                            <td>@item.bal_type</td>
+                                            <td>@item.remainsuperafter</td>
+                                            <td>@item.cr</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+               $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+
+
+        });
+</script>

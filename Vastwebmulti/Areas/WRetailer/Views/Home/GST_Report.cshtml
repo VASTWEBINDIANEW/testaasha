@@ -1,0 +1,363 @@
+﻿@model IEnumerable<Vastwebmulti.Models.GST_Report_Retailer_Result>
+@{
+    ViewBag.Title = "GST_Report";
+    Layout = "~/Areas/WRetailer/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Areas/RETAILER/Blinking text/Blinking.css" rel="stylesheet" />
+
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+</style>
+<section class="content" style="margin:90px 0px 0px 0px; overflow-x:hidden;">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card" style="margin-top:2px;">
+                    <div class="">
+                        <div class="col-md-2">
+                            <div class="form-group" style="margin-top:10px;">
+                                <ol class="breadcrumb breadcrumb-col-blue-grey">
+                                    <li class="active" style="color:#b7b7b7; font-weight:700;font-size:20px;margin-top:-15px;">GST</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group" style="padding-top:4px;">
+                                    @if (ViewBag.IsFormSubmmited != null && ViewBag.IsFormSubmmited.Status == "Rejected")
+                                    {
+                                        <input class="form-control flash" id="balance" name="balance" style="border:1px solid #c7c2c2; background-color:white;" type="text" readonly="" value="GST  NOT ACCEPTED YET!">
+                                        <div class="input-group-addon" style="background:#dddddd; color:white;border:1px solid #c7c2c2;border-right:1px solid ; padding-left:5px;">
+                                            <span onclick="Download_diclarationform()" title="Click To Download Form" style="color:black;">
+                                                <i class="fa fa-download  flash" style="padding-left:3px; font-size:20px;color:black;"></i>Download
+                                            </span>
+                                        </div>
+                                        <div class="input-group-addon" style="background:#dddddd; color:white;border:1px solid #c7c2c2;">
+                                            <button type="submit" style="margin-top:-3px; margin-left:11px; background:none;border:none; " title="Upload GST Form" data-toggle="modal" data-target="#defaultModal">
+                                                <i class="material-icons" style="color:green;">file_upload</i>
+                                                <span style="top:-4px;color:black;">Upload</span>
+                                            </button>
+                                        </div>
+                                    }
+                                    else if (ViewBag.IsFormSubmmited != null && ViewBag.IsFormSubmmited.Status == "Accepted")
+                                    {
+                                        <input class="form-control flash" id="balance" name="balance" style="border:1px solid #c7c2c2; background-color:white;" type="text" readonly="" value="CONGRATS! DECLARATION FORM ACCEPTED.!">
+                                        <div class="input-group-addon" style="background:#dddddd; color:white;border:1px solid #c7c2c2;border-right:1px solid ; padding-left:5px;">
+                                            <span onclick="Download_diclarationform()" title="Click To Download Form" style="color:black;">
+                                                <i class="fa fa-download  flash" style="padding-left:3px; font-size:20px;color:black;"></i>Download
+                                            </span>
+                                        </div>
+                                        <div class="input-group-addon" style="background:#dddddd; color:white;border:1px solid #c7c2c2;">
+                                            <button type="submit" style="margin-top:-3px; margin-left:11px; background:none;border:none; " title="Upload GST Form" data-toggle="modal" data-target="#defaultModal">
+                                                <i class="material-icons" style="color:green;">file_upload</i>
+                                                <span style="top:-4px;color:black;">Upload</span>
+                                            </button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control flash" id="balance" name="balance" style="border:1px solid #c7c2c2; background-color:white;" type="text" readonly="" value="GST NOT AVAILABLE !">
+                                        <div class="input-group-addon" style="background:#dddddd; color:white;border:1px solid #c7c2c2;border-right:1px solid ; padding-left:5px;">
+                                            <span onclick="Download_diclarationform()" title="Click To Download Form" style="color:black;">
+                                                <i class="fa fa-download  flash" style="padding-left:3px; font-size:20px;color:black;"></i>Download
+                                            </span>
+                                        </div>
+                                        <div class="input-group-addon" style="background:#dddddd; color:white;border:1px solid #c7c2c2;">
+                                            <button type="submit" style="margin-top:-3px; margin-left:11px; background:none;border:none; " title="Upload GST Form" data-toggle="modal" data-target="#defaultModal">
+                                                <i class="material-icons" style="color:green;">file_upload</i>
+                                                <span style="top:-4px;color:black;">Upload</span>
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <div class="form-line" style="padding-top:0px; border-bottom:none;">
+
+                                    @using (Html.BeginForm("GST_Invoicing", "Home", FormMethod.Post, new { target = "_blank" }))
+                                    {
+                                        @Html.DropDownList("month", (IEnumerable<SelectListItem>)ViewBag.Months, "Month", new { required = "required", @style = "height:32px;border:1px solid #c7c2c2;" })
+                                        <button type="submit" class="fa fa-file-pdf-o fa-2x" style="background:transparent;border:none;
+color:green;" title="Click To Download Invoice Report" />
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                        @using (Html.BeginForm("GST_Report", "Home", FormMethod.Post))
+                        {
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-bottom:0px;">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-exchange"></i>
+                                        </span>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <center>
+                                        <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;">
+                                            <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                            <span style="top:-2px;color:black;">Search</span>
+                                        </button>
+                                    </center>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-28px;">
+                <div class="card" style="margin-top:2px;">
+                    <div class="">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <a href="@Url.Action("Dashboard","Home")" class="btn" style="margin-top:3px; margin-left:-5px;border:1px solid #dddddd;">
+                                    <i class="material-icons" style="top:3px;">arrow_back</i>
+                                    <span style="top:-4px;">Back To Dashborad</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <div class="form-line" style="padding-top:10px; border-bottom:none;">
+                                    <span class="label bg-pink" style="padding:12px 9px 7px 9px;border-radius:5%;"><i class="fa fa-unlock" style="font-size:23px;"></i>&nbsp;&nbsp;<span style="font-size:14px;">@ViewBag.OpnBal</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <div class="form-line" style="padding-top:10px; border-bottom:none;">
+                                    <span class="label bg-light-blue" style="padding:12px 9px 7px 9px;border-radius:5%;"><i class="fa fa-shopping-cart " style="font-size:23px;"></i>&nbsp;&nbsp;<span style="font-size:14px;">@ViewBag.Purchase</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <div class="form-line" style="padding-top:10px; border-bottom:none;">
+                                    <span class="label bg-teal" style="padding:12px 9px 7px 9px;border-radius:5%;"><i class="fa fa-lock" style="font-size:23px;"></i>&nbsp;&nbsp;<span style="font-size:14px;">@ViewBag.CloseBal</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <span onclick="GotoPDF()" data-toggle="tooltip" title="Click To Download PDF"><i class="fa fa-file-pdf-o" style="color:red; font-size:31px;padding-top:6px;"></i></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="" style="margin-top:-20px;">
+                        <div class="body table-responsive " style="position:inherit; padding:12px;">
+                            <table class="table table-bordered table-striped   ">
+                                <thead class="navbar" style="color:white;position:initial;">
+                                    <tr>
+                                        <th>SR</th>
+                                        <th>OperatorName</th>
+                                        <th>Sell</th>
+                                        <th>SellRate</th>
+                                        <th>Commission</th>
+                                        @if (ViewBag.CloseBal == "ISGST")
+                                        {
+                                            <th>IGST</th>
+                                        }
+                                        else
+                                        {
+                                            <th>CGST</th>
+                                            <th>SGST</th>
+                                        }
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    @{int i = 1;}
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td style="">@Html.DisplayFor(modelItem => item.operator_Name)</td>
+                                            <td style="">@Html.DisplayFor(modelItem => item.Sell)</td>
+                                            <td style="">@Html.DisplayFor(modelItem => item.RetailerSellRate)</td>
+                                            <td style="">@Html.DisplayFor(modelItem => item.RetailerSellAmt)</td>
+                                            @if (ViewBag.CloseBal == "ISGST")
+                                            {
+                                                <td style="">@Html.DisplayFor(modelItem => item.IGST)</td>
+                                            }
+                                            else
+                                            {
+                                                <td style="">@Html.DisplayFor(modelItem => item.CGST)</td>
+                                                <td style="">@Html.DisplayFor(modelItem => item.SGST)</td>
+                                            }
+                                        </tr>
+                                        i++;
+                                    }
+                                </tbody>
+                                <tfoot class="" style="background-color:whitesmoke;">
+                                    <tr style="font-weight:bold;">
+                                        <td></td>
+                                        <td style="">Total</td>
+                                        <td style="">@Model.Sum(a => a.Sell)</td>
+                                        <td style="">@Model.Sum(modelItem => modelItem.RetailerSellRate)</td>
+                                        <td style="">@Model.Sum(modelItem => modelItem.RetailerSellAmt)</td>
+                                        @if (ViewBag.CloseBal == "ISGST")
+                                        {
+                                            <td style="">@Model.Sum(modelItem => modelItem.IGST)</td>
+                                        }
+                                        else
+                                        {
+                                            <td style="">@Model.Sum(modelItem => modelItem.CGST)</td>
+                                            <td style="">@Model.Sum(modelItem => modelItem.SGST)</td>
+                                        }
+
+                                    </tr>
+
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Upload Model -->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;color:white;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">GST Declaration Form Submission</h4>
+            </div>
+            @using (Html.BeginForm("GST_Report", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Form</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;background:#dedddd;">
+                                            <input type="file" id="file" name="file" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Scripts/PageScript/Retailer/FundRecive.js"></script>
+
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<!--Calander Javascript-->
+<script>
+    $(document).ready(function () {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+     if ('@ViewBag.Message' != null && '@ViewBag.Message' == "Success") {
+       swal("Wow!", " Form Uploaded Successfully.", "success");
+        }
+        else if ('@ViewBag.Message' != null && '@ViewBag.Message' == "Faild") {
+              swal("Oops!", " Faild to Upload Form!", "error");
+        }
+    });
+</script>
+
+<!--Download Declartion form -->
+<script>
+    function Download_diclarationform()
+    {
+        var url = '@Url.Action("Download_Declaration_form", "Home")';
+        window.open(url,'_blank');
+    }
+</script>
+
+<!--Generate PDF iNVOICING-->
+<script type="text/javascript">
+                   function GotoPDF() {
+                          var fromdate = $('#txt_frm_date').val();
+                       var todate = $('#txt_to_date').val();
+
+                       if (fromdate != "") {
+                           var url = '@Url.Action("GenerateGST_PDF", "Home")?frm_date=' + fromdate + '&to_date= ' + todate + '';
+                           window.open(url, '_blank');
+                       }
+                   }
+</script>
+

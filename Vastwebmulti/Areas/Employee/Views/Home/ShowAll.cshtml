@@ -1,0 +1,303 @@
+﻿@model IEnumerable<Vastwebmulti.Models.clear_dispute_list_Result>
+@{
+    ViewBag.Title = "ShowAll";
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .form-control-label{text-align:left;}
+    .form-control-label label {
+    margin: 0px;
+    border: 1px solid #dddddd;
+    border-right: 0px;
+    height: 34px;
+    padding: 8px 0px;
+    width: 100%;
+    text-align: left;
+    padding-left: 5px;
+    font-size: 12px;
+    background: #f5f5f5;
+}
+    .form-group {
+        margin-bottom:0px;
+    }
+</style>
+<section class="content">
+
+    <!--Four-Design-Admin-page-Header-Section-Start-->
+    @*<div class="page-title-box-fourde-admin">
+        <div class="container-fluid" style="height:auto !important;min-height:inherit !important;">
+            <h3>Show All</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right" style="margin:0px;"></i></a></li>
+                <li><a href="javascript:void(0);">Dispute's&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Show All</a></li>
+            </ul>
+        </div>
+    </div>*@
+    <!--Four-Design-Admin-page-Header-Section-End-->
+
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:33px;">
+            <div class="card">
+
+                <div class="body" style="margin-top:-32px;">
+
+                    <table id="example1" class="table table-bordered" cellspacing="0" style="width:100%;background: #f5f5f5;">
+                        <thead style="background-color:whitesmoke;">
+                            <tr>
+                                <th>User's&nbsp;Information</th>
+                                <th>Port/API</th>
+                                <th>Consumer&nbsp;No.</th>
+                                <th>Provider</th>
+                                <th>Req&nbsp;Date</th>
+                                <th>Amount</th>
+                                <th>Transition&nbsp;ID </th>
+                                <th>Aciton</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var color = "#fff";
+                                var fo = "";
+                                var sts = item.Rstaus;
+                                if (sts == "RESEND")
+                                {
+                                    color = "blue";
+                                }
+                                else if (sts.ToUpper().Contains("FAILED"))
+                                {
+                                    color = "red";
+                                }
+                                else if (sts.ToUpper().Contains("SUCCESS"))
+                                {
+                                    color = "green";
+                                }
+                                else if (sts == "Request Sent")
+                                {
+                                    color = "#A4A4A4";
+                                }
+                                else if (sts == "Request Send")
+                                {
+                                    color = "#000000";
+                                }
+                                else
+                                {
+                                    color = "#000500";
+                                }
+                                if (item.idno == item.newidd)
+                                {
+                                    color = "#ff710a";
+                                    fo = "normal";
+                                }
+                                <tr>
+                                    <td style="color:@color; font-weight:@fo;">@item.Roles&nbsp;⇒&nbsp;@item.Frm_Name</td>
+                                    <td style="color:@color; font-weight:@fo;">@Html.DisplayFor(modelItem => item.portno)</td>
+                                    <td style="color:@color; font-weight:@fo;">@Html.DisplayFor(modelItem => item.Mobile)</td>
+                                    <td style="color:@color; font-weight:@fo;">@Html.DisplayFor(modelItem => item.operator_Name)</td>
+                                    <td style="color:@color; font-weight:@fo;">
+                                        @String.Format("{0:dd-MMM HH:mm:ss}", item.Rch_time)
+                                    </td>
+
+                                    <td style="color:@color; font-weight:@fo;">@Html.DisplayFor(modelItem => item.amount) </td>
+                                    <td style="color:@color; font-weight:@fo;">@Html.DisplayFor(modelItem => item.OPt_id)</td>
+                                    <td style="color:@color; font-weight:@fo;">
+                                        @if (item.idno == item.newidd)
+                                        {
+                                            <a data-toggle="modal" data-target="#refund-modal" onclick="refundshow('@item.idno')" class="btn" style="background-color: transparent; float: left; color: orange; font-weight: bold; font-size: 14px;" title="Refund Dispute">
+                                                Refund
+                                            </a>
+
+                                            <a id="but" onclick="showdata('@item.idno')" class="btn" style="background-color: transparent; float: right; color: red; font-weight: bold; font-size: 14px;" data-toggle="modal" title="Rejecte Dispute" data-target="#add-modal">
+                                                Reject
+                                            </a>
+
+                                        }
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+<!--This Popup is Rejected -->
+<div class="modal fade" id="add-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="margin:0px;float:right;width:50%;margin-top:63px;">
+        <div class="modal-content">
+           
+            @using (Html.BeginForm("diputerejected", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px; padding:5px;">
+                    <div class="body">
+                        @Html.Hidden("idno", new { idno = "idno" })
+
+                        <form>
+                            
+                            <div class="row clearfix">
+                                <div class="col-md-4" style="padding-right:0px;">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-5 form-control-label" style="padding-right:0px;">
+                                            <label for="email_address_2">Reason</label>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7" style="padding-left:0px;">
+                                            <div class="form-group">
+                                                <div class="" style="border:1px solid #c7c2c2;">
+                                                    <input type="text" id="disputereq" name="disputereq" class="form-control" value="@ViewBag.dis" readonly="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5" style="padding-right:0px;">
+                                    <div class="row clearfix">
+                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-5 form-control-label" style="padding-right:0px;">
+                                            <label for="email_address_2">Enter Response</label>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7" style="padding-left:0px;">
+                                            <div class="form-group">
+                                                <div class="" style="border:1px solid #c7c2c2;">
+                                                    <textarea type="text" id="txtregion" name="txtregion" class="form-control" required="" placeholder="Enter Dispute Reject Comment" style="height:32px;"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                <button type="submit" class="btn fullbodydycolorbg waves-effect" style="  height:34px;">
+                                    <span style="color:#fff;">Save Change</span>
+                                </button>
+                                </div>
+                                <div class="col-md-1">
+                                <button type="button" class="btn bg-grey waves-effect" style="height:34px;color:#000;" data-dismiss="modal">
+                                      ✕
+                                   </button>
+                                </div>
+                            </div>
+                          
+                         
+                      
+
+
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--This Popup is Refund-->
+<div class="modal fade" id="refund-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="margin:0px;float:right;width:40%;margin-top:63px;">
+        <div class="modal-content">
+           
+            @using (Html.BeginForm("DisputeFailed", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;padding:5px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-md-9" style="padding-right:0px;">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-5 form-control-label" style="padding-right:0px;">
+                                            <label for="email_address_2">Reject Reason</label>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7" style="padding-left:0px;">
+                                            <div class="form-group">
+                                                <div class="" style="border:1px solid #c7c2c2;">
+                                                    @Html.TextBox("txtrefidno", "", new { style = "display:none;" })
+                                                    @Html.DropDownList("ddl_refund", new List<SelectListItem>
+                                              {
+                                              new SelectListItem{ Text="Manual Failed",Value="Manual Failed"},
+                                              new SelectListItem{ Text="Failed Due To Invalid Choice",Value="Failed Due To Invalid Choice"},
+                                              new SelectListItem{Text="Network Down",Value="Network Down"},
+                                              new SelectListItem{Text="Unsupported Network",Value="Unsupported Network"},
+                                              new SelectListItem{Text="Network issue",Value="Network issue"},
+                                              new SelectListItem{Text="Insufficient Fund ",Value="Insufficient Fund"}
+                                             }, new { @class = "form-control input-sm" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn fullbodydycolorbg waves-effect" style="  height:34px;">
+                                        <span style="color:#fff;">Submit</span>
+                                    </button>
+                                </div>
+                                <div class="col-md-1" style="padding-left:0px;">
+                                    <button type="button" class="btn bg-grey waves-effect" style="height:34px;color:#000;" data-dismiss="modal">
+                                        ✕
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script>
+    function refundshow(idno) {
+     
+        $("#txtrefidno").val(idno);
+    }
+</script>
+@*<script>
+    $(document).ready(function () {
+
+        var succ = '@TempData["success"]';
+
+        if (succ != null && succ != "") {
+            if (succ.includes("Successfully")) {
+                swal("Good job!", succ, "success");
+            }
+            else {
+                swal("Oops!", succ, "error");
+            }
+        }
+    });
+</script>*@
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print'
+            ]
+        });
+    });
+</script>

@@ -1,0 +1,154 @@
+﻿@model Vastwebmulti.Areas.RETAILER.ViewModels.ProductDetails
+
+
+
+
+
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card page-header-third">
+                <div class="header">
+                    <div class="">
+                        @using (Html.BeginForm("Index", "ECommerce"))
+                        {
+                            <div class="col-md-7" style="padding:0;">
+                                <div class="input-group">
+                                    <div class="">
+                                        <input type="text" class="form-control" name="txtSearch" id="txtSearch" placeholder="Search for products, brands and more" style="border:1px solid #2118180f; padding-left:14px;">
+                                    </div>
+
+                                    <span class="input-group-addon">
+                                        <button type="submit" id="btnSearchSubmit" class="btn btn-default waves-effect" style="margin-top: -6px;height: 34px;box-shadow: none;border: 1px solid #2118180f;">
+                                            <i class="material-icons" style="top:2px; color:#2874f0; font-weight:700;">search</i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                        <div class="col-md-2">
+                            <div class="info-box" onclick="javascript: location.href = '@Url.Action("viewCart")'" style="margin-bottom:0px;height:34px;">
+                                <div class="icon bg-red">
+                                    <i class="material-icons" style="font-size: 29px;line-height: 35px;">shopping_cart</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top:-4px; font-size:11px;">CART ITEMS</div>
+
+                                    @if (Model.itemsInCart > 0)
+                                    {
+                                        var totalcart = Model.itemsInCart;
+                                        <div class="number count-to" style="text-align: center; font-size:11px;">@totalcart</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="number count-to" style="text-align: center; font-size:11px;">0</div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <center>
+                                <a onclick="javascript: location.href = '@Url.Action("Transaction","ECommerce")'" class="btn bg-grey waves-effect" style=" margin-left: -3px; height: 34px; display: flex; align-items: center; justify-content: space-around;">
+                                    <i class="fa fa-search" style="top:1px;font-size:16px;color:black;"></i>
+                                    <span style="top:0px;color:black;">Transactions History</span>
+                                </a>
+                            </center>
+
+                        </div>
+                    </div>
+                
+
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" title="Sort By">
+                                <i class="material-icons" style="font-size:36px;">more_vert</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a href="@Url.Action("Index",new { SortBy = "Date"})" class="waves-effect waves-block">Sort by New</a></li>
+                                <li><a href="@Url.Action("Index",new { SortBy = "PriceLow"})" class="waves-effect waves-block">Sort by Low Price</a></li>
+                                <li><a href="@Url.Action("Index",new { SortBy = "PriceHigh"})" class="waves-effect waves-block">Sort by High Price</a></li>
+                                <li>@*<a href="javascript:void(0);" class="waves-effect waves-block">sort by ,filter by etc.</a>*@</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card page-header-third" style=" margin-top: 10px;">
+                <div class="header">
+                    <h2>
+                        @if (Model.CataTitle != null && !string.IsNullOrWhiteSpace(Model.CataTitle))
+                        {
+                            <span id="topProduct">
+                                @Model.CataTitle
+                            </span>
+                        }
+                        else
+                        {
+                            <span id="topProduct">
+                                Top Products
+                            </span>
+                        }
+
+                    </h2>
+
+                </div>
+                <div class="body">
+                    <div class="row ">
+
+                        @if (Model.lstProducts != null && Model.lstProducts.Count > 0)
+                        {
+                            foreach (var product in Model.lstProducts)
+                            {
+                                <div class="col-sm-6 col-md-3  ">
+                                    <div class="thumbnail">
+                                        <a href="@Url.Action("ProductView",new { id = product.ProductID,type = "show"})" target="_blank">
+                                            <div class="=image">
+                                                <img class="object-fit_scale-down" src="@Url.Content("~" + product.Photo)" />
+
+                                            </div>
+                                        </a>
+                                        <div class="caption" style="text-align:center;">
+                                            <h3 class="stringTrucateWithEllipsis">@product.Name</h3>
+                                            <p class="stringTrucateWithEllipsis" style="text-align:justify;">
+                                                @product.ShortDescription
+                                            </p>
+                                            <p style="text-align:left;">
+                                                <span style="text-decoration:line-through;">MRP : ₹&nbsp;@product.ListPrice</span>
+                                            </p>
+
+                                            <p style="text-align:left; margin-top:-9px;"> Price : ₹&nbsp;<span style="color:black; font-weight:600;">@product.StandardPrice</span> </p>
+                                            <p style="text-align:left; margin-top:-9px;"> Gst Charge :&nbsp;<span style="color:black; font-weight:600;">@product.GST</span>&nbsp;%</p>
+                                            @{
+                                                decimal totalstandprice = product.StandardPrice;
+                                                decimal totalgst = (product.StandardPrice * product.GST) / (100 + product.GST);
+                                            }
+
+                                            <p style="text-align:left; margin-top:-9px;"> Total&nbsp;Pay&nbsp;Amount : ₹&nbsp;<span style="color:black; font-weight:600;">@string.Format("{0:0.0#}", (totalstandprice + totalgst))</span> </p>
+                                            <p>
+                                                <a href="@Url.Action("ProductView",new { id = product.ProductID ,type = "Addcartitem"})" target="_blank" class="btn bg-grey waves-effect" role="button">
+                                                    <span><i class="material-icons">add_shopping_cart</i></span><spna style="color:black;"> Add to Cart</spna>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            @Html.Partial("NoData")
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+

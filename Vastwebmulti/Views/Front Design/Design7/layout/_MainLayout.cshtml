@@ -1,0 +1,1036 @@
+﻿<!DOCTYPE html>
+@using Vastwebmulti.Models;
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>@ViewBag.compnay</title>
+    @{
+        var favimage = "";
+        VastwebmultiEntities db2 = new VastwebmultiEntities();
+        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+            }
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var admindetail = db2.Admin_details.ToList();
+        var mailid = admindetail.SingleOrDefault().email;
+        var mobile = admindetail.SingleOrDefault().mobile;
+        var Address = admindetail.SingleOrDefault().Address;
+        var Firm_Name = admindetail.SingleOrDefault().Companyname;
+        var SupportMail = admindetail.SingleOrDefault().email1;
+        var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
+        var PinCode = admindetail.SingleOrDefault().pincode;
+
+        int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
+        int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
+        var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
+        var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+
+        var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+        var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+        var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+
+    }
+
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/fonticons.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/fonts/stylesheet.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/jquery.fancybox.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/plugins.css" />
+    <link rel="stylesheet" href="~/MainFrontDesign/css/style.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/responsive.css" />
+    <link href="~/CSS/model.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/slick.css" rel="stylesheet" />
+
+
+    <link href="~/MainFrontDesign/css/Custom-style.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+    <script src="~/MainFrontDesign/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+    }
+    @{
+        var selectedcolor = "";
+        var menucolor = "";
+        VastwebmultiEntities db1 = new VastwebmultiEntities();
+        var allcolor = db1.tblMenuColors.ToList();
+        if (allcolor.Count > 0)
+        {
+            selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+            menucolor = allcolor.SingleOrDefault().MenuColor;
+        }
+        else
+        {
+            selectedcolor = "Green";
+            menucolor = "White";
+        }
+
+        //var selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+        //var menucolor = allcolor.SingleOrDefault().MenuColor;
+    }
+
+    <style>
+        .new-one-flex {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .new-header-one ul li a {
+            text-transform: capitalize;
+            font-size: 16px;
+            color: #333;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 400;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .logo-new-one img {
+            width: 125px;
+        }
+
+        .onefootertitle {
+            color: #111;
+            font-family: 'Playfair Display', serif !important;
+            font-size: 30px;
+            text-transform: capitalize;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+
+        .footer-link li a, .footer-link li i {
+            text-decoration: none !important;
+            color: #333;
+            font-size: 17px;
+            letter-spacing: 2px;
+        }
+
+        .footer-link li a {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .footer-link li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 45px;
+        }
+
+            .footer-link li i {
+                background: #333;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--main-front-bg-lcolor);
+                margin-right: 0;
+                position: absolute;
+                left: 0;
+                top: 0;
+                font-size: 14px;
+                font-style: normal;
+            }
+
+        .onefootertitle::after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 2px;
+            background: var(--main-front-bg-rcolor);
+            margin-top: 10px;
+        }
+
+        .footer-link-second li {
+            display: block;
+        }
+
+            .footer-link-second li strong {
+                display: block;
+                color: #333;
+                font-size: 18px;
+                font-weight: 500;
+                letter-spacing: 1px;
+                margin-bottom: 10px;
+            }
+
+            .footer-link-second li span {
+                font-size: 13px;
+                color: #333;
+                letter-spacing: 1px;
+            }
+
+        .footer-one .footer-link li {
+            margin-bottom: 30px;
+        }
+
+        .footer-link li * {
+            transition: all .4s linear;
+        }
+
+        .footer-link li:hover span, .footer-link li:hover strong, .footer-link li:hover a {
+            color: #fff;
+        }
+
+        .footer-link li:hover i {
+            background: #fff;
+        }
+
+        .one-footer-section {
+            padding: 75px 0;
+        }
+
+        .end-footer li a {
+            color: #333;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 15px;
+        }
+
+        .end-footer li {
+            display: inline-block;
+            padding-right: 10px;
+        }
+
+        .new-header-one .nav.navbar-nav.navbar-right.responsivemenu-nav li, .new-header-one .nav.navbar-nav.navbar-right.responsivemenu-nav li a {
+            background: transparent !important;
+            transition: all .4s linear;
+        }
+
+            .new-header-one .nav.navbar-nav.navbar-right.responsivemenu-nav li a:hover,
+            .new-header-one .nav.navbar-nav.navbar-right.responsivemenu-nav li.active a {
+                color: var(--main-front-bg-lcolor);
+            }
+
+        .oneheader-class {
+            width: 100%;
+            float: left;
+        }
+
+            .oneheader-class.fixedoneadd {
+                position: fixed;
+                top: 0;
+                z-index: 9999;
+                background: rgba(255, 255, 255, 0.9);
+            }
+
+                .oneheader-class.fixedoneadd .new-header-one {
+                    padding-top: 4px !important;
+                    padding-bottom: 4px !important;
+                    min-height: inherit;
+                    box-shadow: 0 1px 3px -1px #555;
+                }
+
+        .oneheader-class {
+            background: #fff;
+        }
+
+        .responsivemenu {
+            transition: all .4s linear;
+            border: 0;
+            background: transparent;
+        }
+
+            .responsivemenu span {
+                width: 20px;
+                height: 2px;
+                background: #333;
+                display: block;
+                margin-bottom: 6px;
+                transition: all .4s linear;
+                float: right;
+            }
+
+                .responsivemenu span:last-child {
+                    margin-bottom: 0px;
+                }
+
+        .responsivemenu-show span {
+            transform: rotate(45deg);
+        }
+
+            .responsivemenu-show span:nth-child(3) {
+                transform: rotate(-45deg);
+                position: absolute;
+                top: 13px;
+                right: 0;
+            }
+
+            .responsivemenu-show span:nth-child(1) {
+                position: absolute;
+                top: 13px;
+                right: 0;
+            }
+
+            .responsivemenu-show span:nth-child(2) {
+                transform: translate(602%);
+            }
+
+        .responsivemenu {
+            float: right;
+        }
+
+        .oneheader-class .container-fluid.new-header-one.navbar.navbar-collapse .col-md-12.new-one-flex .navbar .nav.navbar-nav.navbar-right.responsivemenu-navnewde li a, .oneheader-class .container-fluid.new-header-one.navbar.navbar-collapse .col-md-12.new-one-flex .navbar .nav.navbar-nav.navbar-right.responsivemenu-navnewde li {
+            background: transparent !important;
+            transition: all .4s linear;
+        }
+
+            .oneheader-class .container-fluid.new-header-one.navbar.navbar-collapse .col-md-12.new-one-flex .navbar .nav.navbar-nav.navbar-right.responsivemenu-navnewde li a:hover,
+            .oneheader-class .container-fluid.new-header-one.navbar.navbar-collapse .col-md-12.new-one-flex .navbar .nav.navbar-nav.navbar-right.responsivemenu-navnewde li.active a {
+                color: var(--main-front-bg-lcolor) !important;
+            }
+
+        .helepopo-newdesign h2.help-foot-head {
+            font-family: 'Playfair Display', serif !important;
+            font-size: 30px;
+            text-transform: capitalize;
+            font-weight: 700;
+            color: #fff;
+            background: var(--main-front-bg-lcolor);
+            border: 0;
+            margin-bottom: 10px;
+            padding: 8px 15px;
+        }
+
+        .helepopo-newdesign .term-pop-close {
+            color: #fff;
+            opacity: 1;
+            right: 0;
+            top: 0px;
+            padding: 14px 15px;
+            transition: all .4s linear;
+        }
+
+            .helepopo-newdesign .term-pop-close:hover {
+                color: #333;
+                background: #fff;
+            }
+
+        .helepopo-newdesign {
+            z-index: 999999999;
+        }
+
+            .helepopo-newdesign h3 strong {
+                display: block;
+                color: #333;
+                font-size: 18px;
+                font-weight: 500;
+                letter-spacing: 1px;
+            }
+
+            .helepopo-newdesign .term-pop-in {
+                top: 0;
+                padding: 0px;
+            }
+
+            .helepopo-newdesign .helpcontentclass {
+                padding: 15px;
+                padding-top: 0px;
+            }
+
+            .helepopo-newdesign .term-pop-in {
+                overflow: auto;
+            }
+
+
+        @@media screen and (max-width:991px) {
+            .responsivemenu {
+                display: block !important;
+            }
+
+            .responsivemenu-navnewde {
+                transform: translateX(281%);
+                transition: all .4s linear;
+                opacity: 0;
+            }
+
+            .responsivemenu.responsivemenu-show ~ .responsivemenu-navnewde {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            .responsivemenu-navnewde {
+                position: fixed;
+                top: 51px;
+                right: 0;
+                background: #fff;
+                z-index: 99;
+                width: 100%;
+            }
+
+                .responsivemenu-navnewde li {
+                    display: block;
+                    float: none;
+                }
+
+            .logo-new-one img {
+                width: 80px;
+            }
+
+            .oneheader-class .new-header-one {
+                padding: 5px 40px !important;
+                min-height: 51px !important;
+            }
+
+            .responsivemenu {
+                position: relative;
+                top: 12px;
+            }
+
+            .responsivemenu {
+                position: relative;
+                top: 2px;
+                width: 30px;
+                height: 30px;
+                overflow: hidden;
+            }
+        }
+
+        @@media screen and (max-width:766px) {
+            .responsivemenu-navnewde {
+                top: 43px;
+            }
+
+            .oneheader-class .new-header-one {
+                padding: 5px 15px !important;
+            }
+
+            .helepopo-newdesign .term-pop-in {
+                width: 100%;
+            }
+
+            .helepopo-newdesign h2.help-foot-head {
+                font-size: 24px;
+            }
+
+            .helepopo-newdesign .term-pop-close {
+                padding: 9px 15px;
+                font-size: 20px;
+            }
+
+            .helepopo-newdesign h3 strong {
+                font-size: 14px;
+            }
+
+            .helepopo-newdesign p {
+                font-size: 11px;
+            }
+
+            .helepopo-newdesign h3 {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+
+</head>
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    var col = "";
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "#da097d";
+    }
+    if (col == "")
+    {
+        col = "#da097d";
+    }
+    var color = col;
+
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var logoimage = "";
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    var vv = from tbl in db.tblMenus
+             where tbl.Status == "Y" && tbl.Role == "ADMIN"
+             select new
+             {
+                 tbl.MenuName
+             };
+    ViewBag.menuname = vv;
+
+
+
+    List<Vastwebmulti.JsonData.Hlp_TC_Privacy> people = new List<Vastwebmulti.JsonData.Hlp_TC_Privacy>();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("PrivacyAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Privacy = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("OutHelpForAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Help = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("TnCAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var TC = people.ToList();
+
+    var Great_Help_News = db.Message_top.Where(a => a.users == "Outer").ToList();
+
+    var statuschkGreat = Great_Help_News.Where(aa => aa.name == "Great News" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+    var statuschkNeed = Great_Help_News.Where(aa => aa.name == "Need Help" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+
+    JSONReadWrite readWrit1e = new JSONReadWrite();
+    dynamic people1 = Newtonsoft.Json.JsonConvert.DeserializeObject(readWrit1e.Read("LogoBackgroundColor.json", "~/Areas/ADMIN/Models/JsonData/"));
+    string logoBgColor = people1.ColorCode;
+}
+<body data-spy="scroll" data-target=".navbar-collapse" style="">
+
+
+    @*Header Section Start*@
+
+    <header class="oneheader-class">
+        <div class="container-fluid new-header-one  navbar navbar-collapse" style="padding:10px 40px;">
+            <div class="row">
+                <div class="col-md-12 new-one-flex">
+                    <div class="logo-new-one">
+                        <img src="@Url.Content("~/"+@logoimage)" class="sixdesign-logo" style="padding:2px;" />
+                    </div>
+                    <div class="navbar">
+                        <button class="responsivemenu" style="display:none;">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                        <ul class="nav navbar-nav navbar-right responsivemenu-navnewde">
+                            <li>
+                                <a href="#home-onedesign" class="">home</a>
+                            </li>
+                            <li>
+                                <a href="#one-android">Android</a>
+                            </li>
+                            <li>
+                                <a href="#one-about">about</a>
+                            </li>
+                            <li>
+                                <a href="#Services-one">service</a>
+                            </li>
+                            <li>
+                                <a href="#one-work">works</a>
+                            </li>
+                            @if (Card != "Y")
+                            {
+                                <li><a href="#Cards-one">cards</a></li>
+                            }
+                            @if (Travel != "Y")
+                            {
+                                <li><a href="#one-Travel">travel</a></li>
+                            }
+                            <li>
+                                <a href="#why-choose-one">why choose us</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Login","Home",new { id="singin" })">Login</a>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    @*Header Section End*@
+
+
+    @RenderBody()
+
+    @*Footer Section Start*@
+
+    <footer>
+        <section class="new-one-banner one-footer-section">
+            <div class="container-fluid" style="padding:0 40px;">
+                <div class="col-md-4 footer-one">
+                    <div class="w-100">
+                        <h2 class="onefootertitle">Address</h2>
+                        <ul class="footer-link">
+                            <li>
+                                <i class="fa fa-phone"></i>
+                                <a href="tel:91+@CustCareNo">@CustCareNo </a>
+                            </li>
+                            <li>
+                                <i class="fa fa-envelope"></i>
+                                <a href="mailto:@SupportMail">@SupportMail</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-map-marker"></i>
+                                <a href="Javascript:void(0);" style="cursor:inherit;" id="paddress"></a>
+                            </li>
+                            <li>
+                                <i class="fa fa-map-marker"></i>
+                                <a href="Javascript:void(0);" id="pcity"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="w-100">
+                        <h2 class="onefootertitle">Services</h2>
+                        <ul class="footer-link footer-link-second">
+                            <li>
+                                <i>1</i>
+                                <strong>Prepaid</strong>
+                                <span>Airtel Idea Jio Vodafone BSNL MTNL</span>
+                            </li>
+                            <li>
+                                <i>2</i>
+                                <strong>Dth</strong>
+                                <span>Airtel Dth Dish Tv Tata Sky Videocon D2h Sun Tv </span>
+                            </li>
+                            <li>
+                                <i>3</i>
+                                <strong>Utilities</strong>
+                                <span>Postpaid Landline Broadband Electricity Gas Water Cable Tv Insurance Fastag </span>
+                            </li>
+                            <li>
+                                <i>4</i>
+                                <strong>Financial</strong>
+                                <span>@*Money Transfer*@ AEPS m-Pos (micro ATM) Pancard </span>
+                            </li>
+                            <li>
+                                <i>5</i>
+                                @if (Travel != "Y")
+                                {
+                                    <strong>Travels & Hotel</strong>
+                                <span>Flight Booking Bus Booking Hotel Booking </span>
+                                }
+                            </li>
+                            <li>
+                                <i>6</i>
+                                <strong>Others</strong>
+                                <span>@*Digital Gift Cards*@ Security Ecommerce Services </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3 footer-one">
+                    <div class="w-100">
+                        <h2 class="onefootertitle">Social Media</h2>
+                        <ul class="footer-link">
+                            <li>
+                                <i class="fa fa-facebook-f"></i>
+                                @if (ViewBag.Afac != "")
+                                {
+                                    <a href="@ViewBag.Afac" target="_blank">Facebook</a>
+                                }
+                                else
+                                {
+                                    <a href="#">Facebook</a>
+                                }
+                            </li>
+                            <li>
+                                <i class="fa fa-twitter"></i>
+                                @if (ViewBag.Atwi != "")
+                                {
+                                    <a href="@ViewBag.Atwi" target="_blank">Twitter</a>
+                                }
+                                else
+                                {
+                                    <a href="#">Twitter</a>
+                                }
+
+                            </li>
+                            <li>
+                                <i class="fa fa-instagram"></i>
+                                @if (ViewBag.AInstagra != "")
+                                {
+                                    <a href="@ViewBag.AInstagra" target="_blank">Instagram</a>
+                                }
+                                else
+                                {
+                                    <a href="#">Instagram</a>
+                                }
+
+                            </li>
+                            <li>
+                                <i class="fa fa-linkedin"></i>
+                                @if (ViewBag.Alinked != "")
+                                {
+                                    <a href="@ViewBag.Alinked" target="_blank">Linkedin</a>
+                                }
+                                else
+                                {
+                                    <a href="#">Linkedin</a>
+                                }
+
+                            </li>
+                            <li>
+                                <i class="fa fa-pinterest"></i>
+                                @if (ViewBag.APinteres != "")
+                                {
+                                    <a href="@ViewBag.APinteres">Pinterest</a>
+                                }
+                                else
+                                {
+                                    <a href="#">Pinterest</a>
+                                }
+
+                            </li>
+                            <li>
+                                <i class="fa fa-youtube"></i>
+                                @if (ViewBag.AYoutub != "")
+                                {
+                                    <a href="@ViewBag.AYoutub">Youtube</a>
+                                }
+                                else
+                                {
+                                    <a href="#">Youtube</a>
+                                }
+
+                            </li>
+                            <li>
+                                <i class="">B</i>
+                                @if (ViewBag.ABlogge != "")
+                                {
+                                    <a href="@ViewBag.ABlogge">Blogger</a>
+                                }
+                                else
+                                {
+                                    <a href="#">Blogger</a>
+                                }
+
+                            </li>
+                            <li>
+                                <i class="fa fa-tumblr"></i>
+                                @if (ViewBag.ATumbl != "")
+                                {
+                                    <a href="@ViewBag.ATumbl">Tumblr</a>
+                                }
+                                else
+                                {
+                                    <a href="#">Tumblr</a>
+                                }
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container-fluid" style="padding:20px 40px;">
+                <div class="w-100">
+                    <ul class="end-footer" style="float:left;">
+                        <li>
+                            <a id="Helpbutton" href="Javascript:void(0);">Help</a>
+                        </li>
+                        <li>
+                            @*<a id="Tcbutton" href="Javascript:void(0);">Terms & Conditions</a>*@
+                            <a href="@Url.Action("termsconditions", "Home")">Terms & Conditions</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("privacy", "Home")">Privacy</a>
+                        </li>
+                    </ul>
+                    <p class="new-one-text new-one-text-color" style="float:right;color:#333;">© 2019 - @DateTime.Now.Year All Rights Reserved | @Firm_Name </p>
+                </div>
+            </div>
+        </section>
+    </footer>
+
+    <div class="term-pop for-help-pop helepopo-newdesign" style="display:none;">
+        <div class="term-pop-in">
+            <h2 class="help-foot-head">Help</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p class="helpcontentclass" id="helpContent"></p>
+        </div>
+
+    </div>
+    <div class="term-pop for-term-pop helepopo-newdesign" style="display:none;">
+        <div class="term-pop-in" style="overflow-y:scroll;">
+            <h2 class="help-foot-head">Terms & Conditions</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p class="helpcontentclass" id="TcContent"></p>
+        </div>
+
+    </div>
+    <div class="term-pop for-privacy-pop helepopo-newdesign" style="display:none;">
+        <div class="term-pop-in">
+            <h2 class="help-foot-head">Privacy</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p class="helpcontentclass" id="Privacycontent"></p>
+        </div>
+
+    </div>
+
+    @*Footer Section End*@
+    <div class="scrollup fullbodydycolorbg scrollup-frontdesign" style="background-image: linear-gradient(to right, var(--main-front-bg-lcolor), var(--main-front-bg-rcolor)) !important;border:0px;" href="#"><i class="fa fa-chevron-up"></i></div>
+    <script>
+        // scrolltop
+        $('.scrollup').click(function () {
+            $("html,body").animate({
+                scrollTop: 0
+            }, 1000);
+            return false;
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var url = '@Url.Action("Officeaddress", "Home")'
+            $.ajax({
+                url: url,
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    $('#pfirmname').text(data.Firmname);
+                    $('#paddress').text(data.address);
+                        $('#pcity').text(data.DistirictName + "," + data.StateName);
+                },
+                error: function (reponse) {
+                    //alert("error : " + reponse);
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#Helpbutton').click(function () {
+                $('.for-help-pop').fadeIn();
+            });
+            $('#Tcbutton').click(function () {
+                $('.for-term-pop').fadeIn();
+            });
+            $('#Privacybutton').click(function () {
+                $('.for-privacy-pop').fadeIn();
+            });
+
+
+
+            $('.term-pop-close').click(function () {
+                $('.term-pop').fadeOut();
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Add smooth scrolling to all links
+            $(".mouse").on('click', function (event) {
+
+                // Make sure this.hash has a value before overriding default behavior
+                if (this.hash !== "") {
+                    // Prevent default anchor click behavior
+                    event.preventDefault();
+
+                    // Store hash
+                    var hash = this.hash;
+
+                    // Using jQuery's animate() method to add smooth page scroll
+                    // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+                    $('html, body').animate({
+                        scrollTop: $(hash).offset().top
+                    }, 800, function () {
+
+                        // Add hash (#) to URL when done scrolling (default click behavior)
+                        window.location.hash = hash;
+                    });
+                } // End if
+            });
+        });
+
+
+
+
+
+        //bottom to top
+
+        // fadeIn fadeOut
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 400) {
+                $('.scrollup').fadeIn();
+            } else {
+                $('.scrollup').fadeOut();
+            }
+        });
+    </script>
+
+
+    @*<div class="scrollup">
+            <a href="#"><i class="fa fa-chevron-up"></i></a>
+        </div>*@
+
+    @{
+        <input type="button" value="sleep" id="btnsleep" data-toggle="modal" data-target="#sleep-modal" style="display:none;">
+        <div class="modal fade" id="sleep-modal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img src="@Url.Content("~/Deskrop Sleep Mode.png")" id="mImage" class="img-responsive" />
+                    </div>
+                    <div>
+                        <span style="font-size:15px; margin-left:15px;">Mail-id :-<b style="color:red;"> @mailid</b> </span>
+                        <br />
+                        <span style="font-size:15px; margin-left:15px;">Mobile No :-<b style="color:red;"> @mobile</b></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color:darkgray; font-size:16px;">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    @*<script src="~/MainFrontDesign/js/vendor/jquery-1.11.2.min.js"></script>*@
+    <script src="~/MainFrontDesign/js/vendor/bootstrap.min.js"></script>
+    @*<script src="~/MainFrontDesign/js/jquery.magnific-popup.js"></script>*@
+    <script src="~/MainFrontDesign/js/jquery.mixitup.min.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.easing.1.3.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.masonry.min.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.fancybox.pack.js"></script>
+    <script src="~/MainFrontDesign/js/plugins.js"></script>
+    <script src="~/MainFrontDesign/js/main.js"></script>
+    <script src="~/MainFrontDesign/js/slick.js"></script>
+
+
+    <script>
+        var HelpElement = @Html.Raw(Json.Encode(Help.SingleOrDefault().Name));
+        $('#helpContent').html(decodeURIComponent(HelpElement))
+
+        var TcElement = @Html.Raw(Json.Encode(TC.SingleOrDefault().Name));
+        $('#TcContent').html(decodeURIComponent(TcElement))
+
+        var PrivacyElement = @Html.Raw(Json.Encode(Privacy.SingleOrDefault().Name));
+        $('#Privacycontent').html(decodeURIComponent(PrivacyElement))
+
+    </script>
+
+    <script type="text/javascript">
+        var val1 = "";
+        function animation(type) {
+
+            var url = '@Url.Action("pagecontetn","Home")'
+            $.ajax({
+                url: url,
+                data: { type: type },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    if (data != "") {
+                        document.getElementById("shoppingBasket").innerHTML = data;
+                        $('#defaultModal').modal('show');
+                    }
+                },
+                error: function (reponse) {
+                    //alert("error : " + reponse);
+                }
+            });
+
+        }
+    </script>
+    <script>
+        window.onload=function()
+        {
+            var block = '@ViewData["msg"]';
+            if (block == "websiteblock") {
+                $('#btnsleep').click();
+                $("#sleep-modal").modal('show');
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyALrSTy6NpqdhIOUs3IQMfvjh71td2suzY&ver=3.exp"></script>
+    <script type="text/javascript">
+        navigator.geolocation.getCurrentPosition(
+            function (position) { // success cb
+
+                console.log(position);
+
+            },
+            function () { // fail cb
+            }
+        );
+
+        $(document).ready(function () {
+
+            /* HTML5 Geolocation */
+            navigator.geolocation.getCurrentPosition(
+                function (position) { // success cb
+
+                    /* Current Coordinate */
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+
+                    var google_map_pos = new google.maps.LatLng(lat, lng);
+
+                    /* Use Geocoder to get address */
+                    var google_maps_geocoder = new google.maps.Geocoder();
+
+                    google_maps_geocoder.geocode(
+                        { 'latLng': google_map_pos },
+                        function (results, status) {
+                            if (status == google.maps.GeocoderStatus.OK && results[0]) {
+                                console.log(results[0].formatted_address);
+                                //alert(results[0].formatted_address)
+                            }
+                        }
+                    );
+                },
+                function () { // fail cb
+                }
+            );
+        });
+    </script>
+
+    @*Sticky Script*@
+    <script>
+        $(window).scroll(function () {
+            var sticky = $('.oneheader-class'),
+                scroll = $(window).scrollTop();
+
+            if (scroll >= 40) {
+                sticky.addClass('fixedoneadd');
+            }
+            else {
+                sticky.removeClass('fixedoneadd');
+
+            }
+        });
+    </script>
+    <script>
+        $(".responsivemenu").click(function () {
+            $(this).toggleClass("responsivemenu-show");
+        });
+    </script>
+</body>
+</html>
+

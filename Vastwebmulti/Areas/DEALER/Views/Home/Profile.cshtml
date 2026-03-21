@@ -1,0 +1,1928 @@
+@using Vastwebmulti.Models;
+@model Vastwebmulti.Models.User
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Areas/DEALER/Views/Shared/_Layout.cshtml";
+
+    var passcodeset = ViewBag.passcodesetings;
+    var offpasscode = passcodeset == "OFF" ? "activeupto" : "";
+    var perpasscode = passcodeset == "PERDAY" ? "activeupto" : "";
+    var Weakpasscode = passcodeset == "WEAKS" ? "activeupto" : "";
+    var monthpasscode = passcodeset == "MONTHS" ? "activeupto" : "";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Dealer").ToList();
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Dealer")
+        {
+           var favimage = usernname.SingleOrDefault().NickName;
+            ViewBag.nickname = favimage;
+        }
+    }
+}
+<style>
+
+    .retailer-profile-secondclass button p {
+        font-size: 9px;
+        left: 22px;
+        bottom: -9px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .retailer-profile-secondclass p.uptotransction {
+        float: left;
+        background: #f9f9cb;
+        color: #555;
+        padding: 0 1px;
+        margin-left: 8px;
+        margin-top: 3px;
+        margin-bottom: 0;
+        width: 33%;
+    }
+
+    .retailer-profile-secondclass span {
+        text-transform: uppercase;
+    }
+
+    .retailer-profile-secondclass strong {
+        text-align: center;
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+        .retailer-profile-secondclass strong span {
+            font-size: 12px;
+        }
+
+    p.uptotransction.activeupto::after {
+        content: "";
+        float: left;
+        width: 10px;
+        height: 10px;
+        background: url(../../ashok-images/correct.svg)no-repeat;
+        background-color: green;
+        background-size: 83%;
+        background-position: center;
+        position: relative;
+        left: 1px;
+        top: 3.4px;
+    }
+</style>
+<style>
+    .ribbon {
+        background: #bbb;
+        text-align: center;
+        padding: 6px;
+    }
+
+        .ribbon span {
+            font-size: 20px;
+            color: #555;
+            text-align: center;
+            font-weight: bold;
+            line-height: 20px;
+        }
+
+    .list-group-item {
+        border: none;
+    }
+
+    .field-validation-error {
+        color: red;
+    }
+
+    .required:after {
+        color: red;
+        content: " *";
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #eee !important;
+        border-radius: 0px !important;
+        height: 32px !important;
+    }
+
+    .profile-dealeronchange button p {
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .profile-dealeronchange button p.activeupto {
+            background: green;
+            color: #fff;
+        }
+
+        .profile-dealeronchange button p::after {
+            display: none;
+        }
+
+        .profile-dealeronchange button p.activeupto span::before {
+            content: "";
+            float: left;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            color: #555;
+            font-size: 12px;
+            position: relative;
+            left: -5px;
+            background: url('../../AdminDesign/images/checkprofile.svg') no-repeat;
+            background-color: #fff;
+            background-size: 11px;
+            background-position: center;
+        }
+
+    @@media screen and (max-width:766px) {
+        .retailer-profile-secondclass strong {
+            display: block;
+            width: 100%;
+            float: left;
+        }
+
+        .retailer-profile-secondclass p.uptotransction {
+            width: 48%;
+            margin-bottom: 5px;
+        }
+    }
+
+    @@media screen and (max-width:420px) {
+        .retailer-profile-secondclass p.uptotransction {
+            width: 100%;
+            margin: 0px;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+<section class="content" style="">
+    <div class="container-fluid dealer-profile-page full-dealer-secondanimation">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Profile</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                @*<li><a href="javascript:void(0);">Account 2&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>*@
+                <li><a href="javascript:void(0);">My Profile</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix dealerprofile-edit">
+            <div class="col-md-4 dealerprofiledistribu">
+                <div class="card dealer-box-back-four" style="height:auto;margin-bottom:0px;">
+                    <div class="ribbon"><span>@ViewBag.nickname</span></div>
+
+                    <div class="body" style="background:#f5f5f5;">
+                        <center>
+                            @if (ViewBag.MD_Details.Photo != null)
+                            {
+                                <div class="image" style="margin-top:3px;">
+                                    @*<img src="@Url.Content("~/"+ ViewBag.MD_Details.Photo )" class="img-circle" alt="User" width="100" height="100" title="Click Me Upload Profile Image" style="cursor:pointer;" onclick="uploadimage('@ViewBag.MD_Details.DealerId')" />*@
+                                    <img src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" title="Click Me Upload Profile Image" style="cursor:pointer;" onclick="uploadimage('@ViewBag.MD_Details.DealerId')">
+
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="image" style="margin-top:3px;">
+                                    <img src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" title="Click Me Upload Profile Image" style="cursor:pointer;" onclick="uploadimage('@ViewBag.MD_Details.DealerId')">
+
+                                </div>
+                            }
+
+                            <div class="msg" style="padding-top:12px; font-size:19px; font-weight:600; color:#555;">@ViewBag.MD_Details.DealerName</div>
+                            <p style="margin-top:5px;font-size:14px;text-transform:uppercase;">@ViewBag.nickname</p>
+
+                        </center>
+                        <div class="profile-on-of fullbodydycolorbg" id="otpnoneuploadshow" style="margin-top:-1px;">
+
+
+                            <div class="col-md-12 profile-textotp"><strong>OTP Security</strong></div>
+                            <div class="col-md-12 profile-textotp-dealer">
+                                <div class="onoffswitch" style="float:right;">
+                                    @if (Model.TwoFactorEnabled)
+                                    {
+                                        using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", new { area = "" }, FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <button id="btnon" type="submit" name="btnon" class="btn btn-danger costom-on" value="On" style="width:auto;float:none;background:#fff !important;">OTP-On</button>
+                                            @*<span class="costom-on">on</span>*@
+                                        }
+                                    }
+                                    else
+                                    {
+                                        using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", new { area = "" }, FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <button id="btnoff" type="submit" name="btnoff" class="btn btn-success costom-off" value="off">OTP-off</button>
+                                            @*<span class="custom-off">off</span>*@
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="upload-profile-image" id="EditProfileimageModal" style="display:none;">
+
+
+
+                            @using (Html.BeginForm("UploadProfileimage", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                            {
+                                <div class="modal-body" style="margin-top:0px;">
+                                    <div class="body">
+                                        <form>
+                                            <div class="row clearfix">
+                                                <input type="text" id="txtprofileid" name="txtprofileid" style="display:none;" />
+                                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                    <label for="email_address_2">Upload&nbsp;Image</label>
+                                                </div>
+
+                                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                                    <div class="form-group">
+                                                        <div class="" style="border:1px solid #ddd;">
+                                                            <input type="file" class="form-control" id="file" name="file" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                                    <span style="top:-2px;color:black;">Save Change</span>
+                                                </button>
+                                                <button id="uploadnoneotpshow" type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                                    <span style="top:-2px;color:black;">Close</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            }
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 add-udt-in add-udt-in-form">
+                <div class="card card-dealer-form dealer-box-back-four">
+                    <div style="background-color:#dddddd;width:100%;float:left;padding:2px 0px;">
+                        @if (ViewBag.MD_Details.FarmName != null)
+                        {
+                            <h1 style="color:#49586e;font-size:20px;font-weight:bold;text-transform:uppercase;width:100%;float:left;margin:5px;">
+                                @ViewBag.MD_Details.FarmName
+                                <a id="Editaddresshide" class="edit-buttonprofile" style="float:right;cursor:pointer;font-size: 14px;border: 1px solid #ccc;padding: 5px 10px;text-transform: capitalize;font-weight:400;margin-right: 15px;" onclick="editeaddress('@ViewBag.MD_Details.DealerId')">Edit</a>
+                            </h1>
+                        }
+                        else
+                        {
+                            <h1 style="color:#49586e;font-size:24px;font-weight:bold;margin-top:-13px;text-transform:uppercase;width:100%;float:left;margin:5px;">
+                                No Data Found !
+                                <a id="Editaddresshide" style="float:right;cursor:pointer;font-size: 14px;border: 1px solid #ccc;padding: 5px 10px;text-transform: capitalize;font-weight:400;margin-right: 15px;" onclick="editeaddress('@ViewBag.MD_Details.DealerId')">Edit</a>
+                            </h1>
+                        }
+                    </div>
+                    <div class="body" style="width:100%;float:left;background:#f5f5f5;">
+                        <ul class="list-group button-clicknonepr" style="margin-bottom:-13px;">
+                            <li class="list-group-item">
+                                <i class="fa fa-map-marker"></i> <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Registered Business Address</span>
+                                @if (ViewBag.MD_Details.Address != null && ViewBag.MD_Details.Address != "")
+                                {
+                                    <p style="text-align:justify;margin-top:0px;display:block;float:none;">@ViewBag.MD_Details.Address</p>
+                                }
+                                else
+                                {
+                                    <p style="margin-top:0;display:block;float:none;">ADDRESS NOT FOUND !</p>
+                                }
+                            </li>
+
+
+
+                            <li class="list-group-item" style="margin-top:-19px;">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;Town&nbsp;/&nbsp;City</span>
+                                @if (ViewBag.MD_Details.city != null && ViewBag.MD_Details.city != "")
+                                {
+                                    <p style="float:right;text-transform:uppercase;margin-top:4px;">@ViewBag.MD_Details.city</p>
+                                }
+                                else
+                                {
+                                    <p style="margin-top:4px;float:right;">CITY NOT FOUND !</p>
+                                }
+                            </li>
+                            <li class="list-group-item">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;District</span>
+                                <p style="float:right;text-transform:uppercase;">@ViewBag.district</p>
+                            </li>
+                            <li class="list-group-item">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;State</span>
+                                <p style="float:right;text-transform:uppercase;">@ViewBag.ddlstate</p>
+                            </li>
+                            <li class="list-group-item">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;Zip Code</span>
+                                @if (ViewBag.MD_Details.Pincode != null)
+                                {
+                                    <p style="float:right;margin-top:0px;">@ViewBag.MD_Details.Pincode</p>
+                                }
+                                else
+                                {
+                                    <p style="float:right;margin-top:0px;">ZIP CODE NOT FOUND !</p>
+                                }
+                            </li>
+
+
+                        </ul>
+
+                        <div id="EditaddressModal" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 add-udt EditaddressModal-profileclass address-responshiveclass" style="display:none;">
+                            @using (Html.BeginForm("UpdateDistributorProfile", "Home", FormMethod.Post))
+                            {
+                                <h2>Update Address</h2>
+                                <div class="card">
+                                    <div class="body">
+
+
+                                        <ul class="list-group" style="margin-bottom:-13px;">
+
+                                            <li>
+                                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;"> Frim Name<sup>*</sup> </span>
+                                                @Html.TextBox("txtfrimname", "", new { @class = "form-control", placeholder = "Enter Your Address", required = "required" })
+                                            </li>
+
+                                            <li>
+                                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Address<sup>*</sup></span>
+                                                @Html.TextBox("txtaddress", "", new { @class = "form-control", @style = "width:100%;", placeholder = "Enter Your Address", required = "required" })
+                                            </li>
+
+
+
+                                            <li>
+                                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;Town&nbsp;/&nbsp;City<sup>*</sup></span>
+
+                                                @Html.TextBox("txtcity", "", new { @class = "form-control", placeholder = "Enter Your Town/city ", required = "required" })
+
+                                            </li>
+                                            <li>
+                                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;District<sup>*</sup></span>
+
+                                                @Html.DropDownList("District", (IEnumerable<SelectListItem>)ViewBag.ALLDistrict, "-- Select District--", new { @class = "for-select2", @required = "" })
+
+                                            </li>
+                                            <li>
+                                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;State<sup>*</sup></span>
+
+                                                @Html.DropDownList("State", (IEnumerable<SelectListItem>)ViewBag.Sate, "-- Select State--", new { @class = "for-select2", @required = "required", @onchange = "FillDistict()" })
+
+                                            </li>
+                                            <li>
+                                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;Zip Code<sup>*</sup></span>
+
+                                                @Html.TextBox("txtzipcode", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Zip Code", onkeypress = "return isNumber(event)" })
+
+                                            </li>
+
+
+                                        </ul>
+                                        <div class="buttonchangeright" style="float:right;padding-bottom:10px;">
+                                            <button id="form-colseall" class="btn  waves-effect" style="float:right; margin-right:0px; height:30px;background:transparent;">
+                                                <span style="top:-1px;color:#555;">Close</span>
+                                            </button>
+                                            <button type="submit" class="btn  waves-effect" style="float:right; margin-right:10px; height:30px;background:transparent;">
+                                                <span style="top:-1px;color:#555;">Save Change</span>
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="col-md-8 autopaid-dealer-third" style="width:100%;float:left;">
+                <div class="retailer-profile-secondclass profile-dealeronchange" style="width:100%;float:left;background:#eae9e9;margin-bottom:20px;">
+                    <button type="button" class="btn bg-blue-grey waves-effect valuechangebuttonadmin valuechang-second" style="float:right !important;width:100% !important;background: #eae9e9 !important;height:auto;">
+                        <span style="display:block;color:#555;font-size:14px;">Auto Paid Services Renewal</span>
+                        <strong><p class="uptotransction classwhichraviknown @offpasscode"><span data-value="OFF">Passcode Setting OFF</span></p><p class="uptotransction classwhichraviknown @perpasscode"><span data-value="PERDAY">Day PassCode</span> </p><p class="uptotransction classwhichraviknown @Weakpasscode"><span data-value="WEAKS">Weekly PassCode</span></p><p class="uptotransction classwhichraviknown @monthpasscode"><span data-value="MONTHS">MONTHLY PassCode</span></p></strong>
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row clearfix profilesecondcolm-third">
+            <div class="col-md-4 joinig-dateprofile joinig-dateprofile-profile joinigdate-thirddealer">
+                <div class="card card-dealer-form" style="margin-top:0px;height:auto;min-height:inherit;">
+                    <div class="body" style="margin-bottom:11px;background-color:#dddddd;height: 48px;padding: 2px 0px 0px 10px;">
+                        <span style="color:#555;font-size:14px;font-weight:bold;margin-top:-16px;text-transform:uppercase;">Joining Date</span>
+                        <span style="text-transform:uppercase;display:block;">@ViewBag.MD_Details.JoinDate</span>
+                        <span class="save-profile-btn edit-buttonprofile" onclick="editemobileandpancard('@ViewBag.MD_Details.DealerId')" style="float:right;border: 1px solid #ccc;padding: 1px 10px;margin: 7px 10px 0px 0px;position: absolute;cursor:pointer;right: 0px;top: 2px;">Edit</span>
+                    </div>
+                    <div class="body save-profile dealer-box-back-four" style="margin-top:-13px;background: #eae9e9;">
+                        <table border="1">
+                            <tr>
+                                <td>
+                                    <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Name</p>
+
+                                </td>
+                                <td><p style="text-transform:uppercase;margin-top:-7px;">@ViewBag.MD_Details.DealerName</p></td>
+                            </tr>
+                            <tr>
+                                <td><p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Email-ID</p></td>
+                                <td><p style="text-transform:uppercase;margin-top:-7px;">@ViewBag.MD_Details.Email</p></td>
+                            </tr>
+                            <tr>
+                                <td><p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Mobile</p></td>
+                                <td><p style="text-transform:uppercase;margin-top:-7px;">@ViewBag.MD_Details.Mobile</p></td>
+                            </tr>
+                            <tr>
+                                <td><p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Aadharcard</p></td>
+                                <td>
+                                    @if (ViewBag.MD_Details.adharcard != null && ViewBag.MD_Details.adharcard != "")
+                                    {
+                                        var input = ViewBag.MD_Details.adharcard;
+                                        string firstPart = input.Substring(0, 8);
+                                        int len = input.Length;
+                                        string middlePart = new String('X', 8);
+                                        string lastPart = input.Substring(len - 4, 4);
+                                        var aadharcard = middlePart + lastPart;
+                                        <p style="text-transform:uppercase;margin-top:-7px;">@aadharcard</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">Data Not Found !</p>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Pancard</p></td>
+                                <td>
+                                    @if (ViewBag.MD_Details.pancard != null && ViewBag.MD_Details.pancard != "")
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">@ViewBag.MD_Details.pancard</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">Data Not Found !</p>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">GST No</p></td>
+                                <td>
+                                    @if (ViewBag.MD_Details.gst != null && ViewBag.MD_Details.gst != "")
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">@ViewBag.MD_Details.gst</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">Data Not Found !</p>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Position</p></td>
+                                <td>
+                                    @if (ViewBag.MD_Details.Position != null && ViewBag.MD_Details.Position != "")
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">@ViewBag.MD_Details.Position</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">Data Not Found !</p>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Businees Type</p></td>
+                                <td>
+                                    @if (ViewBag.MD_Details.BusinessType != null && ViewBag.MD_Details.BusinessType != "")
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">@ViewBag.MD_Details.BusinessType</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">Data Not Found !</p>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">DOB</p></td>
+                                <td>
+                                    @if (ViewBag.MD_Details.DOF != null)
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">@ViewBag.MD_Details.DOF</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="text-transform:uppercase;margin-top:-7px;">Data Not Found !</p>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+
+                    <div id="EditnameandpancardModal" class="body EditnameandpancardModal-profile EditaddressModal-profileclass profileclass-responshivemodal dealer-box-back-four" style="margin-top:-13px;display:none;width:100%;float:left;">
+                        <h2>Update Profile</h2>
+                        <div class="profileupdateborder dealer-back-tra-four" style="background: #eae9e9;">
+
+                            @using (Html.BeginForm("UpdatePanccardandmobile", "Home", FormMethod.Post))
+                            {
+
+                                <ul>
+                                    <li>
+                                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;margin: 2px 0px 6px 0px;">Name<sup>*</sup></p>
+                                        @Html.TextBox("txtname", "", new { @class = "form-control", placeholder = "Enter Your Name", required = "required" })
+                                    </li>
+                                    <li>
+                                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;margin: 2px 0px 6px 0px;">Aadharcard<sup>*</sup></p>
+
+                                        @Html.TextBox("txtaadhaarcard", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Aadhaar Number", onkeypress = "return isNumber(event)", maxlength = "12" })
+                                    </li>
+                                    <li>
+
+                                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;margin: 2px 0px 6px 0px;">Pancard<sup>*</sup></p>
+                                        @Html.TextBox("txtpancard", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Pancard Number", @style = "text-transform:uppercase", maxlength = 10 })
+                                    </li>
+                                    <li>
+                                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;margin: 2px 0px 6px 0px;">DOB<sup>*</sup></p>
+
+                                        <input type="date" id="dateofbirth" name="dateofbirth" required class="form-control" placeholder="" />
+                                        @*@Html.TextBox("dateofbirth", "", new { @required = "required", @class = "form-control", @placeholder = "Ex:MM/DD/YYYY", @type = "date" })*@
+                                    </li>
+                                    <li>
+                                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;margin: 2px 0px 6px 0px;">GST No<sup>*</sup></p>
+                                        @Html.TextBox("txtgst", "", new { @required = "required", @class = "form-control", @placeholder = "Enter GST Number", maxlength = "15", @style = "text-transform:uppercase" })
+                                    </li>
+                                    <li>
+                                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;margin: 2px 0px 6px 0px;">Position<sup>*</sup></p>
+                                        @Html.DropDownList("ddlPosition", new List<SelectListItem>
+                                                        {
+                                               new SelectListItem{ Text="Select Type",Value=""},
+                                              new SelectListItem{Text="Director",Value="Director"},
+                                               new SelectListItem{Text="Authorized Signatory",Value="Authorized Signatory"}
+                                                }, new { @class = "for-select2" })
+                                    </li>
+                                    <li>
+                                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;margin: 2px 0px 6px 0px;">Businees Type<sup>*</sup></p>
+                                        @Html.DropDownList("ddlBusinessType", new List<SelectListItem>
+                                               {
+                                     new SelectListItem{ Text="Select Type",Value=""},
+                                     new SelectListItem{Text="Agriculture Machinery",Value="Agriculture Machinery"},
+                                     new SelectListItem{Text="Agriculture Fertilizer",Value="Agriculture Fertilizer"},
+                                     new SelectListItem{Text="Automobiles and Vehicles",Value="Automobiles and Vehicles"},
+                                     new SelectListItem{Text="Automobile Tyre Supply and Service",Value="Automobile Tyre Supply and Service"},
+                                     new SelectListItem{Text="Beauty and Wellness",Value="Beauty and Wellness"},
+                                     new SelectListItem{Text="Advertising Agenices",Value="Advertising Agenices"},
+                                     new SelectListItem{Text="accounting & Tax Consultants",Value="accounting & Tax Consultants"},
+                                     new SelectListItem{Text="Employment Consultants",Value="Employment Consultants"},
+                                     new SelectListItem{Text="Software Development and Sales",Value="Software Development and Sales"},
+                                     new SelectListItem{Text="Photo and Video Studio",Value="Photo and Video Studio"},
+                                     new SelectListItem{Text="Computer Repair & Services",Value="Computer Repair & Services"},
+                                     new SelectListItem{Text="Tent And Awning Shops",Value="Tent And Awning Shops"},
+                                     new SelectListItem{Text="Packers and Movers",Value="Packers and Movers"},
+                                     new SelectListItem{Text="RealEstate Consultants",Value="RealEstate Consultants"},
+                                     new SelectListItem{Text="Laundy and Dry Cleaner",Value="Laundy and Dry Cleaner"},
+                                     new SelectListItem{Text="Matrimony Services",Value="Matrimony Services"},
+                                     new SelectListItem{Text="Lawyers",Value="Lawyers"},
+                                     new SelectListItem{Text="Charitable Organisation",Value="Charitable Organisation"},
+                                     new SelectListItem{Text="Driving Classes",Value="Driving Classes"},
+                                     new SelectListItem{Text="Elementary and Secondary Schools",Value="Elementary and Secondary Schools"},
+                                     new SelectListItem{Text="Correspondance Courses",Value="Correspondance Courses"},
+                                     new SelectListItem{Text="Other Events & Entertainment",Value="Other Events & Entertainment"},
+                                     new SelectListItem{Text="Security Brokers and Dealers",Value="Security Brokers and Dealers"},
+                                     new SelectListItem{Text="Collection Agency",Value="Collection Agency"},
+                                     new SelectListItem{Text="fuel Service Stations",Value="fuel Service Stations"},
+                                    new SelectListItem{Text="Government",Value="Government"},
+                                    new SelectListItem{Text="Home Services",Value="Home Services"},
+                                    new SelectListItem{Text="Hospitals and Healthcare",Value="Hospitals and Healthcare"},
+                                    new SelectListItem{Text="Hotels, Restaurants and Food",Value="Hotels, Restaurants and Food"},
+                                    new SelectListItem{Text="Insurance Sale",Value="Insurance Sale"},
+                                    new SelectListItem{Text="Computers and Acessories",Value="Computers and Acessories"},
+                                    new SelectListItem{Text="Silver Jewellery",Value="Silver Jewellery"},
+                                    new SelectListItem{Text="Hardware Shop (Paint & Building Materials)",Value="Hardware Shop (Paint & Building Materials)"},
+                                    new SelectListItem{Text="Mobile shop",Value="Mobile shop"},
+                                    new SelectListItem{Text="Home Decor",Value="Home Decor"},
+                                    new SelectListItem{Text="Bicycle Shop, Repair and Service",Value="Bicycle Shop, Repair and Service"},
+                                    new SelectListItem{Text="Tours and Travel Agency",Value="Tours and Travel Agency"},
+                                    new SelectListItem{Text="Trucks and Others",Value="Trucks and Others"},
+                                    new SelectListItem{Text="Taxi and Car Rentals",Value="Taxi and Car Rentals"},
+                                    new SelectListItem{Text="Cruises Service",Value="Cruises Service"},
+                                      new SelectListItem{Text="Tuition and Classes",Value="Tuition and Classes"},
+                                    new SelectListItem{Text="Cable Service Providers",Value="Cable Service Providers"},
+                                    new SelectListItem{Text="Recharges and Bill Payments",Value="Recharges and Bill Payments"},
+
+                              }, new { @class = "for-select2" })
+                                    </li>
+                                </ul>
+                                <div class="buttonchangeright" style="float:right;margin-top:10px;">
+                                    <button type="submit" class="btn  waves-effect" style=" height:30px;background:transparent;">
+                                        <span style="top:-2px;color:#555;">Save Change</span>
+                                    </button>
+                                    <button id="close-pancardbutton" class="btn  waves-effect" style="height:30px;background:transparent;margin-left:10px;">Close</button>
+
+                                </div>
+                            }
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+
+            </div>
+            @*<div class="col-md-8 bnk-ipt-dt" >
+                    <div class="card " style="height:253px;">
+                        <div class="body" style="background-color:#bbb;">
+                            <h1 style="color:#49586e;font-size:17px;font-weight:bold;margin-top:-16px;text-transform:uppercase;">
+                                <i class="fa fa-university"></i>&nbsp;Bank Information
+                                <a style="float:right;cursor:pointer; font-size: 14px;border: 1px solid #ccc;padding: 5px 10px;text-transform: capitalize;font-weight: 400;margin-right: 15px;" onclick="editebankinformation('@ViewBag.MD_Details.DealerId')">Edit</a>
+                            </h1>
+                        </div>
+                        <div class="body upld-doc"  style="margin-top:-12px;background:#f5f5f5;">
+                            <ul class="list-group" style="margin-bottom:27px;">
+                                <li class="list-group-item" style="margin-top:-19px;">
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Acc Holder Name</span>
+                                    @if (ViewBag.MD_Details.accountholder != null && ViewBag.MD_Details.accountholder != "")
+                                    {
+                                        <p style="float:right;margin-top:0px;">@ViewBag.MD_Details.accountholder</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="float:right;margin-top:0px;">DATA NOT FOUND !</p>
+                                    }
+                                </li>
+                                <li class="list-group-item">
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Bank Account No</span>
+                                    @if (ViewBag.MD_Details.Bankaccountno != null && ViewBag.MD_Details.Bankaccountno != "")
+                                    {
+                                        <p style="float:right;text-transform:uppercase;margin-top:4px;">@ViewBag.MD_Details.Bankaccountno</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="margin-top:4px;float:right;">DATA NOT FOUND !</p>
+                                    }
+                                </li>
+                                <li class="list-group-item">
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">IFS Code</span>
+                                    @if (ViewBag.MD_Details.Ifsccode != null && ViewBag.MD_Details.Ifsccode != "")
+                                    {
+                                        <p style="float:right;margin-top:0px;">@ViewBag.MD_Details.Ifsccode</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="float:right;margin-top:0px;">DATA NOT FOUND !</p>
+                                    }
+                                </li>
+                                <li class="list-group-item">
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Bank Name</span>
+                                    @if (ViewBag.MD_Details.bankname != null && ViewBag.MD_Details.bankname != "")
+                                    {
+                                        <p style="float:right;text-transform:uppercase;margin-top:4px;">@ViewBag.MD_Details.bankname</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="margin-top:4px;float:right;">DATA NOT FOUND !</p>
+                                    }
+                                </li>
+
+                                <li class="list-group-item">
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Branch Address</span>
+                                    @if (ViewBag.MD_Details.bankAddress != null && ViewBag.MD_Details.bankAddress != "")
+                                    {
+                                        <p style="float:right;margin-top:0px;">@ViewBag.MD_Details.bankAddress</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="float:right;margin-top:0px;">DATA NOT FOUND !</p>
+                                    }
+                                </li>
+
+                            </ul>
+
+
+                        </div>
+                    </div>
+                </div>*@
+
+
+
+
+
+
+            <div id="editebankinformation" class="col-md-8" style="display:none;">
+                @using (Html.BeginForm("UpdateBankinfromation", "Home", FormMethod.Post))
+                {
+
+
+
+
+                    <div class="card " style="height:253px;">
+                        <div class="body" style="background-color:#bbb;height:42px;">
+                            <h1 style="color:#49586e;font-size:17px;font-weight:bold;margin-top:-16px;text-transform:uppercase;">
+                                <i class="fa fa-university"></i>&nbsp;Bank Information
+                                <button type="submit" class="btn  waves-effect" style="float:right; margin-right:12px;background:transparent; height:30px;">
+                                    <span style="color:black;">Save</span>
+                                </button>
+                            </h1>
+                        </div>
+                        <div class="body" style="background:#f5f5f5;width: 100%;float: left;">
+                            <ul style="margin-bottom:27px;">
+                                <li>
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Acc Holder Name</span>
+                                    @Html.TextBox("txtaccholder", "", new { @class = "form-control", placeholder = "Enter Your Account Holder Name" })
+                                </li>
+                                <li>
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Bank Account No</span>
+                                    @Html.TextBox("txtbankaccountno", "", new { @class = "form-control", placeholder = "Enter Your Bank Account Number" })
+                                </li>
+                                <li>
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">IFS Code</span>
+                                    @Html.TextBox("txtifsc", "", new { @class = "form-control", placeholder = "Enter Your IFSC " })
+                                </li>
+                                <li>
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Bank Name</span>
+                                    @Html.TextBox("txtbankname", "", new { @class = "form-control", placeholder = "Enter Bank Name " })
+                                </li>
+
+                                <li>
+                                    <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Branch Address</span>
+                                    @Html.TextBox("txtbranchaddress", "", new { @class = "form-control", placeholder = "Enter Branch Address " })
+                                </li>
+
+                            </ul>
+
+
+                        </div>
+                    </div>
+                }
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="col-md-8 add-udt-in-form add-udt-in-form-lastclass second-joinigdate-thirddealer">
+                <div class="card card-dealer-form" style="margin-top:0;">
+                    <div class="body body-firstmodal" style="background-color:#ddd;height:auto;width:100%;float:left;">
+                        <h1 class="uploaddocument-lastclass" style="color:#555;font-size:20px;font-weight:bold;margin-top:0px;text-transform:uppercase;float:left;">
+                            <i class="fa fa-file" style="font-size:17px;"></i>&nbsp;Upload Document
+                        </h1>
+                        <div id="EditAadhaardocModal" class="hedingfloatmodal hedingfloatmodal-pprofile" style="display:none;">
+                            @using (Html.BeginForm("UploadAadharcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                            {
+                                <input type="file" class="form-control" id="file" name="file" />
+                                <input type="file" class="form-control" id="file1" name="file1" />
+                                <button class="btn  waves-effect modalclass-nonepro">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                                <button type="submit" class="btn  waves-effect">
+                                    <span style="top:-2px;color:black;">Save </span>
+                                </button>
+
+                            }
+                        </div>
+
+                        <div id="EditPancarddocModal" class="hedingfloatmodal" style="display:none;">
+                            @using (Html.BeginForm("UploadPancardcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                            {
+                                <input type="file" class="form-control" id="file" name="file" />
+                                <button class="btn  waves-effect modalclass-nonepro">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                                <button type="submit" class="btn  waves-effect">
+                                    <span style="top:-2px;color:black;">Save </span>
+                                </button>
+
+                            }
+                        </div>
+                        <div id="EditRegistractiondocModal" class="hedingfloatmodal" style="display:none;">
+                            @using (Html.BeginForm("UploadRegistractionCertificatedoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                            {
+                                <input type="file" class="form-control" id="file" name="file" />
+                                <button class="btn  waves-effect modalclass-nonepro">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                                <button type="submit" class="btn  waves-effect">
+                                    <span style="top:-2px;color:black;">Save </span>
+                                </button>
+
+
+                            }
+                        </div>
+                        <div id="EditServicedocModal" class="hedingfloatmodal" style="display:none;">
+                            @using (Html.BeginForm("UploadServiceAggrementdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                            {
+                                <input type="file" class="form-control" id="file" name="file" />
+                                <button class="btn  waves-effect modalclass-nonepro">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                                <button type="submit" class="btn  waves-effect">
+                                    <span style="top:-2px;color:black;">Save </span>
+                                </button>
+
+
+                            }
+                        </div>
+                        <div id="EditAddressProofdocModal" class="hedingfloatmodal" style="display:none;">
+                            @using (Html.BeginForm("UploadAddressProofdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                            {
+                                <input type="file" class="form-control" id="file" name="file" />
+                                <button class="btn  waves-effect modalclass-nonepro">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                                <button type="submit" class="btn  waves-effect">
+                                    <span style="top:-2px;color:black;">Save </span>
+                                </button>
+
+                            }
+                        </div>
+
+                    </div>
+                    <div class="body upld-doc dealer-box-back-four" style="background:#eae9e9;width:100%;float:left;">
+                        <ul class="list-group">
+                            <li class="list-group-item" style="margin-top:-5px;">
+                                <p>
+                                    <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;" class="required">Aadhaar Card</span>
+                                    <span style="color:brown;opacity:0.5;margin-top:-10px;border-bottom:1px dashed #999;">MANDATORY</span>
+                                </p>
+
+                                <p>
+                                    <span class="badge" style="margin-right:0px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.MD_Details.aadharcardPath)" style="cursor:pointer;text-decoration:none;color:#4a2400;" target="_blank">View</a></span>
+                                    @if (ViewBag.MD_Details.aadharcardPath == null && ViewBag.MD_Details.BackSideAadharcardphoto == null)
+                                    {
+                                        <span class="badge upload-btn" style="margin-right:25px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadaadhaarDoc('@ViewBag.MD_Details.DealerId')">Upload</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="margin-right:25px;background-color:white;color:red;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc('@ViewBag.MD_Details.DealerId', 'Aadhaar')">Delete</span>
+                                    }
+                                </p>
+
+
+                            </li>
+                            <li class="list-group-item">
+                                <p>
+                                    <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;" class="required">Pancard</span>
+                                    <span style="color:brown;opacity:0.5;margin-top:-10px;border-bottom:1px dashed #999;">MANDATORY</span>
+                                </p>
+                                <p>
+                                    <span class="badge" style="margin-right:0px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.MD_Details.pancardPath)" style="cursor:pointer;text-decoration:none;color:#4a2400;" target="_blank">View</a></span>
+                                    @if (ViewBag.MD_Details.pancardPath == null)
+                                    {
+                                        <span class="badge upload-btn-one" style="margin-right:25px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadpancardDoc('@ViewBag.MD_Details.DealerId')">Upload</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="margin-right:25px;background-color:white;color:red;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc('@ViewBag.MD_Details.DealerId', 'Pancard')">Delete</span>
+                                    }
+                                </p>
+
+
+                            </li>
+                            <li class="list-group-item">
+                                <p>
+                                    <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Registraction Certificate</span>
+                                    <span style="color:deepskyblue;opacity:0.5;margin-top:-10px;border-bottom:1px dashed #999;">OPTIONAL</span>
+                                </p>
+                                <p>
+                                    <span class="badge" style="margin-right:0px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.MD_Details.Registractioncertificatepath)" style="cursor:pointer;text-decoration:none;color:#4a2400;" target="_blank">View</a></span>
+                                    @if (ViewBag.MD_Details.Registractioncertificatepath == null)
+                                    {
+                                        <span class="badge upload-btn-two" style="margin-right:25px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadRegistractionCertificateDoc('@ViewBag.MD_Details.DealerId')">Upload</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="margin-right:25px;background-color:white;color:red;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc('@ViewBag.MD_Details.DealerId', 'RegistractionCertificate')">Delete</span>
+                                    }
+                                </p>
+
+                            </li>
+                            <li class="list-group-item">
+                                <p>
+                                    <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Service Agreement</span>
+                                    <span style="color:deepskyblue;opacity:0.5;margin-top:-10px;border-bottom:1px dashed #999;">OPTIONAL</span>
+                                </p>
+                                <p>
+                                    <span class="badge" style="margin-right:0px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.MD_Details.serviceagreementpath)" style="cursor:pointer;text-decoration:none;color:#4a2400;" target="_blank">View</a></span>
+                                    @if (ViewBag.MD_Details.serviceagreementpath == null)
+                                    {
+                                        <span class="badge upload-btn-three" style="margin-right:25px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadserviceDoc('@ViewBag.MD_Details.DealerId')">Upload</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="margin-right:25px;background-color:white;color:red;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc('@ViewBag.MD_Details.DealerId', 'ServiceAgrrement')">Delete</span>
+                                    }
+                                </p>
+
+
+
+
+                            </li>
+                            <li class="list-group-item">
+                                <p>
+                                    <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Address Proof</span>
+                                    <span style="color:deepskyblue;opacity:0.5;margin-top:-10px;border-bottom:1px dashed #999;">OPTIONAL</span>
+                                </p>
+                                <p>
+                                    <span class="badge" style="margin-right:0px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.MD_Details.AddressProofpath)" style="cursor:pointer;text-decoration:none;color:#4a2400;" target="_blank">View</a></span>
+                                    @if (ViewBag.MD_Details.AddressProofpath == null)
+                                    {
+                                        <span class="badge upload-btn-four" style="margin-right:25px;background-color:white;color:black;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadAddressProofDoc('@ViewBag.MD_Details.DealerId')">Upload</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="margin-right:25px;background-color:white;color:red;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc('@ViewBag.MD_Details.DealerId', 'AddressProof')">Delete</span>
+                                    }
+                                </p>
+
+
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!--Edit Address and Pincode Modal Poppup popup-->
+<div class="modal fade" id="EditaddressModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Address</h4>
+            </div>
+            @using (Html.BeginForm("UpdateDistributorProfile", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtid1" name="txtid1" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Frim Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtfrimname", "", new { @class = "form-control", placeholder = "Enter Your Address", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Address</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtaddress", "", new { @class = "form-control", placeholder = "Enter Your Address", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Town / City</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtcity", "", new { @class = "form-control", placeholder = "Enter Your Town/city ", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">State</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.DropDownList("State", (IEnumerable<SelectListItem>)ViewBag.Sate, "-- Select State--", new { @class = "form-control", @required = "required", @onchange = "FillDistict()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">District</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.DropDownList("District", (IEnumerable<SelectListItem>)ViewBag.ALLDistrict, "-- Select District--", new { @class = "form-control", @required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Zip Code</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtzipcode", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Zip Code", onkeypress = "return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Edit Pancard nad Name and Gst Number Modal Popup-->
+@*<div class="modal fade" id="EditnameandpancardModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:whitesmoke;">
+                    <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Profile</h4>
+                </div>
+                @using (Html.BeginForm("UpdatePanccardandmobile", "Home", FormMethod.Post))
+                {
+                    <div class="modal-body" style="margin-top:0px;">
+                        <div class="body">
+                            <form>
+                                <div class="row clearfix">
+                                    <input type="text" id="txtid2" name="txtid2" style="display:none;" />
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2" class="required">Name</label>
+                                    </div>
+
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtname", "", new { @class = "form-control", placeholder = "Enter Your Name", required = "required" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2" class="required">Aadhaar No</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtaadhaarcard", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Aadhaar Number", onkeypress = "return isNumber(event)", maxlength = "12" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2" class="required">Pancard No</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtpancard", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Pancard Number", @style = "text-transform:uppercase", maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2" class="required">Gst No</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtgst", "", new { @required = "required", @class = "form-control", @placeholder = "Enter GST Number", maxlength = "15", @style = "text-transform:uppercase" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2" class="required">Position</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.DropDownList("ddlPosition", new List<SelectListItem>
+                                               {
+                                      new SelectListItem{ Text="Select Type",Value=""},
+                                     new SelectListItem{Text="Director",Value="Director"},
+                                      new SelectListItem{Text="Authorized Signatory",Value="Authorized Signatory"}
+                                       }, new { @class = "form-control" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2" class="required">Business Type</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                @Html.DropDownList("ddlBusinessType", new List<SelectListItem>
+                                               {
+                                     new SelectListItem{ Text="Select Type",Value=""},
+                                     new SelectListItem{Text="Agriculture Machinery",Value="Agriculture Machinery"},
+                                     new SelectListItem{Text="Agriculture Fertilizer",Value="Agriculture Fertilizer"},
+                                     new SelectListItem{Text="Automobiles and Vehicles",Value="Automobiles and Vehicles"},
+                                     new SelectListItem{Text="Automobile Tyre Supply and Service",Value="Automobile Tyre Supply and Service"},
+                                     new SelectListItem{Text="Beauty and Wellness",Value="Beauty and Wellness"},
+                                     new SelectListItem{Text="Advertising Agenices",Value="Advertising Agenices"},
+                                     new SelectListItem{Text="accounting & Tax Consultants",Value="accounting & Tax Consultants"},
+                                     new SelectListItem{Text="Employment Consultants",Value="Employment Consultants"},
+                                     new SelectListItem{Text="Software Development and Sales",Value="Software Development and Sales"},
+                                     new SelectListItem{Text="Photo and Video Studio",Value="Photo and Video Studio"},
+                                     new SelectListItem{Text="Computer Repair & Services",Value="Computer Repair & Services"},
+                                     new SelectListItem{Text="Tent And Awning Shops",Value="Tent And Awning Shops"},
+                                     new SelectListItem{Text="Packers and Movers",Value="Packers and Movers"},
+                                     new SelectListItem{Text="RealEstate Consultants",Value="RealEstate Consultants"},
+                                     new SelectListItem{Text="Laundy and Dry Cleaner",Value="Laundy and Dry Cleaner"},
+                                     new SelectListItem{Text="Matrimony Services",Value="Matrimony Services"},
+                                     new SelectListItem{Text="Lawyers",Value="Lawyers"},
+                                     new SelectListItem{Text="Charitable Organisation",Value="Charitable Organisation"},
+                                     new SelectListItem{Text="Driving Classes",Value="Driving Classes"},
+                                     new SelectListItem{Text="Elementary and Secondary Schools",Value="Elementary and Secondary Schools"},
+                                     new SelectListItem{Text="Correspondance Courses",Value="Correspondance Courses"},
+                                     new SelectListItem{Text="Other Events & Entertainment",Value="Other Events & Entertainment"},
+                                     new SelectListItem{Text="Security Brokers and Dealers",Value="Security Brokers and Dealers"},
+                                     new SelectListItem{Text="Collection Agency",Value="Collection Agency"},
+                                     new SelectListItem{Text="fuel Service Stations",Value="fuel Service Stations"},
+                                    new SelectListItem{Text="Government",Value="Government"},
+                                    new SelectListItem{Text="Home Services",Value="Home Services"},
+                                    new SelectListItem{Text="Hospitals and Healthcare",Value="Hospitals and Healthcare"},
+                                    new SelectListItem{Text="Hotels, Restaurants and Food",Value="Hotels, Restaurants and Food"},
+                                    new SelectListItem{Text="Insurance Sale",Value="Insurance Sale"},
+                                    new SelectListItem{Text="Computers and Acessories",Value="Computers and Acessories"},
+                                    new SelectListItem{Text="Silver Jewellery",Value="Silver Jewellery"},
+                                    new SelectListItem{Text="Hardware Shop (Paint & Building Materials)",Value="Hardware Shop (Paint & Building Materials)"},
+                                    new SelectListItem{Text="Mobile shop",Value="Mobile shop"},
+                                    new SelectListItem{Text="Home Decor",Value="Home Decor"},
+                                    new SelectListItem{Text="Bicycle Shop, Repair and Service",Value="Bicycle Shop, Repair and Service"},
+                                    new SelectListItem{Text="Tours and Travel Agency",Value="Tours and Travel Agency"},
+                                    new SelectListItem{Text="Trucks and Others",Value="Trucks and Others"},
+                                    new SelectListItem{Text="Taxi and Car Rentals",Value="Taxi and Car Rentals"},
+                                    new SelectListItem{Text="Cruises Service",Value="Cruises Service"},
+                                      new SelectListItem{Text="Tuition and Classes",Value="Tuition and Classes"},
+                                    new SelectListItem{Text="Cable Service Providers",Value="Cable Service Providers"},
+                                    new SelectListItem{Text="Recharges and Bill Payments",Value="Recharges and Bill Payments"},
+
+                              }, new { @class = "form-control" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                        <span style="top:-2px;color:black;">Save Change</span>
+                                    </button>
+                                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                        <span style="top:-2px;color:black;">Close</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>*@
+
+<!--Edit Bankinfromation Modal Poppup popup-->
+@*<div class="modal fade" id="EditBankinfoModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:whitesmoke;">
+                    <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Bank Infromation</h4>
+                </div>
+                @using (Html.BeginForm("UpdateBankinfromation", "Home", FormMethod.Post))
+                {
+                    <div class="modal-body" style="margin-top:0px;">
+                        <div class="body">
+                            <form>
+                                <div class="row clearfix">
+                                    <input type="text" id="txtid3" name="txtid3" style="display:none;" />
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Account Holder</label>
+                                    </div>
+
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtaccholder", "", new { @class = "form-control", placeholder = "Enter Your Account Holder Name" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Bank Account No</label>
+                                    </div>
+
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtbankaccountno", "", new { @class = "form-control", placeholder = "Enter Your Bank Account Number" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">IFS Code</label>
+                                    </div>
+
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtifsc", "", new { @class = "form-control", placeholder = "Enter Your IFSC " })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Bank Name</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtbankname", "", new { @class = "form-control", placeholder = "Enter Bank Name " })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Branch Address</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                @Html.TextBox("txtbranchaddress", "", new { @class = "form-control", placeholder = "Enter Branch Address " })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                        <span style="top:-2px;color:black;">Save Change</span>
+                                    </button>
+                                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                        <span style="top:-2px;color:black;">Close</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>*@
+
+<!--Upload Aadhaar card Doc Moadl Popup-->
+@*<div class="modal fade" id="EditAadhaardocModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:whitesmoke;">
+                    <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Aadhaar Card Document</h4>
+                </div>
+                @using (Html.BeginForm("UploadAadharcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                {
+                    <div class="modal-body" style="margin-top:0px;">
+                        <div class="body">
+                            <form>
+                                <div class="row clearfix">
+                                    <input type="text" id="txtaadharid" name="txtaadharid" style="display:none;" />
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Upload Image</label>
+                                    </div>
+
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                <input type="file" class="form-control" id="file" name="file" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                        <span style="top:-2px;color:black;">Save Change</span>
+                                    </button>
+                                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                        <span style="top:-2px;color:black;">Close</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>*@
+
+<!--Upload Pancard card Doc Moadl Popup-->
+@*<div class="modal fade" id="EditPancarddocModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:whitesmoke;">
+                    <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Pancard Card Document</h4>
+                </div>
+                @using (Html.BeginForm("UploadPancardcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                {
+                    <div class="modal-body" style="margin-top:0px;">
+                        <div class="body">
+                            <form>
+                                <div class="row clearfix">
+                                    <input type="text" id="txtpancardid" name="txtpancardid" style="display:none;" />
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Upload Image</label>
+                                    </div>
+
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                <input type="file" class="form-control" id="file" name="file" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                        <span style="top:-2px;color:black;">Save Change</span>
+                                    </button>
+                                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                        <span style="top:-2px;color:black;">Close</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>*@
+
+<!--Upload Serviceaggremt card Doc Moadl Popup-->
+<div class="modal fade" id="EditServicedocModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Service Agreement Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadServiceAggrementdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtserviceid" name="txtserviceid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--Upload Registracion Certification  Doc Moadl Popup-->
+@*<div class="modal fade" id="EditRegistractiondocModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:whitesmoke;">
+                    <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload  Registraction Certificate Document</h4>
+                </div>
+                @using (Html.BeginForm("UploadRegistractionCertificatedoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                {
+                    <div class="modal-body" style="margin-top:0px;">
+                        <div class="body">
+                            <form>
+                                <div class="row clearfix">
+                                    <input type="text" id="txtRegistractionid" name="txtRegistractionid" style="display:none;" />
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Upload Image</label>
+                                    </div>
+
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #ddd;">
+                                                <input type="file" class="form-control" id="file" name="file" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                        <span style="top:-2px;color:black;">Save Change</span>
+                                    </button>
+                                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                        <span style="top:-2px;color:black;">Close</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>*@
+
+<!--Upload Address Proof  Doc Moadl Popup-->
+<div class="modal fade" id="EditAddressProofdocModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Address Proof Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadAddressProofdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtAddressproofid" name="txtAddressproofid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--Upload Profile Image   Moadl Popup-->
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script>
+    $('.classwhichraviknown').click(function () {
+        var e = $(this).find("span").data("value");
+        var currenclass = $(this);
+
+     $.ajax({
+                url: '@Url.Action("PasscodeSettingByrem", "Home")',
+                type: 'POST',
+         data: { passcodetype: e },
+                success: function (data) {
+
+                    if (data == 1)
+                    {
+
+                        currenclass.addClass('activeupto').siblings().removeClass('activeupto');
+                        location.reload();
+                    }
+                    else {
+                        //swal("Oops...", response.Message, "error");
+                    }
+                },
+                error: function (data) {
+                }
+            });
+
+    })
+
+
+</script>
+
+<script>
+    $('.for-select2').select2();
+
+
+</script>
+
+
+<script>
+    $(document).ready(function()
+    {
+        var msg = '@ViewData["msg"]';
+        if(msg !="")
+        {
+            swal("File Uploaded!", msg, "success");
+        }
+    })
+</script>
+<script type="text/javascript">
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+<script>
+    function FillDistict() {
+        var State_id = $('#State').val();
+    $.ajax({
+        url: '@Url.Action("FillDistict", "Home")',
+        type: "GET",
+        dataType: "JSON",
+
+        data: { State: State_id },
+        success: function (cities) {
+            $("#District").html("");
+            $.each(cities, function (i, District) {
+                $("#District").append(
+                    $('<option></option>').val(District.Dist_id).html(District.Dist_Desc));
+            });
+        }
+    });
+  }
+</script>
+
+<!--edit address and prifile image -->
+<script>
+
+
+
+    function editeaddress(dealerid) {
+        var url = '@Url.Action("ShowDistributorprofile", "Home")'
+        $.ajax({
+            url: url,
+            data: { dealerid: dealerid },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $("#txtid1").val(data[0].DealerId);
+                $("#txtfrimname").val(data[0].FarmName)
+                $("#txtcity").val(data[0].city);
+                $("#txtaddress").val(data[0].Address);
+                $("#txtzipcode").val(data[0].Pincode);
+                $("#State").val(data[0].State);
+                $("#District").val(data[0].District);
+
+
+
+                $('#EditaddressModal').toggle();
+                 $('.button-clicknonepr').toggle();
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+
+</script>
+<!--edit Name and Pancrad and Gst Number  image -->
+<script>
+
+       $(document).ready(function () {
+
+
+    var url = '@Url.Action("AddressFieldcheck", "Home")'
+        $.ajax({
+            url: url,
+          success: function (data) {
+
+
+
+                if (data.pancardPath != null && data.PSAStatus == "Y" && data.aadharcardPath != null && data.AadhaarStatus == "Y") {
+
+                    $('#Editaddresshide').hide();
+              }
+
+
+
+
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+});
+
+
+    function editemobileandpancard(dealerid) {
+
+        var url = '@Url.Action("Showmobileandpancardprofile", "Home")'
+        $.ajax({
+            url: url,
+            data: { dealerid: dealerid },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+
+
+
+                $("#txtid2").val(data[0].DealerId);
+                $("#txtname").val(data[0].DealerName);
+                $("#txtaadhaarcard").val(data[0].adharcard);
+                $("#txtpancard").val(data[0].pancard);
+                $("#txtgst").val(data[0].gst);
+                $("#ddlPosition").val(data[0].Position);
+                $("#ddlBusinessType").val(data[0].BusinessType);
+                   var date = data[0].DOF;
+                var dateTime = moment(date).format("YYYY-MM-DD");
+
+                $("#dateofbirth").val(dateTime);
+                  if (data[0].pancardPath != null && data[0].PSAStatus=="Y")
+                {
+                 document.getElementById("txtpancard").readOnly = true;
+
+                }
+                if (data[0].aadharcardPath != null && data[0].AadhaarStatus == "Y") {
+                  document.getElementById("txtaadhaarcard").readOnly = true;
+                }
+                if (data[0].pancardPath != null && data[0].PSAStatus == "Y" && data[0].aadharcardPath != null && data[0].AadhaarStatus == "Y") {
+                    document.getElementById("txtpancard").readOnly = true;
+                      document.getElementById("txtaadhaarcard").readOnly = true;
+                    document.getElementById("txtname").readOnly = true;
+
+                    document.getElementById("dateofbirth").readOnly = true;
+
+                }
+
+                $('#EditnameandpancardModal').toggle();
+                $('.save-profile').toggle();
+                $('.save-profile-btn').css('display' , 'none')
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+
+
+</script>
+
+
+<!--edit Bank Information-->
+<script>
+    function editebankinformation(dealerid) {
+        var url = '@Url.Action("ShowBankinfo", "Home")'
+        $.ajax({
+            url: url,
+            data: { dealerid: dealerid },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $("#txtid3").val(data[0].DealerId);
+                $("#txtaccholder").val(data[0].accountholder)
+                $("#txtbankaccountno").val(data[0].Bankaccountno);
+                $("#txtifsc").val(data[0].Ifsccode);
+                $("#txtbankname").val(data[0].bankname);
+                $("#txtbranchaddress").val(data[0].bankAddress);
+                $('#editebankinformation').toggle();
+                $('.bnk-ipt-dt').toggle();
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+
+</script>
+<!--Upload Aadhaar Card Doc Script-->
+<script>
+    function uploadaadhaarDoc(dealerid) {
+        $("#txtaadharid").val(dealerid);
+        $('#EditAadhaardocModal').css('display', 'block');
+        //$('.upload-btn').css('display', 'none');
+    }
+</script>
+
+
+<!--Upload Pancard  Card Doc Script-->
+<script>
+    function uploadpancardDoc(dealerid) {
+        $("#txtpancardid").val(dealerid);
+        $('#EditPancarddocModal').css('display', 'block');
+        //$('.upload-btn-one').css('display', 'none');
+    }
+</script>
+
+<!--Upload Upload
+Registraction Certificate  Doc Script-->
+<script>
+    function uploadRegistractionCertificateDoc(dealerid) {
+        $("#txtRegistractionid").val(dealerid);
+        $('#EditRegistractiondocModal').css('display', 'block');
+        //$('.upload-btn-two').css('display', 'none');
+    }
+</script>
+<!--Upload Service Aggrement  Doc Script-->
+<script>
+    function uploadserviceDoc(dealerid) {
+        $("#txtserviceid").val(dealerid);
+        $('#EditServicedocModal').css('display', 'block');
+        //$('.upload-btn-three').css('display', 'none');
+    }
+</script>
+
+<!--Upload Address Proof  Doc Script-->
+<script>
+    function uploadAddressProofDoc(dealerid) {
+        $("#txtAddressproofid").val(dealerid);
+        $('#EditAddressProofdocModal').css('display', 'block');
+        //$('.upload-btn-four').css('display', 'none');
+    }
+</script>
+
+<!--Upload Profile Image Script-->
+<script>
+    function uploadimage(dealerid) {
+        $("#txtprofileid").val(dealerid);
+        $('#EditProfileimageModal').show();
+        $('#otpnoneuploadshow').hide();
+    }
+</script>
+
+<!--Delete Doc -->
+
+<script type="text/javascript">
+
+    function deleteDoc(SSID,docname) {
+        swal({
+            text: "<p style='color:#948f8b; font-size:20px;border-bottom:1px solid #dddddd;margin-top:-12px;padding-bottom:12px;'>Delete " + " " + docname + " !</p>" +
+                   "</br><i class='fa fa-trash'style='font-size:72px;color:red;'></i></br><p style=''>Are you sure ?</p>",
+             html: true,
+            title:"" ,
+            showCancelButton: true,
+            confirmButtonColor: "#f9a7a7",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("DelereprofileDoc", "Home")', data: { 'SSID': SSID, 'Docname': docname }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("File Removed!", " Deleted Successfully.", "success");
+                var url = '@Url.Action("Profile", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Profile", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>
+
+
+<script>
+    $("#form-colseall").click(function () {
+
+        $('#EditaddressModal').toggle();
+        $('.button-clicknonepr').toggle();
+    });
+
+    $("#close-pancardbutton").click(function () {
+
+        $('#EditnameandpancardModal').toggle();
+        $('.save-profile').toggle();
+        $('.save-profile-btn').css('display', 'block')
+    });
+
+
+</script>
+
+<script>
+    $(".modalclass-nonepro").click(function () {
+        $('.hedingfloatmodal').css('display', 'none');
+    });
+</script>
+
+<script>
+    $("#uploadnoneotpshow").click(function () {
+        $("#otpnoneuploadshow").show();
+        $("#EditProfileimageModal").hide();
+    });
+</script>
+@*<script>
+        $('.retailer-profile-secondclass button p.uptotransction').on('click', function () {
+            $(this).addClass('activeupto').siblings().removeClass('activeupto');
+        });
+    </script>*@

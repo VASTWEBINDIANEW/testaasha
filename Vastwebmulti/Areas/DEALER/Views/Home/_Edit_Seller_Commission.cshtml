@@ -1,0 +1,172 @@
+﻿
+@{
+    Layout = null;
+}
+
+@if (ViewBag.isReport != "1")
+{
+    if (ViewBag.sellercomm != null)
+    {
+        var i = 1;
+        foreach (dynamic item in ViewBag.sellercomm)
+        {
+            var stscolor = "";
+            var img = "";
+            if (item.GetType().GetProperty("adminapproval_sts").GetValue(item, null) == "Pending")
+            {
+                stscolor = "#FF9800";
+                img = "../../ashok-images/clkk.png";
+            }
+            if (item.GetType().GetProperty("adminapproval_sts").GetValue(item, null) == "Approved")
+            {
+                stscolor = "green";
+                img = "../../ashok-images/correct.svg";
+            }
+            if (item.GetType().GetProperty("adminapproval_sts").GetValue(item, null) == "Rejected")
+            {
+                stscolor = "red";
+                img = "../../ashok-images/closes.svg";
+            }
+            <tr class="tr">
+                <td>@i</td>
+                <td><p style="margin-top:6px;"> @item.GetType().GetProperty("operator_Name").GetValue(item, null)</p></td>
+                <td>
+                    @if ((int)item.GetType().GetProperty("idno").GetValue(item, null) == ViewBag.sellercommChargeByID.idno)
+                    {
+                        <input type="number" step="any" class="form-control" name="sellcomm" id="sellcomm" value="@ViewBag.sellercommChargeByID.sellcomm" />
+                    }
+                    else
+                    {
+                        <p style="margin-top:6px;"> @item.GetType().GetProperty("sellcomm").GetValue(item, null)</p>
+                    }
+                </td>
+                <td><p style="margin-top:6px;"> @item.GetType().GetProperty("insertdate").GetValue(item, null)</p></td>
+
+                <td> <img src=@img style="width: 20px;background:@stscolor;border-radius: 50%;padding: 3px;">&nbsp; @item.GetType().GetProperty("adminapproval_sts").GetValue(item, null)</td>
+                <td><p style="margin-top:6px;"> @item.GetType().GetProperty("adminapproval_date").GetValue(item, null)</p></td>
+                <td>
+                    @if (item.GetType().GetProperty("status").GetValue(item, null) == true)
+                    {
+                        <span class="onoffswitch costom-on-second" style="float: left;border:0px;">
+                            <button class="costom-on clscall" data-bind="btnsts_@item.GetType().GetProperty("idno").GetValue(item, null)" value="ON" onclick="OperatorCodestatusupdate('@item.GetType().GetProperty("idno").GetValue(item, null)','Y')" style="border:1px solid #aaa4a4;">ON</button>
+                        </span>
+
+                    }
+                    else if (item.GetType().GetProperty("status").GetValue(item, null) == false)
+                    {
+                        <span class="onoffswitch costom-off-second" style="float: left;border:0px;">
+                            <button class="custom-off clscall" data-bind="btnsts_@item.GetType().GetProperty("idno").GetValue(item, null)" value="OFF" onclick="OperatorCodestatusupdate('@item.GetType().GetProperty("idno").GetValue(item, null)','N')" style="border:1px solid #aaa4a4;">OFF</button>
+                        </span>
+
+                    }
+                </td>
+                <td class="last-td">
+                    @if ((int)item.GetType().GetProperty("idno").GetValue(item, null) != ViewBag.sellercommChargeByID.idno)
+                    {
+                        if (item.GetType().GetProperty("adminapproval_sts").GetValue(item, null) == "Pending")
+                        {
+                            <button type="button" onclick="Editmode('@item.GetType().GetProperty("idno").GetValue(item, null)')" id="btnEdit" class="btn waves-effect shownextrow switch-edit-button swichedit-second" value="Edit">
+                                <p>Edit</p>
+                            </button>
+                        }
+                    }
+                    else
+                    {
+                        <button type="button" onclick="btnSavedata('@item.GetType().GetProperty("idno").GetValue(item, null)')" id="btnSavedata" class="btn waves-effect shownextrow switch-edit-button swichedit-second" value="Save">
+                            <p>Save</p>
+                        </button>
+                    }
+
+                </td>
+            </tr>
+            i++;
+        }
+    }
+
+}
+else
+{
+    if (ViewBag.sellercomm != null)
+    {
+        var i = 1;
+        foreach (dynamic item in ViewBag.sellercomm)
+        {
+            var stscolor = "";
+            var img = "";
+            if (item.GetType().GetProperty("adminapproval_sts").GetValue(item, null) == "Pending")
+            {
+                stscolor = "#FF9800";
+                img = "../../ashok-images/clkk.png";
+            }
+            if (item.GetType().GetProperty("adminapproval_sts").GetValue(item, null) == "Approved")
+            {
+                stscolor = "green";
+                img = "../../ashok-images/correct.svg";
+            }
+            if (item.GetType().GetProperty("adminapproval_sts").GetValue(item, null) == "Rejected")
+            {
+                stscolor = "red";
+                img = "../../ashok-images/closes.svg";
+            }
+            <tr class="tr">
+                <td>@i</td>
+                <td><p style="margin-top:6px;"> @item.GetType().GetProperty("operator_Name").GetValue(item, null)</p></td>
+                <td><p style="margin-top:6px;"> @item.GetType().GetProperty("sellcomm").GetValue(item, null)</p></td>
+                <td><p style="margin-top:6px;"> @item.GetType().GetProperty("insertdate").GetValue(item, null)</p></td>
+
+                <td> <img src=@img style="width: 20px;background:@stscolor;border-radius: 50%;padding: 3px;">&nbsp; @item.GetType().GetProperty("adminapproval_sts").GetValue(item, null)</td>
+                <td><p style="margin-top:6px;"> @item.GetType().GetProperty("adminapproval_date").GetValue(item, null)</p></td>
+                <td>
+                    @if (item.GetType().GetProperty("status").GetValue(item, null) == true)
+                    {
+                        <span class="onoffswitch costom-on-second" style="float: left;border:0px;">
+                            <button class="costom-on clscall" data-bind="btnsts_@item.GetType().GetProperty("idno").GetValue(item, null)" value="ON" id="@item.GetType().GetProperty("idno").GetValue(item, null)" onclick="OperatorCodestatusupdate('@item.GetType().GetProperty("idno").GetValue(item, null)','Y')" style="border:1px solid #aaa4a4;">ON</button>
+                        </span>
+
+                    }
+                    else if (item.GetType().GetProperty("status").GetValue(item, null) == false)
+                    {
+                        <span class="onoffswitch costom-off-second" style="float: left;border:0px;">
+                            <button class="custom-off clscall" data-bind="btnsts_@item.GetType().GetProperty("idno").GetValue(item, null)" id="@item.GetType().GetProperty("idno").GetValue(item, null)" value="OFF" onclick="OperatorCodestatusupdate('@item.GetType().GetProperty("idno").GetValue(item, null)','N')" style="border:1px solid #aaa4a4;">OFF</button>
+                        </span>
+
+                    }
+                </td>
+                <td class="last-td">
+                    @if (item.GetType().GetProperty("adminapproval_sts").GetValue(item, null) == "Pending")
+                    {
+                        <button type="button" onclick="Editmode('@item.GetType().GetProperty("idno").GetValue(item, null)')" id="btnEdit" class="btn waves-effect shownextrow switch-edit-button swichedit-second" value="Edit">
+                            <p>Edit</p>
+                        </button>
+                    }
+                </td>
+            </tr>
+            i++;
+        }
+    }
+}
+<script>
+    function btnSavedata(idno) {
+         $.ajax({
+             url: '@Url.Action("UpdateSeller_Commission", "Home")',
+             type:'POST',
+             data: { idno: idno, Sellcomm: $('#sellcomm').val()},
+
+             success: function (data) {
+
+                 setTimeout(function(){ $('#addcommbody').html(data); }, 500);
+
+            }
+        });
+
+
+    }
+
+     $('.btnssl1').on('click', function () {
+                    var $this = $(this);
+                    $this.button('loading');
+                    setTimeout(function () {
+                        $this.button('reset');
+                    }, 500);
+                });
+</script>

@@ -1,0 +1,339 @@
+﻿@model  IEnumerable<Vastwebmulti.Models.Whatsapp_user_details>
+@{
+    ViewBag.Title = "WhatsappLogin";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="api-token-sett">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            @Html.TextBox("txtmobile", "", new { @class = "form-control", @type = "number", placeholder = "Enter Mobile", @required = true })
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <button type="button" onclick="submit()" class="btn btn-danger" style="border:1px solid #c7c2c2;background:#dedddd;">
+                                <i class="fa fa-user"></i>
+                                Add New
+                            </button>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <span id="err" style="color:red"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+
+                    <div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 style="font-size: 24px;">Response URl</h2>
+                                <div id="tbl" class="table-responsive" style="margin-bottom:10px;">
+
+
+
+                                    <table id="simple-table" class="table  table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Mobile</th>
+                                                <th>Login Status</th>
+                                                <th>Insert Date</th>
+                                                <th>Purchase Date</th>
+                                                <th>Expire Date</th>
+                                                <th>QR</th>
+                                                <th>#</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                @Html.Hidden("txtid", item.idno)
+                                                @Html.Hidden("sts", item.loginstatus)
+                                                var logndate = Convert.ToDateTime(item.logintime);
+                                                var lognpdatedate = Convert.ToDateTime(item.purchasedate);
+                                                var exdate = Convert.ToDateTime(item.expdate);
+                                                <tr>
+                                                    <td>@item.mobile</td>
+                                                    <td>@item.loginstatus</td>
+                                                    <td>@logndate.ToString("dd-MM-yyyy hh:mm:ss tt")</td>
+                                                    <td>@lognpdatedate.ToString("dd-MM-yyyy hh:mm:ss tt")</td>
+                                                    <td>@exdate.ToString("dd-MM-yyyy hh:mm:ss tt")</td>
+                                                    <td>
+                                                        @if (item.qrdeatils != "")
+                                                        {
+                                                            <img id="imgsrc" alt="" src="@ViewBag.qr" style="height:242px;width:242px;" />
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (item.loginstatus.ToUpper() == "PENDING")
+                                                        {
+                                                            <button onclick="Login('@item.idno')" class="btn btn-primary"> Login </button>
+                                                        }
+                                                        @if (item.loginstatus.ToUpper() == "LOGIN" || item.loginstatus.ToUpper() == "INPROCESS")
+                                                        {
+                                                            <button onclick="custs('@item.idno')" class="btn btn-primary"> Current Status </button>
+
+                                                            <button onclick="logout('@item.idno')" class="btn btn-primary"> Logout </button>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<div id="overlay">
+    <div class="cv-spinner">
+        <span class="spinner"></span>
+    </div>
+</div>
+<style>
+    #button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 30px;
+        background-color: #eee;
+        border: solid #ccc 1px;
+        cursor: pointer;
+    }
+
+    #overlay {
+        position: fixed;
+        top: 0;
+        z-index: 100;
+        width: 100%;
+        height: 100%;
+        display: none;
+        background: rgba(0,0,0,0.6);
+    }
+
+    .cv-spinner {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px #ddd solid;
+        border-top: 4px #2e93e6 solid;
+        border-radius: 50%;
+        animation: sp-anime 0.8s infinite linear;
+    }
+
+    @@keyframes sp-anime {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .is-hide {
+        display: none;
+    }
+</style>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<script>
+    $(document).ready(function () {
+
+        var success = '@ViewData["success"]';
+        var error = '@ViewData["error"]';
+        if (success != "" && success != null) {
+            //swal("Good job!.", success, "success");
+        }
+        else if (error != "" && error != null) {
+            swal("Oops..", error, "error");
+        }
+    });
+</script>
+
+<!--Generate Token -->
+<!--Copy Token-->
+<script>
+    function myFunction(p) {
+        var copyText = document.getElementById(p);
+        copyText.select();
+        document.execCommand('copy');
+    }
+</script>
+
+<script>
+    Login = (idno) => {
+        var url = '@Url.Action("whatsapp_login", "Home")';
+        var datachk = { "id": idno };
+        var inputchk = JSON.stringify(datachk);
+        $("#overlay").fadeIn(300);
+        fetch(url, {
+            method: "post",
+            headers: { "content-type": "application/json" },
+            body: inputchk
+        }).then(response => response.json())
+            .then(resp => {
+                $("#overlay").fadeOut(300);
+                if (resp == "OK") {
+                   window.location.reload(true)
+                }
+                else {
+                    alert(resp);
+                }
+            }).catch(err => alert(err))
+    }
+
+</script>
+<script>
+    Loginagain = (idno) => {
+        var url = '@Url.Action("whatsapp_Refresh", "Home")';
+        var datachk = { "id": idno };
+        var inputchk = JSON.stringify(datachk);
+
+        fetch(url, {
+            method: "post",
+            headers: { "content-type": "application/json" },
+            body: inputchk
+        }).then(response => response.json())
+            .then(resp => {
+
+                if (resp == "OK") {
+
+                  // window.location.reload(true)
+                }
+                else {
+                    $('#sts').val("Pending")
+                    msg = "OK";
+                 //   alert(resp);
+                }
+            }).catch(err => alert(err))
+    }
+
+</script>
+<script>
+    custs = (idno) => {
+        var url = '@Url.Action("whatsapp_Status", "Home")';
+        var datachk = { "id": idno };
+        var inputchk = JSON.stringify(datachk);
+
+        fetch(url, {
+            method: "post",
+            headers: { "content-type": "application/json" },
+            body: inputchk
+        }).then(response => response.json())
+            .then(resp => {
+                alert(resp);
+                $("#tbl").load(location.href + " #tbl");
+            }).catch(err => alert(err) )
+         }
+</script>
+<script>
+    logout = (idno) => {
+        var url = '@Url.Action("whatsapp_logout", "Home")';
+        var datachk = { "id": idno };
+        var inputchk = JSON.stringify(datachk);
+
+        fetch(url, {
+            method: "post",
+            headers: { "content-type": "application/json" },
+            body: inputchk
+        }).then(response => response.json())
+            .then(resp => {
+                alert(resp);
+                $("#tbl").load(location.href + " #tbl");
+            }).catch(err => alert(err))
+    }
+</script>
+<script>
+    submit = () => {
+        var mobile = $('#txtmobile').val();
+        if (mobile != "") {
+            var len = mobile.length;
+            if (len == 10) {
+                var url = '@Url.Action("whatsapp_login_insert", "Home")';
+                var datachk = { "mobile": mobile };
+                var inputchk = JSON.stringify(datachk);
+                fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: inputchk
+                }).then(Response => Response.json())
+                    .then(resp => {
+                        if (resp == "OK") {
+                            window.location.reload(true)
+                        }
+                        else {
+                            $('#err').text(resp);
+                        }
+                    }).catch(err => alert(err))
+            }
+            else {
+                $('#err').text("Enter Valid Mobile Number");
+            }
+        }
+        else {
+            $('#err').text("Enter Mobile Number");
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        var images = $('#imgsrc').attr('src');
+        var idno = $('#txtid').val();
+        var lsts = $('#sts').val();
+      
+        if (lsts == "Inprocess") {
+            const interval = setInterval(function () {
+                var lsts1 = $('#sts').val();
+   
+                if (lsts1 == "Inprocess" || lsts1 == "Pending") {
+                    Loginagain(idno)
+                    $("#tbl").load(location.href + " #tbl");
+                }
+                else if (lsts1 == "LOGIN") {
+                    $("#tbl").load(location.href + " #tbl");
+                }
+                // method to be executed;
+            }, 10000);
+         
+           // setTimeout(increment, 10000);
+        };
+        //function increment() {
+        //    var lsts1 = $('#sts').val();
+        //    if (lsts1 == "Inprocess") {
+        //        Loginagain(idno)
+        //        $("#tbl").load(location.href + " #tbl");
+              
+        //    }
+        //}
+    });
+</script>
+
+

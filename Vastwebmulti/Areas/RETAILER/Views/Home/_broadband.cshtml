@@ -1,0 +1,467 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.remmulti
+
+
+<style>
+
+    .loader {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+
+    @@media screen and (max-width:1440px) {
+        .Recharg11 {
+            font-size: 17px;
+        }
+    }
+
+    @@media screen and (max-width:1080px) {
+        .Recharg11 {
+            font-size: 14px;
+        }
+    }
+</style>
+<div id="broadshow" class="row" style="padding-left: 4px;">
+    <div class="col-md-4 elecpay-first broadshow-class">
+        <div>
+            <p id="" class="insurancemessage22" style=" top:-15px !important;margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="input-group">
+                @Html.DropDownList("broadbandddltype", ViewBag.Broadband as SelectList, "Select Operators", new { id = "broadbandddltype", @class = "form-control", required = "required", onchange = "broadbandddl(this)" })
+                <div class="input-group-addon in-addon">
+
+                </div>
+
+            </div>
+            <!-- /.input group -->
+        </div>
+
+    </div>
+    <div class="col-md-3">
+        <div>
+            <p id="broadbandmessage" class="insurancemessage22" style="top:-16px !important; margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="txtelectricity1" style="margin-top:-1px; height:37px;">
+                <input type="text" id="txtbroadbandno" name="txtbroadbandno" class="form-control" placeholder="Enter User ID " onkeypress="return isNumber(event)" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2" id="wamount-second-f">
+        <div>
+            <p id="broadbandamountmessage" class="insurancemessage22" style="top:-16px !important; margin-top: 10px; color: #E91E63; font-size: 10px; padding-left: 1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom: 0px;">
+            <div class="txtelectricity1" style="margin-top:-1px; height:37px;">
+                <input type="text" id="broadbandamount" name="broadbandamount" class="form-control" placeholder="Enter Amount" style="padding-left:0px;" onkeypress="return AmountWithDecimal(this, event)" />
+                <!--View Bill button--->
+                <div class="col-md-1 wamount-input-type">
+                    <center>
+                        <div class="form-group" style="margin-bottom:0px;">
+                            <div class="form-line" style="border-bottom:none;">
+                                <input type="submit" id="btnnn6" class="btn bg-blue-grey" value="View Bill" style="height: 37px;" onclick="Getbroadbandviewbill('broadbandddltype')" />
+                            </div>
+                        </div>
+                    </center>
+                </div>
+                <!---add button vive-->
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 gasamount-input-before">
+        <center>
+            <div class="form-group" style="margin-bottom:0px;">
+                <div class="form-line" style="margin-top:-1px !important; border-bottom:none;">
+                    <input type="submit" id="btn6" class="btn bg-blue-grey" value="Continue" style="height:37px;" onclick="getbroadbandcontinuebtn('broadbandddltype')" />
+
+
+                </div>
+            </div>
+        </center>
+
+    </div>
+    <!--View Bill button
+    <div class="col-md-1">
+        <center>
+            <div class="form-group" style="margin-bottom:0px;">
+                <div class="form-line" style="margin-top:38px; border-bottom:none;">
+                    <input type="submit" id="btnnn" class="btn bg-blue-grey" value="View Bill" style="height:37px;" onclick="Getbroadbandviewbill('broadbandddltype')" />
+                </div>
+            </div>
+        </center>
+    </div>
+    add button vive-->
+
+</div>
+
+<div id="broadmsgBox" style="margin-top:10px;"></div>
+
+<table id="confirmbroad" class="for-prepaid" style="width:100%;margin-top:-11px;display:none;">
+    <tr>
+        <th style="width:10%;"></th>
+        <th style="width:25%;">Operator</th>
+        <th style="width:25%;">Recharge to</th>
+        <th style="width:10%;">amount</th>
+        <th style="width:15%;">Service Fee </th>
+        @if (Model.Ispin == true)
+        {
+            <th style="width:15%;">Pin </th>
+        }
+        <th style="width:15%;">Action</th>
+    </tr>
+    <tr>
+        <td>
+            <button style="padding: 5px 20px;" onclick="backbroad()"><img src="~/AdminDesign/images/back.svg" style="width:18px;" /></button>
+        </td>
+        <td style="font-size: 24px;"><b><span id="showoptbroad"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 24px;"><b> <span id="shownumberbroad"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 24px;"><b><span id="showamountbroad"></span></b></td>
+        <td>
+            <input type="number" class="form-control" id="servicefeebroad" placeholder="Enter Fee" />
+            <input type="hidden" name="broadbandduedate" id="broadbandduedate" />
+        </td>
+        @if (Model.Ispin == true)
+        {
+            <td style="font-size: 24px;">
+                <input style=" width: 160px; " type="password"
+                       id="broadRechargepin"
+                       class="form-control text-center"
+                       placeholder="Enter PIN"
+                       maxlength="6"
+                       autocomplete="off" />
+                <span id="broadpinError"
+                      style="color:red; font-size:13px; display:none; margin-top:5px;">
+                </span>
+            </td>
+
+
+        }
+
+        <td><button class="Recharg11" style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="broadprocessToPay()">Procces To Pay</button></td>
+
+        @*<td><button class="Recharg11" style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="broadrechargeconfirm()">Procces To Pay</button></td>*@
+
+    </tr>
+</table>
+<table id="rechargeconfirmbroad" class="for-prepaid" style="width:100%;margin-top:-11px;display:none;">
+    <tr>
+        <th style="width:25%;">Recharge Status</th>
+        <th style="width:37%;">Message</th>
+        <th style="width:11%;">Action</th>
+    </tr>
+    <tr>
+        <td style="font-size: 20px;"><b> <span id="rchstatuschkbroad"></span> </b></td>
+        <td class="border-centerbe border-centerbess" style="font-size: 20px;"><b><span id="rchmsgbroad"></span></b></td>
+        <td><button class="Recharg11" style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="Rechargeagainbroad()">Recharge Again</button></td>
+    </tr>
+</table>
+
+<div class="loader loaderwww"></div>
+
+
+
+
+
+<script>
+
+     var isPinOn = @Model.Ispin.ToString().ToLower();
+
+    function broadprocessToPay() {
+
+     if (isPinOn) {
+
+         var pin = $('#broadRechargepin').val();
+
+
+         if (!pin) {
+             alert('Please enter transaction PIN');
+             $('#broadRechargepin').focus();
+             return;
+         }
+
+         broadrechargeconfirm(pin);
+     }
+     else {
+         broadrechargeconfirm('');
+     }
+ }
+
+</script>
+
+
+
+<script>
+    function showMsg(msg, type) {
+
+        var color = (type === "success") ? "green" : "red";
+
+        $('#broadmsgBox').html(
+            '<div style="color:' + color + '; font-weight:bold;">' + msg + '</div>'
+        );
+
+        setTimeout(function () {
+            $('#broadmsgBox').html('');
+        }, 5000);
+    }
+</script>
+
+
+<script>
+    j('#broadbandddltype').select2();
+</script>
+<!--broadband Continue Button script-->
+<script>
+    function getbroadbandcontinuebtn(b) {
+        var e = document.getElementById(b);
+        var broadbandddltext = e.options[e.selectedIndex].text;
+        var broadbandddlvalue = e.options[e.selectedIndex].value;
+        var broadbandno = $("#txtbroadbandno").val();
+        var broadbandamount = $("#broadbandamount").val();
+        var duedate = $("#broadbandduedate").val();
+        /* call function */
+        var sts = getbroadbandcontiunebtn(broadbandddltext, broadbandno, broadbandamount);
+
+        if (sts == true) {
+            $('#showoptbroad').text(broadbandddltext);
+            $('#shownumberbroad').text(broadbandno);
+            $('#showamountbroad').text(broadbandamount);
+            $('#broadbandduedate').text(duedate);
+            $('#broadshow').hide();
+            $('#confirmbroad').show();
+            //    Recharge(broadbandddltext, broadbandddlvalue, broadbandno, broadbandamount, "", "", "", "", "0");
+            event.preventDefault();
+            return false;
+        }
+        else {
+            event.preventDefault();
+            return false;
+        }
+    }
+</script>
+
+<!--Broadband View Bill -->
+<script>
+    function Getbroadbandviewbill(b) {
+        var e = document.getElementById(b);
+        var broadbandddltext = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var broadbandno = $("#txtbroadbandno").val();
+        /* call function */
+        var sts = getbroadbandcontiunebtn(broadbandddltext, broadbandno, "10");
+        if (sts == true) {
+            viewbillbroad(broadbandddltext, eleddlvalue, broadbandno, "10", "", "", "", "");
+            event.preventDefault();
+            return false
+        }
+        else {
+            event.preventDefault();
+            return false
+        }
+    }
+</script>
+<script>
+    function viewbillbroad(optname, optvalue, mobileno, amount, optional1, optional2, optional3, optional4) {
+           $.ajax({
+            type: "POST",
+            url: "@Url.Action("viewbill", "Home")",
+            data: { OperatorName: optname, OptCode: optvalue, mobileno: mobileno, Amount: amount, optional1: optional1, optional2: optional2, optional3: optional3, optional4: optional4 },
+            cache: false,
+            dataType: 'json',
+            closeOnConfirm: true,
+               success: function (result) {
+                   console.log(result.Message)
+                   console.log(result)
+                   if (result.Response == 'SUCCESS') {
+                       var displayValues = "";
+                       var price = result.Price;
+                       var BIllduedate = result.billduedate;
+                       const displayValuesArray = JSON.parse(result.DisplayValues);
+
+                       // Access the value associated with the "label" "Customer Name"
+                       const customerNameValue = displayValuesArray[0].value;
+                       var newrow = "<table class='col-sm-4 table-responsive table-bordered'><tr>";
+                       newrow += "<td>" + displayValues + "</td></tr>";
+                       newrow += "<tr><td> Bill Amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ::  " + result.Price + "</td></tr>";
+                       newrow += "<tr><td> Due Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   ::  " + result.billduedate + "</td></tr>";
+                       newrow += "<tr><td> Costomer Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   ::  " + customerNameValue + "</td></tr>";
+                       newrow += "</table>";
+                       $('#broadband1').append(newrow);
+                       $('#broadbandinfo').css('display', 'block');
+                       displayValues = price;
+                       if (price != "") {
+                           //price = parseInt(price);
+                           $('#broadbandamount').val(price);
+                           $('#broadbandduedate').val(BIllduedate);
+                           //swal("Success!", displayValues, "success")
+                       }
+                   }
+                   if (result.Response == 'ERROR') {
+                       $('.loader').hide();
+                       var newRow = "<div class='col-sm-4' style='text-align: left;color:red'>" +
+                           "" + result.Message + ""
+                       "</div>";
+
+                       $('#broadbandamount').val('');
+                       $('#broadbandduedate').val('');
+                       $('#broadband1').append(newRow);
+                       $('#broadbandinfo').css('display', 'block');
+                   }
+            }
+        })
+    }
+</script>
+
+<script>
+    function backbroad() {
+
+        $('#broadshow').show();
+        $('#confirmbroad').hide();
+        $('#rechargeconfirmbroad').hide();
+    }
+</script>
+<script>
+    function broadrechargeconfirm(pinValue) {
+
+        var e = document.getElementById("broadbandddltype");
+        var broadbandddltext = e.options[e.selectedIndex].text;
+        var broadbandddlvalue = e.options[e.selectedIndex].value;
+        var broadbandno = $("#txtbroadbandno").val();
+        var broadbandamount = $("#broadbandamount").val();
+        var servicefeebroad = $("#servicefeebroad").val();
+        var duedate = $("#broadbandduedate").val();
+        if (servicefeebroad != "") {
+            /* call function */
+            var sts = getbroadbandcontiunebtn(broadbandddltext, broadbandno, broadbandamount);
+            if (sts == true) {
+                $("#servicefeebroad").css("border-color", "#000000");
+                //$("#txtbroadbandno").val("");
+                //$("#broadbandamount").val("");
+              //  if (broadbandno != "" && broadbandamount != "") {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Recharge","Home")",
+                        data: { OperatorName: broadbandddltext, OptCode: broadbandddlvalue, mobileno: broadbandno, Amount: broadbandamount, optional1: "", optional2: "", optional3: "", optional4: "", comm: "", BillRefId: "", servicefee: servicefeebroad, billduedate: duedate, Rechargepin: pinValue },
+                        cache: false,
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('.loader').show();
+                        },
+                        success: function (result) {
+
+
+
+                            // 🔴 Clear old PIN error every time
+                            $('#broadpinError').hide().text("");
+
+                            /* 🔴 PIN ERROR — SAME PAGE */
+                            if (result.status && (
+                                result.status === "PIN_REQUIRED" ||
+                                result.status === "INVALID_PIN" ||
+                                result.status === "PIN_NOT_SET")) {
+
+                                $('#broadpinError').text(result.message).show();
+                                $('.loader').hide();
+                                return; // 🚫 STOP ONLY FOR PIN ERROR
+                            }
+
+                            var status = result.Response;
+                            var message = result.Message;
+                            if (status == "GATEWAY") {
+                                window.open(message, "_self");
+                                $('#rchstatuschkbroad').text("Pending");
+                                $('#rchmsgbroad').text("Please Wait While Redirect The Gateway");
+                            }
+                            else {
+                                $('#rchstatuschkbroad').text(status);
+                                $('#rchmsgbroad').text(message);
+
+                                $("#txtbroadbandno").val("");
+                                $("#broadbandamount").val("");
+
+                            }
+
+                            $('#confirmbroad').hide();
+                            $('#rechargeconfirmbroad').show();
+                        },
+                        complete: function () {
+                            $('.loader').hide();
+                            $.ajax({
+                                url: '@Url.Action("showrecentrecharge", "Home")',
+                                type: 'GET',
+                                dataType: "html",
+                                data: { type: "broadband" },
+                                success: function (data) {
+                                    $('#reportchk').html(data);
+                                },
+                                error: function (data) {
+
+                                }
+                            });
+                        },
+                        error: function () {
+                            $('.loader').hide();
+                        }
+                    })
+                //}
+            }
+        }
+        else {
+              $("#servicefeebroad").css("border-color", "#FF0000");
+        }
+    }
+</script>
+<script>
+    function Rechargeagainbroad() {
+        $('#numbershowmobile').text();
+        j('#broadbandddltype').val("");
+        j('#broadbandddltype').select2().trigger('change');
+        $('#txtbroadbandno').val("");
+        $('#broadbandamount').val("");
+        $('#broadshow').show();
+        $('#confirmbroad').hide();
+        $('#rechargeconfirmbroad').hide();
+    }
+</script>

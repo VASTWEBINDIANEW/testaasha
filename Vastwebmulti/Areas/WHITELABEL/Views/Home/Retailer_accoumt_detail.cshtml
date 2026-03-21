@@ -1,0 +1,158 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Whitelabel_retailer_Reamin_Cr_report_Result>
+@{
+    ViewBag.Title = "Retailer_accoumt_detail";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+
+<style>
+    .table-bordered tbody tr td {
+        padding: 8px 10px;
+    }
+
+    .white-l-search-nine {
+        width: auto;
+        float: right;
+    }
+
+    .col-md-6 input {
+        float: right;
+        width: auto;
+        margin-left: 5px !important;
+    }
+
+    @@media only screen and (max-width:992px) {
+        .col-md-6 {
+            float: left;
+            width: 50%;
+        }
+    }
+
+    @@media only screen and (max-width:767px) {
+        .col-md-6 {
+            width: 100% !important;
+            float: left !important;
+            padding: 0 15px !important;
+        }
+
+        .col-md-6 input {
+            float: left;
+        }
+
+        .col-md-6 input#myInput {
+            margin: 0 !important;
+        }
+        #divEditFormComm, .table-responsive {
+            border: 1px solid;
+        }
+    }
+    @@media only screen and (max-width:480px) {
+        .col-md-6 input#myInput {
+            width: 159px;
+        }
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="bread-same-all-page">
+                    <ul>
+                        <li class="smli">
+                            <a href="@Url.Action("Dashboard", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;">
+                            </a>
+                        </li>
+                        <li class="fullbodydycolorbg tmw-total-color-one">
+                            Retailer Account's Balance
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6" style="">
+                <div class="white-l-search-nine">
+
+                    <div class="web-white-filter fil" style="float: right;">
+                        <input onclick="excel()" type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;" />
+                        <input onclick="PDF()" type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;" />
+                    </div>
+
+                </div>
+                <input class="form-control" id="myInput" type="text" placeholder="Search.." style="height:32px;">
+
+            </div>
+        </div>
+        <div class="row clearfix" style="margin-top:10px;">
+
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="dtBasicExample" class="table table-bordered table-striped table-hover" style="width:100%;">
+                        <thead style="background:#f5f5f5;">
+                            <tr>
+                                <th>Retailer Firm</th>
+                                <th>Retailer Name</th>
+                                <th>Registred No.</th>
+                                <th>Account Balance</th>
+                                <th>Admin Credit</th>
+                                <th>Distributor Credit</th>
+                            </tr>
+                            <tr style="color:#fff;background-color:#a4a0a0;">
+                                <th colspan="3">Sub Total</th>
+                                <th> @Model.Sum(aa => aa.remainbal)</th>
+                                <th> @Model.Sum(aa => aa.cr)</th>
+                                <th> @Model.Sum(aa => aa.cr1)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body">
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Frm_Name </td>
+                                    <td>@item.RetailerName </td>
+                                    <td>@item.Mobile </td>
+                                    <td>@item.remainbal </td>
+                                    <td>@item.cr </td>
+                                    <td>@item.cr1 </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script>
+    function excel() {
+        var url = '@Url.Action("ExportToExcel_to_Retailer", "Home")';
+        location.href = url;
+    }
+    function PDF() {
+            html2canvas(document.getElementById('dtBasicExample'), {
+                onrendered: function (canvas) {
+                    var data = canvas.toDataURL();
+                    var docDefinition = {
+                        content: [{
+                            image: data,
+                            width: 500
+                        }]
+                    };
+                    pdfMake.createPdf(docDefinition).download("Retailer_remain_balance.pdf");
+                }
+            });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#body tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+

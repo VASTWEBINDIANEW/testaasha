@@ -1,0 +1,125 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.Airtel_CMS_Slab
+@using (Ajax.BeginForm("_Airtel_comm", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+{
+    <style>
+        span.range_one_1 {
+            font-size: 12px !important;
+            font-weight: bold;
+            color: var(--main-bg-lcolor) !important;
+            border-bottom: 1px solid var(--main-bg-lcolor) !important;
+            border-width: thin;
+            padding-bottom: 3px;
+        }
+
+        #updatecolm p {
+            font-size: 9px;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+
+
+
+
+    <input id="btnsubmit" type="submit" value="Save Now" class="btn  waves-effect" style="display:none;" />
+    <div class="slab-table">
+        <table id="updatecolm" class="table table-bordered example-second third-design-table" style="margin-top: 15px;">
+            <thead class="navbar" style="position:initial;">
+                <tr>
+                    <th rowspan="3" style="text-align:center">Operator&nbsp;Name</th>
+                    <th style="text-align:center">Master&nbsp;Distributor&nbsp;(M/D)&nbsp;%</th>
+                    <th style="text-align:center">Distributor&nbsp;%</th>
+                    <th style="text-align:center">Retailer&nbsp;%</th>
+                </tr>
+
+                @*<tr>
+                        @{
+                            var range1 = Convert.ToInt32(@Model.AmountRange[0].maximum1);
+                            var range2 = Convert.ToInt32(@Model.AmountRange[0].maximum2);
+                            var rangee1 = range1 + 1;
+                            var rangee = range2 + 1;
+                        }
+                        <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                        <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                        <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+                        <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                        <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                        <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+                        <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                        <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                        <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+                    </tr>*@
+            </thead>
+            <tbody id="tbodyshow">
+                @foreach (var item in Model.common)
+                {
+                    <tr>
+                        <td>@item.OperatorName</td>
+                        <td class="text-center">@item.mastercomm</td>
+                        <td class="text-center">@item.dlmcomm</td>
+                        <td class="text-center">@item.retailercomm</td>
+                    </tr>
+                }
+            </tbody>
+            <tbody id="tbodyedit" style="display:none;">
+                @for (int i = 0; i < Model.common.Count; i++)
+                {
+                    <tr>
+                        @Html.HiddenFor(a => a.common[i].idno)
+                        <td>
+                            @Html.DisplayFor(a => a.common[i].OperatorName)
+                        </td>
+                        <td>
+                            @Html.EditorFor(a => a.common[i].mastercomm, new { htmlAttributes = new { @style = "width:70px !important" } })
+                            @Html.ValidationMessageFor(a => a.common[i].mastercomm)
+                        </td>
+                        <td>
+                            @Html.EditorFor(a => a.common[i].dlmcomm, new { htmlAttributes = new { @style = "width:70px !important" } })
+                            @Html.ValidationMessageFor(a => a.common[i].dlmcomm)
+                        </td>
+                        <td>
+                            @Html.EditorFor(a => a.common[i].retailercomm, new { htmlAttributes = new { @style = "width:70px !important" } })
+                            @Html.ValidationMessageFor(a => a.common[i].retailercomm)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<script>
+    function OnSuccess() {
+        $('#btnsubmit').hide();
+        $('#btnEdit').show();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.second-design .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

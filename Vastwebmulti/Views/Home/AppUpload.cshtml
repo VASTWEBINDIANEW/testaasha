@@ -1,0 +1,203 @@
+﻿@using Vastwebmulti.Models;
+
+@{
+    VastwebmultiEntities DB = new VastwebmultiEntities();
+    var url = Request.Url.GetLeftPart(UriPartial.Authority) + Request.ApplicationPath;
+    var admindetail = DB.Admin_details.ToList();
+    var Firm_Name = admindetail.SingleOrDefault().Companyname;
+    var weburl = admindetail.SingleOrDefault().WebsiteUrl;
+    var weburl2 = "http://" + weburl;
+    var logoimage = "";
+    var logo = DB.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+}
+
+<style>
+    .select2-selection.select2-selection--single {
+        border-radius: 0px !important;
+        height: 32px !important;
+        border-color: #ccc !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 32px !important;
+    }
+
+    @@media screen and (max-width:766px) {
+        .col-md-6 {
+            width: 100%;
+            float: left;
+            margin-bottom: 15px;
+        }
+    }
+
+    @@media only screen and (max-width:480px) {
+        .white-main-play-api .col-md-12 > p {
+            font-size: 18px !important;
+        }
+
+        .admin-apk input, .admin-apk select, .admin-apk .form-group > div {
+            width: 55% !important;
+        }
+
+        .admin-apk button {
+            padding: 0px 20px;
+        }
+
+        .table-responsive > .table-bordered > thead > tr > th:first-child, .table-responsive > .table-bordered > thead > tr > td:first-child,
+        .table-responsive > .table-bordered > thead > tr > th:last-child {
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+    }
+</style>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/mainfrontdesign/css/bootstrap.min.css" />
+    <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+</head>
+<body>
+    <section class="content">
+        <center style=" background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;">
+
+            <a href="@weburl2" rel="external nofollow noopener" target="_blank"><img src="@Url.Content("~/" + @logoimage)" class="img-responsive" alt="@weburl" title=" @weburl " style="padding:6px;width:135px;" /></a>
+
+            <strong style=" color: black; font-size: 15px; border: 2px solid #ccc; background-color: white; padding: 1px 4px;"> Company Name : @Firm_Name</strong>
+        </center>
+        <div class="container-fluid">
+
+
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12 input-border-third">
+                    <div class="row">
+                        <div @*class="col-md-6"*@ style="width: 50%; margin: auto; border: 1px solid black; border-radius: 10px; margin-top: 20px; margin-bottom: 20px; box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px; ">
+                            <div class="main-play-api">
+                                <div class="body">
+                                    <div class="row" style="margin: auto;">
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                @using (Html.BeginForm("Uploadadminapk", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                                {
+                                                    <div class="col-md-12 tmw-sp-i admin-apk current-tab-seconddesign">
+                                                        <fieldset style="margin-top: 30px;">
+                                                            <legend>APK File</legend>
+                                                            <div class="form-group button-seconddesign">
+                                                                <input class="form-control" type="text" placeholder="Enter Application Latest Version" style="width: 100% !important; margin: 11px 0px; " id="txtuploadedlink1" name="txtuploadedlink1" />
+                                                                <input class="form-control form-control-sm" type="file" id="Adminapk" name="Adminapk" />
+                                                                <button type="submit" class="fullbodydycolorbg btn" style="margin-top:15px;margin-bottom:10px;"><span style="color:#000;position:relative;">Upload Apk</span></button>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="table-responsive" style="position:inherit;">
+                                                <table class="table table-success table-striped-columns" style="width:100%;">
+                                                    <thead style="background-color:whitesmoke;">
+                                                        <tr>
+                                                            <th style="border: 1px solid;">File Name</th>
+                                                            <th style="border: 1px solid;">Files</th>
+                                                            <th style="border: 1px solid;">Version</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="border: 1px solid;">APK Name</td>
+                                                            <td style="border: 1px solid;"><p style="font-size:18PX;color:green;"> @ViewBag.apkfilename</p></td>
+                                                            <td style="border: 1px solid;"><p style="font-size:18PX;color:green;"> @ViewBag.Apk_Version</p></td>
+
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                @using (Html.BeginForm("AddGoogleconsole", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                                {
+                                                    <div class="col-md-12 tmw-sp-i admin-apk current-tab-seconddesign">
+                                                        <fieldset style="margin-top: 30px;">
+                                                            <legend>Add User Info</legend>
+                                                            <div class="form-group button-seconddesign">
+                                                                <input class="form-control" type="number" placeholder="Enter Reatiler Mobile(Required)" style="width: 100% !important; margin: 11px 0px; " id="txtMobile" name="txtMobile" required />
+                                                                <input class="form-control" type="text" placeholder="Enter Reatiler Email(Optional)" style="width: 100% !important; margin: 11px 0px; " id="txtEmail" name="txtEmail" />
+                                                                <button type="submit" class="fullbodydycolorbg btn" style="margin-top:15px;margin-bottom:10px;"><span style="color:#000;position:relative;">Add Detail</span></button>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="table-responsive" style="position:inherit;">
+                                                <table class="table table-success table-striped-columns" style="width:100%;">
+                                                    <thead style="background-color:whitesmoke;">
+                                                        <legend>Added User Info</legend>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            @foreach (var item in ViewBag.getlist)
+                                                            {
+                                                                <td style="border: 1px solid;"><p style="font-size:18PX;color:green;"> @item.Mobile</p></td>
+                                                            }
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+
+
+@*jquery core js*@
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+
+
+<script type="text/javascript">
+     var succ = '@ViewBag.success';
+        var error = '@ViewBag.error';
+        if (succ != "" && succ != null) {
+            swal("good job!", succ, "success");
+        }
+        if (error != "" && error != null) {
+            swal("oops...", error, "error");
+        }
+</script>

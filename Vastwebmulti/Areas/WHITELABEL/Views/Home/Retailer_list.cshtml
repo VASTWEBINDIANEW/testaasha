@@ -1,0 +1,1680 @@
+﻿
+@model Vastwebmulti.Areas.WHITELABEL.Models.Whitelabel_RetailerDetalsModel
+@{
+    ViewBag.Title = "Retailer_list";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+<style>
+    .btn-group, .btn-group-vertical {
+        box-shadow: none;
+    }
+
+    .toast-top-right1 {
+        top: 65px;
+        left: 81%;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .for-search {
+        position: absolute;
+        right: 130px;
+    }
+
+        .for-search input {
+            width: 250px;
+            border: 1px solid #dbdbdb;
+            padding: 3px 10px;
+        }
+    .retailerList_Page ul.tabs li.current {
+        background-image: linear-gradient(to right, @PageData["Globalfirst"], @PageData["GlobalSecond"] ) !important;
+        @*background: @PageData["GlobalSecond"] !important;*@
+        border: 0 !important;
+    }
+    @@media only screen and (max-width:767px) {
+        .retailerList_Page #Retailertablelist {
+            height: auto !important;
+        }
+    }
+    @@media only screen and (max-width:520px) {
+        .web-white-filter {
+            position: static !important;
+        }
+
+        .for-search {
+            position: absolute;
+            top: 107px;
+        }
+
+            .for-search input {
+                width: 100%;
+            }
+    }
+</style>
+<section class="content retailerList_Page">
+    <div class="container-fluid">
+
+        <div class="bread-same-all-page">
+            <ul>
+                <li class="smli">
+                    <a href="@Url.Action("Dashboard", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                        Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;" />
+                    </a>
+                </li>
+                <li class="fullbodydycolorbg tmw-total-color-one">
+                    Retailers
+                </li>
+            </ul>
+        </div>
+        <div class="web-white-filter" style="float: right;position:absolute;right:15px;">
+            <input type="button" id="btnExportA" value="Export" style="margin-left:0px;font-size: 11px;float: left; padding: 0px 4px;height:28px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+            <input type="button" id="btnPDFA" value="PDF" style="margin-left:7px;font-size: 11px;float: left; padding: 0px 4px;height:28px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+            <iframe id="txtArea1" style="display:none"></iframe>
+        </div>
+        <div class="for-search">
+            <input id="myInput" type="text" placeholder="Search..." onkeyup="myFunction()" />
+        </div>
+
+        <!--////-->
+        <div class="row clearfix" style="margin-bottom:40px;">
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="left-tabs width100 float-left">
+                    <ul class="tabs width100 float-left">
+                        <li class="tab-link current" data-tab="tab-9" style="width:100%;"><img src="~/images/reportimage/add-user-button.svg" alt="add user" class="create-add-image">Create Retailers</li>
+                     
+                    </ul>
+
+                    @*@using (Html.BeginForm("Insert_retailer", "Home", FormMethod.Post))
+                        {*@
+
+                    <div id="tab-9" class="tab-content current custom-table-responsive" style="height:100% !important;border: 1px solid #ddd;background: #f5f5f5 !important;">
+                        @using (Ajax.BeginForm("Insert_retailer", new AjaxOptions { HttpMethod = "Post", OnSuccess = "RegisterSuccess", OnBegin = "ajaxValidate()", LoadingElementId = "div-loader" }))
+
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="left-four-tabs width100 float-left">
+
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <label for="email_address_2">
+                                            Distributor ID  @Html.ValidationMessageFor(m => m.DealerID, "", new { @class = "text-danger" })
+                                        </label>
+                                        <div class="form-group">
+                                            <div class="custom-district">
+                                                @Html.DropDownListFor(m => m.DealerID, Model.Dealerlist, "Please Distributor", new { @class = "form-control" })
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+
+
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <label for="email_address_2">Retailer Name @Html.ValidationMessageFor(m => m.retailename1, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="">
+                                                @Html.EditorFor(model => model.retailename1, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Retailer Name", required = "required" } })
+                                                @* @Html.TextBox("retailename1", "", new { @class = "form-control", placeholder = "Enter Retailer Name", required = "required" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+
+
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <label for="email_address_2">Firm Name @Html.ValidationMessageFor(m => m.firmnm1, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="">
+                                                @Html.EditorFor(model => model.firmnm1, new { htmlAttributes = new { @class = "form-control", maxlength = "40", placeholder = "Enter Firm Name", required = "required" } })
+
+                                                @* @Html.TextBox("firmnm1", "", new { @class = "form-control", placeholder = "Enter Firm Name" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <label for="email_address_2">Email-ID @Html.ValidationMessageFor(m => m.email1, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="">
+                                                @Html.EditorFor(model => model.email1, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Email Id", required = "required" } })
+
+                                                @* @Html.TextBox("email1", "", new { @class = "form-control", placeholder = "Enter Email Id", required = "required" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                        <label for="email_address_2">(+91) Mobile @Html.ValidationMessageFor(m => m.Mobile1, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="">
+                                                @Html.EditorFor(model => model.Mobile1, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Mobile Number", required = "required", @onkeypress = "javascript:return isNumber(event)", maxlength = 10 } })
+
+                                                @* @Html.TextBox("Mobile1", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Mobile Number", @onkeypress = "javascript:return isNumber(event)", maxlength = 10 })*@
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                        <label for="email_address_2">PAN Card @Html.ValidationMessageFor(m => m.txtpencardno, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="">
+                                                @Html.EditorFor(model => model.txtpencardno, new { htmlAttributes = new { @class = "form-control upper-case", placeholder = "Enter PAN Card No", maxlength = 10, minlength = 10 } })
+
+                                                @* @Html.TextBox("txtpencardno", "", new { @class = "form-control", placeholder = "Enter PAN Card No", maxlength = 10, minlength = 10, })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                        <label for="email_address_2">State  @Html.ValidationMessage("State1", "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="custom-district">
+                                                @Html.DropDownList("State1", (IEnumerable<SelectListItem>)ViewBag.state, "Select State", new { @class = "form-control", required = "required" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                        <label for="email_address_2">District @Html.ValidationMessageFor(m => m.District1, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="custom-district">
+
+                                                <select id="District1" name="District1" class="form-control show-tick" required="required">
+                                                    <option>
+                                                        Select District
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <label for="email_address_2">Address @Html.ValidationMessageFor(m => m.Address1, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="">
+                                                @Html.TextArea("Address1", "", new { @class = "form-control", placeholder = "Enter Address ", required = "required", maxlength = "40", @onkeypress = "javascript:return AddValidation(event)" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                        <label for="email_address_2">Area Pin Code @Html.ValidationMessageFor(m => m.Pincode1, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="">
+                                                @Html.TextBox("Pincode1", "", new { @class = "form-control", placeholder = "Enter Pin Code", required = "required", onkeypress = "return isNumber(event)", maxlength = "6", minlength = "6" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                        <label for="email_address_2">Minimum Capping</label>
+                                        <div class="form-group">
+                                            <div class="">
+
+                                                @Html.TextBox("txtcapping", "0", new { @class = "form-control", placeholder = "Enter Capping", required = "required", onkeypress = "return isNumber(event)" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div><!--.row-->
+
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                        <label for="email_address_2">Aadhar Card @Html.ValidationMessageFor(m => m.txtadharcardno, "", new { @class = "text-danger" })</label>
+                                        <div class="form-group">
+                                            <div class="">
+                                                @Html.TextBox("txtadharcardno", "", new { @class = "form-control", placeholder = "Enter AadhaarCard No", onkeypress = "return isNumber(event)", maxlength = "12", minlength = 12 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                        <label for="email_address_2">Gst Number </label>
+                                        <div class="form-group">
+                                            <div class="">
+
+                                                @Html.TextBox("txtgstnos", "", new { @class = "form-control", placeholder = "Enter Gst No", maxlength = 15, minlength = 15, @style = "text-transform:uppercase" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--.row-->
+
+
+                                <div class=" width100 float-left">
+                                    <div id="lblSuccess">
+                                        <label id="lblmsg1" class="danger" style="color:#fff;font-size: 16px;background: green;width: 96%;margin-bottom:5px;"></label>
+                                    </div>
+                                    <div id="lblerror">
+                                        <label id="lblmsg" class="danger" style="color:#fff;font-size: 16px;background: red;width: 96%;margin-bottom:5px;"></label>
+                                    </div>
+
+                                    <button type="submit" class="btn pull-right fullbodydycolorbg" style="margin-left:15px;color:#fff;border-color:transparent;margin-right: 15px;margin-top:5px;">Create Retailer</button>
+                                    <button type="reset" class="btn pull-right" style="margin-top:5px;">Reset</button>
+                                </div>
+
+
+                            </div>
+                        }
+                    </div>
+
+                    <div id="tab-10" class="tab-content custom-table-responsive">
+                        <div class="left-four-tabs width100 float-left">
+                            <div id="custom-master-form" class="master-upload-file">
+                                <div class="Upload-form">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @using (Html.BeginForm("BulkRetailerCreate", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                        {
+                                            <div class="form-group">
+                                                <h2>Upload Retailer File </h2>
+                                                <input type="file" id="FileUpload1" name="FileUpload1" accept=".xlsx, .xls" />
+                                                <input class="fullbodydycolorbg pull-right" type="submit" value="Upload File" disabled="disabled">
+                                                <button type="reset" class="btn pull-right" style="color:#000;">
+                                                    Reset
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="Upload-form">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div id="custom-Download-form" style="margin-top: 25px;">
+                                        <p><sup>*</sup>To create bulk users, You must first download the Excel format.</p>
+                                        <p><sup>*</sup>According to the download excel you have to fill the details of all users.</p>
+                                        <p><sup>*</sup>While uploading the details, keep in mind that no Firm name, mobile number, mail id should be multiple.</p>
+
+
+                                        <button type="submit" id="DownloadAttachment" class="btn waves-effect special-iii btnssl2233 pull-right fullbodydycolorbg" data-loading-text="<i class='fa fa-spinner fa-spin'></i>" style="border:1px solid #ccc;float: right;margin-bottom: 10px;width:230px;">
+                                            Download Bulk User Create Format
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="right-tabs width100 float-left">
+                    <div class="table-responsive custom-table-responsive" id="Retailertablelist">
+                        @Html.Partial("_Retailerlist")
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--\\\\-->
+
+
+    </div>
+    <div id="div-loader" style="display:none; position: fixed;top: 0px;background: rgba(0,0,0,.5);left: 0px;bottom: 0px;right: 0px;width: 100%;height: 100vh;z-index: 9999;">
+        <div id="loader" style="position: absolute;right: 34%;top: 50%;display:block; transform: translate(-34%,-50%);">
+            <div class="loadingio-spinner-ripple-92ar2pfqk5j" style="background:transparent;">
+                <div class="ldio-zdyd6mf6t5">
+                    <div></div><div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Add New Master Distributor  modal-->
+@*<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Add New Retailer</h4>
+            </div>
+            @using (Html.BeginForm("Insert_retailer", "Home", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        <form id="form_validation" method="POST">
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">DLM-ID</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownList("DealerId", ViewBag.Dealername as SelectList, "Select Distributor", new { id = "DealerId", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("retailename1", "", new { @class = "form-control", placeholder = "Enter Name", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Firm Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("firmnm1", "", new { @class = "form-control", placeholder = "Enter Firm Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">State</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownList("State1", (IEnumerable<SelectListItem>)ViewBag.state, "Select State", new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", required = "required" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">District</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            <select id="District1" name="District1" class="form-control show-tick" required="">
+                                                <option>
+                                                    Select District
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("Mobile1", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Mobile Number", @onkeypress = "javascript:return isNumber(event)", maxlength = 10 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextArea("Address1", "", new { @class = "form-control", placeholder = "Enter Address ", required = "required", @onkeypress = "javascript:return AddValidation(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pincode</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("Pincode1", "", new { @class = "form-control", placeholder = "Enter Pin Code", required = "required", onkeypress = "return isNumber(event)", maxlength = "6", minlength = "6" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Email-ID</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("email1", "", new { @class = "form-control", placeholder = "Enter Email Id", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Password</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("password1", "", new { @class = "form-control", placeholder = "Enter Password", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pin</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("Pin", "", new { @class = "form-control", placeholder = "Enter Pin", required = "required", onkeypress = "return isNumber(event)", maxlength = "4", minlength = "4" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Capping</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtcapping", "0", new { @class = "form-control", placeholder = "Enter Capping", required = "required", onkeypress = "return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Aadhar Card</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtadharcardno", "", new { @class = "form-control", placeholder = "Enter AadhaarCard No", onkeypress = "return isNumber(event)", maxlength = "12", minlength = 12 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pancard</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtpencardno", "", new { @class = "form-control", placeholder = "Enter PanCard No", maxlength = 10, minlength = 10, @style = "text-transform:uppercase" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Gst Number</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtgstno", "", new { @class = "form-control", placeholder = "Enter Gst No", maxlength = 15, minlength = 15, @required = "", @style = "text-transform:uppercase" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-blue-grey waves-effect">Save</button>
+                                <button type="button" class="btn bg-grey waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>*@
+<!--Edit Master Distributor  modal-->
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Edit  Retailer</h4>
+
+            </div>
+            @using (Html.BeginForm("Editretailer", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        <form id="form_validation" method="POST">
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">REM-ID</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <input type="text" id="txtremid" name="txtremid" class="form-control" style="display:none;" />
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+
+                                            @Html.TextBox("txtemailnew", "", new { @class = "form-control", placeholder = "Enter Emailid.", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtretailername", "", new { @class = "form-control", placeholder = "Enter Dealer Name.", required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Firm Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtfirmname", "", new { @class = "form-control", placeholder = "Enter Firm Name.", required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">State</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownList("State", (IEnumerable<SelectListItem>)ViewBag.state, "Select State", new { @class = "form-control", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", required = "required" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">District</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            <select id="District" name="District" class="form-control show-tick" required="">
+                                                <option>
+                                                    Select District
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Slab List</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                @Html.DropDownList("slabedit", ViewBag.slabedit as SelectList, "Select Slab", new { @class = "form-control", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", @required = ""})
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtmobilenew", "", new { @class = "form-control", placeholder = "Enter Mobile.", required = "", onkeypress = "return isNumber(event)", maxlength = "10" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextArea("txtAddress", "", new { @class = "form-control", placeholder = "Enter Address.", @required = "", })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pincode</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtpincode1", "", new { @class = "form-control", placeholder = "Enter Pincode No", @required = "", onkeypress = "return isNumber(event)", maxlength = "6" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Capping</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtcapping1", "0", new { @class = "form-control", placeholder = "Enter Capping", @required = "", onkeypress = "return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Aadhar Card</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtadharcardno1", "", new { @class = "form-control", placeholder = "Enter AadhaarCard No", onkeypress = "return isNumber(event)", maxlength = "12", minlength = 12 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pancard</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtpencardno1", "", new { @class = "form-control", placeholder = "Enter PanCard No", minlength = 10, maxlength = 10, @style = "text-transform:uppercase" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Gst Number</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("txtgstno1", "", new { @class = "form-control", placeholder = "Enter Gst No", minlength = 15, maxlength = 15, @style = "text-transform:uppercase" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">M-Poss Id</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("PartnerID", "", new { @class = "form-control", placeholder = "M-Poss Id" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Aeps MID</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("aepsMID", "", new { @class = "form-control", placeholder = "Aeps Merchant Id" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Aeps MPIN</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("aepsMPIN", "", new { @class = "form-control", placeholder = "Aeps MPIN" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-blue-grey waves-effect">Update</button>
+                                <button type="button" class="btn bg-grey waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!-- For Right Popup -->
+<div class="modal mastetr222Modal" id="defaultModal222" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content width100 float-left">
+            <div class="modal-header width100 float-left">
+                <div class="modal-back width100 float-left">
+                    <div class="sam">
+                        <h4 class="oneh">
+                            <span class="first">
+                                M
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <div class="sam">
+                        <h4 class="twoh">
+                            <span class="first">
+                                D
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <div class="sam">
+                        <h4 class="threeh">
+                            <span class="first">
+                                R
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <button type="button" class="btn waves-effect" data-dismiss="modal">
+                        <i class="fa fa-times fullbodydycolorbg fulltextbodycolor" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div><!--.modal-header-->
+            <div class="modal-body width100 float-left">
+                <div class="background-kk width100 float-left">
+                    <div class="thisLeft float-left">
+                        <img src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" />
+                    </div>
+                    <div class="thisRight">
+                        <ul class="float-left width100">
+                            <li><span><b>Name:</b></span><span>TestTest</span></li>
+                            <li><span><b>Firm:</b></span><span>TestTest</span></li>
+                            <li><span><b>Registered Date:</b></span><span>9837452845</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="float-left width100">
+
+                    <form class="first-form">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" placeholder="EmailID" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Pancard</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pancard No" readonly />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Aadhar Card</label>
+                                    <input type="text" class="form-control" placeholder="Enter Aadhaar Number" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Firm Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter Firm Registration No" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>GST Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter GST Registration No" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <input type="text" class="form-control" placeholder="Select District" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <input type="text" class="form-control" placeholder="Select State" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <textarea class="form-control" placeholder="Enter Address" readonly></textarea>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Pin Code</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pin Code" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </form>
+
+                    <!--=============-->
+                    <form class="second-form" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" placeholder="EmailID" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Pancard</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pancard No" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Firm Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter Firm Registration No" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>GST Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter GST Registration No" />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Aadhar Card</label>
+                                    <input type="text" class="form-control" placeholder="Enter Aadhaar Number" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <select class="form-control">
+                                        <option value="" selected>Select District</option>
+                                        <option value="1">Test</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <select class="form-control">
+                                        <option value="" selected>Select State</option>
+                                        <option value="1">Test</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <textarea class="form-control" placeholder="Enter Address"></textarea>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Pin Code</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pin Code" />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </form>
+
+                </div>
+            </div><!--.modal-body-->
+
+            <div class="modal-footer width100 float-left">
+                <ul class="width100 float-left">
+                    <li class="one">
+                        <button type="button" value="Edit" class="btn">Edit</button>
+                    </li>
+                    <li class="One2" style="display:none;">
+                        <button type="button" value="SaveChange" class="btn special-iii btnssl2233" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Save Change</button>
+                    </li>
+                    <li class="two">
+                        <button type="button" value="Change" class="btn special-iii btnssl2233" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Reset Password</button>
+                    </li>
+                    <li class="three">
+                        <button type="button" value="Email_Verify" class="btn">Email Verify</button>
+                    </li>
+                    <li class="four">
+                        <button type="button" value="Delet" class="btn">Delete</button>
+                    </li>
+                </ul>
+            </div><!--.modal-footer-->
+        </div>
+    </div>
+</div>
+<div class="modal fund-tr-history  in" id="myModal" tabindex="-1" role="dialog" style="display: none;">
+    <div class="modal-dialog" role="document" style="margin:0px;float:right;">
+
+        <div class="modal-content width100 float-left">
+            <div class="modal-header width100 float-left ecomm-pop-head">
+
+                <h5 id="mdhis">Not Create User History</h5>
+
+
+                <button type="button" class="btn waves-effect " data-dismiss="modal" style="float:right;border:0px;color:var(--main-bg-lcolor);padding:0px; height:auto;">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+
+
+            </div><!--.modal-header-->
+            <div class="modal-body width100 float-left ecomm-pop-body">
+                <div class="float-left width100">
+
+                    <div id="htmleerrrorrtable">
+
+                    </div>
+
+
+
+
+
+                    <!--=============-->
+
+                </div><!--.modal-body-->
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+@*<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>*@
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<link href="~/select2/dist/css/select2.css" rel="stylesheet" />
+<script src="~/select2/dist/js/select2.min.js"></script>
+<!--Add State dropdown list-->
+
+
+<script>
+    function ToastrMessage() {
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "positionClass": "toast-top-right1",
+            "newestOnTop": false,
+            "progressBar": true,
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "100",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "show",
+            "hideMethod": "hide"
+        };
+        //toastr.info('MY MESSAGE!');
+    }
+</script>
+<script>
+    var ravi = $.noConflict()
+    ravi(document).ready(function () {
+
+        // Initialize select2
+        ravi("select").select2();
+
+        // Read selected option
+
+    });
+    $(document).ajaxComplete(function () {
+        ravi("select").select2();
+    });
+</script>
+
+<script>
+    $(function () {
+        $("#DownloadAttachment").click(function () {
+           window.location = '@Url.Action("FormatDownload", "Home", new {  Userid= "Retailer" })';
+
+        });
+    });
+
+
+
+</script>
+<script language="javascript" type="text/javascript">
+
+                   ravi(function () {
+                        ravi('#State1').change(function () {
+                            // alert('Value:' + ' ' + $('#State1').val())
+                            var stid = ravi('#State1').val()
+                            if (stid === "") {
+                                stid = 0;
+                                //alert(stid)
+                            }
+                            else {
+                                //alert(stid)
+                                GetDistrict(stid)
+                            }
+                            function GetDistrict(_stateId) {
+                                var procemessage = "<option value='0'> Please wait...</option>";
+                                ravi("#District1").html(procemessage).show();
+                                var url = '@Url.Action("DistrictList","Home")'
+                                ravi.ajax({
+                                    url: url,
+                                    data: { Id: _stateId },
+                                    cache: false,
+                                    type: "POST",
+                                    success: function (data) {
+                                        var markup = "<option value='0'>Select District</option>";
+                                        for (var x = 0; x < data.length; x++) {
+                                            markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                                            //alert(markup)
+                                        }
+                                        ravi("#District1").html(markup).show();
+                                    },
+                                    error: function (reponse) {
+                                        alert("error : " + reponse);
+                                    }
+                                });
+                            }
+                        });
+                    })
+</script>
+<!--Edit fill dropdown list-->
+<script type="text/javascript">
+
+            ravi(function () {
+                ravi('#State').change(function () {
+                    // alert('Value:' + ' ' + $('#State').val())
+                    var stid = ravi('#State').val()
+                    if (stid === "") {
+                        stid = 0;
+                        //alert(stid)
+                    }
+                    else {
+                        //alert(stid)
+                        GetDistrict(stid)
+                    }
+                    function GetDistrict(_stateId) {
+                        var procemessage = "<option value='0'> Please wait...</option>";
+                        ravi("#District").html(procemessage).show();
+                        var url = '@Url.Action("DistrictList","Home")'
+                        ravi.ajax({
+                            url: url,
+                            data: { Id: _stateId },
+                            cache: false,
+                            type: "POST",
+                            success: function (data) {
+                                var markup = "<option value='0'>Select District</option>";
+                                for (var x = 0; x < data.length; x++) {
+                                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                                    //alert(markup)
+                                }
+                                ravi("#District").html(markup).show();
+                            },
+                            error: function (reponse) {
+                                alert("error : " + reponse);
+                            }
+                        });
+                    }
+                });
+            })
+
+
+    function ajaxValidate() {
+     $('#lblerror').hide();
+        $('#lblmsg').text('')
+         $('#lblSuccess').hide();
+        $('#lblmsg1').text('')
+        var aadhar = $('#txtadharcardno').val();//document.getElementById("adharcard").value;
+      var gst=  $('#txtgstnos').val()
+        if (aadhar.length > 0) {
+
+
+           var res = validatesss(aadhar)
+
+            if (res == false) {
+                  $('#lblerror').hide();
+                $('#lblmsg').text('☒ Invalid AADHAR No')
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+
+            }
+
+        }
+
+        if (gst.length > 0) {
+               var gstinformat=new RegExp('^([0][1-9]|[1-2][0-9]|[3][0-5])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$$');
+
+            if (!gstinformat.test(gst)) {
+               //   $('#error').text('Invalid GST No')
+              //  return false;
+                  $('#lblerror').hide();
+                 $('#lblmsg').text('☒ Invalid GST No')
+
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+                }
+
+
+        }
+
+
+    }
+       // multiplication table
+    const d = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+        [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+        [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+        [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+        [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+        [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+        [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+        [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+        [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    ]
+
+    // permutation table
+    const p = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+        [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+        [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+        [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+        [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+        [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+        [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+    ]
+
+    // validates Aadhar number received as string
+   function validatesss(aadharNumber) {
+        let c = 0
+        let invertedArray = aadharNumber.split('').map(Number).reverse()
+
+        invertedArray.forEach((val, i) => {
+            c = d[c][p[(i % 8)][val]]
+        })
+
+        return (c === 0)
+    }
+
+
+
+</script>
+<!--Edit Distributor Detail-->
+<script>
+
+    function RegisterSuccess(data) {
+         $('#div-loader').hide();
+         $('#lblSuccess').hide();
+        $('#lblmsg1').text('');
+        $('#lblerror').hide();
+        $('#lblmsg').text();
+         var sts = data.type;
+         $('#lblmsg').text(data.msg)
+
+           if (sts === "Success") {
+
+            $('#lblSuccess').show();
+               $('#lblmsg1').text('✅  Congratulations Account successfully Created');
+                $('#lblmsg1').css('padding', '5px');
+                     toastr.success('Congratulations Account successfully Created');
+                      ToastrMessage();
+              }
+        else {
+            $('#lblerror').show();
+               $('#lblmsg').text(data.msg);
+                $('#lblmsg').css('padding', '5px');
+
+                    ToastrMessage();
+                    toastr.error(data.msg);
+              }
+
+
+
+          if (sts === "Success") {
+                        // var reason = data.value;
+                        $.ajax({
+                            url: '@Url.Action("RetailerlistPart","Home")',
+                            type: 'GET',
+                            cache: false,
+                            success: function (response) {
+
+                                $('#retailename1').val('');
+                                $('#firmnm1').val('');
+                                $('#email1').val('');
+                                $('#Mobile1').val('');
+                                $('#txtpencardno').val('');
+
+                             ravi("#DealerID").select2("val", 0);
+                              ravi("#State1").select2("val", 0);
+                             ravi("#District1").empty();
+
+                                $('#Address1').val('');
+                                $('#Pincode1').val('');
+                                 $('#txtcapping').val(0);
+                                $('#txtadharcardno').val('');
+                                $('#txtgstno').val('');
+                                $('#Retailertablelist').html(response);
+
+                            }
+                        })
+
+                    }
+    }
+</script>
+<script type="text/javascript">
+    function val() {
+        var masterid = document.getElementById("DealerId").value;
+        var dlmnm = document.getElementById("retailename1").value;
+        var tel = document.getElementById("Mobile1").value;
+        var pin = document.getElementById("Pincode1").value;
+        var state1 = document.getElementById("State1").value;
+        var dist1 = document.getElementById("District1").value;
+        if (dlmnm == "" || tel == "" || pin == "" || state1 == "" || dist1 == "Select District" || masterid == "") {
+            if (masterid == "") {
+                $('#DealerId').css('border-color', 'red');
+                return false;
+            }
+            if (dlmnm == "") {
+                $('#DealerId').css('border-color', 'green');
+                $('#retailename1').css('border-color', 'red');
+                return false;
+            }
+            else if (state1 == "") {
+                $('#DealerId').css('border-color', 'green');
+                $('#retailename1').css('border-color', 'green');
+                $('#State1').css('border-color', 'red');
+                return false;
+            }
+            else if (District1 == "Select District") {
+                $('#DealerId').css('border-color', 'green');
+                $('#retailename1').css('border-color', 'green');
+                $('#State1').css('border-color', 'green');
+                $('#District1').css('border-color', 'red');
+                return false;
+            }
+            else if (tel == "") {
+                $('#DealerId').css('border-color', 'green');
+                $('#retailename1').css('border-color', 'green');
+                $('#State1').css('border-color', 'green');
+                $('#District1').css('border-color', 'green');
+                $('#Mobile1').css('border-color', 'red');
+                return false;
+            }
+            else if (tel.length > 10) {
+                $('#DealerId').css('border-color', 'green');
+                $('#retailename1').css('border-color', 'green');
+                $('#State1').css('border-color', 'green');
+                $('#District1').css('border-color', 'green');
+                $('#Mobile1').css('border-color', 'red');
+                return false;
+            }
+            else if (tel.length < 10) {
+                $('#masterid').css('border-color', 'green');
+                $('#dealername1').css('border-color', 'green');
+                $('#State1').css('border-color', 'green');
+                $('#District1').css('border-color', 'green');
+                $('#Mobile1').css('border-color', 'red');
+                return false;
+            }
+            else if (pin == "") {
+                $('#masterid').css('border-color', 'green');
+                $('#dealername1').css('border-color', 'green');
+                $('#State1').css('border-color', 'green');
+                $('#District1').css('border-color', 'green');
+                $('#Mobile1').css('border-color', 'green');
+                $('#Pincode1').css('border-color', 'red');
+                return false;
+            }
+        }
+        else {
+            $('#masterid').css('border-color', 'green');
+            $('#dealername1').css('border-color', 'green');
+            $('#State1').css('border-color', 'green');
+            $('#District1').css('border-color', 'green');
+            $('#Mobile1').css('border-color', 'green');
+            $('#Pincode1').css('border-color', 'green');
+            return true;
+        }
+    }
+</script>
+
+<!--Edit Retailer detail -->
+<script type="text/javascript">
+        var val1 = "";
+        function editretailer(RetailerId) {
+            var url = '@Url.Action("RetailerIdSearch", "Home")'
+            $.ajax({
+                url: url,
+                data: { RetailerId: RetailerId },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var rem = JSON.parse(data);
+                    console.log(rem);
+
+                    if (rem != null && rem.State != null && rem.State > 0) {
+                        $("#txtremid").val(rem.RetailerId);
+                        $("#txtemailnew").val(rem.Email);
+                        $("#txtretailername").val(rem.RetailerName);
+                        $("#txtfirmname").val(rem.Frm_Name);
+                        $("#State").val(rem.State);
+                        $("#txtmobilenew").val(rem.Mobile);
+                        $("#txtAddress").val(rem.Address);
+                        $("#txtpincode1").val(rem.Pincode);
+                        $("#txtcapping1").val(rem.caption);
+                        $("#txtpencardno1").val(rem.PanCard);
+                        $("#txtadharcardno1").val(rem.AadharCard);
+                        $("#txtgstno1").val(rem.gst);
+                        $("#PartnerID").val(rem.PartnerID);
+                        $("#aepsMID").val(rem.AepsMerchandId);
+                        $("#aepsMPIN").val(rem.AepsMPIN);
+                        //$("#slabedit").val(data.slab_name);
+                        var objSelect1 = document.getElementById("District");
+                        bind(rem.State, rem.District, objSelect1);
+                        $('#defaultModal1').modal('show');
+                    }
+                   else
+                   {
+                       swal("Oops!!", "Failed to fatch user details.", "error");
+                    }
+                },
+                error: function (Xhr,err) {
+                    alert("statusCode : " + Xhr.status);
+                    alert("error : " + Xhr.responseText);
+                }
+            });
+
+        }
+    function bind(staid, dist, objSelect1) {
+
+            var url = '@Url.Action("DistrictList","Home")'
+            $.ajax({
+                url: url,
+                data: { Id: staid },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var markup = "<option value='0'>Select District</option>";
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+                    $("#District").html(markup).show();
+                    setSelectedValue(objSelect1, dist);
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+    function setSelectedValue(selectObj, valueToSet) {
+
+            for (var i = 0; i < selectObj.options.length; i++) {
+                if (selectObj.options[i].value == valueToSet) {
+                    //alert(selectObj.options[i].value);
+                    selectObj.options[i].selected = true;
+                    return;
+                }
+            }
+        }
+</script>
+<script type="text/javascript">
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<!--Delete Retailer-->
+<script type="text/javascript">
+    function Deleteretailer(e,email) {
+        // alert(e)
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Retailer " + email + " !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+    $.ajax({
+        type: "POST", url: "Delete_Retailer", data: { 'RetailerId': e }, dataType: 'json', cache: false, success: function (result) {
+           if (result == "Success") {
+                swal("Deleted!", "Data Deleted Successfully.", "success");
+                var url = '@Url.Action("Retailerlist", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Retailerlist", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+    }
+</script>
+<!--Window load Popuop message-->
+<script>
+    $(document).ready(function () {
+
+         var chkanyerrorbulk = "@TempData["errorexist"]"
+        if (chkanyerrorbulk != null && chkanyerrorbulk!="") {
+         var htm ="@Html.Raw(TempData["errortable"])" ;
+        $('#htmleerrrorrtable').append(htm)
+      $('#myModal').modal('show')
+        }
+
+        var message = '@TempData["msgrem"]'
+        if (message != "" && message != null) {
+            swal("Good job!", message, "success");
+
+        }
+        var mobileconfrimation = '@TempData["mobileno"]'
+        if (mobileconfrimation != "" && mobileconfrimation != null) {
+            swal("Oops...", mobileconfrimation, "error");
+
+        }
+
+        var mailconfrimation = '@TempData["emailconfrim"]'
+        if (mailconfrimation != "" && mailconfrimation != null) {
+            swal({
+                html: true,
+                title: 'Oops!',
+                text: mailconfrimation,
+                type: 'error'
+            });
+
+        }
+        //Edit Message
+        var editdata = '@TempData["edit"]'
+        if (editdata != null && editdata != "") {
+            swal("Good job!", editdata, "success");
+        }
+        //Wrong OTP
+        var wrong = '@TempData["wrong"]'
+        if (wrong != null && wrong != "") {
+            swal("Oops...", wrong, "error");
+        }
+        //delete Dealer
+        var deletemsg = '@TempData["delete"]'
+        if (deletemsg != null && deletemsg != "") {
+            swal("Good job!", deletemsg, "success");
+        }
+        var resendmail = '@ViewData["ResendMail"]'
+        if (resendmail != null && resendmail != "") {
+            swal("Good job!", resendmail, "success");
+        }
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.mastetr222Modal button.btn[value="Edit"]').click(function () {
+            $(".mastetr222Modal .first-form").hide();
+            $(".mastetr222Modal .second-form").show();
+            $('.mastetr222Modal .modal-footer li.one').hide();
+            $('.mastetr222Modal .modal-footer li.One2').show();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.master-upload-file input:file').change(function () {
+            if ($(this).val()) {
+                $('.master-upload-file input:submit').attr('disabled', false);
+
+            }
+        }
+        );
+    });
+    $('#txtpencardno').bind('keyup', function () {
+
+        // Get the current value of the contents within the text box
+        var val = $('#txtpencardno').val().toUpperCase();
+
+        // Reset the current value to the Upper Case Value
+        $('#txtpencardno').val(val);
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#body .tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+

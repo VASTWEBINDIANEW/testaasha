@@ -1,0 +1,221 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Models.whitelabel_fund_recive_by_admin_report_Result>
+@{
+    ViewBag.Title = "Fund_recive_report";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+@{ 
+    VastwebmultiEntities db = new VastwebmultiEntities();
+
+}
+<style>
+   .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+<style>
+    .slab-setting-menu li a.activee {
+
+    background:linear-gradient(to right, @PageData["Globalfirst"],@PageData["GlobalSecond"]);
+
+    }
+
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-4">
+                            @Html.Partial("_purchase_menu")
+
+                        </div>
+                        <div class="col-md-8">
+                            @using (Html.BeginForm("Fund_recive_report", "Home", FormMethod.Post))
+                            {
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="" style=" width:100%;border:1px solid #dddddd;padding-bottom:10px;">
+                                            @Html.DropDownList("Type", new List<SelectListItem>
+                                  {
+                               new SelectListItem{ Text="Select Type",Value="ALL"},
+                               new SelectListItem{Text="CASH",Value="Cash"},
+                               new SelectListItem{Text="CREDIT",Value="Credit"},
+                             }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;", @onchange = "answers()" })
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6" style="padding:0px;">
+                                        <div class="form-group for-web-date" style="margin-bottom:0px;">
+                                            <div class="input-daterange input-group">
+                                                <div class="custom-date-icon" style="height: 34px;">
+                                                    <i class="fa fa-calendar tmw-total-color-one" aria-hidden="true" style="color: #46c837;"></i>
+                                                </div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;", autocomplete = "off" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-exchange"></i>
+                                                </span>
+                                                <div class="custom-date-icon" style="height: 34px;">
+                                                    <i class="fa fa-calendar tmw-total-color-one" aria-hidden="true" style="color: #46c837;"></i>
+                                                </div>
+                                                @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;", autocomplete = "off" })
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <center>
+                                            <button type="submit" class="btn waves-effect" style=" background:transparent; height:34px;border:1px solid #c7c2c2;">
+
+                                                <span style="color:black;">Search</span>
+                                            </button>
+                                        </center>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                        <div class="web-white-filter" style="float:right;">
+                                            <table class="dataTable js-exportable ">
+                                                <thead>
+                                                    <tr>
+                                                        <td></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-17px;">
+                <div class="card">
+                   <div>
+                        <div class="table-responsive   web-white-table" style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover " style="width:100%;font-size:14px;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>Admin&nbsp;Info</th>
+                                        <th>Amount</th>
+                                        <th>Type</th>
+                                        <th>Remain&nbsp;Pre</th>
+                                        <th>Remain&nbsp;Post</th>
+                                        <th>Current&nbsp;Credit</th>
+                                        <th>Old&nbsp;Credit</th>
+                                        <th>Date</th>
+                                        <th>Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var emailid = db.Admin_details.FirstOrDefault().email;
+                                        <tr>
+                                            
+                                            <td><p style="font-size:12px;padding-top:12px;">@emailid</p></td>
+                                            <td><p style="font-size:12px;font-weight:700;padding-top:12px;">@item.balance</p></td>
+                                            <td><p style="font-size:12px;text-align:center;padding-top:12px;">@item.bal_type</p></td>
+                                            <td><p style="font-size:12px;text-align:center;"></p>@item.remianold</td>
+                                            <td><p style="font-size:12px;text-align:center;"></p>@item.remainamount</td>
+                                            <td><p style="font-size:12px;text-align:center;"></p>@item.cr</td>
+                                            <td><p style="font-size:12px;text-align:center;"> </p>@item.oldcrbalance</td>
+                                            <td><p style="font-size:12px;text-align:center;"></p>@item.date</td>
+                                            <td><p style="font-size:12px;text-align:center;"></p>@item.comment</td>
+                                       
+
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td><p style="font-size:16px;">Total</p></td>
+                                        <td>@Model.Sum(a=>a.balance)</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>@Model.Sum(a=>a.cr)</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+
+</script>
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    $(document).ready(function()
+    {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+    })
+</script>
+

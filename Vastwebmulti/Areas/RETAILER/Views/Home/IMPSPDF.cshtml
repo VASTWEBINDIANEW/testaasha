@@ -1,0 +1,515 @@
+﻿@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity
+@model IEnumerable<Vastwebmulti.Models.pdf_creator_Result>
+@{
+    Layout = null;
+}
+
+@{
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+
+    var userid = User.Identity.GetUserId();
+
+    var Thermal = DB1.Printer_paperSize_Changes.Where(a => a.Print_Name == "Thermal_Print" && a.Userid == userid).SingleOrDefault().status;
+    var A4_Size = DB1.Printer_paperSize_Changes.Where(a => a.Print_Name == "A4_Print" && a.Userid == userid).SingleOrDefault().status;
+
+
+    var blockrecharge = DB1.Blocked_Recharge_Slip.Where(a => (a.Recharge_Mode == "Convence Fee" || a.Recharge_Mode == "Mobile" || a.Recharge_Mode == "Email" || a.Recharge_Mode == "Customer care" || a.Recharge_Mode == "Website Name") && a.status == "Y").ToList();
+    var custfee = DB1.Blocked_Recharge_Slip.Where(a => a.Recharge_Mode == "Convence Fee").SingleOrDefault().status;
+    var Mobile = DB1.Blocked_Recharge_Slip.Where(a => a.Recharge_Mode == "Mobile").SingleOrDefault().status;
+    var Email = DB1.Blocked_Recharge_Slip.Where(a => a.Recharge_Mode == "Email").SingleOrDefault().status;
+    var Customercare = DB1.Blocked_Recharge_Slip.Where(a => a.Recharge_Mode == "Customer care").SingleOrDefault().status;
+    var WebsiteName = DB1.Blocked_Recharge_Slip.Where(a => a.Recharge_Mode == "Website Name").SingleOrDefault().status;
+    var TotalAmount = DB1.Blocked_Recharge_Slip.Where(a => a.Recharge_Mode == "TotalAmount").SingleOrDefault().status;
+
+    var logoimage = "";
+    var logo = DB1.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+}
+
+
+@if (Thermal != "N")
+{
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title>IMPS/NEFT Transaction</title>
+        <meta charset="UTF-8">
+        <style>
+            html {
+                line-height: 1.15;
+                -webkit-text-size-adjust: 100%
+            }
+
+            body {
+                margin: 0
+            }
+
+            main {
+                display: block
+            }
+
+            h1 {
+                font-size: 2em;
+                margin: .67em 0
+            }
+
+            hr {
+                box-sizing: content-box;
+                height: 0;
+                overflow: visible
+            }
+
+            pre {
+                font-family: monospace,monospace;
+                font-size: 1em
+            }
+
+            a {
+                background-color: transparent
+            }
+
+            abbr[title] {
+                border-bottom: none;
+                text-decoration: underline;
+                text-decoration: underline dotted
+            }
+
+            b, strong {
+                font-weight: bolder
+            }
+
+            code, kbd, samp {
+                font-family: monospace,monospace;
+                font-size: 1em
+            }
+
+            small {
+                font-size: 80%
+            }
+
+            sub, sup {
+                font-size: 75%;
+                line-height: 0;
+                position: relative;
+                vertical-align: baseline
+            }
+
+            sub {
+                bottom: -.25em
+            }
+
+            sup {
+                top: -.5em
+            }
+
+            img {
+                border-style: none
+            }
+
+            button, input, optgroup, select, textarea {
+                font-family: inherit;
+                font-size: 100%;
+                line-height: 1.15;
+                margin: 0
+            }
+
+            button, input {
+                overflow: visible
+            }
+
+            button, select {
+                text-transform: none
+            }
+
+            [type=button], [type=reset], [type=submit], button {
+                -webkit-appearance: button
+            }
+
+                [type=button]::-moz-focus-inner, [type=reset]::-moz-focus-inner, [type=submit]::-moz-focus-inner, button::-moz-focus-inner {
+                    border-style: none;
+                    padding: 0
+                }
+
+                [type=button]:-moz-focusring, [type=reset]:-moz-focusring, [type=submit]:-moz-focusring, button:-moz-focusring {
+                    outline: 1px dotted ButtonText
+                }
+
+            fieldset {
+                padding: .35em .75em .625em
+            }
+
+            legend {
+                box-sizing: border-box;
+                color: inherit;
+                display: table;
+                max-width: 100%;
+                padding: 0;
+                white-space: normal
+            }
+
+            progress {
+                vertical-align: baseline
+            }
+
+            textarea {
+                overflow: auto
+            }
+
+            [type=checkbox], [type=radio] {
+                box-sizing: border-box;
+                padding: 0
+            }
+
+            [type=number]::-webkit-inner-spin-button, [type=number]::-webkit-outer-spin-button {
+                height: auto
+            }
+
+            [type=search] {
+                -webkit-appearance: textfield;
+                outline-offset: -2px
+            }
+
+                [type=search]::-webkit-search-decoration {
+                    -webkit-appearance: none
+                }
+
+            ::-webkit-file-upload-button {
+                -webkit-appearance: button;
+                font: inherit
+            }
+
+            details {
+                display: block
+            }
+
+            summary {
+                display: list-item
+            }
+
+            template {
+                display: none
+            }
+
+            [hidden] {
+                display: none
+            }
+
+            body {
+                line-height: 1.5;
+            }
+
+            .receipt {
+                font-size: 8pt;
+                font-family: monospace;
+                width: 100px;
+                padding: 1px;
+                
+            }
+
+            .m-0 {
+                margin: 0;
+            }
+
+            .mb-1 {
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        @*@if (ViewBag.notfound == "OK")
+            {*@
+        <div class="receipt">
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <img src="@Url.Content("~/" + logoimage)" class="img-responsive" alt="Logo" />
+                        </td>
+                    </tr>
+                    @*<tr>
+                            <td colspan="2" align="center">
+                                <h3 class="m-0">City Union Bank</h3>
+                            </td>
+                        </tr>*@
+                    <tr>
+                        <td colspan="2" align="left">Trans Mode: <strong>@ViewData["trantype"]</strong>(@ViewData["msg"])</td>
+                    </tr>
+                    <tr>
+                        <td align="left"><strong>Receiver: </strong>@ViewData["Receiver"]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left"><strong>Sender No: @ViewData["Senderno"] </strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left">Bank Name: @ViewData["bankname"]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left">A/C No: @ViewData["account"] </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left">IFSC Code: <strong>@ViewData["ifscode"]</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left">Bank RRN: @ViewData["bankrr"] </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left">Trans amount: @ViewData["Total"] </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left">Orderid: @ViewData["orderid"] </td>
+                    </tr>
+
+
+
+                    @if (custfee != "Y")
+                    {
+                        <tr>
+                            <td colspan="2" align="left">Service charge: <strong>@ViewData["surcharge"]</strong></td>
+                        </tr>
+                    }
+                    @if (TotalAmount != "Y")
+                    {
+                        <tr>
+                            <td colspan="2" align="left">Total Amount: @ViewData["Totalamount"]</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="2" align="left">Tran Date: @ViewData["retailerdate"] </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" align="center">
+                            <h3 class="m-0">Partner Info</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left">Business Name: @ViewData["firmname"]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left">Address: @ViewData["retaileraddress"]</td>
+
+                    </tr>
+                    @if (Mobile != "Y")
+                    {
+                        <tr>
+                            <td colspan="2" align="left">Mobile: @ViewData["retailermobile"]</td>
+
+                        </tr>
+                    }
+                    @if (Email != "Y")
+                    {
+                        <tr>
+                            <td colspan="2" align="left">Email: @ViewData["retaileremail"]</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @*<em style="font-family: sans serif; font-weight: normal; font-style: italic; letter-spacing: 0.2em;">
+                    <p style="text-align: center">SIGNATURE NOT REQUIRED</p>
+                </em>*@
+            <p style="text-align: center">----------------------------------------<br>Thanks for visiting @ViewData["firmname"]. We are always ready for customer service, You can contact us for (M ATM) Payment Withdrawal, Mobile Recharge, Bill Payment, (AEPS) Aadhaar Withdrawal, Travel Booking and Related Services in future. Have a nice day. </p>
+            @if (Customercare != "Y")
+            {
+                <p style="text-align: center">customer care No:  @ViewData["customercare"]</p>
+            }
+            @if (WebsiteName != "Y")
+            {
+                <p style="text-align: center">Website Name  @ViewData["Websitename"]</p>
+            }
+        </div>
+
+    </body>
+</html>
+}
+
+
+
+
+
+
+
+
+
+@if (A4_Size != "N")
+{
+
+    <!DOCTYPE html>
+
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Print DMT</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+        @*<script src="http://code.jquery.com/jquery-latest.js"></script>*@
+
+        <link href="~/CSS/bootstrap-combobox.css" rel="stylesheet" />
+        <link href="~/AdminDesign/css/sp.css" rel="stylesheet" />
+        <link href="~/CSS/bootstrap-combobox.css" rel="stylesheet" />
+        <link href="~/AdminDesign/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="~/RetailerCss/StyleSheet.css" rel="stylesheet" />
+        <style>
+            .transaction ul li.transaction-left, .transaction ul li.transaction-right {
+                height: 15px;
+                border-bottom: 1px solid #f0f0ee;
+            }
+        </style>
+        <style>
+            .col-md-4.new-prent-page {
+                border: 1px solid #ececec;
+                background: #f5f5f5;
+            }
+        </style>
+
+    </head>
+    <body>
+
+        <div class="col-md-4 new-prent-page">
+            <div class="col-md-12 Confirm-Payment">
+                <div class="container-fluid">
+                    <div class="col-md-7 successful" style="">
+                        <div style="text-align:center; margin-top:10px;">
+                            <p style="position:absolute;top:15px;left:45%; text-transform:uppercase;border-bottom:2px solid #3a3a3a;">@ViewData["msg"]</p>
+                        </div>
+                        @*<div>@logoimage  123123</div>*@
+
+                        <strong>
+                            @*<img src="~/ashok-images/india(2).svg" alt="india(2)" class="center" />
+                                <span class="transform-re"> @ViewData["Totalamount"]</span>*@
+
+                            @*@if (ViewData["msg"].ToString() == "Transaction Successful")
+                                {
+                                    <i class="fa fa-check fullbodydycolorbg" style="background:green;width:50px "> </i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-times fullbodydycolorbg" style="background:red;"></i>
+                                }*@
+                            @if (ViewData["msg"].ToString() == "Successful")
+                            {
+                                <div style="width:20%;float:left;">
+                                    @*<i class="fa fa-check fullbodydycolorbg" style="top: 10px; text-align: center; "> </i>*@
+                                    <img src="~/images/checkmark.png" style="width:60px;" />
+                                </div>
+                            }
+                            else if (ViewData["msg"].ToString() == "Transaction In Process" || ViewData["msg"].ToString() == "Transaction Pending")
+                            {
+                                <div style="width:20%;float:left;">
+                                    <i class="fa fa-clock-o " style="font-size:48px;color:orange"></i>
+                                    @*<img src="~/ashok-images/clkk.png" style="width: 60px; background-color: #FF9800;" />*@
+                                </div>
+                            }
+                        </strong>
+                    </div>
+                    <div class="col-md-5 successful-logo">
+                        <img src="@Url.Content("~/" +logoimage)" class="img-responsive" alt="Logo" style="float: right;width: 116px !important;" />
+                    </div>
+                </div>
+                <div class="container-fluid transaction">
+                    <p style="color:white;">IMPS/NEFT Transaction </p>
+                    <ul class="transaction-detail">
+                        @*<li class="transaction-left"><span>retailer firm</span></li>
+                            <li class="transaction-right"><span>@ViewData["FirmName"]</span></li>*@
+
+                        @*<li class="transaction-left"><span>Account Holder Name</span></li>
+                            <li class="transaction-right"><span>@ViewData["name"]</span></li>*@
+                        @*<li class="transaction-left"><span>Net amount</span></li>
+                            <li class="transaction-right"><span>@ViewData["total"]</span></li>*@
+                        <ul style="width: 49%; float: left; background: #e3e3e3; padding: 6px;">
+                            <li class="transaction-left"><span>Receiver</span></li>
+                            <li class="transaction-right"><span>@ViewData["Receiver"]</span></li>
+                            <li class="transaction-left"><span>Sender No</span></li>
+                            <li class="transaction-right"><span>@ViewData["Senderno"]</span></li>
+                            <li class="transaction-left"><span>Bank Name</span></li>
+                            <li class="transaction-right"><span>@ViewData["bankname"]</span></li>
+                            <li class="transaction-left"><span>A/C No.</span></li>
+                            <li class="transaction-right"><span>@ViewData["account"]</span></li>
+                            <li class="transaction-left"><span>IFSC Code</span></li>
+                            <li class="transaction-right"><span>@ViewData["ifscode"]</span></li>
+                            <li class="transaction-left"><span>Bank RRN</span></li>
+                            <li class="transaction-right"><span>@ViewData["bankrr"]</span></li>
+                        </ul>
+                        <ul style="width: 49%; float: right; background: #e3e3e3; padding: 6px;">
+                            <li class="transaction-left"><span>Trans Mode</span></li>
+                            <li class="transaction-right"><span>@ViewData["trantype"]</span></li>
+                            <li class="transaction-left"><span>Trans amount</span></li>
+                            <li class="transaction-right"><span>@ViewData["Total"]</span></li>
+                            <li class="transaction-left"><span>Tran Date</span></li>
+                            <li class="transaction-right"><span>@ViewData["retailerdate"]</span></li>
+                            <li class="transaction-left"><span>Orderid</span></li>
+                            <li class="transaction-right"><span>@ViewData["orderid"]</span></li>
+                            @if (custfee != "Y")
+                            {
+                                <li class="transaction-left"><span>Service charge</span></li>
+                                <li class="transaction-right"><span>@ViewData["surcharge"]</span></li>
+                            }
+
+                            @if (TotalAmount != "Y")
+                            {
+                                <li class="transaction-left"><span>Total Amount</span></li>
+                                <li class="transaction-right"><span>@ViewData["Totalamount"]</span></li>
+
+                            }
+                        </ul>
+                    </ul>
+                    <div class="container-fluid transaction">
+                        <p style="color: white; text-align: center;">Partner Info </p>
+                        <ul style="width: 100%; background: #e3e3e3; padding: 4px; " class="transaction-detail">
+                            <li class="transaction-left"><span>Business Name</span></li>
+                            <li class="transaction-right"><span>@ViewData["firmname"]</span></li>
+                            <li class="transaction-left"><span>Address</span></li>
+                            <li class="transaction-right"><span>@ViewData["retaileraddress"]</span></li>
+                            @if (Mobile != "Y")
+                            {
+                                <li class="transaction-left"><span>Mobile</span></li>
+                                <li class="transaction-right"><span>@ViewData["retailermobile"]</span></li>
+                            }
+                            @if (Email != "Y")
+                            {
+                                <li class="transaction-left"><span>Email</span></li>
+                                <li class="transaction-right"><span>@ViewData["retaileremail"]</span></li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="container-fluid transaction">
+                        <p style="color: #000; background: none; font-size: 8px; font-family:inherit; line-height: 1.5; color: #3a3a3a; ">NOTE:   Thanks for visiting @ViewData["firmname"]. We are always ready for customer service, You can contact us for (M ATM) Payment Withdrawal, Mobile Recharge, Bill Payment, (AEPS) Aadhaar Withdrawal, Travel Booking and Related Services in future. Have a nice day. </p>
+
+                        <ul style="width: 100%; background: #e3e3e3; padding: 4px; " class="transaction-detail">
+                            @if (Customercare != "Y")
+                            {
+                                <li class="transaction-left"><span>customer care No.</span></li>
+                                <li class="transaction-right"><span>@ViewData["customercare"]</span></li>
+                            }
+                            @if (WebsiteName != "Y")
+                            {
+                                <li class="transaction-left"><span>Website Name</span></li>
+                                <li class="transaction-right"><span>@ViewData["Websitename"]</span></li>
+                            }
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+}

@@ -1,0 +1,3901 @@
+@using Microsoft.AspNet.Identity
+@using Vastwebmulti.Models;
+<!DOCTYPE html>
+<html>
+<head>
+    @{
+        var comnyname = "";
+        var favimage = "";
+        var Link = "";
+        VastwebmultiEntities DB1 = new VastwebmultiEntities();
+        var Userid = User.Identity.GetUserId();
+        var companyname = DB1.Admin_details.SingleOrDefault();
+        ViewBag.companyname = companyname.Companyname;
+
+        var faviconlogo = DB1.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+            }
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var color = DB1.changecolors.Where(a => a.Role == "ADMIN").ToList();
+        var col = color.Count == 0 ? "pink" : color.SingleOrDefault().multipaloutercolor;
+
+        var remain = (from nm in DB1.Remain_reteller_balance where nm.RetellerId == Userid select nm).Single().Remainamount;
+        var chkmsg = DB1.lowbalancemsgs.Where(a => a.userid == Userid).SingleOrDefault();
+        var userfor = DB1.lowbalances.Where(a => a.Role == "Retailer").FirstOrDefault();
+        if (userfor != null && userfor.amount < remain)
+        {
+            if (chkmsg == null)
+            {
+                lowbalancemsg lb = new lowbalancemsg();
+                lb.userid = Userid;
+                lb.message = "Message Sent";
+                lb.status = false;
+                DB1.lowbalancemsgs.Add(lb);
+                DB1.SaveChanges();
+            }
+            else
+            {
+                chkmsg.status = false;
+                DB1.SaveChanges();
+            }
+        }
+
+        var remainpos = (from nm in DB1.Pos_remain where nm.userid == Userid select nm).Single().Remain;
+        var RetailerName = (from nm in DB1.Retailer_Details where nm.RetailerId == Userid select nm).Single().RetailerName;
+        var retailerimg1 = (from nm in DB1.Retailer_Details where nm.RetailerId == Userid select nm).SingleOrDefault();
+        var retailerimg = "NODATA";
+        if (!string.IsNullOrWhiteSpace(retailerimg1.Photo))
+        {
+            retailerimg = retailerimg1.Photo;
+        }
+        var remainAeps = (from nm in DB1.AEPS_TXN_Details where nm.UserId == Userid && nm.IsSettled == false && nm.Status == "Success" select nm).ToList().Sum(a => a.Amount + a.RemIncome + a.RemGST);
+        var logoimage = "";
+        var logo = DB1.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+        if (logo.Count > 0)
+        {
+            if (logo.SingleOrDefault().Role == "ADMIN")
+            {
+                logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+            }
+        }
+        else
+        {
+            logoimage = "images/Default_Logo.png";
+        }
+        //complaint request
+        ViewBag.complaint = DB1.complaint_request.Count(a => a.userid == Userid && a.sts == "Open");
+        //total cart count
+        var countval = DB1.Carts.Where(a => a.BuyerId == Userid).Count();
+        ViewBag.cartcount = countval;
+
+        JSONReadWrite readWrite = new JSONReadWrite();
+        dynamic people = Newtonsoft.Json.JsonConvert.DeserializeObject(readWrite.Read("LogoBackgroundColor.json", "~/Areas/ADMIN/Models/JsonData/"));
+        string logoBgColor = people.ColorCode;
+
+
+        var dlm = DB1.Retailer_Details.Where(aa => aa.RetailerId == Userid).SingleOrDefault();
+
+        decimal? admincr = 0;
+
+
+        try
+        {
+
+            var admininfochk = DB1.Dealer_To_Retailer_Balance.Where(aa => aa.RetailerId == Userid && aa.DealerId == companyname.userid).OrderByDescending(aa => aa.RechargeDate).Take(1).SingleOrDefault();
+            if (admininfochk != null)
+            {
+                admincr = admininfochk.cr;
+            }
+        }
+        catch (Exception)
+        {
+            admincr = 0;
+        }
+
+
+        decimal? dlmcr = 0;
+
+        try
+        {
+            var dlmcrinfo = DB1.Dealer_To_Retailer_Balance.Where(aa => aa.RetailerId == Userid && aa.DealerId == dlm.DealerId).OrderByDescending(aa => aa.RechargeDate).Take(1).SingleOrDefault();
+            if (dlmcrinfo != null)
+            {
+                dlmcr = dlmcrinfo.cr;
+            }
+
+        }
+        catch (Exception)
+        {
+            dlmcr = 0;
+        }
+        var total = Convert.ToDecimal(admincr) + Convert.ToDecimal(dlmcr);
+
+        var servicechk = "NOTSHOW";
+
+
+
+
+        var resukt = DB1.Service_BlockUserwise.Where(x => x.remid == Userid).ToList();
+        //var sevienamehh = DB1.Show_Service_name.Where(x => resukt.Contains(x.idno));
+
+
+
+        var travelstatus = "NOTchk";
+        var finiancialstatus = "NOTchk";
+        var otherstatus = "NOTchk";
+        var b2csts = false;
+        foreach (var itesmm in resukt)
+        {
+            var sevienamehh = DB1.Show_Service_name.Where(x => x.idno == itesmm.Show_Service_name_id).FirstOrDefault();
+            if (sevienamehh != null)
+            {
+
+                if (sevienamehh.servicename == "Finiance" && itesmm.status == true)
+                {
+                    finiancialstatus = "CHKOK";
+                }
+                else if (sevienamehh.servicename == "Travel" && itesmm.status == true)
+                {
+                    travelstatus = "CHKOK";
+                }
+                else if (sevienamehh.servicename == "Other" && itesmm.status == true)
+                {
+                    otherstatus = "CHKOK";
+                }
+            }
+
+        }
+        var b2cststus = DB1.RechargeB2CStatus.Where(aa => aa.userid == Userid).SingleOrDefault();
+        if (b2cststus.Sts == true)
+        {
+            travelstatus = "NOTchk";
+            otherstatus = "NOTchk";
+            finiancialstatus = "NOTchk";
+            b2csts = true;
+        }
+
+        var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Retailer").ToList();
+        if (usernname.Count() > 0)
+        {
+            if (usernname.SingleOrDefault().Role == "Retailer")
+            {
+                favimage = usernname.SingleOrDefault().NickName;
+                ViewBag.nickname = favimage;
+            }
+        }
+
+
+        var linkurl = DB1.Upload_Link.ToList();
+
+        var upiandgatewaychk = DB1.UPIandGatewayStatus.ToList();
+        ViewBag.UPIQR = upiandgatewaychk.Where(aa => aa.Name == "UPI_QR").SingleOrDefault().Status;
+        ViewBag.UPICOLLECTION = upiandgatewaychk.Where(aa => aa.Name == "UPI_Collection").SingleOrDefault().Status;
+        ViewBag.GATEWAY = upiandgatewaychk.Where(aa => aa.Name == "Payment_GateWay_page").SingleOrDefault().Status;
+
+    }
+
+
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@ViewBag.companyname</title>
+    <!-- Favicon-->
+
+    <link rel="icon" href="@Url.Content("~/" + favimage)" type="image/x-icon" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <!-- Wait Me Css -->
+    <link href="~/AdminDesign/plugins/waitme/waitMe.css" rel="stylesheet" />
+    <!-- Bootstrap Core Css -->
+    <link href="~/AdminDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="~/AdminDesign/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+    <!-- Waves Effect Css -->
+    <link href="~/AdminDesign/plugins/node-waves/waves.css" rel="stylesheet" />
+    <!-- Animation Css -->
+    <link href="~/AdminDesign/plugins/animate-css/animate.css" rel="stylesheet" />
+    <!-- Morris Chart Css-->
+    <link href="~/AdminDesign/plugins/morrisjs/morris.css" rel="stylesheet" />
+    <!-- Custom Css -->
+    <link href="~/AdminDesign/css/style.css" rel="stylesheet">
+    <link href="~/fonts/icofont.css" rel="stylesheet" />
+
+    <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+    <link href="~/AdminDesign/css/themes/all-themes.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="~/AdminDesign/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datepicker3.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/daterangepicker.min.css" rel="stylesheet" />
+    <link href="~/RetailerCss/StyleSheet.css" rel="stylesheet" />
+
+    <link href="~/MainFrontDesign/css/admin-Second-design.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/Admin-third-design.css" rel="stylesheet" />
+
+    <link href="~/MainFrontDesign/css/retailernewdesigncss.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/new-design.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/design-one.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+    }
+
+    @* new css Link  *@
+    <link href="~/MainFrontDesign/css/seven_design.css" rel="stylesheet" />
+
+    <style>
+
+        /*  new css  */
+        #leftsidebar .list.report-list-change h2.reportadminclass:last-child {
+            margin-bottom: 248px !important;
+        }
+
+        #leftsidebar .list.report-list-change h2.reportadminclass {
+            padding: 5px 2px !important;
+        }
+
+        .menu_s ul li {
+            padding: 0 !important;
+            text-align: center;
+        }
+
+            .menu_s ul li a {
+                border-bottom: 1px solid lightgray !important;
+                color: #000;
+                font-size: 14px;
+                padding: 3px 16px;
+            }
+
+        .top-searchbarr {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .menu_s ul li a:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        #search-wrapper2 {
+            width: 33%;
+        }
+
+        .lefy_menu #leftulbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #recharge .newimgspan {
+            display: flex;
+            align-items: center;
+        }
+
+        #aj {
+            float: right;
+            width: auto;
+            padding: 0;
+        }
+
+            #aj ul.bal-nav {
+                right: 0px !important;
+            }
+
+        /*  new css  */
+
+        #header-fixed-sticy ul#leftulbar li a {
+            font-size: 15px !important;
+        }
+
+        #nav-my.active-balencess ul.addnewlogout li#finanical a::before {
+            display: none !important;
+        }
+
+        .third-design .topnav-third-design#nav-my ul li {
+            padding: 0px 0px !important;
+            width: auto !important;
+        }
+
+            .third-design .topnav-third-design#nav-my ul li .btn btn-info {
+                background: none !important;
+                border: 0px !important;
+            }
+
+        .navbar .navbar-toggle:before {
+            content: '\E8D5';
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+
+        .for-blink1 {
+            color: #fff;
+            animation: blink 2s linear infinite;
+            display: initial;
+        }
+
+        @@keyframes blink {
+            0% {
+                color: #fff;
+            }
+
+            50% {
+                color: Yellow;
+            }
+
+            100% {
+                color: red;
+            }
+        }
+
+        li.microatm-button-allpage a {
+            font-size: 16px;
+            color: #555;
+            font-weight: 600;
+            padding: 1px 0;
+            display: block;
+        }
+
+        .bal-nav li img.retailerchat-img {
+            width: 16px !important;
+            height: 16px !important;
+            position: relative;
+            top: 1px;
+            left: -1px;
+            margin-right: 2px;
+        }
+
+        .bal-nav li img.moremenu_add {
+            width: 25px !important;
+            height: auto !important;
+        }
+
+        .amount-top-nav-re li {
+            min-height: 31.85px;
+        }
+
+
+
+        .nav-header-topin {
+            display: block;
+            color: #000 !important;
+            font-size: 9px;
+            margin-top: -3px;
+            font-weight: 400;
+        }
+
+        .amount-top-nav-re li a {
+            margin-right: 0px !important;
+        }
+
+        .amount-top-nav-re li, .amount-top-nav-re li.bkp.india-rupeyy, .amount-top-nav-re li.bkp {
+            height: 32px;
+            min-height: auto !important;
+            max-height: inherit !important;
+            padding-bottom: 0px !important;
+            border: 1px solid #000 !important;
+            border-radius: 2px !important;
+        }
+
+            .amount-top-nav-re li a i span, .cartfont-class {
+                font-size: 13px !important;
+                color: #000 !important;
+                font-weight: bold;
+            }
+
+            .amount-top-nav-re li a img.retailerchat-img, .amount-top-nav-re li button img.retailerchat-img {
+                display: block;
+                float: none;
+                text-align: center;
+                margin: 0px auto !important;
+            }
+
+            .amount-top-nav-re li button .cart {
+                position: relative;
+            }
+
+            .amount-top-nav-re li button span.nav-header-topin {
+                margin-top: -3px !important;
+            }
+
+            .amount-top-nav-re li button {
+                float: left;
+            }
+
+                .amount-top-nav-re li button .cart span {
+                    position: absolute !important;
+                    top: 12px !important;
+                    left: -1px !important;
+                }
+
+            .amount-top-nav-re li a i {
+                display: block;
+                text-align: center;
+                margin: 0px auto;
+            }
+
+                .amount-top-nav-re li a i img {
+                    float: none;
+                }
+
+            .amount-top-nav-re li .dropdown-submenu li {
+                height: auto !important;
+                border: 0px !important;
+            }
+
+        .nav-header-topin {
+            text-align: center;
+        }
+
+        .spancolor-newclass li a span, .spancolor-newclass li button span {
+            color: #fff;
+        }
+
+        .legal.legal-profilepassword.legal-responsiveclass .name.john.john-changeclass span {
+            color: #fff !important;
+        }
+
+        .amount-top-nav-re li a i {
+            margin-top: -1px;
+        }
+
+        .image-retailer-profile {
+            margin-right: 0px !important;
+        }
+
+        @@media only screen and (max-width:1512px) {
+            #header-fixed-sticy ul#leftulbar li a {
+                font-size: 13px !important;
+            }
+        }
+
+        @@media only screen and (max-width:1476px) {
+            #aj ul.bal-nav {
+                right: 0 !important;
+            }
+
+            #nav-my ul.addnewlogout li {
+                width: auto !important;
+            }
+
+            #search-wrapper2 {
+                width: 30%;
+            }
+
+            .responshive-rightclass {
+                width: 70%;
+            }
+        }
+
+
+
+        @@media screen and (max-width: 1366px) {
+            body #nav-my ul li a {
+                position: relative;
+                font-size: 12px !important;
+            }
+            #aj {
+                padding-right: 10px;
+            }
+
+        }
+
+        @@media screen and (max-width: 1290px) {
+            #nav-my ul.addnewlogout li a span {
+                font-size: 12px;
+                position: relative;
+            }
+
+            .bkp.logout-bkp.listtryp {
+                top: 40px !important;
+            }
+
+                .bkp.logout-bkp.listtryp p {
+                    font-size: 12px !important;
+                    margin-top: 4px !important;
+                }
+
+            #nav-my ul.addnewlogout li {
+                width: 11.3% !important;
+            }
+        }
+
+
+        @@media screen and (max-width: 1200px) {
+            #leftulbar.addnewlogout li a span {
+                font-size: 11px !important;
+            }
+
+            .bkp.logout-bkp.listtryp {
+                top: 40px !important;
+            }
+        }
+
+        @@media only screen and (max-width:1169px) {
+
+            .responshive-rightclass {
+                width: 75% !important;
+            }
+
+            #search-wrapper2 {
+                width: 25%;
+            }
+
+            .cart-p {
+                padding-left: 15px !important;
+            }
+
+            .op-user-trypo {
+                margin-top: 82px;
+            }
+        }
+
+        @@media only screen and (max-width:1097px) {
+
+            .resp_div {
+                width: 56px !important;
+            }
+
+            .pull-right .newimgspan p {
+                display: none;
+            }
+        }
+
+        @@media screen and (max-width:991px) {
+            #z-index {
+                z-index: 999;
+            }
+
+            .navbar .navbar-toggle {
+                padding-right: 18px;
+            }
+
+            #aj ul.bal-nav > li {
+                padding: 2.5px 1px !important;
+                margin-right: 2px !important;
+            }
+
+            .pull-right .newimgspan p {
+                display: none;
+            }
+        }
+
+        @@media only screen and (max-width:990px) {
+
+            .col-md-8, .col-md-4.servicepaidreport {
+                margin-top: 0px !important;
+            }
+
+            .col-xs-12.col-md-4.cart-p.dasborddetail {
+                margin-top: 20px !important;
+                margin-left: 0px !important;
+            }
+
+            .datatable-change-tab {
+                padding-left: 15px !important;
+            }
+        }
+
+        @@media screen and (max-width:767px) {
+            #aj {
+                padding: 10px;
+                float: right !important;
+                right: 12px;
+            }
+            #navbar-collapse ul {
+                z-index: 1;
+                position: relative;
+            }
+            body.layoutt-retailer .ratailer-header-page #navbar-collapse {
+                width: 100% !important;
+            }
+            #navbar-collapse::after {
+                width: 150%;
+                height: 100vh;
+                background: #0000005e;
+                position: absolute;
+                left: -100px;
+            }
+
+            .logout-bkp form button p {
+                position: relative;
+                left: -56px;
+            }
+
+            .logout-bkp form {
+                width: 100%;
+            }
+            .responshive-rightclass {
+                width: 100% !important;
+            }
+            .resp_div {
+                width: 100% !important;
+            }
+
+            .pull-right .newimgspan p {
+                display: block;
+            }
+
+            #recharge .newimgspan {
+                display: block;
+            }
+
+            .nav-header-topin {
+                display: block;
+                width: 100% !important;
+                float: left !important;
+                font-size: 14px !important;
+                text-align: center !important;
+            }
+
+            .amount-top-nav-re li, .amount-top-nav-re li.bkp.india-rupeyy, .amount-top-nav-re li.bkp {
+                height: auto !important;
+                /*display: block !important;*/
+                border-radius: 0px !important;
+            }
+
+                .amount-top-nav-re li a, .amount-top-nav-re li button {
+                    display: block !important;
+                    width: 100%;
+                    float: left;
+                    text-align: center;
+                }
+        }
+
+        body #nav-my ul#leftulbar li {
+            margin-top: 1px;
+        }
+
+        #header-fixed-sticy ul#leftulbar li a {
+            font-size: 16px;
+        }
+
+        @@media only screen and (max-width:520px) {
+
+            body .ratailer-header-page #navbar-collapse {
+                width: 100% !important;
+            }
+
+            .col-xs-12.col-md-4.cart-p.dasborddetail.myaccount-secon-design {
+                margin-top: 57px !important;
+            }
+        }
+
+        @@media only screen and (max-width:480px) {
+
+            #search-wrapper2 {
+                display: none;
+            }
+
+            .col-xs-12.col-md-4.cart-p.dasborddetail.myaccount-secon-design {
+                margin-top: 63px !important;
+            }
+        }
+    </style>
+
+
+</head>
+@{
+    var activetheme = "layoutt-retailer";
+    try
+    {
+        List<Vastwebmulti.JsonData.Hlp_TC_Privacy> thems = new List<Vastwebmulti.JsonData.Hlp_TC_Privacy>();
+        JSONReadWrite readWrite1 = new JSONReadWrite();
+        thems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("retailer_theme.json", "~/JsonData/"));
+        var themlist = thems.ToList();
+        var them = themlist.Where(aa => aa.Id == 1).SingleOrDefault();
+
+        if (them != null)
+        {
+            activetheme = them.Name;
+        }
+    }
+    catch
+    {
+        activetheme = "layoutt-retailer";
+    }
+
+}
+
+@*layoutt-retailer*@ @*r-second-design*@ @*third-design*@ @*fourthdesign-retailer-allnone*@ @*new-rdesign*@ @*r-design-one*@ @* r-seven_design *@
+<body class="theme @activetheme " style="overflow-x:hidden;">
+
+    <section class="layoutt fourthdesign-retailer">
+
+        <div id="mictiatmsave-loader" style="position: absolute;background: rgba(0,0,0,.5);right: 0px;left: 15px;bottom: 0px;top: 0px;display:none;z-index: 9999;width: 100%;">
+            <div id="loader" style="position: absolute; right: 41%; top: 50%; transform: translate(0%, -50%);">
+                <div class="loadingio-spinner-ripple-92ar2pfqk5j">
+                    <div class="ldio-zdyd6mf6t5">
+                        <div></div><div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page Loader -->
+        <div class="page-loader-wrapper">
+            <div class="loader">
+                <center><img src="~/images/serachimg.gif" class="img-responsive" style="height:200px;width:200px;" /></center>
+
+            </div>
+        </div>
+
+
+        <!-- #END# Page Loader -->
+        <!-- Overlay For Sidebars -->
+        <div class="overlay"></div>
+        <!-- #END# Overlay For Sidebars -->
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <div class="search-icon">
+                <i class="material-icons">search</i>
+            </div>
+            <input type="text" placeholder="START TYPING...">
+            <div class="close-search">
+                <i class="material-icons">close</i>
+            </div>
+        </div>
+        <!-- #END# Search Bar -->
+        <!-- Top Bar -->
+
+        <aside id="leftsidebar" class="sidebar fullbodydycolorbg retailer-header-left header-left-newresponshive newresponshive-secondde newresponshive-thirdde" style="box-shadow:none;">
+            <div class="navbar-header ccc asd-asd logoheight-second logoheight-third" style="padding:0px 0px;">
+                <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                <a href="javascript:void(0);" class="bars" style="display: none;"></a>
+                <a href="@Url.Action("Dashboard", "Home")" class="logo-second-design">
+                    <center>
+                        @if (@logoimage == "")
+                        {
+                            <img src="/img/Default_Logo.png" class="img-responsive lo-to" style="width:148px;background-color:@logoBgColor;padding:2px;">
+                        }
+                        else
+                        {
+                            <img src="@Url.Content("~/" + @logoimage)" class="img-responsive lo-to" style="width:148px;background-color:@logoBgColor;padding:2px;">
+                        }
+                    </center>
+                </a>
+
+
+
+
+            </div>
+
+            <div class="firstnavleft-retailer" style="width:100%;float:left;">
+
+                <div class="op-user-trypo">
+                    <div class="user-info navbar fullbodydycolorbg">
+                        <center>
+                            <div class="user-op">
+                                <p>@ViewBag.nickname</p>
+                            </div>
+                            <div class="image image-retailer-profile">
+                                @if (@retailerimg != "NODATA")
+                                {
+                                    <img src="@Url.Content("~/"+ @retailerimg )" width="51" height="51" alt="User" />
+                                }
+                                else
+                                {
+                                    <img src="~/AdminDesign/images/user.png" width="52" height="51" alt="User" />
+                                }
+                            </div>
+                        </center>
+                        <center>
+                            <div class="legal legal-profilepassword legal-responsiveclass" style="background:none; position:relative; padding:0px;">
+                                <div class="name john john-changeclass" style="color:white;"><span style="font-weight:700">@RetailerName.ToUpper()</span></div>
+                                <div class="email" style="color:white;"></div>
+                                <div style="margin-top:2px;margin-right:0px;">
+                                    <div class="profile-es profile-es-newadd">
+                                        <a href="~/RETAILER/Home/Profile" class="btn btn-info">Profile</a>
+                                    </div>
+                                    <div class="manage-mantp" style="float:right;margin-top:4px;">
+
+                                        @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @*<input type="submit" value="Manage Password" class="btn btn-danger" />*@
+                                            <a href="~/RETAILER/Home/ChangePassword" style="padding:5px 1px;background:#fff;padding: 8px 6px;
+background:#fff;color:#000;font-size: 12px;text-decoration: none;">Manage Password</a>
+                                        }
+                                    </div><br />
+                                    @* <center style="margin-top:10px;"><a href="~/RETAILER/Home/ChangePassword" style="color:white; text-decoration:none;"><i class="material-icons" style="font-size:16px;">https</i><span>Change Password</span></a></center>*@
+                                </div>
+
+                            </div>
+
+                        </center>
+                    </div>
+                </div>
+                <!-- #User Info -->
+                <!-- Menu -->
+                <div class="menu" style="border-right:2px solid #9e8e8e33;">
+
+                    <ul class="list report-list-change sevent_report">
+
+                        <h2 class="reportadminclass seventheme_act" style="font-size: 20px;margin: 10px 10px 0px 15px;border-bottom: 2px solid #fff;color: #fff;padding-bottom: 5px;margin-top: 13px !important;">
+
+                            <img src="~/AdminDesign/images/bars.svg" style="float:left;width:24px;" /><span style="padding-left:10px;">Menu</span>
+
+
+                        </h2>
+                        <li class="active seventheme_act">
+                            <a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-th" aria-hidden="true"></i><span>Dashboard</span></a>
+                        </li>
+                        <li class="seventheme_act">
+                            <a href="@Url.Action("Index", "Home")"><i class="fa fa-credit-card-alt" aria-hidden="true"></i><span>Prepaid&nbsp;&&nbsp;Utility</span></a>
+                        </li>
+                        @if (finiancialstatus == "CHKOK")
+                        {
+                            <li class="seventheme_act">
+                                <a href="@Url.Action("Money_transfer2", "Home")"><i class="fa fa-line-chart" aria-hidden="true"></i><span>Financial</span></a>
+                            </li>
+                        }
+                        @if (travelstatus == "CHKOK")
+                        {
+                            <li class="seventheme_act">
+                                <a href="@Url.Action("Travel", "Home")"><i class="fa fa-plane" aria-hidden="true"></i><span>Travel&nbsp;&&nbsp;Hotels</span></a>
+                            </li>
+                        }
+                        @if (otherstatus == "CHKOK")
+                        {
+                            <li class="seventheme_act">
+                                <a href="@Url.Action("Gift_Card", "Home")"><i class="fa fa-gift" aria-hidden="true"></i><span>Gift&nbsp;Cards</span></a>
+                            </li>
+                            <li class="seventheme_act">
+                                <a href="@Url.Action("Security", "Home")"><i class="fa fa-lock" aria-hidden="true"></i><span>Security</span></a>
+                            </li>
+
+                            <li class="seventheme_act">
+                                <a href="@Url.Action("Index", "ECommerce")"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span>E-commerce</span></a>
+                            </li>
+                        }
+
+
+
+                        <h2 class="reportadminclass" style="font-size: 20px;margin: 10px 10px 0px 15px;border-bottom: 2px solid #fff;color: #fff;padding-bottom: 5px;margin-top: 13px !important;">
+
+                            <img src="~/AdminDesign/images/bars.svg" style="float:left;width:24px;" /><span style="padding-left:10px;">Reports</span>
+
+
+                        </h2>
+                        <li>
+                            <a href="@Url.Action("RechargeReport","Home")">
+                                <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+                                @*<i class="material-icons">home</i>*@
+                                @*<img class="img-responsive" src="~/images/reportimage/recharge.svg" style="height:32px;" />*@
+                                <span>Prepaid & Utility</span>
+                            </a>
+                        </li>
+                        @if (finiancialstatus == "CHKOK")
+                        {
+                            <li id="classtravelactive">
+
+                                <a href="@Url.Action("Money_Transfer_Report", "Home")">
+                                    <i class="fa fa-line-chart" aria-hidden="true"></i>
+                                    <span>
+                                        Financial Services
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                        <!--  <li>
+
+        <a href="@Url.Action("AepsReport","Home")">
+            <span>
+                Aeps Reports
+            </span>
+        </a>
+    </li> -->
+                        <!-- <li>
+
+        <a href="@Url.Action("m_Possreport","Home")">
+            <span>
+                Mposs Reports
+            </span>
+        </a>
+    </li> -->
+                        <!-- <li>
+
+        <a href="@Url.Action("TokenPurchaseReport","PANCARD")">
+            <span>
+                PAN Card Reports
+            </span>
+        </a>
+    </li> -->
+                        @if (travelstatus == "CHKOK")
+                        {
+                            <li id="rewertyd">
+                                <a id="debuggers" class="" href="@Url.Action("TicketReport", "Air")">
+                                    <i class="fa fa-plane" aria-hidden="true"></i>
+                                    <span>
+                                        Travel & Hotels
+                                    </span>
+                                </a>
+                            </li>
+
+                        }
+                        <!--<li>
+        <a href="@Url.Action("BusBookingReport","Bus")">
+            <span>
+                Bus Reports
+            </span>
+        </a>
+    </li>-->
+                        <!-- <li>
+        <a href="@Url.Action("HotelReport","Hotel")">
+            <span>
+                Hotel Reports
+            </span>
+        </a>
+    </li>-->
+                        @*<li>
+            <a href="#">
+                <span>
+                    New Connections
+                </span>
+            </a>
+        </li>*@
+                        @if (otherstatus == "CHKOK")
+                        {
+                            <li>
+                                <a href="@Url.Action("Ecommerce_Report", "Home")">
+                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                    @* <i class="material-icons">lock_outline</i>*@
+                                    @*<img class="img-responsive" src="~/images/reportimage/shopping-cart.svg" style="height:32px;" />*@
+                                    <span>E-commerce  </span>
+                                </a>
+
+                            </li>
+
+                            <li>
+                                @* <a href="@Url.Action("_SecurityReport","Home")">*@
+                                <a href="@Url.Action("SecurityReport", "Home")">
+                                    <i class="fa fa-shield" aria-hidden="true"></i>
+
+                                    @* <i class="material-icons">lock_outline</i>*@
+                                    @*<img class="img-responsive" src="~/images/reportimage/shopping-cart.svg" style="height:32px;" />*@
+                                    <span>Security Services</span>
+                                </a>
+
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Giftcard_Report", "Home")">
+                                    <i class="fa fa-gift" aria-hidden="true"></i>
+                                    <span>
+                                        Gift Cards
+                                    </span>
+                                </a>
+                            </li>
+
+                            var clos = DB1.daywisesettelecommsts.Where(s => s.retailerid == Userid).ToList();
+                            var sck = DB1.loanlimits.ToList();
+                            var usrchk = DB1.loanpermissions.Where(s => s.userid == Userid).ToList();
+
+
+                            if (clos.Count > 0 && clos[0].sts == true)
+                            {
+                                <li>
+                                    <a href="@Url.Action("Extracomm_Report", "Home")">
+                                        <i class="fa fa-extracomm" aria-hidden="true"></i>
+                                        <span>
+                                            Extra comm
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("openingbalance_Report", "Home")">
+                                        <i class="fa fa-extracomm" aria-hidden="true"></i>
+                                        <span>
+                                            Opening Balance
+                                        </span>
+                                    </a>
+                                </li>
+                            }
+                            if (sck.Count > 0 && usrchk.Count > 0 && sck[0].status == true && usrchk[0].status == true)
+                            {
+                                <li>
+                                    <a href="@Url.Action("loanrequest", "Home")">
+                                        <i class="fa fa-extracomm" aria-hidden="true"></i>
+                                        <span>
+                                            Loan Request
+                                        </span>
+                                    </a>
+                                </li>
+                            }
+                        }
+                        @if (finiancialstatus == "CHKOK")
+                        {
+                            <li>
+                                <a href="@Url.Action("Retailer_Microatm_rental_report", "Home")">
+                                    <i class="fa fa-id-card-o" aria-hidden="true"></i>
+
+                                    <span>
+                                        MicroAtm Rental
+                                    </span>
+                                </a>
+                            </li>
+                        }
+
+
+                        @*<li>
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">update</i>
+                <img class="img-responsive" src="~/images/reportimage/dmt.svg" style="height:32px;" />
+                <span>Money Transfer</span>
+            </a>
+
+        </li>
+        <li>
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">donut_large</i>
+                <img class="img-responsive" src="~/images/reportimage/airplane.svg" style="height:32px;" />
+                <span>Flight Booking</span>
+            </a>
+
+        </li>*@
+                        @*<li>
+            <a href="~/ADMIN/Home/Master_list">
+                <i class="material-icons">supervisor_account</i>
+                <img class="img-responsive" src="~/images/reportimage/bus.svg" style="height:32px;" />
+                <span>Bus Booking</span>
+            </a>
+        </li>
+        <li>
+            <a href="~/ADMIN/Home/Api_nm">
+                 <i class="material-icons">settings</i>
+                <img class="img-responsive" src="~/images/reportimage/fingerprint.svg" style="height:32px;" />
+                <span>Aadhaar Pay</span>
+            </a>
+        </li>*@
+                        @if (b2csts == false)
+                        {
+                            <h2 class="reportadminclass" style="font-size: 20px;margin: 15px 10px 0px 15px;border-bottom: 2px solid #fff;color: #fff;padding-bottom: 5px;">
+                                <img src="~/ashok-images/commerce.svg" style="float:left;width: 31px !important;height:31px;padding-left: 0;margin-left: 3px;" /><span style="padding-left:10px;padding-left: 10px !important;">wallet<sup class="addmargin">+</sup></span>
+                            </h2>
+                        }
+
+                        @*<li>
+            <a href="@Url.Action("Purchase_ORDER","Home")">
+                 <i class="material-icons">account_balance</i>
+                <img class="img-responsive" src="~/images/reportimage/mposs.svg" style="height:32px;" />
+                <span>Add Fund</span>
+            </a>
+
+        </li>*@
+
+                        @*<li style="display:none;">
+            <a href="@Url.Action("ReceiveFund_by_admin","Home")">
+                 <i class="material-icons">account_balance</i>
+                <img class="img-responsive" src="~/images/reportimage/mposs.svg" style="height:32px;" />
+                <span>Received Fund Info</span>
+            </a>
+
+        </li>*@
+
+                        @*<li>
+            <a href="@Url.Action("FundTranferAllReport","Home")">
+                 <i class="material-icons">account_balance</i>
+                <img class="img-responsive" src="~/images/reportimage/pan.svg" style="height:32px;" />
+                <span>Received Fund Info</span>
+            </a>
+
+        </li>*@
+
+                        @*<li style="display:none;">
+            <a href="@Url.Action("ReceiveFund_by_dealer","Home")">
+                 <i class="material-icons">account_balance</i>
+                <img class="img-responsive" src="~/images/reportimage/mposs.svg" style="height:32px;" />
+                <span>    Fund Received Distributor </span>
+            </a>
+
+        </li>*@
+
+                        @*<li>
+            <a href="@Url.Action("Retailer_to_retailer","Home")">
+                 <i class="material-icons">account_balance</i>
+                <img class="img-responsive" src="~/images/reportimage/pan.svg" style="height:32px;" />
+                <span>Fund Transfer R-R </span>
+            </a>
+
+        </li>*@
+                        @if (b2csts == false)
+                        {
+                            <li>
+                                <a href="@Url.Action("FundTransferRetailer", "Home")">
+                                    <i class="fa fa-file-text" aria-hidden="true"></i>
+
+                                    @* <i class="material-icons">account_balance</i>*@
+                                    @*<img class="img-responsive" src="~/images/reportimage/pan.svg" style="height:32px;" />*@
+                                    <span>Request Manualy </span>
+                                </a>
+
+                            </li>
+                            if (ViewBag.UPIQR == true)
+                            {
+                                <li>
+                                    <a href="@Url.Action("UPIQR", "Home")">
+                                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+
+                                        <span>Add By<div class="for-blink1"> UPI QR</div></span>
+                                    </a>
+
+                                </li>
+                            }
+                            if (ViewBag.UPICOLLECTION == true)
+                            {
+                                <li>
+                                    <a href="@Url.Action("UPICollection", "Home")">
+                                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+
+                                        <span>Add By<div class="for-blink1"> UPI Collection</div></span>
+                                    </a>
+
+                                </li>
+                            }
+                            if (ViewBag.GATEWAY)
+                            {
+                                <li>
+                                    <a href="@Url.Action("GatewayTRANSFER", "Home")">
+                                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                                        <span>Add By<div class="for-blink1"> Gateway</div></span>
+
+                                    </a>
+
+                                </li>
+                            }
+                            @*if (ViewBag.CHKUPI != null)
+            {
+
+                <li>
+                    <a href="@Url.Action("UPITRANSFER", "Home")">
+                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+
+                        <span>Add By<div class="for-blink1"> UPI</div></span>
+                    </a>
+
+                </li>
+
+            }*@
+                            @*if (ViewBag.GATEWAY != null)
+            {
+                if (ViewBag.GATEWAY.Status == "Y")
+                {
+                    <li>
+
+                        <a href="@Url.Action("GatewayTRANSFER", "Home")">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+
+                            <span>Add By Gateway</span>
+                        </a>
+
+                    </li>
+                }
+            }*@
+                            <li>
+                                <a href="@Url.Action("wallethistory", "Home")">
+                                    <i class="fa fa-google-wallet" aria-hidden="true"></i>
+
+                                    <span>Wallet History</span>
+                                </a>
+
+                            </li>
+                            <li>
+                                <a href="@Url.Action("RedaintWalletTransfer", "Home")">
+                                    <i class="fa fa-exchange" aria-hidden="true"></i>
+
+                                 
+                                    <span>Redaint Wallet History </span>
+                                </a>
+
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Fund_Transfer_Retailer_To_Retailer", "Home")">
+                                    <i class="fa fa-exchange" aria-hidden="true"></i>
+
+                                    @* <i class="material-icons">account_balance</i>*@
+                                    @*<img class="img-responsive" src="~/images/reportimage/pan.svg" style="height:32px;" />*@
+                                    <span><sup style="top: -5px;left: 2px;">2</sup> R </span>
+                                </a>
+
+                            </li>
+                        }
+
+                        @if (linkurl.Count() > 0)
+                        {
+                            <h2 class="reportadminclass" style="font-size: 10px;margin: 15px 10px 0px 15px;border-bottom: 2px solid #fff;color: #fff;padding-bottom: 5px;">
+
+                                <img src="~/images/icons-link-img.png" style="float:left;width: 31px !important;height:31px;padding-left: 0;margin-left: 0px;" /><span style="padding-left:8px;padding-left: 8px !important;">Other Links<sup class="addmargin"></sup></span>
+                            </h2>
+
+
+                            foreach (var item in linkurl)
+                            {
+                                <li>
+
+                                    <a href="@item.Link" target="_blank">
+                                        <i class="fa fa-external-link" aria-hidden="true"></i>
+
+                                        <span style="text-decoration: underline;">@item.Name </span>
+                                    </a>
+
+
+
+                                </li>
+                            }
+                        }
+
+                        <h2 class="reportadminclass reportadminclass-lastclass" style="font-size: 20px;margin: 15px 10px 0px 15px;border-bottom: 2px solid #fff;color: #fff;padding-bottom: 5px;">
+                            <img src="~/AdminDesign/images/customer.svg" style="float:left;width:24px;padding-left: 0;" /><span style="padding-left:10px;">
+                                <a href="@Url.Action("Help","Home")" style="margin:0px;padding:0px;width:auto;font-size: 18px;
+text-transform: uppercase;font-weight:700;">Support</a>
+                            </span>
+                        </h2>
+                        @*<li>
+            <a href="#">
+                <span>Support&nbsp;Timing</span>
+            </a>
+
+        </li>
+        <li>
+            <a href="#">
+                <span>Company&nbsp;Acc&nbsp;Info</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" style="padding-bottom:0px;">
+                <span style="margin-bottom:0;">Distributor Info</span>
+            </a>
+        </li>*@
+
+                    </ul>
+                </div>
+
+            </div>
+
+            @*__Retailer-Second-Design-Start______*@
+
+            <div class="sidebar-second-design" id="custnav-second">
+
+                <div class="imagepro-second stop-on">
+                    @if (@retailerimg != "NODATA")
+                    {
+                        <img src="@Url.Content("~/"+ @retailerimg )" width="51" height="51" alt="User" />
+                    }
+                    else
+                    {
+                        <img src="~/AdminDesign/images/user.png" width="52" height="51" alt="User" />
+                    }
+                    <h2>Retailer <marquee behavior="alternate" direction="left" scrollamount="1">@RetailerName.ToUpper()</marquee></h2>
+                </div>
+
+
+                <ul class="second-menu">
+                    <li>
+                        <span>
+                            <a href="@Url.Action("Dashboard","Home")">Dashboard</a>
+                        </span>
+                    </li>
+
+                    <li class="stop-on">
+                        <span>
+                            <a href="@Url.Action("Profile","Home")">Retailer&nbsp;Profile</a>
+                        </span>
+                    </li>
+                    <li class="stop-on">
+                        <span>
+                            <a href="@Url.Action("ChangePassword","Home")">Manage&nbsp;Password</a>
+                        </span>
+                    </li>
+
+                    <li class="stop-on">
+                        <span onclick="openNavretailer()">
+                            <a href="javascript:void(0);">
+                                My&nbsp;Account
+                            </a>
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+
+                        </span>
+
+                    </li>
+
+                    <li>
+                        <span data-toggle="collapse" data-target="#demo1">
+                            <a href="javascript:void(0);">Retailer&nbsp;Reports</a>
+                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                        <ul class="collapse second-menu-sub" id="">
+                            <li>
+                                <span><a href="@Url.Action("RechargeReport","Home")">- Prepaid & Utility</a></span>
+                            </li>
+                            @if (finiancialstatus == "CHKOK")
+                            {
+                                <li>
+                                    <span><a href="@Url.Action("Money_Transfer_Report", "Home")">- Financial Services</a></span>
+                                </li>
+                            }
+                            @if (travelstatus == "CHKOK")
+                            {
+                                <li>
+                                    <span><a href="@Url.Action("TicketReport", "Air")">- Travel & Hotels</a></span>
+                                </li>
+                            }
+                            @if (otherstatus == "CHKOK")
+                            {
+                                <li>
+                                    <span><a href="@Url.Action("Ecommerce_Report", "Home")">- E-commerce</a></span>
+                                </li>
+                                <li>
+                                    <span><a href="@Url.Action("SecurityReport", "Home")">- Security Services</a></span>
+                                </li>
+                                <li>
+                                    <span><a href="@Url.Action("Giftcard_Report", "Home")">- Gift Cards</a></span>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                    <li>
+                        <span data-toggle="collapse" data-target="#demo2">
+                            <a href="javascript:void(0);">Retailer&nbsp;Wallet</a>
+                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                        <ul class="collapse second-menu-sub" id="">
+                            <li>
+                                <a href="@Url.Action("FundTransferRetailer","Home")">Request Manualy</a>
+                            </li>
+                   
+                            <li>
+                                <a href="@Url.Action("UPITRANSFER","Home")">Add By UPI</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("GatewayTRANSFER","Home")">Add By Gateway</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("wallethistory","Home")">Wallet History</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Fund_Transfer_Retailer_To_Retailer","Home")">Transfer R<sup>2</sup>R</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        @if (linkurl.Count() > 0)
+                        {
+                            <span data-toggle="collapse" data-target="#demo2">
+                                <a href="javascript:void(0);">Other Links</a>
+                                <i class="fa fa-angle-down" aria-hidden="true"></i>
+                            </span>
+                            <ul class="collapse second-menu-sub" id="">
+                                @foreach (var item in linkurl)
+                                {
+                                    <li>
+
+                                        <a href="@item.Link">
+                                            <span style="text-decoration: underline;">@item.Name </span>
+                                        </a>
+
+
+
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </li>
+
+
+                    <li>
+                        <span>
+                            <a href="@Url.Action("Help","Home")">Retailer&nbsp;Support</a>
+
+                        </span>
+                    </li>
+                </ul>
+
+
+
+            </div>
+
+            @*__Retailer-Second-Design-END______*@
+
+            @*Retailer-Third-Design-Start*@
+
+            <div class="reatiler-sidbar-third">
+                <div class="third-design-scrol">
+                    <div class="imagepro-third">
+                        @if (@retailerimg != "NODATA")
+                        {
+                            <img src="@Url.Content("~/"+ @retailerimg )" width="51" height="51" alt="User" />
+                        }
+                        else
+                        {
+                            <img src="~/AdminDesign/images/user.png" width="52" height="51" alt="User" />
+                        }
+                        <h2>Retailer <marquee behavior="alternate" direction="left" scrollamount="1">@RetailerName.ToUpper()</marquee></h2>
+                    </div>
+
+                    <ul>
+                        <li class="frontted-third-design" data-cs-tab-toggle="4">
+                            <a href="javascript:void(0);">
+                                <img src="~/AdminDesign/images/cyber-security-re-third.svg" />
+                                <span style="animation: fronttedanimat 2s linear infinite;text-transform:uppercase;">Frontted</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Dashboard","Home")">
+                                <img src="~/AdminDesign/images/dashboard-third.svg" />
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Profile","Home")">
+                                <img src="~/AdminDesign/images/businessman-re-third.svg" />
+                                <span>Retailer Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("ChangePassword","Home")">
+                                <img src="~/AdminDesign/images/password-third-re.svg" />
+                                <span>Manage Password</span>
+                            </a>
+                        </li>
+                        <li data-cs-tab-toggle="1">
+                            <a href="javascript:void(0);">
+                                <img src="~/AdminDesign/images/account-re-third.svg" />
+                                <span>My Account</span>
+                            </a>
+                        </li>
+                        <li data-cs-tab-toggle="2">
+                            <a href="javascript:void(0);">
+                                <img src="~/AdminDesign/images/clipboard-re-third.svg" />
+                                <span>Retailer Reports</span>
+                            </a>
+                        </li>
+                        <li data-cs-tab-toggle="3">
+                            <a href="javascript:void(0);">
+                                <img src="~/AdminDesign/images/wallet-re-third.svg" />
+                                <span>Retailer Wallet</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Help","Home")">
+                                <img src="~/AdminDesign/images/headphones-re-third.svg" />
+                                <span>Retailer Support</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+
+
+            </div>
+
+            @*Retailer-Third-Design-End*@
+
+            <button id="notiff" style="display:block;"></button>
+            <div class="legal legal-new legal-new-second third-footer-third">
+                <div class="copyright tmw-total-color-one" style="margin-top:-4px;">
+                    Copyright&nbsp;&nbsp;2019 - <span>@DateTime.Now.Year</span>
+                </div>
+                <div class="copyright copyright-new">
+                    <a href="javascript:void(0);" class="tmw-total-color-one" style="">@ViewBag.companyname</a>
+                </div>
+
+            </div>
+            <!-- #Footer -->
+        </aside>
+
+        @*MY__ACCOUNT__SECOND__DESIGN__START*@
+        <div id="mySidepanel-second" class="sidepanel sidepanel-retailer-second">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNavretailer()">×</a>
+            <div class="second-basic second-basic-retailer">
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("RetailerLedger","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/resume.svg" />
+
+                                </center>
+                                <p>Ladger</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Retailer_Daybook_Report","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/123.svg" />
+
+                                </center>
+                                <p>Day Book</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Actual_Retailer_income","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/money-bag.svg" />
+
+                                </center>
+                                <p>My Earn</p>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Set_Referral","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/img/refer.svg" />
+
+                                </center>
+                                <p>Referral</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Service_Fee","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/ashok-images/support.svg" />
+
+                                </center>
+                                <p>Service Fee</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("WebLogin","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/login.svg" />
+
+                                </center>
+                                <p>Login Info</p>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Bank_info","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/img/business-and-finance.svg" />
+
+                                </center>
+                                <p>Bank & Cash</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("WalletUnloadReport","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/affiliate-marketing.svg" />
+
+                                </center>
+                                <p>Wallet Unload</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Operator_info","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/monitoring.svg" />
+
+                                </center>
+                                <p>Operator Comm</p>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("MarkupSetting","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/Markup.svg" />
+
+                                </center>
+                                <p>Markup Setting</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("DisputeReport","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/hammer.svg" />
+
+                                </center>
+                                <p>Dispute List</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Show_Credit_report_by_admin","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <i class="material-icons" style="color:#000;font-size:35px;margin-top:1px;">bubble_chart</i>
+
+                                </center>
+                                <p>My Credit</p>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="javascript:void(0);" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/Signup.svg" />
+
+                                </center>
+                                <p>Invoice</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Gst_Invocing_Retailer_report","Home")" class="second-basic-in">
+                            <span>
+                                <center>
+
+                                    <img src="~/images/reportimage/tax.svg" />
+
+                                </center>
+                                <p>GST & TDS</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="javascript:void(0);" class="second-basic-in">
+                            <span>
+                                <center>
+                                    <img src="~/AdminDesign/images/set-target.svg" />
+
+                                </center>
+                                <p>certification</p>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        @*MY__ACCOUNT__SECOND__DESIGN__END*@
+
+        @*Retailer-Third-Design-Sub_Menu*@
+        <div class="third-sub-menu-retailer" data-cs-tab-index="1">
+            <div class="close-third-menu">&#10006;</div>
+            <ul>
+                <li>
+                    <a href="@Url.Action("RetailerLedger","Home")">
+                        <img src="~/images/reportimage/resume.svg" />
+                        <span>Ladger</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Retailer_Daybook_Report","Home")">
+                        <img src="~/AdminDesign/images/document-re-third.svg" />
+                        <span>Day Book</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Actual_Retailer_income","Home")">
+                        <img src="~/AdminDesign/images/earning-re-third.svg" />
+                        <span>My Earn</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Set_Referral","Home")">
+                        <img src="~/AdminDesign/images/reffral-third.svg" />
+                        <span>Referral</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Service_Fee","Home")">
+                        <img src="~/AdminDesign/images/service-fees.svg" />
+                        <span>Service Fee</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("WebLogin","Home")">
+                        <img src="~/AdminDesign/images/login-third.svg" />
+                        <span>Login Info</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Bank_info","Home")">
+                        <img src="~/AdminDesign/images/bank-re-third.svg" />
+                        <span>Bank & Cash</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("WalletUnloadReport","Home")">
+                        <img src="~/AdminDesign/images/affiliate-re-third.svg" />
+                        <span>Wallet Unload</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Operator_info","Home")">
+                        <img src="~/AdminDesign/images/monitoring-re-third.svg" />
+                        <span>Operator Comm</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("MarkupSetting","Home")">
+                        <img src="~/AdminDesign/images/target-re-third.svg" />
+                        <span>Markup Setting</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("DisputeReport","Home")">
+                        <img src="~/AdminDesign/images/law-re-third.svg" />
+                        <span>Dispute List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Show_Credit_report_by_admin","Home")">
+                        <img src="~/AdminDesign/images/credit-card-re-third.svg" />
+                        <span>My Credit</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);">
+                        <img src="~/AdminDesign/images/invoice-re-third.svg" />
+                        <span>Invoice</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Gst_Invocing_Retailer_report","Home")">
+                        <img src="~/AdminDesign/images/tax-re-third.svg" />
+                        <span>GST & TDS</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);">
+                        <img src="~/AdminDesign/images/target-re-third.svg" />
+                        <span>Certification</span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="third-sub-menu-retailer" data-cs-tab-index="2">
+            <div class="close-third-menu">&#10006;</div>
+            <ul>
+                <li>
+                    <a href="@Url.Action("RechargeReport","Home")">
+                        <img src="~/AdminDesign/images/receipt-re-third.svg" />
+                        <span>Prepaid & Utility</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Money_Transfer_Report","Home")">
+                        <img src="~/AdminDesign/images/money-re-third.svg" />
+                        <span>Financial Services</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("TicketReport","Air")">
+                        <img src="~/AdminDesign/images/location-re-third.svg" />
+                        <span>Travel & Hotels</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Ecommerce_Report","Home")">
+                        <img src="~/AdminDesign/images/cart-re-third.svg" />
+                        <span>E-commerce</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("SecurityReport","Home")">
+                        <img src="~/AdminDesign/images/shield-re-third.svg" />
+                        <span>Security Services</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Giftcard_Report","Home")">
+                        <img src="~/AdminDesign/images/gift-card-re-third.svg" />
+                        <span>Gift Cards</span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="third-sub-menu-retailer" data-cs-tab-index="3">
+            <div class="close-third-menu">&#10006;</div>
+            <ul>
+                <li>
+                    <a href="@Url.Action("FundTransferRetailer","Home")">
+                        <img src="~/AdminDesign/images/request-re-third.svg" />
+                        <span>Request Manualy</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("UPITRANSFER","Home")">
+                        <img src="~/AdminDesign/images/increase-re-third.svg" />
+                        <span>Add By UPI</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("GatewayTRANSFER","Home")">
+                        <img src="~/AdminDesign/images/money-transfer-re-third.svg" />
+                        <span>Add By Gateway</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("wallethistory","Home")">
+                        <img src="~/AdminDesign/images/medical-report-re-third.svg" />
+                        <span>Wallet History</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Fund_Transfer_Retailer_To_Retailer","Home")">
+                        <img src="~/AdminDesign/images/exchange-re-third.svg" />
+                        <span><span style="display:flex;">Transfer R<sup>2</sup>R</span></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="third-sub-menu-retailer" data-cs-tab-index="4">
+            <div class="close-third-menu">&#10006;</div>
+            <ul class="balance-retailer-third">
+
+
+
+                <!--add to cart design-->
+                <li class="header__cart-btn-third" id="submenuu">
+                    <a href="javascript:void(0);" class="">
+                        <img src="~/AdminDesign/images/shopping-cart-re-third.svg" />
+                        <label class="sub-cart-third">3</label><span>Cart</span>
+
+                    </a>
+
+                </li>
+
+                <li class="bkp">
+                    <a href="javascript:void(0);">
+                        <img src="~/AdminDesign/images/money-re-third.svg" />
+                        <span>
+                            @total
+                        </span>
+                    </a>
+
+                    <ul class="dropdown-submenu">
+                        <li>Admin Cr:  @admincr</li>
+                        <li>Distribuitor Cr:  @dlmcr</li>
+                    </ul>
+
+                </li>
+                @if (b2csts==false)
+                {
+                <li class="bkp india-rupeyy" style="max-height:inherit !important;">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">
+                        <img src="~/AdminDesign/images/indian-re-third.svg" />
+                        <span>@remain</span>
+
+                    </a>
+
+
+                    <ul class="dropdown-submenu">
+                        <li>Wallet Balance</li>
+                        <li style="font-weight:700;">Wallet Capping:  @retailerimg1.caption</li>
+
+                    </ul>
+
+
+                </li>
+                <li class="bkp india-rupeyy" style="max-height:inherit !important;">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">
+                        <img src="~/AdminDesign/images/indian-re-third.svg" />
+                        <span>@remainpos</span>
+
+                    </a>
+
+
+                    <ul class="dropdown-submenu">
+                        <li>POS Balance</li>
+
+                    </ul>
+
+
+                </li>
+                <li class="" style="max-height:inherit !important;">
+                    <a href="@Url.Action("Micro_Atm_hold_Rem_Report", "Home")">
+                        <img src="~/AdminDesign/images/indian-re-third.svg" />
+                        <span>Hold Amount</span>
+
+                    </a>
+                </li>
+                }
+                <li class="" style="max-height:inherit !important;">
+                    <a href="@Url.Action("Complaint", "Home")">
+                        <img src="~/ashok-images/chat-bubble-third.png" />
+                        <span>Complain Chat's</span>
+
+                    </a>
+                </li>
+
+
+            </ul>
+
+        </div>
+
+        @*Retailer-Third-Design-Sub-End*@
+
+        @*Retailer-Third-Design-Foter-Start*@
+        <div class="legal legal-new legal-new-second footer-third-design fullbodydycolorbg">
+            <div class="copyright tmw-total-color-one" style="">
+                <ul>
+                    <li>
+                        Copyright&nbsp;&nbsp;2019 - <span>@DateTime.Now.Year</span>
+                        <a href="javascript:void(0);" class="tmw-total-color-one" style="">@ViewBag.companyname</a>
+                    </li>
+                </ul>
+            </div>
+
+
+
+
+        </div>
+        @*Retailer-Third-Design-Foter-End*@
+
+        <div class="ratailer-header-page fullbodydycolorbg headersticy-second" id="header-fixed-sticy">
+            <button id="button-menu-secondid" data-toggle="ham-navigation" class="button-menu-second">
+                <span class="hamburger-menu-button-open" style="font-size:0;">Services</span>
+            </button>
+            <div class="secondretailer-over-second" style="width:100%;float:left;">
+                <nav class="navbar navbarr">
+                    <div class="container-fluid asd-allapp">
+                        <div class="navbar-header navbar-header-respon-second" style="padding:0px 0px;">
+                            <button class="blance-retailer-secondde blance-retailer-secondde-responsive">
+                                <img src="~/ashok-images/balance-second-design.png" style="width: 25px; margin-right: 5px;">
+                                <span>Frontted</span>
+                            </button>
+                            <a href="javascript:void(0);" class="navbar-toggle collapsed newchangeclassrespo newchangeclassrespo-second" id="z-index" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                            <a href="javascript:void(0);" class="bars bars-second-design"></a>
+                            <a href="~/RETAILER/Home/Dashboard">
+                                <center>
+                                    <img src="@Url.Content("~/" + @logoimage)" class="img-responsive ad-ppp" style="width:148px;" />
+                                </center>
+                            </a>
+                        </div>
+                        <div class="collapse navbar-collapse tt newclasscustome navbar-second-design navbar-third-design" id="navbar-collapse">
+                            <div class="navbar-header asd-asd logoheight-second logoheight-third" style="padding:0px 0px;">
+                                <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                                <a href="javascript:void(0);" class="bars" style="display: none;"></a>
+                                <a href="@Url.Action("Dashboard", "Home")" class="logo-second-design">
+
+                                </a>
+
+
+
+
+                            </div>
+                            <ul class="nav navbar-nav navbar-right">
+
+                                <li class="w-50">
+                                    <div class="top-searchbarr">
+
+
+
+
+
+                                        <div class="col-xs-6 col-xs-offset-2 top-search-responsive" id="search-wrapper2">
+
+                                            <div class="seven_menu">
+
+                                                <i class="fa fa-list-ul" aria-hidden="true"></i>
+
+                                            </div>
+
+                                            <form>
+                                                <div class="input-group focused1">
+                                                    <div class="input-group-btn search-panel">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                            <span id="search_concept" style="color:#333">All</span> <span class="caret" style="color:#333 !important;"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu scrollable-dropdown" role="menu">
+                                                            <li><a href="#">Automots</a></li>
+                                                            <li><a href="#">Cell Phs</a></li>
+                                                            <li><a href="#">Computer Accesories</a></li>
+                                                            <li><a href="#">Health and Personal Care</a></li>
+                                                            <li><a href="#">Automotive Accesories</a></li>
+                                                            <li><a href="#">Cell Phone Accesories</a></li>
+                                                            <li><a href="#">Computer Accesories</a></li>
+                                                            <li><a href="#">Health and Personal Care</a></li>
+                                                            <li><a href="#">Automotive Accesories</a></li>
+                                                            <li><a href="#">Cell </a></li>
+                                                            <li><a href="#">Computer Accesories</a></li>
+                                                            <li><a href="#">Health and Personal Care</a></li>
+                                                            <li><a href="#">Automotive Accesories</a></li>
+                                                            <li><a href="#">Cell Phone Accesories</a></li>
+                                                            <li><a href="#">Computer Accesories</a></li>
+                                                            <li><a href="#">Health and Personal Care</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <input type="hidden" name="search_param" value="all" id="search_param">
+                                                    <input type="text" class="form-control" name="x" id="search" placeholder="Search....">
+                                                    <span class="input-group-btn third-search-second">
+                                                        <button class="btn btn-default" type="submit" style="height:31px;margin-top:1px;">
+                                                            <span class="glyphicon glyphicon-search"><img src="~/ashok-images/search(3).svg" style="width: 15px;height: 18px;" /></span>
+                                                        </button>
+                                                    </span>
+
+                                                </div>
+                                            </form>
+                                        </div>
+
+
+
+
+
+
+
+
+                                        <script>
+                                            $(document).ready(function (e) {
+                                                $('.search-panel .dropdown-menu').find('a').click(function (e) {
+                                                    e.preventDefault();
+                                                    var param = $(this).attr("href").replace("#", "");
+                                                    var concept = $(this).text();
+                                                    $('.search-panel span#search_concept').text(concept);
+                                                    $('.input-group #search_param').val(param);
+                                                });
+                                            });
+                                            var a = document.getElementsByTagName('a').item(0);
+                                            $(a).on('keyup', function (evt) {
+                                                if (evt.keycode === 13) {
+
+                                                    alert('search?');
+                                                }
+                                            });</script>
+
+                                        <div class="col-md-8 responshive-rightclass cartwall-second-design cartwall-third-design new-rdesign">
+                                            <div class="row">
+
+                                                <div class="col-md-12" id="aj">
+
+                                                    <div class="res_menuseven">
+                                                        <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                                    </div>
+
+
+
+                                                    <ul class="bal-nav amount-top-nav-re topnavbar-retailer-first" style="width:100%; float:left;">
+                                                        @* <li class="search-btn3" style="padding:0px;border:none !important;display:none;">
+            <form id="content">
+                <input type="text" name="input" class="nputs-input" id="search-input">
+                <button type="reset" class="search" id="search-btn"></button>
+            </form>
+            </li>*@
+
+
+
+                                                        <div class="s-box">
+
+
+                                                            <div class="searchBox">
+
+                                                                <input class="searchInput" type="text" name="" placeholder="Search">
+                                                                <button class="searchButton" href="#" type="submit">
+                                                                    <i class="material-icons">
+                                                                        search
+                                                                    </i>
+                                                                </button>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <li class="microatm-button-allpage bkp resp_div" id="" style="width: 100px;">
+                                                            <a href="#" style="color:#000;">
+                                                                <span class="nav-header-topin">Select Menu</span>
+                                                                <i style="line-height:normal;">
+                                                                    <img class="moremenu_add" src="~/images/more-1.png" style="margin-top: -2px !important;" />
+
+                                                                </i>
+                                                            </a>
+                                                            <div class="dropdown-submenu menu_s" style="padding: 3px 5px; width: auto; ">
+                                                                <ul>
+                                                                    @{
+                                                                        var chd = DB1.ADDNEWSERVICES.Where(s => s.status == true).ToList();
+                                                                    }
+                                                                    @foreach (var f in chd)
+                                                                    {
+                                                                        <li><a href="@Url.Action("AdditionServices","Home",new {service=@f.SERVICENAME},"")">@f.SERVICENAME</a></li>
+                                                                    }
+
+
+                                                                </ul>
+                                                            </div>
+                                                        </li>
+
+                                                        <li class="microatm-button-allpage width1 r-d" id="">
+                                                            <a href="@Url.Action("retailerForm", "Home")" style="color:#000;">
+                                                                <span class="nav-header-topin">Manual Form</span>
+                                                                <i>
+                                                                    <img class="retailerchat-img" src="~/ashok-images/retailer-chat.png" />
+
+                                                                </i>
+                                                            </a>
+                                                            @*<button onclick="gocomplaint()" class="btn btn-warning" >Complain</button>*@
+                                                        </li>
+
+                                                        <li class="microatm-button-allpage width1 r-d" id="">
+                                                            <a href="@Url.Action("Complaint", "Home")" style="color:#000;">
+                                                                <span class="nav-header-topin">Complain</span>
+                                                                <i>
+                                                                    <img class="retailerchat-img" src="~/ashok-images/retailer-chat.png" />
+
+                                                                </i>
+                                                            </a>
+                                                            @*<button onclick="gocomplaint()" class="btn btn-warning" >Complain</button>*@
+                                                        </li>
+
+                                                        <!--add to cart design-->
+
+                                                        @if (otherstatus == "CHKOK")
+                                                        {
+                                                            <li class="header__submenuu shoping-cartpt r-d" id="submenuu">
+                                                                <button class="header__cart-btn" id="toggle-cart-btn">
+                                                                    <span class="nav-header-topin" style="position:static;color:#000;">E-Co Cart</span>
+                                                                    <i class="cart">
+                                                                        <img class="retailerchat-img" src="~/AdminDesign/images/discount.png" style="height:auto !important;margin-top:-1px !important;" /> @*<span>3</span>*@
+
+                                                                    </i>
+                                                                </button>
+                                                                <div class="custum-dropdown" style="display:none">
+                                                                    <ul><li><a href="#">E-Commerce</a></li></ul>
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                        <script>
+                                                            $(document).ready(function () {
+                                                                $(".header__cart-btn").click(function () {
+                                                                    $(".custum-dropdown").slideToggle()
+
+
+                                                                });
+                                                            });
+                                                        </script>
+
+                                                        @if (b2csts == false)
+                                                        {
+                                                            <li class="microatm-button-allpage bkp seventd" id="">
+                                                                <a href="@Url.Action("Micro_Atm_hold_Rem_Report", "Home")" style="color:#000;">
+                                                                    <span class="nav-header-topin">Hold Amount</span>
+                                                                    <i style="line-height:normal;">
+                                                                        <img class="" src="~/AdminDesign/images/rupee-r.png" style="width: 14px !important; height: auto !important; margin-top: -2px !important;" />
+                                                                        <span style="">
+                                                                            0.00
+                                                                        </span>
+                                                                    </i>
+                                                                </a>
+                                                                <div class="dropdown-submenu">
+                                                                    <ul>
+                                                                        <li>Hold&nbsp;Amount</li>
+
+                                                                    </ul>
+                                                                </div>
+                                                            </li>
+                                                            <li class="bkp seventd">
+                                                                <a href="#">
+                                                                    <span class="nav-header-topin">Credit Balance</span>
+
+                                                                    <i>
+                                                                        <img src="~/AdminDesign/images/rupee-r.png" style="width:14px !important;height:auto !important;margin-top:-2px !important;" /><span style="font-size: 16px;font-weight: 600;color:#000 !important;">
+                                                                            @total
+                                                                        </span>
+                                                                    </i>
+                                                                </a>
+                                                                <div class="dropdown-submenu">
+                                                                    <ul>
+                                                                        <li style="font-weight:700;"> Admin Cr:  @admincr</li>
+                                                                        <li style="font-weight:700;">Distribuitor Cr:  @dlmcr</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </li>
+                                                            <li class="bkp india-rupeyy seventd">
+                                                                <a href="javascript:void(0);" class="pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" style="margin-right:6px;">
+                                                                    <span class="nav-header-topin">Pos Balance</span>
+                                                                    <i>
+                                                                        <img src="~/AdminDesign/images/main-rupee.png" style="width:12px !important;height:auto !important;margin-top:0px !important;" />
+                                                                        <span id="remainretailer" style="color:#000 !important;font-size: 16px;font-weight: 600;">@remainpos</span>
+                                                                    </i>
+
+
+                                                                </a>
+                                                                <div class="dropdown-submenu">
+                                                                    <ul>
+                                                                        <li>POS Balance</li>
+
+                                                                    </ul>
+                                                                </div>
+
+
+                                                            </li>
+                                                            <!--Retailer Live  Balance-->
+                                                            <li class="bkp india-rupeyy  seventd">
+                                                                <a href="javascript:void(0);" class="pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" style="margin-right:6px;">
+                                                                    <span class="nav-header-topin">Wallet Balance</span>
+                                                                    <i class="blance-headerclass">
+                                                                        <img src="~/AdminDesign/images/main-rupee.png" style="width:12px !important;height:auto !important;margin-top:0px !important;" />
+                                                                        <span id="remainretailer1" style="color:#000 !important;font-size: 16px;font-weight: 600;">@remain</span>
+                                                                    </i>
+
+
+                                                                </a>
+                                                                <div class="dropdown-submenu">
+                                                                    <ul>
+                                                                        <li>Wallet Balance</li>
+                                                                        <li style="font-weight:700;">Wallet Capping:  @retailerimg1.caption</li>
+
+                                                                    </ul>
+                                                                </div>
+
+
+                                                            </li>
+                                                        }
+                                                        <li class="bkp logout-bkp bkp india-rupeyy seventd" style="border: 1px solid #f44336 !important;">
+                                                            @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                                            {
+                                                                @Html.AntiForgeryToken()
+                                                                <button type="submit" class="pull-right">
+                                                                    <span class="newimgspan"><i><img style="transform:none;text-align:center;margin:0px auto;position: static;float: none;margin-right: 2px;margin-top:1px;height: 15px;transform: rotate(-180deg);" src="~/ashok-images/signs.png" /></i><p style="font-size:16px; margin-top:0px;">Logout</p></span>
+
+                                                                </button>
+                                                            }
+
+                                                        </li>
+                                                        <li class="bkp logout-bkp bkp india-rupeyy rdesign seventd" style="width: 13%; float: left; right: 29px; padding: 0px 0px 0px 3px; display:none; ">
+                                                            @* @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="pull-right">
+                        <p>renu</p>
+                        <span>Retailer</span>
+
+                        <span class="newimgspan"><i><img src="/AashaDigitalIndia24Testing/AdminDesign/images/user.png" width="52" height="51" alt="User"></i><p style="font-size:16px; margin-top:0px;">Logout</p></span>
+
+                    </button>*@
+
+
+                                                            @*<div class="info-box-4 hover-zoom-effect" style="cursor:pointer;box-shadow:none;margin-top:3px;margin-bottom:3px;margin-left:3px;margin-right:3px;">*@
+                                                            @* <div class="icon" style="top:7px;">
+                    <img src="/AashaDigitalIndia24Testing/AdminDesign/images/user.png" width="52" height="51" alt="User">
+                </div>*@
+                                                            @*<div class="icon-third" style="top:15px;">
+                    <img src="/AashaDigitalIndia24Testing/AdminDesign/images/user.png" width="52" height="51" alt="User">
+                </div>*@
+                                                            <div class="content">
+                                                                <div class="text">Retailer</div>
+                                                                <div class="icon">
+                                                                    <img src="/AashaDigitalIndia24Testing/AdminDesign/images/user.png" alt="User">
+                                                                </div>
+                                                                <div class="number" style="">Renu</div>
+                                                            </div>
+                                                            @*</div>*@
+
+
+
+
+
+                                                            <div class="dropdown-submenu">
+                                                                <a class="ropdo" style="border-bottom: dashed; width: 100%; float: left;" href="~/RETAILER/Home/Profile"><i class="fa fa-user" style="float:left;font-size:19px;"></i>&nbsp;&nbsp;My Profile</a><br />
+                                                                <a class="ropdo" style="border-bottom: dashed; width: 100%; float: left;" href="~/RETAILER/Home/ChangePassword">Set Password</a>
+                                                                <a class="ropdo" style="width: 100%; float: left;" href="#">
+                                                                    @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                                                    {
+                                                                        @Html.AntiForgeryToken()
+                                                                        <button type="submit" class="pull-right" style="float: left !important;">
+                                                                            <i class="fa fa-sign-out" style="float:left;font-size:19px;"></i>&nbsp;
+                                                                            Logout
+                                                                            @*<span class="newimgspan"><p style="font-size:16px; margin-top:0px;">Logout</p></span>*@
+                                                                        </button>
+                                                                    }
+                                                                </a>
+                                                            </div>
+                                                        </li>
+
+
+
+                                                    </ul>
+
+
+
+                                                    @*Second-Design-Nav-HTML-Start*@
+                                                    <button class="blance-retailer-secondde">
+                                                        <img src="~/ashok-images/balance-second-design.png" style="width: 25px; margin-right: 5px;" />
+                                                        Frontted
+                                                    </button>
+
+
+
+                                                    @*Second-Design-Nav-HTML-End*@
+
+
+
+                                                    @*  seven theme menu  *@
+
+                                                    <div class="seven_tmenu-r">
+
+                                                        <div class="seven_Rpro">
+                                                            <a href="~/RETAILER/Home/Profile">
+
+                                                                <img src="~/images/T_profile.jpg" alt="My Profile" title="My Profile" />
+
+                                                            </a>
+                                                        </div>
+
+                                                        <ul class="dropdown-submenu seven_Rpro1">
+
+                                                            <li class="microatm-button-allpage bkp" id="">
+                                                                <a href="@Url.Action("Micro_Atm_hold_Rem_Report", "Home")" style="color:#000;">
+
+                                                                    <i style="line-height:normal;">
+                                                                        <img class="" src="~/AdminDesign/images/rupee-r.png" style="width: 14px !important; height: auto !important; margin-top: -2px !important;" />
+
+                                                                    </i>
+                                                                    <div>
+                                                                        <span class="nav-header-topin">Hold Amount</span>
+                                                                        <span style="">
+                                                                            0.00
+                                                                        </span>
+                                                                    </div>
+
+                                                                </a>
+                                                                <div class="dropdown-submenu">
+                                                                    <ul>
+                                                                        <li>Hold&nbsp;Amount:  0.00</li>
+
+                                                                    </ul>
+                                                                </div>
+                                                            </li>
+                                                            <li class="bkp">
+                                                                <a href="#">
+
+                                                                    <i>
+                                                                        <img src="~/AdminDesign/images/rupee-r.png" style="width:14px !important;height:auto !important;margin-top:-2px !important;" />
+                                                                    </i>
+
+                                                                    <div>
+                                                                        <span class="nav-header-topin">Credit Balance</span>
+                                                                        <span style="font-size: 16px;font-weight: 600;color:#000 !important;">
+                                                                            @total
+                                                                        </span>
+                                                                    </div>
+
+                                                                </a>
+                                                                <div class="dropdown-submenu">
+                                                                    <ul>
+                                                                        <li style="font-weight:700;"> Admin Cr:  @admincr</li>
+                                                                        <li style="font-weight:700;">Distribuitor Cr:  @dlmcr</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </li>
+                                                            <li class="bkp india-rupeyy">
+                                                                <a href="javascript:void(0);" class="pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" style="">
+
+                                                                    <i>
+                                                                        <img src="~/AdminDesign/images/main-rupee.png" style="width:12px !important;height:auto !important;margin-top:0px !important;" />
+
+                                                                    </i>
+
+                                                                    <div>
+                                                                        <span class="nav-header-topin">Pos Balance</span>
+                                                                        <span id="remainretailer" style="color:#000 !important;font-size: 16px;font-weight: 600;">@remainpos</span>
+                                                                    </div>
+
+                                                                </a>
+                                                                <div class="dropdown-submenu">
+                                                                    <ul>
+                                                                        <li>POS Balance:  0.00</li>
+
+                                                                    </ul>
+                                                                </div>
+
+
+                                                            </li>
+                                                            <!--Retailer Live  Balance-->
+                                                            <li class="bkp india-rupeyy">
+                                                                <a href="javascript:void(0);" class="pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" style="">
+
+                                                                    <i class="blance-headerclass">
+                                                                        <img src="~/AdminDesign/images/main-rupee.png" style="width:12px !important;height:auto !important;margin-top:0px !important;" />
+
+                                                                    </i>
+
+                                                                    <div>
+                                                                        <span class="nav-header-topin">Wallet Balance</span>
+                                                                        <span id="remainretailer1" style="color:#000 !important;font-size: 16px;font-weight: 600;">@remain</span>
+                                                                    </div>
+
+                                                                </a>
+                                                                <div class="dropdown-submenu">
+                                                                    <ul>
+                                                                        <li>Wallet Balance</li>
+                                                                        <li style="font-weight:700;">Wallet Capping:  @retailerimg1.caption</li>
+
+                                                                    </ul>
+                                                                </div>
+
+
+                                                            </li>
+
+                                                            <li class="bkp india-rupeyy">
+                                                                <a href="~/RETAILER/Home/ChangePassword" class="pull-right dropdown-toggle" role="button" aria-expanded="true" style="">
+
+                                                                    <i class="blance-headerclass">
+                                                                        <img src="~/images/8654173.png" style="width:16px !important;height:auto !important;margin-top:0px !important;" />
+
+                                                                    </i>
+
+                                                                    <div>
+                                                                        <span style="color:#000 !important;font-size: 12px;font-weight: 600;">Manage Password</span>
+                                                                    </div>
+
+                                                                </a>
+
+                                                            </li>
+
+                                                            <li class="bkp logout-bkp bkp india-rupeyy" style="">
+                                                                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                                                {
+                                                                    @Html.AntiForgeryToken()
+                                                                    <button type="submit" class="pull-right" style="width: 100%; padding: 4px;">
+                                                                        <span class="newimgspan" style="left: -23px; position: relative;"><i><img style="transform:none;text-align:center;margin:0px auto;position: static;float: none;margin-right: 2px;height: 15px;transform: rotate(-180deg);" src="~/ashok-images/signs.png" /></i><p style="font-size:16px; margin-top:0px;">Logout</p></span>
+
+                                                                    </button>
+                                                                }
+
+                                                            </li>
+
+
+                                                        </ul>
+
+
+
+                                                    </div>
+
+                                                    @*  seven theme menu  *@
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @*Second-Design-Nav-Right-Retailer-start*@
+
+
+
+                                        @* <ul id="leftulbar" class="nav navbar-nav navbar-left" style="padding-top:5px;display:none;">
+                                                <li class="dropdown downlist-ap" style="display:none;">
+                                                    <div class="asd-nav">
+                                                        <ul id="leftulbar" class="nav nav-tabs tab-nav-left nav1-tabs1" role="tablist" style="padding-top:5px;border-bottom:none;">
+                                                            <nav nav-tabs tab-nav-left nav1-tabs1 navi fullbodydycolorbg addnewlogout addnewlogout-responshive spancolor-newclassli id="dashboard" class="listtryp activee" role="presentation" style="padding:0px;">
+
+                                                                <a href="@Url.Action("Dashboard", "Home")" aria-expanded="false" style=" cursor:pointer;"><i class="fa fa-home" style="color:white;top:-3px;"></i></a>
+
+                                                            </nav>
+                                                            <li id="recharge" class="listtryp activee" role="presentation" style="padding:0px;">
+                                                                <a href="@Url.Action("Index", "Home")" id="recharge" aria-expanded="false">RECHARGE & BILL</a>
+                                                            </li>
+                                                            @if (finiancialstatus == "CHKOK")
+                                                            {
+                                                                <li id="finanical" class="listtryp" role="presentation" style="padding:0px;">
+
+                                                                    <a href="@Url.Action("Money_transfer2", "Home")" aria-expanded="true">FINANCIAL</a>
+
+                                                                </li>
+                                                            }
+                                                            @if (travelstatus == "CHKOK")
+                                                            {
+                                                                <li id="travel" class="listtryp" role="presentation" style="padding:0px">
+
+                                                                    <a href="@Url.Action("Travel", "Home")" aria-expanded="true">TRAVEL</a>
+                                                                    }
+                                                                </li>
+                                                            }
+
+
+                                                            @if (otherstatus == "CHKOK")
+                                                            {
+                                                                <li id="Gift" class="listtryp" role="presentation" style="padding:0px;">
+                                                                    <a href="@Url.Action("Gift_Card", "Home")" aria-expanded="true">GIFT&nbsp;CARDS</a>
+                                                                </li>
+
+                                                                <li id="ecommerce" class="listtryp" role="presentation" style="padding:0px; margin-bottom:-27px;">
+                                                                    <a href="@Url.Action("Index", "ECommerce")" aria-expanded="true">E-COMMERCE</a>
+                                                                </li>
+                                                            }
+
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>*@
+
+
+
+                                        <ul id="showpp" class="dropdown-menu" style="top:143%;margin:2px -125px 0px;">
+                                            <li class="body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" style="position:inherit;margin-bottom:-5px;">
+                                                            <table class="table" style="margin-bottom:0px;">
+                                                                <tbody id="showoutstandingbalance"></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </li>
+                                        </ul>
+
+
+                                </li>
+
+
+
+                        </div>
+
+
+
+
+
+
+
+
+
+                        <div class="r-pro">
+
+                            <div class="pro-img">
+                                <img src="~/images/user-2.png" alt="My Profile" title="My Profile" style="width:15px;">
+                            </div>
+
+
+                            <div class="user-info pro-r">
+
+                                <!--<center>-->
+                                @*<div class="user-op">
+                                        <p>@ViewBag.nickname</p>
+                                    </div>*@
+                                <!--<div class="image image-retailer-profile">
+                                        @if (@retailerimg != "NODATA")
+                                        {
+                                            <img src="@Url.Content("~/"+ @retailerimg )" width="51" height="51" alt="User" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/AdminDesign/images/user.png" width="52" height="51" alt="User" />
+                                        }
+                                    </div>
+                                </center>-->
+                                <center>
+                                    <div class="legal legal-profilepassword legal-responsiveclass" style="background:none; position:relative; padding:0px;">
+
+                                        @*<div class="name john john-changeclass" style="color:white;"><span style="font-weight:700">@RetailerName.ToUpper()</span></div>*@
+                                        <div class="email" style="color:white;"></div>
+                                        <div style="margin-top:2px;margin-right:0px;">
+                                            <div class="profile-es profile-es-newadd">
+                                                <a href="~/RETAILER/Home/Profile" class="btn btn-info">
+                                                    User Profile
+                                                    <img src="~/images/310818.png" />
+                                                </a>
+                                            </div>
+                                            <div class="manage-mantp" style="float:right;margin-top:4px;">
+
+                                                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    @*<input type="submit" value="Manage Password" class="btn btn-danger" />*@
+                                                    <a href="~/RETAILER/Home/ChangePassword" style="padding:5px 1px;background:#fff;padding: 8px 6px;
+background:#fff;color:#000;font-size: 12px;text-decoration: none;">
+                                                        Manage Password
+                                                        <img src="~/images/8654173.png" />
+                                                    </a>
+                                                }
+                                            </div><br />
+                                            @* <center style="margin-top:10px;"><a href="~/RETAILER/Home/ChangePassword" style="color:white; text-decoration:none;"><i class="material-icons" style="font-size:16px;">https</i><span>Change Password</span></a></center>*@
+                                        </div>
+
+                                    </div>
+
+                                </center>
+
+
+                                <div class="logout-r">
+                                    @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+
+
+                                        <button type="submit" class="pull-right">
+
+                                            <div class="profile-es profile-es-newadd">
+                                                <a class="btn btn-info">
+                                                    Logout
+                                                    <img src="~/images/5665417.png" />
+                                                </a>
+                                            </div>
+
+                                        </button>
+
+                                    }
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+
+                        </div>
+                        <!-- #User Info -->
+
+
+                    </div>
+
+                </nav>
+
+                <div class="top-navmenup  finaciall active-balencess topnav-seconddesign topnav-third-design" id="nav-my">
+                    <div class="menus">
+
+                        <!--toggle menu start-->
+
+                        <div id="toggle-poptmenuo">
+                            <div class="one"></div>
+                            <div class="two"></div>
+                            <div class="three"></div>
+
+
+                        </div>
+                        <script>
+                            $("#toggle-poptmenuo").click(function () {
+                                $(this).toggleClass("on");
+                                $(".layoutt .top-navmenup #leftulbar").slideToggle('slow');
+                            });
+                        </script>
+
+
+
+
+                        <!--toggle menu End-->
+
+                        <div class="lefy_menu">
+                            <ul id="leftulbar" class="nav nav-tabs tab-nav-left nav1-tabs1 navi fullbodydycolorbg addnewlogout addnewlogout-responshive spancolor-newclass" role="tablist" style="padding-top:5px;border-bottom:none;">
+                                <li id="dashboard" class="listtryp listt" role="presentation" style="padding:0px;">
+                                    <a href="@Url.Action("Dashboard", "Home")" aria-expanded="false"><i><img src="~/ashok-images/transport.png" /></i>DASHBOARD</a>
+                                </li>
+                                <li id="recharge" class="listtryp" role="presentation" style="padding:0px;">
+                                    <a href="@Url.Action("Index", "Home")" id="recharge" aria-expanded="false"><span class="newimgspan"><i><img src="~/ashok-images/validating-ticket.svg" style="text-align: center;margin: 0px auto;position: static;float: none;margin-right: 2px;margin-top: -2px;transform:none;" /></i>Prepaid&nbsp;&&nbsp;Utility</span></a>
+                                </li>
+                                @if (finiancialstatus == "CHKOK")
+                                {
+                                    <li id="finanical" class="listtryp" role="presentation" style="padding:0px;">
+                                        <a href="@Url.Action("Money_transfer2", "Home")" aria-expanded="true"><span class="newimgspan"><i><img style="transform:none;height: 21px;text-align: center;margin: 0px auto;position: static;float: none;margin-right: 2px;margin-top: -2px;" src="~/AdminDesign/images/business.svg" /></i>FINANCIAL</span></a>
+                                    </li>
+                                }
+                                @if (finiancialstatus == "CHKOK")
+                                {
+                                    <li id="AccountOpening" class="listtryp" role="presentation" style="padding:0px;">
+                                        <a href="@Url.Action("FINOCMS", "Home")" aria-expanded="true"><span class="newimgspan"><i><img style="transform:none;height: 21px;text-align: center;margin: 0px auto;position: static;float: none;margin-right: 2px;margin-top: -2px;" src="~/AdminDesign/images/business.svg" /></i>CMS<label class="for-blink1" style="font-size: 8px;position: absolute;top: -4px;right: -17px;">New</label></span></a>
+                                    </li>
+                                }
+                                @if (finiancialstatus == "CHKOK")
+                                {
+                                    <li id="AccountOpening" class="listtryp" role="presentation" style="padding:0px;">
+                                        <a href="@Url.Action("AccountOpening", "Home")" aria-expanded="true"><span class="newimgspan"><i><img style="transform:none;height: 21px;text-align: center;margin: 0px auto;position: static;float: none;margin-right: 2px;margin-top: -2px;" src="~/AdminDesign/images/business.svg" /></i>A/C Opening</span></a>
+                                    </li>
+                                }
+                                @if (travelstatus == "CHKOK")
+                                {
+                                    <li id="Gift" class="listtryp" role="presentation" style="padding:0px;">
+                                        <a href="@Url.Action("ALL_CARDS", "Home")" aria-expanded="true"><span class="newimgspan"><i><img style="transform:none;left:34px;height: 16px;top: 2px;text-align: center;margin: 0px auto;position: static;float: none;margin-right: 2px;margin-top: -2px;" src="~/ashok-images/business(1).png" /></i>CARDS</span></a>
+                                    </li>
+
+                                }
+
+
+                                @*<li id="Dth" class="listtryp" role="presentation" style="padding:0px;">
+                                        <a href="@Url.Action("Index", "DthConnection")" aria-expanded="true">NEW-DTH</a>
+                                    </li>*@
+                                @if (otherstatus == "CHKOK")
+                                {
+                                    <li id="travel" class="listtryp" role="presentation" style="padding:0px; width:7% !important;">
+                                        <a href="@Url.Action("Travel", "Home")" aria-expanded="true"><span class="newimgspan"><i><img style="transform:none;left: 16px;height: 13px;top: 4px;width: 15px !important;text-align: center;margin: 0px auto;position: static;float: none;margin-right: 2px;margin-top: -2px;" src="~/ashok-images/interface.png" /></i>TRAVEL</span></a>
+                                    </li>
+                                    <li id="Gift" class="listtryp" role="presentation" style="padding:0px;">
+                                        <a href="@Url.Action("Security", "Home")"><span class="newimgspan"><i><img style="transform:none;text-align:center;margin:0px auto;position: static;float: none;margin-right: 2px;margin-top: -2px;height: 15px;" src="~/ashok-images/computer.png" /></i>Security</span></a>
+                                    </li>
+
+                                    <li id="ecommerce" class="listtryp" role="presentation" style="padding:0px;">
+                                        <a href="@Url.Action("Index", "ECommerce")" aria-expanded="true"><span class="newimgspan"><i><img style="transform:none;text-align:center;margin:0px auto;position: static;float: none;margin-right: 2px;margin-top: -3px;height: 15px;" src="~/ashok-images/interface(1).png" /></i>E-COMMERCE</span></a>
+                                    </li>
+                                }
+
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+
+
+
+
+                </div>
+
+                @*NAV-TOP-SECOND-DESIGN-START*@
+
+
+                <div class="navtop-second ham-menu" id="ham-navigation">
+                    <ul>
+                        <li>
+                            <a href="@Url.Action("Dashboard", "Home")"><img src="~/ashok-images/transport.png" />Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Home")"><img src="~/ashok-images/validating-ticket.svg" />Prepaid&nbsp;&&nbsp;Utility</a>
+                        </li>
+                        @if (finiancialstatus == "CHKOK")
+                        {
+                            <li>
+                                <a href="@Url.Action("Money_transfer2", "Home")"><img src="~/AdminDesign/images/business.svg" />Financial</a>
+                            </li>
+                        }
+                        @if (travelstatus == "CHKOK")
+                        {
+                            <li>
+                                <a href="@Url.Action("Travel", "Home")"><img src="~/ashok-images/interface.png" />Travel&nbsp;&&nbsp;Hotels</a>
+                            </li>
+                        }
+                        @if (otherstatus == "CHKOK")
+                        {
+                            <li>
+                                <a href="@Url.Action("Gift_Card", "Home")"><img src="~/ashok-images/business(1).png" />Gift&nbsp;Cards</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Security", "Home")"><img src="~/ashok-images/computer.png" />Security</a>
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("Index", "ECommerce")"><img src="~/ashok-images/interface(1).png" />E-commerce</a>
+                            </li>
+                        }
+                        <li>
+                            @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="pull-right">
+                                    <span class="newimgspan"><i><img style="transform:none;text-align:center;margin:0px auto;position: static;float: none;margin-right: 2px;margin-top:1px;height: 15px;transform: rotate(-90deg);" src="~/ashok-images/signs.png" /></i><p>Logout</p></span>
+
+                                </button>
+                            }
+                        </li>
+
+                    </ul>
+                </div>
+
+                @*NAV-TOP-SECOND-DESIGN-END*@
+
+            </div>
+            @* <div class="user-info navbar fullbodydycolorbg">
+                            <center>
+                                <div class="user-op">
+                                    <p>Retailer</p>
+                                </div>
+                                <div class="image image-retailer-profile">
+                                    <img src="/AashaDigitalIndia24Testing/AdminDesign/images/user.png" width="52" height="51" alt="User">
+                                </div>
+                            </center>
+                            <center>
+                                <div class="legal legal-profilepassword legal-responsiveclass" style="background:none; position:relative; padding:0px;">
+                                    <div class="name john john-changeclass" style="color:white;"><span style="font-weight:700">RENU</span></div>
+                                    <div class="email" style="color:white;"></div>
+                                    <div style="margin-top:2px;margin-right:0px;">
+                                        <div class="profile-es profile-es-newadd">
+                                            <a href="/AashaDigitalIndia24Testing/RETAILER/Home/Profile" class="btn btn-info">Profile</a>
+                                        </div>
+                                        <div class="manage-mantp" style="float:right;margin-top:4px;">
+
+                                            <form action="/AashaDigitalIndia24Testing/Account/LogOff/logoutForm" method="post">
+                                                <input name="__RequestVerificationToken" type="hidden" value="WpL-mGNPm1dIccK2d6UTpPLFixQzmrk3zr4wPVySw7eH1jdabGmDEN1cAdusHCNPyEt6g2O90cCqTqao4f24A2VVum4kDYNKI3S_CVOe9tS5Tp5qATzIFIZ95FmD23wicCUqLEBPrYwRB9vg63lquA2">                                            <a href="/AashaDigitalIndia24Testing/RETAILER/Home/ChangePassword" style="padding:5px 1px;background:#fff;padding: 8px 6px;
+                background:#fff;color:#000;font-size: 12px;text-decoration: none;">Manage Password</a>
+                                            </form>
+                                        </div><br>
+
+                                    </div>
+
+                                </div>
+
+                            </center>
+                        </div>*@
+
+            <li id="dashboard1" class=" listt " role="presentation" style="padding:0px; display:none;">
+                <i><img src="/AashaDigitalIndia24Testing/ashok-images/transport.png" style="width: 29px; height: 29px; float: left;"></i>
+                <a href="/AashaDigitalIndia24Testing/RETAILER/Home" aria-expanded="false" style="font-size: 18px; color: white; margin: 5px 8px !important; display: block; float: right; ">DASHBOARD</a>
+            </li>
+
+        </div>
+
+        <ul class="nav navtop-retailer-secondde">
+            <li>
+                <a href="#">
+                    <span>Wallet Balance</span>
+                    <strong>
+                        <img src="~/AdminDesign/images/main-rupee.png" />
+                        @remain
+                    </strong>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span>Pos Balance</span>
+                    <strong>
+                        <img src="~/AdminDesign/images/main-rupee.png" />
+                        @remainpos
+                    </strong>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span>Credit Balance</span>
+                    <strong>
+                        <img src="~/AdminDesign/images/main-rupee.png" />
+                        @total
+                    </strong>
+                </a>
+            </li>
+            @if (finiancialstatus == "CHKOK")
+            {
+                <li>
+
+                    <a href="@Url.Action("Micro_Atm_hold_Rem_Report", "Home")">
+                        <span>Hold Amount</span>
+                        <strong>
+                            <img src="~/AdminDesign/images/main-rupee.png" />
+                            0.00
+                        </strong>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span>E-commerce Cart</span>
+                        <strong><span>0</span></strong>
+                    </a>
+                </li>
+            }
+            <li>
+                <a href="@Url.Action("Complaint", "Home")">
+                    <span>Complain Chat's</span>
+                    <strong><img class="retailerchat-img" src="~/ashok-images/retailer-chat.png" /></strong>
+                </a>
+            </li>
+        </ul>
+        @*Second-Design-Nav-Right-Retailer-End*@
+
+        @*<script>
+               $(document).ready(function () {
+                   $('ul#leftulbar li a[href$="' + location.pathname + '"]').addClass("active");
+
+               });
+
+            </script>*@
+
+        <!-- Left Sidebar -->
+
+    </section>
+
+
+    <div class="new-retailer-design" style="display:none;overflow-x:hidden;">
+
+        <div class="wrapper-retailer">
+
+            <!--Left-Side-Menu-Start-->
+
+            <div class="leftside-menu-retailer four-menu-active">
+                <a href="@Url.Action("Dashboard", "Home")" class="four-logo-retailer">
+
+                    @if (@logoimage == "")
+                    {
+                        <img src="~/img/Default_Logo.png" class="" />
+                    }
+                    else
+                    {
+                        <img src="@Url.Content("~/" + @logoimage)" class="" />
+                        @*<img src="~/img/Default_Logo.png" class="" />*@
+                    }
+
+                </a>
+
+                <div class="simplebar-mask-retailer">
+                    <div class="simplebar-offset-retailer">
+                        <div class="simplebar-content-wrapper-ret">
+                            <div class="simplebar-content-retailer">
+                                <ul class="menusmoll-scroll-four">
+                                    <li>
+                                        <a href="@Url.Action("Dashboard", "Home")">
+                                            <i class="fa fa-home"></i>
+                                            <span>Dashboards</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Profile", "Home")" class="collapsed">
+                                            <i class="fa fa-user-circle"></i>
+                                            <span>My Profile</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("ChangePassword", "Home")" class="collapsed">
+                                            <i class="fa fa-unlock-alt"></i>
+                                            <span>Manage Password</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "Home")" class="collapsed">
+                                            <i class="fa fa-signal"></i>
+                                            <span>Prepaid & Utility</span>
+
+                                        </a>
+                                    </li>
+                                    @if (finiancialstatus == "CHKOK")
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Money_transfer2", "Home")" class="collapsed">
+                                                <i class="fa fa-id-card"></i>
+                                                <span>Financial</span>
+
+                                            </a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <a href="javascript:void(0);" class="" data-toggle="collapse" data-target="#page-retailer-sub" aria-expanded="false">
+                                            <i class="fa fa-file"></i>
+                                            <span>Pages</span>
+                                            <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                        </a>
+                                        <div class="collapse four-submenu-retailer" id="page-retailer-sub">
+                                            <ul>
+                                                @if (travelstatus == "CHKOK")
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action("Travel", "Home")">Travel & Hotels</a>
+                                                    </li>
+                                                }
+                                                @if (otherstatus == "CHKOK")
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action("Gift_Card", "Home")">Gift Cards</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Security", "Home")">Security</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);">E-commerce</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="" data-toggle="collapse" data-target="#myaccount-four-re" aria-expanded="false">
+                                            <i class="fa fa-user-circle"></i>
+                                            <span>My Account 1</span>
+                                            <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                        </a>
+                                        <div class="collapse four-submenu-retailer" id="myaccount-four-re">
+                                            <ul>
+                                                <li>
+                                                    <a href="@Url.Action("RetailerLedger", "Home")">Ledger</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("Retailer_Daybook_Report", "Home")">Day Book</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("Actual_Retailer_income", "Home")">My Earn</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("Set_Referral", "Home")">Referral</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("Service_Fee", "Home")">Service Fee</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("WebLogin", "Home")">Login Info</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="" data-toggle="collapse" data-target="#myaccount-four-re2" aria-expanded="false">
+                                            <i class="fa fa-user-circle"></i>
+                                            <span>My Account 2</span>
+                                            <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                        </a>
+                                        <div class="collapse four-submenu-retailer" id="myaccount-four-re2">
+                                            <ul>
+                                                <li>
+                                                    <a href="@Url.Action("Bank_info", "Home")">Bank & Cash</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("WalletUnloadReport", "Home")">Wallet Unload</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("Operator_info", "Home")">Operator Comm</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("MarkupSetting", "Home")">Markup Setting</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("DisputeReport", "Home")">Dispute List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("Show_Credit_report_by_admin", "Home")">My Credit</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="" data-toggle="collapse" data-target="#myaccount-four-re3" aria-expanded="false">
+                                            <i class="fa fa-user-circle"></i>
+                                            <span>My Account 3</span>
+                                            <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                        </a>
+                                        <div class="collapse four-submenu-retailer" id="myaccount-four-re3">
+                                            <ul>
+                                                <li>
+                                                    <a href="javascript:void(0);">Invoice</a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0);">GST & TDS</a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0);">Certification</a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" class="collapsed" data-toggle="collapse" data-target="#four-report-retailer" aria-expanded="false">
+                                            <i class="fa fa-signal"></i>
+                                            <span>Report's</span>
+                                            <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                        </a>
+                                        <div class="collapse four-submenu-retailer" id="four-report-retailer">
+                                            <ul>
+                                                <li>
+                                                    <a href="@Url.Action("RechargeReport", "Home")">Prepaid & Utility</a>
+                                                </li>
+                                                @if (finiancialstatus == "CHKOK")
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action("Money_Transfer_Report", "Home")">Financial Services</a>
+                                                    </li>
+                                                }
+                                                @if (travelstatus == "CHKOK")
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action("TicketReport", "Home")">Travel & Hotels</a>
+                                                    </li>
+                                                }
+                                                @if (otherstatus == "CHKOK")
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action("Ecommerce_Report", "Home")">E-commerce</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("SecurityReport", "Home")">Security Services</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Giftcard_Report", "Home")">Gift Cards</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <a href="@Url.Action("UPITRANSFER", "Home")" class="collapsed">
+                                            <i class="fa fa-plus-square"></i>
+                                            <span>Add By UPI</span>
+
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="@Url.Action("Fund_Transfer_Retailer_To_Retailer", "Home")" class="collapsed">
+                                            <i class="fa fa-file"></i>
+                                            <span>Transfer R to R</span>
+
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="javascript:void(0);" class="" data-toggle="collapse" data-target="#four-wallet-retailer" aria-expanded="false">
+                                            <i class="fa fa-signal"></i>
+                                            <span>Wallet's</span>
+                                            <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                        </a>
+                                        <div class="collapse four-submenu-retailer" id="four-wallet-retailer">
+                                            <ul>
+                                                <li>
+                                                    <a href="@Url.Action("FundTransferRetailer", "Home")">Request Manualy</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("GatewayTRANSFER", "Home")">Add By Gateway</a>
+                                                </li>
+                                                <li>
+                                                    <a href="@Url.Action("wallethistory", "Home")">Wallet History</a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        @if (linkurl.Count() > 0)
+                                        {
+                                            <a href="javascript:void(0);" class="" data-toggle="collapse" data-target="#Other-Links-retailer" aria-expanded="false">
+                                                <i class="fa fa-link"></i>
+                                                <span>Other Links</span>
+                                                <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                            </a>
+                                            <div class="collapse four-submenu-retailer" id="Other-Links-retailer">
+                                                <ul>
+                                                    @foreach (var item in linkurl)
+                                                    {
+                                                        <li>
+
+                                                            <a href="@item.Link">
+                                                                <span style="text-decoration: underline;">@item.Name </span>
+                                                            </a>
+
+
+
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                    </li>
+
+
+
+                                    <li>
+                                        <a href="@Url.Action("Help", "Home")" class="collapsed">
+                                            <i class="fa fa-file"></i>
+                                            <span>Support</span>
+
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--Left-Side-Menu-End-->
+            <!--Side-Content-Start-->
+            <div class="content-page-four-design">
+                <div class="header-fourdesign-re" id="four-header-stcky">
+                    <div class="sideleft-control-menu">
+                        <button id="show-menu-hide-four">
+                            <span></span>
+                            <span></span>
+                            <span style="margin-bottom:0;"></span>
+                        </button>
+                    </div>
+                    <div class="four-header-search">
+                        <form>
+                            <div class="input-group">
+                                <i class="fa fa-search"></i>
+                                <input type="text" class="form-control" placeholder="Search..." id="">
+                                <button class="input-group-text btn-primary" type="submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="four-blance-retailer">
+                        <ul>
+                            <li>
+                                <a href="@Url.Action("Complaint", "Home")"><i class="fa fa-bell"></i></a>
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="collapse" data-target="#profile-password-man">
+                                    <i class="fa fa-cog"></i>
+                                </a>
+                                <div class="four-nav-blance-retailer collapse" id="profile-password-man">
+                                    <ul>
+
+                                        <li>
+                                            <a href="@Url.Action("Profile", "Home")">
+                                                <span>My Profile</span>
+
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("ChangePassword", "Home")">
+                                                <span>Manage Password</span>
+
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-cart-plus"></i>
+                                </a>
+
+                            </li>
+
+                            <li class="lastchild-samedesign-four">
+                                <a href="javascript:void(0);" class="changecss-foura">
+                                    <strong>
+                                        ?
+                                    </strong>
+                                    <strong class="twoblance-fourdesign">
+                                        <i style="float:left;">
+                                            <span>Main Bal</span>
+                                            <span>@remain</span>
+                                        </i>
+                                        <i style="float: left; padding-left: 8px;">
+                                            <span>Pos Bal</span>
+                                            <span>@remainpos</span>
+                                        </i>
+                                    </strong>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="changecss-foura" data-toggle="collapse" data-target="#openfourretailer-blance">
+                                    <strong>
+                                        @if (@retailerimg != "NODATA")
+                                        {
+                                            <img src="@Url.Content("~/"+ @retailerimg )" width="51" height="51" alt="User" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/AdminDesign/images/user.png" width="52" height="51" alt="User" />
+                                        }
+                                    </strong>
+                                    <strong>
+                                        <span>@RetailerName.ToUpper()</span>
+                                        <span>Retailer</span>
+                                    </strong>
+                                </a>
+                                <div class="four-nav-blance-retailer collapse" id="openfourretailer-blance">
+                                    <ul>
+
+
+                                        <li>
+                                            <a href="#">
+                                                <span>Credit Balance</span>
+                                                <strong>
+                                                    <img src="~/AdminDesign/images/main-rupee.png" />
+                                                    @total
+                                                </strong>
+                                            </a>
+                                        </li>
+                                        @if (finiancialstatus == "CHKOK")
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Micro_Atm_hold_Rem_Report", "Home")">
+                                                    <span>Hold Amount</span>
+                                                    <strong>
+                                                        <img src="~/AdminDesign/images/main-rupee.png" />
+                                                        0.00
+                                                    </strong>
+                                                </a>
+                                            </li>
+                                        }
+                                        <li>
+                                            <a href="#">
+                                                <span>E-commerce Cart</span>
+                                                <strong><span>0</span></strong>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="" style="width:100%;float:left;border:0px;background:transparent;">
+                                                        <span class="" style="width: auto; height: auto; background: transparent; margin: 0;">Log Out</span>
+
+                                                    </button>
+                                                }
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        @*Retailer-four-design-footer*@
+
+        <div class="four-design-footer">
+            <ul>
+                <li>Copyright&nbsp;&nbsp;2019 - <span>@DateTime.Now.Year</span></li>
+                <li>@ViewBag.companyname</li>
+            </ul>
+            <p>Version 4.0.0</p>
+        </div>
+
+    </div>
+
+    <!--Retailer-Four-Design-End-->
+
+
+    @RenderBody()
+
+
+
+    <!-- Jquery Core Js -->
+    <script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+    <script src="~/Swalalert/datatablejquery.js"></script>
+    <!-- Bootstrap Core Js -->
+    <script src="~/AdminDesign/plugins/bootstrap/js/bootstrap.js"></script>
+    <!-- Autosize Plugin Js -->
+    <script src="~/AdminDesign/plugins/autosize/autosize.js"></script>
+    <!-- Select Plugin Js -->
+    <!-- Slimscroll Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <!-- Waves Effect Plugin Js -->
+    <script src="~/AdminDesign/plugins/node-waves/waves.js"></script>
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-countto/jquery.countTo.js"></script>
+    <!-- Morris Plugin Js -->
+    <script src="~/AdminDesign/plugins/raphael/raphael.min.js"></script>
+    <script src="~/AdminDesign/plugins/morrisjs/morris.js"></script>
+    <!-- ChartJs -->
+    <!-- Flot Charts Plugin Js -->
+    <script src="~/AdminDesign/plugins/flot-charts/jquery.flot.js"></script>
+
+    <script src="~/MainFrontDesign/js/jquery-ui.min-scroll.js"></script>
+    <script src="~/MainFrontDesign/js/facescroll.js"></script>
+
+    <script>
+        $(function () {
+            var current = location.pathname;
+            var chk = 0;
+            $('#leftulbar li a').each(function () {
+                var $this = $(this);
+                // if the current path is like this link, make it active
+                if ($this.attr('href').indexOf(current) !== -1) {
+                    //alert("djdjdj")
+                    $(this).closest("li").addClass("active");
+                    if (chk == 0) {
+                        return false;
+                    }
+                    chk++;
+                }
+            })
+        })
+    </script>
+
+
+    <!-- Sparkline Chart Plugin Js -->
+    <!-- Custom Js -->
+    <script src="~/AdminDesign/js/admin.js"></script>
+    @*<script src="~/AdminDesign/js/pages/index.js"></script>*@
+    <!-- Demo Js -->
+    <script src="~/AdminDesign/js/demo.js"></script>
+    <script src="~/AdminDesign/plugins/moment.min.js"></script>
+    <script src="~/AdminDesign/plugins/daterangepicker.js"></script>
+    <!--data table -->
+    <script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+    <script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+    <script src="~/AdminDesign/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    <script src="~/AdminDesign/plugins/sweetalert/sweetalert.min.js"></script>
+    <link href="~/Swalalert/datatable.css" rel="stylesheet" />
+
+    <script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+    <script src="~/ClanderCss/bootstrap-datepicker.min.js"></script>
+    <script src="~/ClanderCss/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+
+</body>
+
+
+<!--Retailer-Four-Design-Start-->
+
+
+
+</html>
+
+
+<!--Redirect to Index view with javascript-->
+@*<script>
+
+        window.onload = function () {
+
+            var pathname = window.location.pathname;
+            $('.nav > li > a[href="' + pathname + '"]').parent().addClass('active');
+            $('.nav > li > a[href="' + pathname + '"]').parent().addClass('btn  waves-effect');
+               }
+    </script>*@
+
+
+
+
+<script>
+    function gocomplaint()
+    {
+        var url = '@Url.Action("Complaint", "Home")';
+        window.location.href = url;
+    }
+</script>
+<!-- Push Nitification using SignalR-->
+<script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script type="text/javascript">
+
+    window.onload = function () {
+        //alert("chal gaya kya???");
+
+        var hub = $.connection.notificationHub;
+        //alert("notificationHub");
+        //Client Call
+        hub.client.broadcaastNotif = function (totalNotif) {
+            //alert("broadcaastNotif");
+            if (totalNotif.length > 0) {
+                $.each(totalNotif, function (i, obj) {
+                    //setNotification(obj.Title, obj.Details, obj.DetailsURL);
+                    customnotify(obj.Title, obj.Details, obj.DetailsURL, obj.Id);
+                });
+
+            }
+        };
+        //$.connection.hub.start().done(function () { });
+        $.connection.hub.start()
+            .done(function () {
+                console.log("Hub Connected!");
+
+                //Server Call
+                hub.server.getNotification();
+
+            })
+            .fail(function () {
+                console.log("Could not Connect!");
+            });
+    };
+</script>
+
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var url = db.Admin_details.Single().WebsiteUrl;
+    var adminid = db.Admin_details.Single().userid;
+    var notificationlogo = db.logoimage(adminid, "ADMIN").FirstOrDefault();
+    var notifilogo = notificationlogo == null ? "NO" : notificationlogo.logo;
+    var baseurl = "";
+    if (notifilogo != "NO")
+    {
+        baseurl = "http://" + url + "/Outside_logo/" + notifilogo;
+    }
+    else
+    {
+        baseurl = "";
+    }
+
+}
+<script>
+
+    function SetAsReaded(idn,url)
+    {
+        //alert("sjbskjdfbaaaaaaaaaaaaasjkdfb");
+       // alert('@url');
+        var urlSiteName = '@url';
+        var setObj = { Id : idn};
+        var Url = "https://www." + urlSiteName +"/api/Notification/UpdateReadProperty";
+        //alert(Url);
+        $.ajax({
+            type: "POST",
+            //url: "/api/Values/SendNotification",
+            url: Url,
+            data: JSON.stringify(setObj),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                //reset field
+                //$("#myMessage").val("");
+            },
+            error: function (xhr,err) {
+                console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                console.log("responseText: " + xhr.responseText);
+            }
+        });
+        //window.open(url,"_blank");
+    }
+</script>
+
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    });
+    function customnotify(title, desc, url, id) {
+        if (Notification.permission !== "granted") {
+           // alert("permission=granted");
+            Notification.requestPermission();
+        }
+        else {
+            //alert('@baseurl');
+            var notification = new Notification(title, {
+                icon: '@baseurl',
+                body: desc,
+            });
+
+            /* Remove the notification from Notification Center when clicked.*/
+            notification.onclick = function () {
+                //alert("Click");
+                SetAsReaded(id, url);
+                notification.close();
+            };
+
+
+            ///* Callback function when the notification is closed. */
+            notification.onclose = function () {
+                SetAsReaded(id, url);
+                notification.close();
+                console.log('Notification closed');
+            };
+        }
+
+
+    }
+</script>
+
+<!-- Push Nitification using SignalR END-->
+<!--  Get Total  My Credit Balance-->
+<script>
+        function showoutstandingbal()
+        {
+            $("#showoutstandingbalance").empty();
+            $.ajax({
+                type: 'Post',
+                url: "@Url.Action("Chkbalance", "Home")",
+                dataType: 'html',
+            cache: false,
+            async: false,
+            success: function (data) {
+                var x = JSON.parse(data);
+                var newRow =
+
+ "<tr>" +
+"<td><a href='@Url.Action("Show_Credit_report_by_admin", "Home")',style='text-decoration:none;cursor:pointer;'><p>My Credit From Admin</p></a></td>" +
+"<td><p style='text-align:center;'>" + x.admincreditbal + "</p></td>" + "</tr>" +
+"<tr>"+
+ "<tr>" +
+"<td><a href='@Url.Action("Show_Credit_report_by_dealer", "Home")',style='text-decoration:none;cursor:pointer;'><p>My Credit From Distributor</p></a></td>" +
+"<td><p style='text-align:center;'>" + x.dealercreditbal + "</p></td>" + "</tr>" +
+"<tr>";
+  $('#showoutstandingbalance').append(newRow);
+            }
+        });
+        }
+</script>
+
+<!--Transfer Total Balance Retailer To Retailer and Recived Balannce from Dealer and admin-->
+<script>
+        function showtransferbal()
+        {
+            $("#showtransferbalancetableid").empty();
+            $.ajax({
+                type: 'POST',
+                url:'@Url.Action("Totalbaltransfer", "Home")',
+                dataType:'html',
+                cache:false,
+                async:false,
+                success: function(data)
+                {
+                       var x = JSON.parse(data);
+                       var newRow =
+
+    "<tr>" +
+   "<td><a href='@Url.Action("Retailer_to_retailer", "Home")',style='text-decoration:none;cursor:pointer;'><p>Total&nbsp;Transfer&nbsp;Retailer&nbsp;to&nbsp;Retailer</p></a></td>" +
+   "<td><p style='text-align:center;'>" + x.retailertoretailer + "</p></td>" + "</tr>" +
+    "<tr>" +
+    "<tr>" +
+   "<td><a href='@Url.Action("ReceiveFund_by_admin", "Home")',style='text-decoration:none;cursor:pointer;'><p>Received&nbsp;From&nbsp;Admin</p></a></td>" +
+   "<td><p style='text-align:center;'>" + x.admintoretailer + "</p></td>" + "</tr>" +
+    "<tr>" +
+    "<tr>" +
+   "<td><a href='@Url.Action("ReceiveFund_by_dealer", "Home")',style='text-decoration:none;cursor:pointer;'><p>Received&nbsp;From&nbsp;Distributor</p></a></td>" +
+   "<td><p style='text-align:center;'>" + x.dealertoretailer + "</p></td>" + "</tr>" +
+    "<tr>";
+
+   $('#showtransferbalancetableid').append(newRow);
+            }
+            });
+        }
+</script>
+
+
+
+@*<script>
+        $(function () {
+            var loc = window.location.href; // returns the full URL
+            if ('/~/RETAILER/Home') {
+                $('.list.report-list-change li a').removeClass('active');
+            }
+        });
+    </script>*@
+
+
+<!--_____SECOND_DESIGN_SCRIPT____-->
+
+<script>
+
+    $('#custnav-second').alternateScroll();
+    $('.third-design-scrol').alternateScroll();
+    $('.third-sub-menu-retailer').alternateScroll();
+
+</script>
+
+<script>
+    function openNavretailer() {
+        document.getElementById("mySidepanel-second").style.width = "450px";
+    }
+    function closeNavretailer() {
+        document.getElementById("mySidepanel-second").style.width = "0";
+    }
+
+    if ($(window).width() <= '700') {
+        function openNavretailer() {
+            document.getElementById("mySidepanel-second").style.width = "100%";
+        }
+        function closeNavretailer() {
+            document.getElementById("mySidepanel-second").style.width = "0";
+        }
+
+    };
+</script>
+
+<script>
+    var button = document.getElementById('button-menu-secondid'),
+        span = button.getElementsByTagName('span')[0];
+
+    button.onclick = function () {
+        span.classList.toggle('hamburger-menu-button-close');
+    };
+
+    $('#button-menu-secondid').on('click', toggleOnClass);
+
+    function toggleOnClass(event) {
+        var toggleElementId = '#' + $(this).data('toggle'),
+            element = $(toggleElementId);
+
+        element.toggleClass('on');
+
+    }
+
+    $('.menu li a').on("click", function () {
+        $('#button-menu-secondid').click();
+    });
+
+
+</script>
+<script>
+    $("#button-menu-secondid").click(function () {
+        $(".navbar-second-design").toggleClass("navbar-second-design-toggle");
+    });
+
+</script>
+
+
+@*Third-Design-Script*@
+
+<script>
+
+    let tabHeader = $('.third-design .reatiler-sidbar-third ul li');
+    let tabContent = $('.third-sub-menu-retailer');
+    let tabclose = $('.close-third-menu');
+
+    tabHeader.click(function () {
+
+        tabHeader.removeClass('menu-active');
+        $(this).addClass('menu-active');
+
+        let match1 = $(this).data('cs-tab-toggle');
+
+        tabContent.removeClass('menu-active');
+        tabContent.filter('[data-cs-tab-index=' + match1 + ']').addClass("menu-active");
+    });
+
+    tabclose.click(function () {
+        tabHeader.removeClass('menu-active');
+        tabContent.removeClass('menu-active');
+    });
+</script>
+
+
+<script>
+    $('.third-design .third-design-table td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+
+    });
+
+    $('.third-design .third-design-table td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+
+    });
+</script>
+
+
+<script>
+    $(window).load(function () {
+
+        var viewportWidth = $(window).width();
+        if (viewportWidth < 1169) {
+            $(".third-design .topnav-third-design").removeClass("topnav-third-design");
+            $(".third-design .navbar-third-design").removeClass("navbar-third-design");
+
+        }
+
+        $(window).resize(function () {
+
+            if (viewportWidth < 1169) {
+                $(".third-design .topnav-third-design").removeClass("topnav-third-design");
+                $(".third-design .navbar-third-design").removeClass("navbar-third-design");
+            }
+        });
+
+    });
+</script>
+
+<script>
+    $(".blance-retailer-secondde").click(function () {
+        $(".navtop-retailer-secondde").toggleClass("navtop-retailer-secondde-open");
+
+    });
+</script>
+
+@*Four-Design-Script*@
+
+
+
+<script>
+
+    $(window).scroll(function () {
+        var scroll = $(window).scrollTop();
+
+        if (scroll >= 100) {
+            $("#four-header-stcky").addClass("fixed-header-four-retailer");
+        } else {
+            $("#four-header-stcky").removeClass("fixed-header-four-retailer");
+        }
+    });
+
+</script>
+
+<script>
+    if (window.matchMedia("(max-width: 991px)").matches) {
+        $("#show-menu-hide-four").click(function () {
+            $(".fourthdesign-retailer-allnone").toggleClass("new-retailer-design-mobile")
+        });
+    } else {
+        $("#show-menu-hide-four").click(function () {
+            $(".fourthdesign-retailer-allnone").toggleClass("new-retailer-design-show")
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.fourthdesign-retailer-allnone .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.fourthdesign-retailer-allnone .fourdesign-data-table').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>
+<script>
+    const input = document.getElementById("search-input");
+    const searchBtn = document.getElementById("search-btn");
+
+    const expand = () => {
+        searchBtn.classList.toggle("close");
+        input.classList.toggle("square");
+    };
+
+    searchBtn.addEventListener("click", expand);
+</script>
+@*Four-Design-Script-End*@
+
+@* seven theme menu *@
+
+<script>
+    //  layoutmenu
+
+    $(".r-seven_design .seven_menu").click(function () {
+        $("#leftsidebar").toggleClass("s_menu_bar1");
+        $("section.content").toggleClass("s_menu_bar2");
+        $("#header-fixed-sticy").toggleClass("s_menu_bar3");
+    });
+
+    $("#aj .res_menuseven").click(function () {
+        $(".r-seven_design .new-rdesign #aj ul.bal-nav").toggle();
+    });
+
+
+</script>
+
+
+@* seven theme menu *@
+

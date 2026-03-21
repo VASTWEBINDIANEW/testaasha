@@ -1,0 +1,488 @@
+﻿@model IEnumerable<Vastwebmulti.Models.DTHConnection_Report_New_Result>
+@{
+    ViewBag.Title = "DthBookingReport";
+    Layout = "~/Areas/DEALER/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top:75px !important;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+    .content.dthbooking-reportclass .table-responsive {z-index: 9;}
+
+    @@media screen and (max-width:992px){
+        .dthbooking-reportclass .col-md-2.dth-select-report {float: left;width: 20%;}
+        .dthbooking-reportclass .col-md-4.dth-date-report {float: left;width: 38%;}
+        .dthbooking-reportclass .col-md-1 {width: 10%;float: left;padding-right: 0;}
+    }
+    @@media screen and (max-width:768px){
+        .table-responsive {border: 0;}
+        .content.dthbooking-reportclass input, .content.dthbooking-reportclass .select2 span, .content.dthbooking-reportclass button span, .content.dthbooking-reportclass a, .content.dthbooking-reportclass button {
+    font-size: 12px !important;}
+        .col-md-5.dth-buttonpdfexl .dt-buttons {padding-right: 0;}
+        .modal-dialog-fullheight .modal-content .modal-body {height: auto;}
+        #m-d-fund-transfer .modal-dialog.modal-dialog-reportclass.modal-dialog-fullheight {width: 100%;float: left;}
+        .dthbooking-reportclass .table-responsive{position:relative !important;z-index:9;}
+
+    }
+    @@media screen and (max-width:520px) {
+        .dthbooking-reportclass .col-md-2.only-select-css.dth-select-report {
+            width: 23%;
+        }
+
+        .dthbooking-reportclass .dth-date-report .custom-date-icon {
+            display: none;
+        }
+
+        .dthbooking-reportclass .dth-date-report input {
+            padding-left: 2px;
+            padding-right: 2px;
+            text-align: center;
+        }
+
+        .dthbooking-reportclass .dth-date-report {
+            width: 55% !important;
+        }
+
+        .dthbooking-reportclass .col-md-1 {
+            width: 20%;
+            float: left;
+        }
+
+        .dthbooking-reportclass .dth-buttonpdfexl .dt-buttons {
+            padding: 0;
+        }
+
+        .dthbooking-reportclass .dth-buttonpdfexl {
+            margin-top: 10px;
+            float: right;
+        }
+    }
+
+    @@media screen and (max-width:580px){
+        .dthbooking-reportclass .col-md-1 button span {font-size: 0 !important;}
+        .dthbooking-reportclass .col-md-1 button span .fa.fa-search {display: inline-block !important;top: 1px !important;color: #555 !important;}
+        .dthbooking-reportclass .col-md-1 {width: 11%;float: left;}
+        .dthbooking-reportclass .col-md-1 button{padding-left:0;padding-right:0;}
+        .dthbooking-reportclass .col-md-2.only-select-css.dth-select-report {width: 30%;}
+    }
+
+</style>
+<section class="content dthbooking-reportclass">
+    <div class="container-fluid full-dealer-secondanimation">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Prepaid & Utilities</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                @*<li><a href="javascript:void(0);">Account Active 2&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>*@
+                <li><a href="javascript:void(0);">Prepaid & Utilities</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card card-dth-report">
+
+                    <div class="row">
+                        @using (Html.BeginForm("DthBookingReport", "Home", FormMethod.Post))
+                        {
+                            <div class="col-md-2 only-select-css dth-select-report" style="padding-right: 5px; ">
+                                <div class="form-line" style="width:100%;padding-bottom:10px;">
+                                    @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                        {
+                                new SelectListItem{ Text="Status",Value="Status",},
+                                new SelectListItem{Text="Success",Value="Success"},
+                                new SelectListItem{Text="Failed",Value="Failed"},
+                                 new SelectListItem{Text="Pending",Value="Pending"},
+                                }, new { @class = "selectpicker form-control for-select2", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;height:32px;" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 dth-date-report" style="padding:0px;">
+                                <div class="form-group for-web-date" style="margin-bottom:0px;width:100%;">
+                                    <div>
+                                        <div class="input-daterange input-group">
+                                            <div class="all-report-inputclass all-report-inputclass-left">
+                                                <div class="custom-date-icon" style="height: 32px;">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;height:32px;", autocomplete = "off" })
+                                            </div>
+                                            @*<span class="input-group-addon">
+                                                <i class="fa fa-exchange"></i>
+                                            </span>*@
+                                            <div class="all-report-inputclass all-report-inputclass-right">
+                                                <div class="custom-date-icon" style="height: 32px;">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;height:32px;", autocomplete = "off" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+
+                            <div class="col-md-1" style="padding-left:5px;">
+                                <center>
+                                    <button type="submit" class="btn" style="width:100%;  height:32px;border:1px solid #c7c2c2;background:#f5f5f5;">
+
+                                        <span style="top:-2px;color:black;"><i class="fa fa-search" style="top:0px;font-size:13px;color:#444;left:-4px;"></i>Search</span>
+                                    </button>
+                                </center>
+                            </div>
+                        }
+                        <div class="col-md-5 dth-buttonpdfexl" style="width:auto;float:right;">
+
+
+                            <button class="white-success-button" style="margin-left:4px;background:#eeebeb;">Total</button>
+                            <div class="white-success" style="display:none;width: 192px;right: 15px">
+                                <button type="button" class="btn btn-default waves-effect" style="margin-top:2px;" title="Total  Success"><img src="~/ashok-images/correct.svg" style="width: 19px;background: green;border-radius: 50%;padding: 3px;" />&nbsp;@ViewData["Totals"]</button>
+                                <button type="button" class="btn btn-default waves-effect" style="margin-top:2px;" title="Total  Failed"><img src="~/ashok-images/closes.svg" style="width: 19px;background: red;border-radius: 50%;padding: 3px;" />&nbsp;@ViewData["Totalf"]</button>
+                                <button type="button" class="btn btn-default waves-effect" style="margin-top:2px;" title="Total  Pending"><img src="~/ashok-images/clock.svg" style="width: 20px;" />&nbsp;@ViewData["Totalp"]</button>
+
+                            </div>
+                            <div class="web-white-filter fil" style="float: left;margin-right: 0px;margin-top:0px;">
+                                <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;">
+                                <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                            </div>
+                            <div class="web-white-filter" style="float:right;">
+                                <table class="dataTable js-exportable ">
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:0px;">
+                <div class="card all-reporttable-css">
+
+                    <div>
+                        <div class="table-responsive tableseconddes-dealer" style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover " style="width:100%; font-size:12px;">
+                                <thead style="background-color:transparent;">
+                                    <tr>
+                                        <th>Customer&nbsp;Id</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                        <th>Customer&nbsp;Name</th>
+                                        <th>Customer&nbsp;Email</th>
+                                        <th>Customer&nbsp;Mobile</th>
+                                        <th>Address</th>
+                                        <th>DTH&nbsp;Title</th>
+                                        <th>Dth&nbsp;Plan&nbsp;Name</th>
+                                        @*<th>Operator&nbsp;Code</th>
+                                        <th>Operator&nbsp;Name</th>
+                                        <th>Rch_time</th>
+                                        <th>Resp_time</th>
+                                        <th>Dth&nbsp;Box&nbsp;Type</th>
+                                        <th>Dth&nbsp;Box&nbsp;Type&nbsp;Name</th>*@
+                                        <th>Dealer&nbsp;Pre</th>
+                                        <th>Dealer&nbsp;Post</th>
+                                        <th>Dealer&nbsp;Comm</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            var color = "";
+                                            var sts = "";
+                                            var fontweight = "";
+                                            if (item.Status.Contains("Success"))
+                                            {
+                                                color = "green";
+                                                fontweight = "700";
+                                                sts = item.Status;
+
+                                            }
+                                            if (item.Status.Contains("Refund"))
+                                            {
+                                                color = "red";
+                                                fontweight = "700";
+                                                sts = item.Status;
+                                            }
+                                            if (item.Status.Contains("Failed"))
+                                            {
+                                                color = "red";
+                                                fontweight = "700";
+                                                sts = item.Status;
+                                            }
+                                            if (item.Status.Contains("Pending"))
+                                            {
+                                                color = "#ff9600";
+                                                fontweight = "700";
+                                                sts = item.Status;
+
+                                            }
+                                            <tr>
+                                                <td>
+                                                    @if (item.Frm_Name != null)
+                                                    {
+                                                        <p>@item.Frm_Name</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>@item.Email</p>
+                                                    }
+                                                </td>
+                                                <td><p style="font-size:13px;text-transform:uppercase;"><span style="color:@color;">@sts</span>&nbsp;</p></td>
+                                                <td>@item.Amount</td>
+                                                <td>@item.CustomerName</td>
+                                                <td>@item.CustomerEmail</td>
+                                                <td>@item.CustomerMobile</td>
+                                                <td>@item.Address</td>
+                                                <td>@item.DTHTitle</td>
+                                                <td>@item.Dthplanname</td>
+                                                <td>@item.optcode</td>
+                                                <td>@item.optname</td>
+                                                <td>@item.Rch_time</td>
+                                                <td>@item.Resp_time</td>
+                                                <td>@item.DthBoxtype</td>
+                                                <td>@item.DthBoxtypename</td>
+                                                <td>@item.DealerPre</td>
+                                                <td>@item.DealerPost</td>
+                                                <td>@item.Dlm_Comm</td>
+
+                                            </tr>
+                                        }
+                                    }
+                                    <tr class="tdimgmodalclass">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        @*<td>erty</td>
+                                        <td>ertyrt</td>
+                                        <td>dfghrty</td>
+                                        <td>werty</td>
+                                        <td>34556</td>
+                                        <td>456y</td>*@
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><span></span>&nbsp;<img class="img-sateallpagemodal" src="~/ashok-images/rightaeps.svg" data-toggle="modal" data-target="#m-d-fund-transfer" style="width: 11px;margin-top: 3px;float: right;" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- model for table -->
+<div class="modal fund-tr-history in" id="m-d-fund-transfer" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-reportclass modal-dialog-fullheight" role="document" style="margin:0px;float:right;">
+
+        <div class="modal-content width100 float-left">
+            <div class="modal-header width100 float-left dealer-pop-head">
+
+                <h5>Prepaid &&nbsp;Utilities</h5>
+
+
+                <button type="button" class="btn waves-effect " data-dismiss="modal" style="float:right;border:0px;color:var(--main-bg-lcolor);padding:0px; height:auto;background:transparent;">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+
+
+            </div><!--.modal-header-->
+            <div class="modal-body width100 float-left dealer-pop-body">
+                <div class="float-left width100">
+                    <form class="first-form">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label> Firm Name</label>
+
+                                    <input class="form-control" readonly="readonly" required="required" type="text" value="">
+
+                                </div>
+                            </div>
+
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group">
+                                    <label>Retailer Name</label>
+
+                                    <input class="form-control" readonly="readonly" required="required" type="text" value="">
+
+                                </div>
+                            </div>
+
+                        </div><!--.row-->
+
+
+
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Recharge No</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Amount</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Operator</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Operator Type</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Distributor Income</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Retailer Income</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase;" type="text" value="">
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Recharge Type</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Operator ID</label>
+                                    <input class="form-control" readonly="readonly" required="required" style="text-transform:uppercase" type="text" value="">
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </form>
+                </div><!--.modal-body-->
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+
+
+<script>
+    $('.for-select2').select2();
+
+
+</script>
+
+
+<script>
+    $(document).ready(function()
+    {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+        answers();
+    });
+</script>
+
+<script>
+    $('.white-success-button').click(function () {
+        $('.white-success').toggle();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var current = location.pathname;
+        $('.sidebar-dealer-responshive ul li a').each(function () {
+            var $this = $(this);
+            if ($this.attr('href').indexOf(current) !== -1) {
+                $this.addClass('active');
+
+
+            }
+        })
+    });
+</script>

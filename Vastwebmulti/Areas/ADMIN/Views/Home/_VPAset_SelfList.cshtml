@@ -1,0 +1,348 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.UPI_status_setting
+@using Vastwebmulti.Models.Enumdata;
+<style>
+    .wallet-bank-input input[readonly="readonly"] {
+        background: transparent;
+        border: 0px;
+    }
+</style>
+
+<table class="table table-responsive table-bordered wallet-bank-input" style="width: 100%;margin-top:5px;">
+    <thead>
+        <tr>
+
+            <th>VPA ID</th>
+            <th>VPA Name</th>
+            <th>Prefer(For All)</th>
+            <th>Action</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.admin_VPAIDs != null && Model.admin_VPAIDs.Count() > 0)
+        {
+            foreach (var item in Model.admin_VPAIDs)
+            {
+
+
+                <tr style="background:#fff;">
+                    <td>@item.VPAID</td>
+                    <td>
+                        @{
+                            int typeidno = Convert.ToInt32(item.VPATYPE);
+                        }
+                        @{var datas = Enum.GetName(typeof(SelupIEnumlist), typeidno);}
+
+                        <span>@datas</span>
+
+
+                    </td>
+                    <td>
+                        @if (item.Isdefault == true)
+                        {
+                            <button type="button" onclick="Activeset('@item.idno')" value="Prefer">Prefer</button>
+                        }
+                        else
+                        {
+                            <button type="button" onclick="Activeset('@item.idno')" value="Not Prefer">Not Prefer</button>
+                        }
+
+                    </td>
+
+                    <td>
+                        <button type="button" onclick="Deletedata('@item.idno')" value="Delete">Delete</button>
+                    </td>
+
+                </tr>
+            }
+
+        }
+
+        @if (Model.admin_VPAIDs != null && Model.admin_VPAIDs.Count() == 5)
+        {
+            <tr>
+                <td colspan="5">You can add Max 5 VPA</td>
+            </tr>
+        }
+        else
+        {
+            <tr class="tbladdbtnshow">
+                <td colspan="3"></td>
+                <td class="">
+                    <button type="submit" class="fullbodydycolorbg waves-effect bt btnssl  special-iii deleteCharged112" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                        Add Upi
+                    </button>
+
+                </td>
+
+            </tr>
+        }
+
+
+        <tr style="background:#fff;" class="clsupiaddhide">
+
+            <td class="classshow11"><input type="text" id="txtupiid" name="txtupiid" value="" placeholder="Enter VPA ID" /></td>
+
+            <td class="classshow11">
+                @*<select id="ddlpaytmtype" name="ddlpaytmtype">
+                        <option value="">Select VPA</option>
+                        <option value="1">PayTM</option>
+                        <option value="2">PHONE PAY</option>
+                        <option value="3">G PAY</option>
+
+                    </select>*@
+                @Html.EnumDropDownListFor(model => model.ddlpaytmtype)
+
+            </td>
+            <td class="classshow11"></td>
+            <td class="classshow11">
+                <button type="submit" class="fullbodydycolorbg waves-effect bt btnssl  special-iii deleteCharged111" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                    Process Request
+                </button>
+
+                @*<button type="submit" id="SaveChargeminbal" class="fullbodydycolorbg waves-effect bt btnssl  special-iii " style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                        Send OTP
+                    </button>*@
+            </td>
+            <td class="sendotphide" colspan="4">
+                <button type="submit" id="btnsendotp" class="fullbodydycolorbg waves-effect bt btnssl  special-iii deleteCharge" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                    Send&nbsp;OTP
+                </button>
+            </td>
+
+
+        </tr>
+        <tr class="classhide11">
+            <td colspan="4">
+                <input id="txtotp" name="txtotp" type="text" placeholder="Enter OTP" class="form-control" required />
+            </td>
+            <td>
+                <button type="submit" id="Saveotp" class="fullbodydycolorbg waves-effect bt btnssl  special-iii" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                    Save
+                </button>
+
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+@if (Model.msg != "DONE")
+{
+    <label style="color:red;">@Model.msg</label>
+}
+else if (Model.msg == "DONE")
+{
+    <label style="color:green;">@Model.msg</label>
+}
+<script>
+    function DeleteSelf() {
+        var url = '@Url.Action("DeleteUpiself", "Home")';
+        $.ajax({
+            url: url,
+            cache: false,
+            type: "GET",
+            success: function (data) {
+                $('#RemTbl11').html(data);
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".classshow11").show();
+        $(".tbladdbtnshow").show();
+        $(".classhide11").hide();
+        $(".sendotphide").hide();
+        $(".clsupiaddhide").hide();
+
+
+    })
+</script>
+
+<script>
+    $('.wallet-edit').click(function () {
+        /*  $(this).closest('tr').find('input').removeAttr('readonly');*/
+        $(this).closest('tr').find('.wallet-save').css('display', 'block');
+        $(this).css('display', 'none');
+    });
+</script>
+<script>
+    $('.deleteCharged111').click(function () {
+
+        //$('#txtupiid').attr("readonly", false);
+        //$('#txtminbal').attr("readonly", false);
+        //$('#txtmaxbal').attr("readonly", false);
+        //  $(this).next('.deleteCharge').show();
+        if ($("#txtupiid").val() == "" || $("#txtupiid").val() == null) {
+            $('#lblmsg').text('Enter UPI')
+            return false;
+        }
+
+        if ($("#ddlpaytmtype").val() == "" || $("#ddlpaytmtype").val() == null || $("#ddlpaytmtype").val() == 0) {
+            $('#lblmsg').text('select VPA')
+            return false;
+        }
+        else {
+            $(this).hide();
+            $(".classshow11").hide();
+            $(".classhide11").hide();
+            $(".sendotphide").show();
+            $("#tbladdbtnshow").hide();
+        }
+    });
+    $('.deleteCharged112').click(function () {
+        $(this).hide();
+        //$('#txtupiid').attr("readonly", false);
+        //$('#txtminbal').attr("readonly", false);
+        //$('#txtmaxbal').attr("readonly", false);
+        //  $(this).next('.deleteCharge').show();
+
+        $(".clsupiaddhide").show();
+    });
+    //$('#EditChrg').click(function () {
+    //    $(this).next('.deleteCharged11').hide();
+    //});
+</script>
+
+<script>
+    $('#btnsendotp').click(function () {
+        $('#lblmsg').text('')
+        debugger;
+        if ($("#txtupiid").val() == "" || $("#txtupiid").val() == null) {
+            $('#lblmsg').text('Enter UPI')
+            return false;
+        }
+
+        if ($("#ddlpaytmtype").val() == "" || $("#ddlpaytmtype").val() == null) {
+            $('#lblmsg').text('select VPA')
+            return false;
+        }
+
+        else {
+            $("#hideupiid").val($("#txtupiid").val());
+
+            $("#hidddlpaymenttype").val($("#ddlpaytmtype").val());
+
+            // $(thitemidnosidno).html('<i class="fa fa-circle-o-notch fa-spin" style="font-size:14px"></i>');
+
+            $.ajax({
+                url: '@Url.Action("SENDOTP","Home")',
+                type: 'POST',
+                success: function (response) {
+                    debugger;
+                    //$('#form_validation11').hide();
+                    //$('#form_validation1').show();
+                    //$('#txtupiid').attr("readonly", true);
+                    //$('#txtminbal').attr("readonly", true);
+                    //$('#txtmaxbal').attr("readonly", true);
+                    //  $('#RemTbl11').html(response);
+                    $("#txtupiid").val('');
+
+                    $("#ddlpaytmtype").val('');
+                    // $(this).html('Save Change');
+                    //$("#Saveotp").show();
+                    //$("#SaveChargeminbal").hide();
+
+                    $(".classshow11").hide();
+                    $(".classhide11").show();
+                    $(".sendotphide").hide();
+
+
+                },
+                error: function () {
+                    //alert(error);
+                }
+            });
+        }
+
+    })
+</script>
+
+<script>
+    $('#Saveotp').click(function () {
+        debugger;
+
+        $('#lblmsg').text('')
+        $.ajax({
+            url: '@Url.Action("AddVpaID", "Home")',
+            type: 'POST',
+            data: { upiid: $("#hideupiid").val(), otp: $("#txtotp").val(), paymenttype: $("#hidddlpaymenttype").val() },
+            success: function (response) {
+
+                // $('#SaveChargeminbal').text('save')
+                //$('#form_validation11').show();
+                //$('#form_validation1').hide();
+                $('#RemTbl222').html(response);
+                //$("#txtupiid").val(''),
+                //$("#txtminbal").val('')
+                // $("#txtmaxbal").val('')
+                //$("#Saveotp").hide();
+                //$("#SaveChargeminbal").show();
+
+                $(".classshow11").show();
+                $(".tbladdbtnshow").show();
+                $(".classhide11").hide();
+                $(".sendotphide").hide();
+                $(".clsupiaddhide").hide();
+
+            },
+            error: function () {
+                //alert(error);
+            }
+        });
+    })
+</script>
+
+
+<script>
+    function Deletedata(idno) {
+        $('#lblmsg').text('')
+        $.ajax({
+            url: '@Url.Action("deleteSelefUpiSelf", "Home")',
+            type: 'POST',
+            data: { upiid: idno },
+            success: function (response) {
+                debugger;
+
+                $('#RemTbl222').html(response);
+
+                $(".classshow11").show();
+                $(".tbladdbtnshow").show();
+                $(".classhide11").hide();
+                $(".sendotphide").hide();
+                $(".clsupiaddhide").hide();
+
+            },
+            error: function () {
+                //alert(error);
+            }
+        });
+    }
+    function Activeset(idno) {
+        $('#lblmsg').text('')
+        $.ajax({
+            url: '@Url.Action("ActiveUpiSelf", "Home")',
+            type: 'POST',
+            data: { upiid: idno },
+            success: function (response) {
+                $('#RemTbl222').html(response);
+
+                $(".classshow11").show();
+                $(".tbladdbtnshow").show();
+                $(".classhide11").hide();
+                $(".sendotphide").hide();
+                $(".clsupiaddhide").hide();
+
+            },
+            error: function () {
+                //alert(error);
+            }
+        });
+    }
+
+
+
+</script>
+

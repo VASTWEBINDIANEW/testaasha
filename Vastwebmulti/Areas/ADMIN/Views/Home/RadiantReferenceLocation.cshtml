@@ -1,0 +1,555 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Loilistreport_Result>
+@{
+    ViewBag.Title = "RadiantReferenceLocation";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .tmw-pad-services .btn:not(.btn-link):not(.btn-circle), .form-group .form-control {
+        border: 0;
+        border: 1px solid #ccc;
+    }
+
+    .modal .modal-footer {
+        padding: 15px 53px;
+    }
+
+    .form-group {
+        margin-bottom: 5px !important;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .modal-lg {
+        width: 1140px;
+    }
+
+    .modal-header::after, .modal-header::before {
+        display: none;
+    }
+</style>
+
+<section class="content cas-hdeposi-tcharge-page upicharge-thirddesign">
+    <div class="container-fluid" style="height:auto !important;min-height:inherit !important;">
+
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="page-header-third pageheader-margin-third retailerlist-header-resp">
+            <div class="bread-same-all-page breadsameall-second four-noneclass-admin-only">
+                <div class="row" style=" display: flex; align-items: center; justify-content: space-between;">
+                    <div class="col-md-8">
+                        <ul class="padding-top-third">
+                            <li class="smli">
+                                <a href="@Url.Action("Dashboard","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                    Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;">
+                                </a>
+                            </li>
+
+                            <li class="fullbodydycolorbg tmw-total-color-one">
+                                <a href="@Url.Action("RadiantReferenceLocation","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                    Reference Location
+                                </a>
+
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4" style="text-align:end;">
+                        <button type="button"
+                                class="btn btn-success"
+                                data-toggle="modal"
+                                data-target="#addLoiModal">
+                            + Add New
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-12">
+
+        <div class="row clearfix " style="margin:0;">
+            <div class="switch-user-tab page-header-third">
+
+                <div class="table-responsive " style="width:100%;">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr style="background:#f9f9f9;">
+                                <th>Full Details </th>
+                                <th>Refered by</th>
+                                <th>Ref Number</th>
+                                <th>State Name</th>
+                                <th>District Name</th>
+                                <th>City Name</th>
+                                <th>Client Name</th>
+                                <th>Dis Code</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <button class="btn btn-sm btn-info"
+                                                data-toggle="modal"
+                                                data-target="#detailsModal"
+                                                data-rceid="@item.RetailerName"
+                                                data-clientname="@item.ClientName"
+                                                data-cashlimit="@item.Cashlimit"
+                                                data-status="@item.Status"
+                                                data-dccode="@item.DCCode"
+                                                data-pointname="@item.PointName"
+                                                data-pointmobile="@item.PointMobile"
+                                                data-pickupaddress="@item.pickupaddress"
+                                                data-subdescrtion="@item.SubDescrtion"
+                                                data-workmode="@item.WorkMode"
+                                                data-statename="@item.State_name"
+                                                data-districtname="@item.Dist_Desc"
+                                                data-cityname="@item.CityName"
+                                                data-pincode="@item.Pincode"
+                                                data-additionalrequirement="@item.AdditionalRequirement"
+                                                data-latitude="@item.Latitude"
+                                                data-longitude="@item.Longitude"
+                                                data-depositionmode="@item.Depositionmode"
+                                                onclick="showDetails(this)">
+                                            Full Details
+                                        </button>
+                                    </td>
+                                    <td>@item.RetailerName</td>
+                                    <td>@item.Refnumber</td>
+
+                                    <td>@item.State_name</td>
+                                    <td>@item.Dist_Desc</td>
+                                    <td>@item.CityName</td>
+                                    <td>@item.ClientName</td>
+                                    <td>@item.DCCode</td>
+                                    <td>@item.Status</td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</section>
+<div class="modal fade" id="addLoiModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("Add_new_LOI", "Home", FormMethod.Post, new { @onsubmit = "return validateLatLongOnSubmit();" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Cash Deposit Bank Info</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="State" class="col-sm-4 text-right control-label col-form-label">State</label>
+                                    <div class="col-sm-8">
+
+                                        @Html.DropDownList("state1", ViewBag.state1 as SelectList, "Select State", new { @id = "state1", @class = "form-control select2-inside-modal", @required = "required", @onchange = "myFunction(this)", style = "width:100% !important" })
+                                        <span class="text-danger field-validation-error" id="state1msg">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="district" class="col-sm-4 text-right control-label col-form-label">District</label>
+                                    <div class="col-sm-8">
+                                        <select id="district1" class="form-control select2-inside-modal" name="district1" style="width:100% !important" required>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">City Name</label>
+                                    <div class="col-sm-8">
+
+                                        @Html.TextBox("txtcity", "", new { @id = "txtcity", @class = "form-control", placeholder = "Enter City Name", required = "required" })
+                                        <span id="pinMessage" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Name" class="col-sm-4 text-right control-label col-form-label">Client</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("LOIClient", ViewBag.LOIClient as SelectList, "Select Client", new { @id = "LOIClient", @class = "form-control select2-inside-modal", @required = "required", style = "width:100% !important" })
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Pin&nbsp;Code</label>
+                                    <div class="col-sm-8">
+
+                                        @Html.TextBox("txtpincode", "", new { @id = "txtpincode", @class = "form-control", placeholder = "Enter Pin Code Number", required = "required", @type = "number" })
+                                        <span id="pinMessage" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">DC&nbsp;Code</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBox("txtdiscode", "", new { @id = "txtdiscode", @class = "form-control", placeholder = "Enter DIS Code" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Additional&nbsp;Requirement</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextArea("txtAdditionalRequirement", "", new { @id = "txtAdditionalRequirement", @class = "form-control", placeholder = "Enter Additional Requirement" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Latitude</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBox("txtlat", "", new
+                                        {
+                                            @id = "txtlat",
+                                                                        @class = "form-control",
+                                                                        placeholder = "Enter Latitude",
+                                                                        type = "number",
+                                                                        step = "any",
+                                                                        onblur = "validateLatitude()"
+                                                                        })
+                                        <span id="latError" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label for="Name" class="col-sm-4 text-right control-label col-form-label">Work&nbsp;Mode</label>
+                                    <div class="col-sm-8">
+                                        <select id="workmode" name="workmode" class="form-control select2-inside-modal" style="width:100% !important" required>
+                                            <option value="">Select Pickup Option</option>
+                                            <option value="Day Pickup - All Days">Day Pickup - All Days</option>
+                                            <option value="Day Pickup - Banking Days">Day Pickup - Banking Days</option>
+                                            <option value="Day Pickup - Holidays / Weekend">Day Pickup - Holidays / Weekend</option>
+                                            <option value="Evening Pickup - All Days">Evening Pickup - All Days</option>
+                                            <option value="Evening Pickup - Banking Days">Evening Pickup - Banking Days</option>
+                                            <option value="Evening Pickup - Holidays / Weekend">Evening Pickup - Holidays / Weekend</option>
+                                            <option value="Drop and Vaulting - All Days">Drop and Vaulting - All Days</option>
+                                            <option value="Drop and Vaulting - Holidays / Weekend">Drop and Vaulting - Holidays / Weekend</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Name" class="col-sm-4 text-right control-label col-form-label">Deposit&nbsp;Mode</label>
+                                    <div class="col-sm-8">
+                                        <select id="Depositmode" name="Depositmode" class="form-control select2-inside-modal" style="width:100% !important" required>
+                                            <option value="">Select Deposit Mode</option>
+                                            <option value="Partner Bank">Partner Bank</option>
+                                            <option value="Burial">Burial</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Point&nbsp;Address</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextArea("txtpointaddress", "", new { @class = "form-control", placeholder = "Enter Customer Point Address", required = "required" })
+
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Cash&nbsp;Limit</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBox("txtcashlimit", "", new { @class = "form-control", placeholder = "Enter Cash Limit", @type = "number" })
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Point&nbsp;Contact&nbsp;Name</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBox("txtpointcontactname", "", new { @class = "form-control", placeholder = "Enter Customer Point Name" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Point&nbsp;Contact&nbsp;Number</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBox("txtpointmobilenumber", "", new { @class = "form-control", placeholder = "Enter Point Contact Number", @type = "number" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Sub&nbsp;description</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextArea("txtSubDescrtion", "", new { @id = "txtSubDescrtion", @class = "form-control", placeholder = "Enter Sub description" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Firm Name" class="col-sm-4 text-right control-label col-form-label">Longitude</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBox("txtlong", "", new
+                                        {
+                                                                            @id = "txtlong",
+                                                                            @class = "form-control",
+                                                                            placeholder = "Enter Longitude",
+                                                                            type = "number",
+                                                                            step = "any",
+                                                                            onblur = "validateLongitude()"
+                                                                            })
+                                        <span id="longError" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button style=" background-color: #0f7e0f !important; " type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">My Popup</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p>This is modal popup content.</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Full Details</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row">
+                    <!-- LEFT PART -->
+                    <div class="col-md-6 border-end">
+                        <table class="table table-bordered">
+                            <tr><th>Refered By</th><td id="rceid"></td></tr>
+                            <tr><th>Client Name</th><td id="clientname"></td></tr>
+                            <tr>
+                                <th>Cash Limit</th>
+                                <td id="cashlimit"></td>
+
+                            </tr>
+                            <tr><th>Status</th><td id="status"></td></tr>
+                            <tr>
+                                <th>DC Code</th>
+                                <td id="dccode"></td>
+
+                            </tr>
+                            <tr>
+                                <th>Point Name</th>
+                                <td id="pointname"></td>
+
+                            </tr>
+                            <tr>
+                                <th>Point Mobile</th>
+                                <td id="pointmobile"></td>
+
+                            </tr>
+                            <tr>
+                                <th>Pickup Address</th>
+                                <td id="pickupaddress"></td>
+
+                            </tr>
+                            <tr>
+                                <th>Sub Description</th>
+                                <td id="subdescrtion"></td>
+
+                            </tr>
+                        </table>
+
+
+
+
+                    </div>
+                    <div class="col-md-6 border-end">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Mode</th>
+                                <td id="workmode"></td>
+
+                            </tr>
+                            <tr>
+                                <th>State</th>
+                                <td id="statename"></td>
+                            </tr>
+                            <tr><th>District</th><td id="districtname"></td></tr>
+                            <tr>
+                                <th>City</th>
+                                <td id="cityname"></td>
+
+                            </tr>
+                            <tr>
+                                <th>Pincode</th>
+                                <td id="pincode"></td>
+
+                            </tr>
+                            <tr>
+                                <th>Additional Requirement</th>
+                                <td id="additionalrequirement"></td>
+
+                            </tr>
+                            <tr>
+                                <th>latitude</th>
+                                <td id="latitude"></td>
+
+                            </tr>
+                            <tr>
+                                <th>longitude</th>
+                                <td id="longitude"></td>
+
+                            </tr>
+                            <tr><th>Deposition Mode</th><td id="depositionmode"></td></tr>
+
+                        </table>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--=======    Modal For Bank Details   ========-->
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+@*<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>*@
+
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<!------------------------------------------partialpage-->
+<link href="~/select2/dist/css/select2.css" rel="stylesheet" />
+<script src="~/select2/dist/js/select2.min.js"></script>
+
+<script>
+    function showDetails(btn) {
+        document.getElementById("rceid").innerText = btn.dataset.rceid;
+        document.getElementById("clientname").innerText = btn.dataset.clientname;
+        document.getElementById("cashlimit").innerText = btn.dataset.cashlimit;
+        document.getElementById("status").innerText = btn.dataset.status;
+        document.getElementById("dccode").innerText = btn.dataset.dccode;
+        document.getElementById("pointname").innerText = btn.dataset.pointname;
+        document.getElementById("pointmobile").innerText = btn.dataset.pointmobile;
+        document.getElementById("pickupaddress").innerText = btn.dataset.pickupaddress;
+        document.getElementById("subdescrtion").innerText = btn.dataset.subdescrtion;
+        document.getElementById("workmode").innerText = btn.dataset.workmode;
+        document.getElementById("statename").innerText = btn.dataset.statename;
+        document.getElementById("districtname").innerText = btn.dataset.districtname;
+        document.getElementById("cityname").innerText = btn.dataset.cityname;
+        document.getElementById("pincode").innerText = btn.dataset.pincode;
+        document.getElementById("additionalrequirement").innerText = btn.dataset.additionalrequirement;
+        document.getElementById("latitude").innerText = btn.dataset.latitude;
+        document.getElementById("longitude").innerText = btn.dataset.longitude;
+        document.getElementById("depositionmode").innerText = btn.dataset.depositionmode;
+        //$('#myModal').modal('show');
+    }
+</script>
+<script>
+    function myFunction(e) {
+        var id = $(e).val();
+
+        $("#district1").empty()
+            .append("<option value=''>--- Select ---</option>");
+
+        $.get("District_Bind", { state_id: id }, function (data) {
+            var options = "<option value=''>--- Select ---</option>";
+
+            $.each(data, function (i, v1) {
+                options += "<option value='" + v1.value + "'>" + v1.text + "</option>";
+            });
+
+            $("#district1").html(options);
+        });
+    }
+</script>
+<script>
+    function validateLatitude() {
+        var lat = parseFloat(document.getElementById("txtlat").value);
+        var error = document.getElementById("latError");
+
+        if (isNaN(lat)) {
+            error.innerText = "Latitude is required";
+            return false;
+        }
+
+        if (lat < -90 || lat > 90) {
+            error.innerText = "Latitude must be between -90 and 90";
+            return false;
+        }
+
+        error.innerText = "";
+        return true;
+    }
+
+    function validateLongitude() {
+        var lng = parseFloat(document.getElementById("txtlong").value);
+        var error = document.getElementById("longError");
+
+        if (isNaN(lng)) {
+            error.innerText = "Longitude is required";
+            return false;
+        }
+
+        if (lng < -180 || lng > 180) {
+            error.innerText = "Longitude must be between -180 and 180";
+            return false;
+        }
+
+        error.innerText = "";
+        return true;
+    }
+
+    function validateLatLongOnSubmit() {
+        return validateLatitude() && validateLongitude();
+    }
+</script>

@@ -1,0 +1,221 @@
+﻿@model IEnumerable<Vastwebmulti.Models.proc_Recharge_operator_report_newPaging_Result>
+@{
+    Layout = null;
+
+}
+
+
+@if (Model != null)
+{
+
+    foreach (var item in Model)
+    {
+
+        var i = item.idno;
+        var idno = "subTbl";
+        idno = idno + i;
+        var idno1 = "subTbl1";
+        idno1 = idno1 + i;
+
+        var idshow = "subTblshow";
+        idshow = idshow + i;
+
+        var idhide = "subTblhide";
+        idhide = idhide + i;
+
+
+        var idshowEdit = "subTblshowEdit";
+        idshowEdit = idshowEdit + i;
+
+        var idhideEdit = "subTblhideEdit";
+        idhideEdit = idhideEdit + i;
+
+        var color = "";
+        var fo = "";
+        var icon = "";
+        var faicon = "";
+        var sts = item.rstatus;
+        var clr = "";
+        var rolename = "";
+        var font = "600";
+        var pendingColor = "";
+
+
+        if (sts.ToUpper().Contains("REFUND"))
+        {
+            clr = "brown";
+            icon = "../../ashok-images/backresnd.svg";
+        }
+        if (sts.ToUpper() == "RESEND")
+        {
+            clr = "blue";
+            icon = "../../ashok-images/replyfund.svg";
+        }
+
+        var idd = "";
+        if (sts.ToUpper().Contains("REFUND"))
+        {
+            clr = "brown";
+            icon = "../../ashok-images/backresnd.svg";
+            idd = sts.Replace("Refund(", "").Replace(")", "");
+
+        }
+
+        if (sts.ToUpper() == "FAILED" || sts.Contains("Success To Failed"))
+        {
+            clr = "red";
+            icon = "../../ashok-images/closes.svg";
+        }
+        if (sts.ToUpper() == "SUCCESS" || sts.Contains("Failed To Success"))
+        {
+            clr = "green";
+            icon = "../../ashok-images/correct.svg";
+        }
+        if (sts == "Request Sent" || sts == "Request Send")
+        {
+            icon = "../../ashok-images/clkk.png";
+
+            clr = "#ffc107";
+            pendingColor = "#fff8d1";
+            font = "600";
+
+        }
+        if (sts == "Request Send")
+        {
+            color = "#ffc107";
+        }
+        faicon = "REF";
+        if (item.rch_type.ToUpper() == "ONLINE")
+        {
+            faicon = "WEB";
+        }
+        if (item.rch_type.ToUpper() == "APPS")
+        {
+            faicon = "APP";
+        }
+        if (item.rch_type.ToUpper() == "OFFLINE")
+        {
+            faicon = "OFF";
+        }
+        //if (item.rch_type.ToUpper() == "API")
+        //{
+        //    faicon = "API";
+        //}
+
+        //if (item.Roles == "Retailer")
+        //{
+        //    rolename = "Retailer";
+
+        //}
+        if (item.Roles == "Whitelabelretailer")
+        {
+            rolename = "Whitelabel";
+
+        }
+        //if (item.Roles == "API")
+        //{
+        //    rolename = "API USER";
+
+        //}
+        var amt = item.amount;
+        var amtde = item.income;
+        decimal? amtdec = 0;
+        if (sts.ToUpper().Contains("REFUND"))
+        {
+            amtdec = amt - amtde;
+            amtdec = +amtdec;
+        }
+        else
+        {
+            amtdec = amt - amtde;
+            amtdec = -amtdec;
+        }
+        var firmname = item.frm_name;
+        if (firmname == null || firmname == "")
+        {
+            firmname = item.retailername;
+        }
+        firmname= firmname + " - " + item.mobile;
+        <tr style="background-color:@pendingColor">
+
+            <td>
+                @if (item.rstatus.ToUpper().Contains("REFUND") == false && item.rstatus.ToUpper().Contains("RESEND") == false && item.orderid.Contains("DIRECT-") == true)
+                {
+                    <button class="for-new" style="margin-left:14px;margin-left:0px;background:transparent;border:none;">
+                        <input type="checkbox" id="for1 @item.idno" name="datavalue" value="@item.idno - @item.rstatus - @rolename&nbsp;&nbsp;@firmname - @item.mobile - @item.Operator_name -@item.amount" class="filled-in chk-col-pink chhhhh" onchange="functionch()" />
+                        <label for="for1 @item.idno" style="padding-left: 19px;height: 9px;"></label>
+                    </button>
+                }
+            </td>
+            <td>
+                <p>
+                    @if (sts.ToUpper() != "PENDING")
+                    {
+                        <img style="height: 20px;width: 18px;margin-right:5px;max-width: 100%;padding: 0; border-radius:50%; background-color:@clr" src="@icon" />
+
+                    }
+
+                    @if (sts.ToUpper() == "PENDING")
+                    {
+                        <i style="color:antiquewhite;">
+                            <button id="but" class="view" onclick="GotoView('@item.idno')" href="#" style="margin-left: 8px; background-color: @clr;border: none;height: 20px;width: 18px;margin: 5px;max-width: 100%;padding: 0;border-radius: 50%;background-color: #ff96009e;" data-toggle="tooltip" data-placement="bottom" title="View Status">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </i>
+                    }
+                    <span>@rolename&nbsp;-&nbsp;@firmname</span>
+                    @if (idd != "")
+                    {
+                        <br />
+                        <span>Refund Against (@idd)</span>
+
+                    }
+                </p>
+            </td>
+            <td>
+                <span style=" margin-right: 2px;background: #bbb;font-size: 10px; padding: 1px 3px;padding-bottom:0px;color:#000;">@faicon</span>@item.Operator_name
+            </td>
+            <td>@item.mobile</td>
+            <td>@item.amount</td>
+            <td>@item.user_remain_pre</td>
+            <td>@amtdec</td>
+            <td>@item.remain</td>
+            @*<td>@item.portno</td>
+            <td>@item.lapubal</td>*@
+            <td>@item.Rch_time</td>
+            <td class="ppo">
+                <p id="@idshowEdit">@item.opt_id</p>
+
+                @if (item.orderid.Contains("DIRECT-") == true)
+                {
+                    <span class="pen">
+                        <button class="edit" id="@idno" onclick="Edit_OPT(@i)" style="float:right; background:transparent;border:none;" title="Edit">
+                            <i class="fa fa-pencil" style="font-size:15px;"></i>
+                        </button>
+                    </span>
+                }
+
+                <div style="display:none; font-size:10px;" id="@idhideEdit" class="input-container mmks">
+
+                    <input type="text" id="@idno1" name="optid" class="input-field" required value="@item.opt_id">
+                    <input type="hidden" id="lapubal" name="lapubal" value="@item.lapubal">
+                    <button class="input-button fullbodydycolorbg" id="btnidno" onclick="UpdateOptId(@item.idno)" value="@item.idno"><span class="fa fa-check" style="color:#c7c2c2;"></span></button>
+                </div>
+
+            </td>
+            <td style="padding:4px;">
+
+
+                @*<button data-toggle="modal" data-target="#defaultModal222" onclick="ActionBtn('@item.idno')" style="color:@color;background:transparent;border:none;margin-top:0px !important;">
+                    <img src="~/ashok-images/rightaeps.svg" style="border: 1px solid var(--border-color);padding: 3px 5px;font-size: 10px;height:18px !important;vertical-align: baseline;">
+                </button>*@
+
+            </td>
+        </tr>
+
+    }
+
+}
+
+
+

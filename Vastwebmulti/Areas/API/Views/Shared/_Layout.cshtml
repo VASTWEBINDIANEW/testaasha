@@ -1,0 +1,1878 @@
+﻿@using Microsoft.AspNet.Identity
+@using Vastwebmulti.Models;
+<!DOCTYPE html>
+<html>
+<head>
+    @{
+        var comnyname = "";
+        var favimage = "";
+        var col = "";
+        VastwebmultiEntities DB1 = new VastwebmultiEntities();
+        var companyname = DB1.Admin_details.ToList();
+        if (companyname.Count > 0)
+        {
+            comnyname = companyname.FirstOrDefault().Companyname;
+            ViewBag.companyname = comnyname;
+        }
+        else
+        {
+            comnyname = "";
+        }
+
+
+        var faviconlogo = DB1.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+            }
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+
+        var color = DB1.changecolors.Where(p => p.Role == "ADMIN").ToList();
+        if (color.Count > 0)
+        {
+            if (color.SingleOrDefault().Role == "ADMIN")
+            {
+                col = color.Where(p => p.Role == "ADMIN").SingleOrDefault().adminandouterheadercolor;
+            }
+        }
+        else
+        {
+            col = "pink";
+        }
+        string userid = User.Identity.GetUserId();
+        var emailid = DB1.Users.Where(a => a.UserId == userid).FirstOrDefault().Email;
+        <!--Get Company Name-->
+        var image = "";
+        var backimage = DB1.tblWhiteLabelLoginBackImages.FirstOrDefault(p => p.Role == "ADMIN");
+        if (backimage != null)
+        {
+            image = backimage.ImageUrl;
+        }
+        else
+        {
+            image = "img24.png";
+        }
+        var logoimage = "";
+        var logo = DB1.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+        if (logo.Count > 0)
+        {
+            if (logo.SingleOrDefault().Role == "ADMIN")
+            {
+                logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+            }
+        }
+        else
+        {
+            logoimage = "images/Default_Logo.png";
+        }
+        var remainbalance = DB1.api_remain_amount.Where(p => p.apiid == userid).SingleOrDefault().balance;
+        var chkmsg = DB1.lowbalancemsgs.Where(a => a.userid == userid).SingleOrDefault();
+        var userfor = DB1.lowbalances.Where(a => a.Role == "API").FirstOrDefault();
+        if (userfor != null && userfor.amount < remainbalance)
+        {
+            if (chkmsg == null)
+            {
+                lowbalancemsg lb = new lowbalancemsg();
+                lb.userid = userid;
+                lb.message = "Message Sent";
+                lb.status = false;
+                DB1.lowbalancemsgs.Add(lb);
+                DB1.SaveChanges();
+            }
+            else
+            {
+                chkmsg.status = false;
+                DB1.SaveChanges();
+            }
+        }
+
+        //Notification message
+        ViewBag.notificount = DB1.complaint_request.Count(a => a.userid == userid && a.sts == "Open");
+
+        //purchase order
+        var purchaseorder = DB1.api_purchase.Count(a => a.apiid == userid && a.sts == "Pending");
+
+
+        JSONReadWrite readWrite = new JSONReadWrite();
+        dynamic people = Newtonsoft.Json.JsonConvert.DeserializeObject(readWrite.Read("LogoBackgroundColor.json", "~/Areas/ADMIN/Models/JsonData/"));
+        string logoBgColor = people.ColorCode;
+    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@ViewBag.companyname</title>
+
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    <!-- Wait Me Css -->
+    <link href="~/AdminDesign/plugins/waitme/waitMe.css" rel="stylesheet" />
+    <!-- Bootstrap Core Css -->
+    <link href="~/AdminDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <!-- Waves Effect Css -->
+    <link href="~/AdminDesign/plugins/node-waves/waves.css" rel="stylesheet" />
+    <!-- Animation Css -->
+    <link href="~/AdminDesign/plugins/animate-css/animate.css" rel="stylesheet" />
+    <!-- Morris Chart Css-->
+    <link href="~/AdminDesign/plugins/morrisjs/morris.css" rel="stylesheet" />
+    <!-- Custom Css -->
+    <link href="~/AdminDesign/css/style.css" rel="stylesheet">
+    <link href="~/fonts/icofont.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+    @*<link href="~/AdminDesign/css/themes/all-themes.css" rel="stylesheet" />*@
+    <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="~/AdminDesign/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datepicker3.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/daterangepicker.min.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/apiuser.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <link href="~/Areas/API/API-Css/Apicss.css" rel="stylesheet" />
+
+    @*New-Design-Css*@
+    <link href="~/MainFrontDesign/css/admin-Second-design.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/Admin-third-design.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/retailernewdesigncss.css" rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+    }
+    <style>
+        .sidebar .menu .list a span {
+            color: white;
+        }
+
+        .sidebar .menu .list a {
+            color: white;
+        }
+
+        .navbar .navbar-toggle:before {
+            content: '\E8D5';
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+
+        .navbar .navbar-toggle:before {
+            content: '\E8D5';
+            font-family: 'Material Icons';
+            font-size: 26px;
+        }
+
+        .sidebar .menu .list i.material-icons {
+            margin-top: 6px;
+        }
+
+        .sidebar .menu .list .ml-menu li a {
+            font-size: 11px;
+        }
+
+        .material-icons {
+            font-size: 20px;
+        }
+
+        .navbar-header .bars.api-left-side {
+            width: 30px;
+            height: 30px;
+            margin: 7px 0px 0px 5px;
+            color: #fff;
+        }
+
+        .ls-closed .bars.api-left-side::before {
+            top: 11px;
+            left: 13px;
+        }
+
+        .ls-closed .bars.api-left-side-close::after {
+            -moz-transform: scale(1);
+            -ms-transform: scale(1);
+            -o-transform: scale(1);
+            top: 11px;
+            left: 13px;
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+
+        .ls-closed .bars.api-left-side-close::before {
+            display: none;
+        }
+
+        .ls-closed .sidebar.left-out {
+            margin-left: 0px !important;
+        }
+
+        a {
+            text-decoration: none !important;
+        }
+
+        .leftside-logo {
+            float: left;
+        }
+
+        @*bread-same-all-page-Start*@
+
+        .bread-same-all-page a {
+            font-size: 15px;
+            color: #000;
+            float: left;
+            font-weight: normal;
+        }
+        .bread-same-all-page li.smli {
+            font-weight: bold;
+        }
+
+        .bread-same-all-page li {
+            float: left;
+            margin-right: 4px;
+            margin-bottom: 11px;
+        }
+        .tmw-total-color-one {
+            -webkit-background-clip: text !important;
+            -moz-background-clip: text !important;
+            -webkit-text-fill-color: transparent;
+        }
+        .bread-same-all-page ul {
+            float: left;
+            padding-left: 0;
+        }
+            .bread-same-all-page ul li {
+                list-style: none;
+            }
+        .dealer-four-design.master-four-design .bread-same-all-page {
+            display: none;
+        }
+
+        @*bread-same-all-page-End*@
+
+
+            .api-reports img {
+                width: 20px;
+                position: relative;
+                top: -3px;
+                margin-right: 5px;
+            }
+
+            @*Four-design-Css-start*@
+
+        .dealer-four-design.master-four-design .dropdown-menu {
+            margin-top: 0 !important;
+        }
+
+        @*Four-design-Css-end*@
+
+        @@media screen and (max-width:1366px) {
+            #leftsidebar {
+                width: 165px !important;
+            }
+        }
+
+        @@media screen and (max-width:1169px) {
+            .api-left-sidebar-menu {
+                float: left;
+            }
+
+            .leftside-logo {
+                float: left;
+            }
+        }
+
+        @@media screen and (max-width:450px) {
+            .ls-closed .bars.api-left-side::before, .ls-closed .bars.api-left-side-close::after {
+                top: -5px;
+            }
+
+            .ls-closed .bars.api-left-side.api-left-sidebar-menu::before, .ls-closed .bars.api-left-side.api-left-sidebar-menu::after {
+                left: 0px;
+            }
+        }
+
+    </style>
+</head>
+
+<body class="theme-@col @*second-design-master*@ @*third-design-master*@ @*dealer-four-design master-four-design*@">
+
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <center><img src="~/images/serachimg.gif" class="img-responsive" style="height:200px;width:200px;" /></center>
+
+        </div>
+    </div>
+    <div class="overlay"></div>
+    <!-- Top Bar -->
+    <nav class="navbar fullbodydycolorbg navbar-master-navbar" style="border-bottom: 5px solid #a4a0a0;z-index:999;">
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                <a href="javascript:void(0);" class="bars api-left-side api-left-sidebar-menu"></a>
+
+                <a href="~/DEALER/Home/Dashboard" class="leftside-logo">
+                    <center>
+                        <img src="@Url.Content("~/"+@logoimage)" class="img-responsive" style="height: auto;max-width: 94px;background-color:@logoBgColor;padding:2px;" />
+                    </center>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right navbar-right-api-third">
+                    <!--Today Balannce Report-->
+                    <li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                        <a href="javascript:void(0);" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" title="Today Received Wallet " onclick="showtransferbal()" style="margin-right:6px;">
+                            <img src="~/images/reportimage/invoice.svg" style="height:31px;margin-top:-2px;margin-left:-2px;" />
+                        </a>
+                        <center><p style="color:white;font-size:11px;">₹&nbsp;Transfer</p></center>
+                        <ul id="showtransfer" class="dropdown-menu" style="top:143%;margin:2px -125px 0px;">
+
+                            <li class="header">
+                                <center>
+                                    <span><i class="fa fa-exchange"></i>&nbsp;&nbsp;Today&nbsp;Fund&nbsp;Transfer</span>
+                                </center>
+                            </li>
+                            <li class="body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive" style="position:inherit;margin-bottom:-5px;">
+                                            <table class="table" style="margin-bottom:0px;">
+                                                <tbody id="showtransferbalancetableid"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </li>
+                        </ul>
+                    </li>
+                    <!--Total My Credit Balance-->
+                    <li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                        <a href="javascript:void(0);" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" title="API Toatl Credit Balance From Admin" onclick="showoutstandingbal()">
+                            <i class="material-icons" style="color:green;font-size:27px;left:-1px;top:1px;">bubble_chart</i>
+                        </a>
+                        <center><p style="color:white;font-size:11px;">Due List</p></center>
+                        <ul id="showpp" class="dropdown-menu" style="top:137%;margin:2px -72px 0px;">
+                            <li class="body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive" style="position:inherit;margin-bottom:-5px;">
+                                            <table class="table" style="margin-bottom:0px;">
+                                                <tbody id="showoutstandingbalance"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!--end-->
+                    <!--Purchase Order Request-->
+                    @*<li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                            <a href="@Url.Action("Purchase_Order","Home")" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right">
+                                @if (purchaseorder > 0)
+                                {
+                                    <i class="" style="color:black;font-size:20px;left:-1px;top:3px; font-weight:500; font-style:normal;" title="Your Purchase Order Request is Pending">@purchaseorder</i>
+                                }
+                                else
+                                {
+                                    <i class="" style="color:black;font-size:20px;left:-1px;top:3px; font-weight:500; font-style:normal;" title="Your Purchase Order Request is Not Pending">@purchaseorder</i>
+                                }
+
+                            </a>
+                            <center><p style="color:white;font-size:11px;">Fund-Q</p></center>
+                        </li>*@
+                    <li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                        <a href="@Url.Action("SendPurchaseOrder","Home")" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right">
+
+
+                        </a>
+                        <center><p style="color:white;font-size:11px;">Fund-Q</p></center>
+                    </li>
+                    <!--Complaint Request-->
+                    <li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                        <a href="@Url.Action("Complaint","Home")" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right" title="Complaint's Request Notification">
+                            @if (ViewBag.notificount != null)
+                            {
+                                <i class="" style="color:black;font-size:20px;left:-1px;top:3px; font-weight:500; font-style:normal;">@ViewBag.notificount</i>
+
+                            }
+                            else
+                            {
+                                <i class="" style="color:black;font-size:20px;left:-1px;top:3px; font-weight:500; font-style:normal;">0</i>
+
+                            }
+
+                        </a>
+                        <center><p style="color:white;font-size:11px;">Chat's</p></center>
+
+                    </li>
+                    <!-- Live  Balance-->
+                    <li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                        <a href="javascript:void(0);" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" title="Wallet Balance" style="margin-right:6px;">
+                            <img src="~/images/reportimage/purse.svg" class="img-responsive" style="height:20px;margin-top:3px;margin-left:4px;" />
+                        </a>
+                        <center><p style="color:white;font-size:11px;">@remainbalance</p></center>
+
+
+                    </li>
+                    <!--Logout -->
+                    <li class="list-group" style="padding-top:6px;padding-left:14px; margin-bottom:-10px;">
+                        @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right" title="Logout">
+                                <i class="material-icons" style="color:red;font-size:22px;left:-3px;top:3px; font-weight:700;">power_settings_new</i>
+                            </button>
+                        }
+                        <p style="color:white;font-size:11px;">Logout</p>
+                    </li>
+
+                </ul>
+
+
+                @*Third-Design-Master-Top-Nav-Start*@
+
+                <ul class="nav navbar-nav navbar-master-third navbar-api-thirddesign">
+                    <li class="submenumaster-thirddesign">
+                        <a href="javascript:void(0);">₹ Transfer</a>
+                        <ul class="submenu-master-third">
+                            <li class="header">
+                                <center>
+                                    <span><i class="fa fa-exchange"></i>&nbsp;&nbsp;Today&nbsp;Fund&nbsp;Transfer</span>
+                                </center>
+                            </li>
+                            <li class="body">
+
+
+                                <div class="table-responsive" style="position:inherit;margin-bottom:-5px;">
+                                    <table class="table" style="margin-bottom:0px;">
+                                        <tbody id="" class="showtransferbalancetableidclass-api-third"></tbody>
+                                    </table>
+                                </div>
+
+
+
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="submenumaster-thirddesign">
+                        <a href="javascript:void(0);">Due List</a>
+                        <ul class="submenu-master-third">
+                            <li class="header">
+                                <center>
+                                    <span><i class="fa fa-exchange"></i>&nbsp;&nbsp;Today&nbsp;Fund&nbsp;Transfer</span>
+                                </center>
+                            </li>
+                            <li class="body">
+
+
+                                <div class="table-responsive" style="position:inherit;margin-bottom:-5px;">
+                                    <table class="table" style="margin-bottom:0px;">
+                                        <tbody id="" class="showoutstandingbalanceclass-api-third"></tbody>
+                                    </table>
+                                </div>
+
+
+
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Complaint","Home")">Chat's</a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("SendPurchaseOrder","Home")">Fund-Q</a>
+
+                    </li>
+
+                    <li>
+                        <a href="javascript:void(0);"><span style="background: #dca167; color: #000; padding: 1px 2px;">@remainbalance</span></a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);">
+
+                            @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" title="Logout" style="padding:0px;">
+                                    Logout
+                                </button>
+                            }
+
+                        </a>
+                    </li>
+                </ul>
+
+                @*Third-Design-Master-Top-Nav-End*@
+
+
+            </div>
+        </div>
+    </nav>
+    <!-- #Top Bar -->
+    <section>
+        <!-- Left Sidebar -->
+        <aside id="leftsidebar" class="sidebar navbar fullbodydycolorbg" style="margin-top:-9px;">
+            <!-- #User Info -->
+            <!-- Menu -->
+            <div class="menu first-menu-mastersecond">
+                <ul class="list">
+                    <li class="active">
+                        <a href="~/API/Home/Dashboard">
+                            @*<i class="fa fa-home" style="color:white;margin-top:5px;font-size:20px;"></i>*@
+                            <span style="color:white;margin-left:5px;font-size:15px;"><img src="~/AdminDesign/images/dashboard.svg" style="width: 17px;margin-right: 5px;" />Dashboard</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="for-developer api-reports" href="javascript:void(0);">
+                            <img src="~/AdminDesign/images/bars.svg" />
+                            <span style="margin-left:0px;">Report's</span>
+
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="~/API/Home/Index">
+                            @*<i class="fa fa-plug" style="color:white;margin-top:5px;font-size:18px;"></i>*@
+                            <span style="margin-left:5px;">Recharge &amp; Bill</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/DMT_Report">
+                            @*<i class="fa fa-globe" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:5px;">Financial&nbsp;Services</span>
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="~/API/Home/SendPurchaseOrder">
+                            @*<i class="fa fa-wpforms" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:5px;">Purchase Order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/Gst_Invocing_API_report">
+                            @*<i class="fa fa-wpforms" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:5px;">GST Invoice Report</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/User_wise_operator_comm">
+                            @*<i class="fa fa-wpforms" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:5px;">Operator&nbsp;Wise&nbsp;Comm</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/ReceiveFund_by_admin">
+                            @*<i class="fa fa-inr" style="color:white;margin-top:6px;font-size:19px;margin-left:3px;"></i>*@
+                            <span style="margin-left:8px;">Fund Receive</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/Commission">
+                            @*<i class="fa fa-cog" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:5px;">Commission</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="~/API/Home/Dispute_Report">
+                            @*<i class="fa fa-gavel" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:2px;">Dispute Report</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/GatewayTRANSFER">
+                            @*<i class="fa fa-gavel" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:2px;">Payment Gateway</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/WhatsappPurchase">
+                            @*<i class="fa fa-gavel" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:2px;">Whatsapp Purchase</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/WhatsappLogin">
+                            @*<i class="fa fa-gavel" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:2px;">Whatsapp Login</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/API/Home/Whatsapp_Report">
+                            @*<i class="fa fa-gavel" style="color:white;margin-top:6px;font-size:20px;"></i>*@
+                            <span style="margin-left:2px;">Whatsapp Report</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a class="for-developer" href="javascript:void(0);">
+                            <i class="fa fa-stack-overflow" style="color:white;margin-top:6px;font-size:20px;"></i>
+                            <span style="margin-left:10px;">Developer's</span>
+
+                        </a>
+                        <ul class="api-sub-menu">
+
+                            <li>
+                                <a href="@Url.Action("APIDOC","Home")">
+                                    <span style="margin-left:2px;">API Document's</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("TokenSetting","Home")">
+
+                                    <span style="margin-left:2px;">Token Setting</span>
+
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Generate_Token","Home")">
+
+                                    <span style="margin-left:2px;">Call Back Page </span>
+
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("StatusCheck","Home")">
+                                    <span style="margin-left:2px;">Status Check</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Balancecheck","Home")">
+                                    <span style="margin-left:2px;">Balance Check</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Operatorcode","Home")">
+                                    <span style="margin-left:2px;">Operator Code</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+
+            @*Second-Design-Master-Start*@
+
+            <div class="menu-second-master">
+
+                <div class="imagepro-second-master">
+                    @if (ViewBag.image != null && ViewBag.image != "")
+                    {
+                        <img src="@Url.Content("~/" + ViewBag.image)" width="100" height="100" class="img-circle" alt="User">
+
+                    }
+                    else
+                    {
+
+                        <img src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User">
+                    }
+                    <h2>API User <marquee direction="left" scrollamount="2">@ViewBag.email</marquee></h2>
+                </div>
+
+                <div class="menusidbar-second-master menusidbar-second-api">
+                    <ul>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("Dashboard","Home")">Dashboard</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("ChangePassword","Home")">Manage Password</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("Profile","Home")">Api Profile</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span onclick="openNavmaster()">
+                                <a href="javascript:void(0);">Basic Setting</a>
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                            </span>
+                        </li>
+                        <li>
+
+                            <span>
+                                <a href="@Url.Action("Index","Home")">Recharge & Bill</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("DMT_Report","Home")">Financial Services</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("SendPurchaseOrder","Home")">Purchase Order</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("Gst_Invocing_API_report","Home")">GST Report</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("User_wise_operator_comm","Home")">Operator Wise Comm</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("ReceiveFund_by_admin","Home")">Fund Receive</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("Commission","Home")">Commission</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a href="@Url.Action("Dispute_Report","Home")">Dispute Report</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span data-toggle="collapse" data-target="#apisubmenu-second1">
+                                <a href="#">Developer's</a>
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                            </span>
+
+                            <ul class="collapse" id="apisubmenu-second1">
+                                <li>
+                                    <span>
+                                        <a href="@Url.Action("APIDOC","Home")">API Document's</a>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <a href="@Url.Action("TokenSetting","Home")">Token Setting</a>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <a href="@Url.Action("Generate_Token","Home")">Call Back Page</a>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <a href="@Url.Action("StatusCheck","Home")">Status Check</a>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <a href="@Url.Action("Balancecheck","Home")">Balance Check</a>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <a href="@Url.Action("Operatorcode","Home")">Operator Code</a>
+                                    </span>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
+
+            @*Second-Design-Master-End!*@
+
+            @*Third-Design-Master-Start*@
+            <div class="menu-third-master">
+                <div class="menu-third-scroll-master">
+                    <ul>
+                        <li>
+                            <a href="@Url.Action("Dashboard","Home")">
+                                <img src="~/AdminDesign/images/dashboard-third.svg" />
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Profile","Home")">
+                                <img src="~/AdminDesign/images/businessman-re-third.svg" />
+                                <span>API Profile</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("ChangePassword","Home")">
+                                <img src="~/AdminDesign/images/password-third-re.svg" />
+                                <span>Manage Password</span>
+                            </a>
+                        </li>
+
+                        <li data-cs-tab-toggle="1">
+                            <a href="javascript:void(0);">
+                                <img src="~/AdminDesign/images/settings-b-third.svg" />
+                                <span>Basic Setting</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index","Home")">
+                                <img src="~/AdminDesign/images/receipt-re-third.svg" />
+                                <span>Recharge & Bill</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("DMT_Report","Home")">
+                                <img src="~/AdminDesign/images/money-re-third.svg" />
+                                <span>Financial Services</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("SendPurchaseOrder","Home")">
+                                <img src="~/AdminDesign/images/application-api-second.svg" />
+                                <span>Purchase Order</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Gst_Invocing_API_report","Home")">
+                                <img src="~/AdminDesign/images/tax-api-second.svg" />
+                                <span>GST Report</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("User_wise_operator_comm","Home")">
+                                <img src="~/AdminDesign/images/money-api-second.svg" />
+                                <span>Operator Wise Comm</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("ReceiveFund_by_admin","Home")">
+                                <img src="~/AdminDesign/images/exchange-re-third.svg" />
+                                <span>Fund Receive</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Commission","Home")">
+                                <img src="~/AdminDesign/images/money-api-second.svg" />
+                                <span>Commission</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Dispute_Report","Home")">
+                                <img src="~/AdminDesign/images/report-aoi-third.svg" />
+                                <span>Dispute Report</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("GatewayTRANSFER","Home")">
+                                <img src="~/AdminDesign/images/report-aoi-third.svg" />
+                                <span>Payment Gateway</span>
+                            </a>
+                        </li>
+                        <li data-cs-tab-toggle="2">
+                            <a href="javascript:void(0);">
+                                <img src="~/AdminDesign/images/settings-b-third.svg" />
+                                <span>Developer's</span>
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+            @*Third-Design-Master-End*@
+
+            <!-- #Menu -->
+            <div class="legal apilegal-footer">
+                <div class="copyright" style="margin-top:-4px;">
+                    Copyright&nbsp;&nbsp;2019 - <span>@DateTime.Now.Year.ToString()</span>
+                </div>
+                <div class="copyright">
+                    <a href="javascript:void(0);">@comnyname</a>.
+                </div>
+                <div class="navbar" style="position:inherit;margin-top:52px; height:33px;">
+
+                </div>
+            </div>
+            <!-- #Footer -->
+        </aside>
+
+        @*Second-Design-API-Start*@
+
+        <div id="mySidepanel-second-master" class="account-second-master">
+            <a href="javascript:void(0)" class="closebtn-dealer" onclick="closeNavmaster()">×</a>
+            <div class="" style="width:100%;float:left;">
+
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Dispute_Report","Home")">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/Signup.svg" />
+                                </center>
+                                <p>Dispute Report</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("TokenSetting","Home")">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/Signup.svg" />
+                                </center>
+                                <p>Generate Token</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Ledger_Report","Home")">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/resume.svg" />
+                                </center>
+                                <p>Ledger</p>
+                            </span>
+                        </a>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Web_Login","Home")">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/login.svg" />
+                                </center>
+                                <p>Login Info</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="javascript:void(0);">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/money-bag.svg" />
+                                </center>
+                                <p>My Earn</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Bank_Information","Home")">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/123.svg" />
+                                </center>
+                                <p>Bank Info</p>
+                            </span>
+                        </a>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("api_Daybook_Report","Home")">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/123.svg" />
+                                </center>
+                                <p>Day Book</p>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 col text-center">
+                        <a href="@Url.Action("Help","Home")">
+                            <span>
+                                <center>
+                                    <img src="~/images/reportimage/Help.svg" />
+                                </center>
+                                <p>Help</p>
+                            </span>
+                        </a>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+        @*Second-Design-API-End*@
+
+        @*Third-Design-Master-Start*@
+
+        <div class="third-sub-menu-master third-sub-menu-api" data-cs-tab-index="1">
+            <div class="close-third-menu-master">&#10006;</div>
+            <ul>
+                <li>
+                    <a href="@Url.Action("Ledger_Report","Home")">
+                        <img src="~/images/reportimage/resume.svg" />
+                        <span>Ledger</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Dispute_Report","Home")">
+                        <img src="~/AdminDesign/images/report-aoi-third.svg" />
+                        <span>Dispute Report</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("TokenSetting","Home")">
+                        <img src="~/images/reportimage/resume.svg" />
+                        <span>Generate Token</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Web_Login","Home")">
+                        <img src="~/AdminDesign/images/login-third.svg" />
+                        <span>Login Info</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void:(0);">
+                        <img src="~/AdminDesign/images/earning-re-third.svg" />
+                        <span>My Earn</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Bank_Information","Home")">
+                        <img src="~/AdminDesign/images/bank-re-third.svg" />
+                        <span>Bank Info</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("api_Daybook_Report","Home")">
+                        <img src="~/AdminDesign/images/document-re-third.svg" />
+                        <span>Day Book</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Help","Home")">
+                        <img src="~/AdminDesign/images/headphones-re-third.svg" />
+                        <span>Help</span>
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+
+        <div class="third-sub-menu-master third-sub-menu-api" data-cs-tab-index="2">
+            <div class="close-third-menu-master">&#10006;</div>
+            <ul>
+                <li>
+                    <a href="@Url.Action("APIDOC","Home")">
+                        <img src="~/images/reportimage/resume.svg" />
+                        <span>API Document's</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("TokenSetting","Home")">
+                        <img src="~/AdminDesign/images/chip-api-third.svg" />
+                        <span>Token Setting</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Generate_Token","Home")">
+                        <img src="~/AdminDesign/images/phone-call-api.svg" />
+                        <span>Call Back Page </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("StatusCheck","Home")">
+                        <img src="~/AdminDesign/images/full-battery-apithird.svg" />
+                        <span>Status Check</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Balancecheck","Home")">
+                        <img src="~/AdminDesign/images/balance-de-second.svg" />
+                        <span>Balance Check</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Operatorcode","Home")">
+                        <img src="~/AdminDesign/images/operator-apithird.svg" />
+                        <span>Operator Code</span>
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+
+        @*Third-Design-Master-End*@
+
+        @*API-Footer-Start*@
+
+        <div class="api-footer-third fullbodydycolorbg">
+            <ul>
+                <li>Copyright&nbsp;&nbsp;2019 - @DateTime.Now.Year.ToString()</li>
+                <li>@comnyname</li>
+            </ul>
+        </div>
+
+        @*API-Footer-End*@
+
+
+        @*Four-Design-Left-Sidbar-Start*@
+
+        <div class="new-retailer-design new-retailer-design-dealer" style="display:none;overflow-x:hidden;">
+
+            <div class="wrapper-retailer">
+
+                <!--Left-Side-Menu-Start-->
+
+                <div class="leftside-menu-retailer four-menu-active four-menu-active-admin">
+
+                    <a href="@Url.Action("Dashboard","Home")" class="four-logo-retailer">
+
+                        <img src="@Url.Content("~/"+logoimage)" />
+
+                    </a>
+
+                    <div class="simplebar-mask-retailer">
+                        <div class="simplebar-offset-retailer">
+                            <div class="simplebar-content-wrapper-ret">
+                                <div class="simplebar-content-retailer">
+                                    <ul class="menusmoll-scroll-four">
+                                        <li>
+                                            <a href="@Url.Action("Dashboard","Home")">
+                                                <i class="fa fa-home"></i>
+                                                <span>Dashboards</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Profile","Home")" class="collapsed">
+                                                <i class="fa fa-user-circle"></i>
+                                                <span>My Profile</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("ChangePassword","Home")" class="collapsed">
+                                                <i class="fa fa-unlock-alt"></i>
+                                                <span>Manage Password</span>
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a href="javascript:void(0);" class="" data-toggle="collapse" data-target="#useraccount-api" aria-expanded="false">
+                                                <i class="fa fa-cog" aria-hidden="true"></i>
+                                                <span>Basic Setting</span>
+                                                <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                            </a>
+                                            <div class="collapse four-submenu-retailer" id="useraccount-api">
+                                                <ul class="api-four-design-page">
+                                                    <li>
+                                                        <a href="@Url.Action("Dispute_Report","Home")">Dispute Report</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("TokenSetting","Home")">Generate Token</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Ledger_Report","Home")">Ledger</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Web_Login","Home")">Login Info</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="Javascript:void(0);">My Earn</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Bank_Information","Home")">Bank Info</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("api_Daybook_Report","Home")">Day Book</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Help","Home")">Help</a>
+                                                    </li>
+
+
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <a href="@Url.Action("Index","Home")" class="collapsed">
+                                                <i class="fa fa-signal" aria-hidden="true"></i>
+                                                <span>Recharge & Bill</span>
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("DMT_Report","Home")" class="collapsed">
+                                                <i class="fa fa-signal" aria-hidden="true"></i>
+                                                <span>Financial Services</span>
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("SendPurchaseOrder","Home")" class="collapsed">
+                                                <i class="fa fa-shopping-bag"></i>
+                                                <span>Purchase Order</span>
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Gst_Invocing_API_report","Home")" class="collapsed">
+                                                <i class="fa fa-signal" aria-hidden="true"></i>
+                                                <span>GST Invoice Report</span>
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("User_wise_operator_comm","Home")" class="collapsed">
+                                                <i class="fa fa-signal" aria-hidden="true"></i>
+                                                <span>Operator Comm</span>
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("ReceiveFund_by_admin","Home")" class="collapsed">
+                                                <i class="fa fa-signal" aria-hidden="true"></i>
+                                                <span>Fund Receive</span>
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Commission","Home")" class="collapsed">
+                                                <i class="fa fa-signal" aria-hidden="true"></i>
+                                                <span>Commission</span>
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Dispute_Report","Home")" class="collapsed">
+                                                <i class="fa fa-signal" aria-hidden="true"></i>
+                                                <span>Dispute Report</span>
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("GatewayTRANSFER","Home")" class="collapsed">
+                                                <i class="fa fa-signal" aria-hidden="true"></i>
+                                                <span>Gateway</span>
+                                            </a>
+
+                                        </li>
+
+                                        <li>
+                                            <a href="javascript:void(0);" class="" data-toggle="collapse" data-target="#api-developers" aria-expanded="false">
+                                                <i class="fa fa-cog" aria-hidden="true"></i>
+                                                <span>Developer's</span>
+                                                <span class="arrow-retailer"><i class="fa fa-angle-right"></i></span>
+                                            </a>
+                                            <div class="collapse four-submenu-retailer" id="api-developers">
+                                                <ul>
+                                                    <li>
+                                                        <a href="@Url.Action("APIDOC","Home")">API Document's</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("TokenSetting","Home")">Token Setting</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Generate_Token","Home")">Call Back Page</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("StatusCheck","Home")">Status Check</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Balancecheck","Home")">Balance Check</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Operatorcode","Home")">Operator Code</a>
+                                                    </li>
+
+
+                                                </ul>
+                                            </div>
+                                        </li>
+
+
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--Left-Side-Menu-End-->
+                <!--Side-Content-Start-->
+                <div class="header-right-four-admin">
+                    <div class="headernav-four-admin" id="four-header-stckydealer">
+
+                        <div class="sideleft-control-menuadmin">
+                            <button id="show-menu-hide-fourdealer">
+                                <span></span>
+                                <span></span>
+                                <span style="margin-bottom:0;"></span>
+                            </button>
+                        </div>
+
+                        <ul>
+                            <li>
+                                <a href="Javascript:void(0);" class="collapsed" data-toggle="collapse" data-target="#api-transfer-four">
+                                    <strong><i class="fa fa-random"></i></strong>
+                                    <strong><span>Transfer</span></strong>
+                                </a>
+
+                                <div class="nav-submenufour-design collapse" id="api-transfer-four">
+                                    <ul>
+
+                                        <li>
+                                            <a href="@Url.Action("ReceiveFund_by_admin","Home")">
+                                                <p>
+                                                    <span>Received From Admin</span>
+
+                                                </p>
+                                            </a>
+                                        </li>
+
+
+                                    </ul>
+                                </div>
+
+                            </li>
+                            <li>
+                                <a href="Javascript:void(0);" class="collapsed" data-toggle="collapse" data-target="#dealer-duelist-four">
+                                    <strong><i class="fa fa-address-book"></i></strong>
+                                    <strong><span>Due List</span></strong>
+                                </a>
+
+
+
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("Complaint","Home")">
+                                    <strong>
+                                        <span class="value-fore-design">
+
+                                            @if (ViewBag.notificount != null)
+                                            {
+                                                <i>@ViewBag.notificount</i>
+
+                                            }
+                                            else
+                                            {
+                                                <i>0</i>
+
+                                            }
+
+                                        </span>
+                                    </strong>
+                                    <strong><span>Chat's</span></strong>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("SendPurchaseOrder","Home")" class="">
+                                    <strong>
+                                        <span class="value-fore-design">
+                                            <i>0</i>
+                                        </span>
+                                    </strong>
+                                    <strong><span>Fund-Q</span></strong>
+                                </a>
+
+
+                            </li>
+                            <li>
+                                <a href="Javascript:void(0);" data-toggle="modal" data-target="#ALLUSERSSHOW">
+                                    <strong><i>₹</i></strong>
+                                    <strong>
+                                        <span style="display:block;font-size:13px;">Wallet Balance</span>
+                                        <span style="font-size:13px;">@remainbalance</span>
+                                    </strong>
+                                </a>
+                            </li>
+                            <li>
+                                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <a href="Javascript:void(0);">
+                                        <button type="submit" title="Logout" style="width: auto !important; background: transparent; border: 0; padding: 0; height: auto; display: flex; justify-content: center; align-items: center;">
+                                            <strong>
+                                                <i class="material-icons four-image-nav">power_settings_new</i>
+                                            </strong>
+                                            <strong>
+                                                <span>Logout</span>
+                                            </strong>
+                                        </button>
+                                    </a>
+                                }
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        @*Four-Design-Left-Sidbar-End*@
+
+
+    </section>
+    @RenderBody()
+
+    <!-- Jquery Core Js -->
+    <script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+    <script src="~/Swalalert/datatablejquery.js"></script>
+    <!-- Bootstrap Core Js -->
+    <script src="~/AdminDesign/plugins/bootstrap/js/bootstrap.js"></script>
+    <!-- Autosize Plugin Js -->
+    <script src="~/AdminDesign/plugins/autosize/autosize.js"></script>
+    <!-- Select Plugin Js -->
+    <!-- Slimscroll Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+    <script src="~/MainFrontDesign/js/jquery-ui.min-scroll.js"></script>
+    <script src="~/MainFrontDesign/js/facescroll.js"></script>
+
+
+    <!-- Waves Effect Plugin Js -->
+    @*<script src="~/AdminDesign/plugins/node-waves/waves.js"></script>*@
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-countto/jquery.countTo.js"></script>
+    <!-- Morris Plugin Js -->
+    <script src="~/AdminDesign/plugins/raphael/raphael.min.js"></script>
+    <script src="~/AdminDesign/plugins/morrisjs/morris.js"></script>
+    <!-- ChartJs -->
+    <!-- Flot Charts Plugin Js -->
+    <script src="~/AdminDesign/plugins/flot-charts/jquery.flot.js"></script>
+
+    <!-- Sparkline Chart Plugin Js -->
+    <!-- Custom Js -->
+    <script src="~/AdminDesign/js/admin.js"></script>
+    <script src="~/AdminDesign/js/pages/index.js"></script>
+    <!-- Demo Js -->
+    <script src="~/AdminDesign/js/demo.js"></script>
+    <script src="~/AdminDesign/plugins/moment.min.js"></script>
+    <script src="~/AdminDesign/plugins/daterangepicker.js"></script>
+    <!--data table -->
+    <script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+    <script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+    <script src="~/AdminDesign/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    <script src="~/AdminDesign/plugins/sweetalert/sweetalert.min.js"></script>
+    <link href="~/Swalalert/datatable.css" rel="stylesheet" />
+
+    <script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+    <script src="~/ClanderCss/bootstrap-datepicker.min.js"></script>
+    <script src="~/ClanderCss/bootstrap-datetimepicker.min.js"></script>
+    <!-- Push Nitification using SignalR-->
+    <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        $('.api-left-side').click(function () {
+            $('#leftsidebar').toggleClass('left-out');
+            $(this).toggleClass('api-left-side-close');
+
+        });
+
+    </script>
+    <script>
+
+
+
+
+        var current = location.pathname;
+        $('.api-sub-menu li a').each(function () {
+            var $this = $(this);
+            if ($this.attr('href').indexOf(current) !== -1) {
+                $this.addClass('activee');
+
+
+            }
+        })
+
+
+    </script>
+
+    <script type="text/javascript">
+
+        window.onload = function () {
+            //alert("chal gaya kya???");
+
+            var hub = $.connection.notificationHub;
+            //alert("notificationHub");
+            //Client Call
+            hub.client.broadcaastNotif = function (totalNotif) {
+                //alert("broadcaastNotif");
+                console.log("Notif Data: " + totalNotif);
+                console.log("total items : " + totalNotif.length)
+                if (totalNotif.length > 0) {
+                    $.each(totalNotif, function (i, obj) {
+                        console.log("i : " + i);
+                        console.log("Title : " + obj.Title);
+                        console.log("Details : " + obj.Details);
+                        console.log("DetailsURL : " + obj.DetailsURL);
+                        //setNotification(obj.Title, obj.Details, obj.DetailsURL);
+                        customnotify(obj.Title, obj.Details, obj.DetailsURL, obj.Id);
+                    });
+
+                }
+            };
+            //$.connection.hub.start().done(function () { });
+            $.connection.hub.start()
+                .done(function () {
+                    console.log("Hub Connected!");
+
+                    //Server Call
+                    hub.server.getNotification();
+
+                })
+                .fail(function () {
+                    console.log("Could not Connect!");
+                });
+        };
+    </script>
+
+    @{
+        VastwebmultiEntities db = new VastwebmultiEntities();
+        var url = db.Admin_details.Single().WebsiteUrl;
+        var adminid = db.Admin_details.Single().userid;
+        var notificationlogo = db.logoimage(adminid, "ADMIN").FirstOrDefault();
+        var notifilogo = notificationlogo == null ? "NO" : notificationlogo.logo;
+        var baseurl = "";
+        if (notifilogo != "NO")
+        {
+            baseurl = "http://" + url + "/Outside_logo/" + notifilogo;
+        }
+        else
+        {
+            baseurl = "";
+        }
+
+    }
+    <script>
+    function SetAsReaded(idn,url)
+    {
+        //alert("sjbskjdfbaaaaaaaaaaaaasjkdfb");
+       // alert('@url');
+        var urlSiteName = '@url';
+        var setObj = { Id : idn};
+        var Url = "https://www." + urlSiteName +"/api/Notification/UpdateReadProperty";
+        //alert(Url);
+        $.ajax({
+            type: "POST",
+            //url: "/api/Values/SendNotification",
+            url: Url,
+            data: JSON.stringify(setObj),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                //reset field
+                //$("#myMessage").val("");
+            },
+            error: function (xhr,err) {
+                console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                console.log("responseText: " + xhr.responseText);
+            }
+        });
+        //window.open(url,"_blank");
+    }
+    </script>
+
+
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    });
+    function customnotify(title, desc, url, id) {
+        if (Notification.permission !== "granted") {
+           // alert("permission=granted");
+            Notification.requestPermission();
+        }
+        else {
+            //alert('@baseurl');
+            var notification = new Notification(title, {
+                icon: '@baseurl',
+                body: desc,
+            });
+
+            /* Remove the notification from Notification Center when clicked.*/
+            notification.onclick = function () {
+                //alert("Click");
+                SetAsReaded(id, url);
+                notification.close();
+            };
+
+
+            ///* Callback function when the notification is closed. */
+            notification.onclose = function () {
+                SetAsReaded(id, url);
+                notification.close();
+                console.log('Notification closed');
+            };
+        }
+
+
+    }
+    </script>
+
+    <!-- Push Nitification using SignalR END-->
+    <!--Get api balance and Total outstading-->
+    <script>
+        function showoutstandingbal()
+        {
+            $("#showoutstandingbalance").empty();
+            $.ajax({
+                type: 'Post',
+                url: "@Url.Action("Chkbalance", "Home")",
+                dataType: 'html',
+            cache: false,
+            async: false,
+            success: function (data) {
+                var x = JSON.parse(data);
+                var newRow =
+
+ "<tr>" +
+"<td><a href='@Url.Action("Show_Credit_report_by_admin", "Home")',style='text-decoration:none;cursor:pointer;'><p>My Credit</p></a></td>" +
+"<td><p style='text-align:center;'>" + x.apicreditbal + "</p></td>" + "</tr>" +
+"<tr>";
+  $('#showoutstandingbalance').append(newRow);
+            }
+        });
+        }
+    </script>
+
+    <!-- Total Balance  Recived Balannce fromadmin-->
+    <script>
+        function showtransferbal()
+        {
+            $("#showtransferbalancetableid").empty();
+            $.ajax({
+                type: 'POST',
+                url:'@Url.Action("Totalbaltransfer", "Home")',
+                dataType:'html',
+                cache:false,
+                async:false,
+                success: function(data)
+                {
+                       var x = JSON.parse(data);
+                       var newRow =
+
+    "<tr>" +
+   "<td><a href='@Url.Action("ReceiveFund_by_admin", "Home")',style='text-decoration:none;cursor:pointer;'><p>Received&nbsp;From&nbsp;Admin</p></a></td>" +
+   "<td><p style='text-align:center;'>" + x.apibalfromadmin + "</p></td>" + "</tr>" +
+    "<tr>";
+
+   $('#showtransferbalancetableid').append(newRow);
+            }
+            });
+        }
+    </script>
+
+
+    @*API-Script-Start-Second-Design*@
+    <script>
+
+        $('.second-design-master .menusidbar-second-master').alternateScroll();
+        $('.third-design-master .menu-third-scroll-master').alternateScroll();
+        $('.third-design-master .third-sub-menu-master').alternateScroll();
+
+
+
+    </script>
+
+    <script>
+        function openNavmaster() {
+            document.getElementById("mySidepanel-second-master").style.width = "450px";
+        }
+        function closeNavmaster() {
+            document.getElementById("mySidepanel-second-master").style.width = "0";
+        }
+
+        if ($(window).width() <= '700') {
+            function openNavmaster() {
+                document.getElementById("mySidepanel-second-master").style.width = "100%";
+            }
+            function closeNavmaster() {
+                document.getElementById("mySidepanel-second-master").style.width = "0";
+            }
+
+        };
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.second-design-master .example-second').DataTable({
+
+
+                paging: false
+            });
+        });
+
+    </script>
+
+    <script>
+
+        let tabHeader = $('.third-design-master .menu-third-master ul li');
+        let tabContent = $('.third-sub-menu-master');
+        let tabclose = $('.close-third-menu-master');
+
+        tabHeader.click(function () {
+
+            tabHeader.removeClass('menu-active');
+            $(this).addClass('menu-active');
+
+            let match1 = $(this).data('cs-tab-toggle');
+
+            tabContent.removeClass('menu-active');
+            tabContent.filter('[data-cs-tab-index=' + match1 + ']').addClass("menu-active");
+        });
+
+        tabclose.click(function () {
+            tabHeader.removeClass('menu-active');
+            tabContent.removeClass('menu-active');
+        });
+
+    </script>
+
+
+    <script>
+
+            $(".showtransferbalancetableidclass-api-third").empty();
+            $.ajax({
+                type: 'POST',
+                url:'@Url.Action("Totalbaltransfer", "Home")',
+                dataType:'html',
+                cache:false,
+                async:false,
+                success: function(data)
+                {
+                       var x = JSON.parse(data);
+                    var newRow =
+
+                        "<tr>" +
+                        "<td><a href='@Url.Action("ReceiveFund_by_admin", "Home")',style='text-decoration:none;cursor:pointer;'><p>Received&nbsp;From&nbsp;Admin</p></a></td>" +
+                        "<td><p style='text-align:center;'>" + x.apibalfromadmin + "</p></td>" + "</tr>";
+
+
+                    $('.showtransferbalancetableidclass-api-third').append(newRow);
+            }
+            });
+
+    </script>
+
+    <script>
+
+            $(".showoutstandingbalanceclass-api-third").empty();
+            $.ajax({
+                type: 'Post',
+                url: "@Url.Action("Chkbalance", "Home")",
+                dataType: 'html',
+            cache: false,
+            async: false,
+            success: function (data) {
+                var x = JSON.parse(data);
+                var newRow =
+
+                    "<tr>" +
+                    "<td><a href='@Url.Action("Show_Credit_report_by_admin", "Home")',style='text-decoration:none;cursor:pointer;'><p>My Credit</p></a></td>" +
+                    "<td><p style='text-align:center;'>" + x.apicreditbal + "</p></td>" + "</tr>";
+
+                $('.showoutstandingbalanceclass-api-third').append(newRow);
+            }
+        });
+
+    </script>
+
+    <script>
+        $('.third-design-master .third-design-table tbody td').mouseenter(function () {
+            var colIndex = $(this).parent().children().index($(this)) + 1;
+            var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+            $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+            $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+            $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        });
+
+        $('.third-design-master .third-design-table tbody td').mouseleave(function () {
+            var colIndex = $(this).parent().children().index($(this)) + 1;
+            var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+            $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+            $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+            $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+        });
+    </script>
+
+    @*API-Script-End-Second-Design*@
+
+
+    @*Four-Design-Script-Start*@
+
+    <script>
+
+        $(window).scroll(function () {
+            var scroll = $(window).scrollTop();
+
+            if (scroll >= 100) {
+                $("#four-header-stckydealer").addClass("dealer-fixed-headerclass");
+            } else {
+                $("#four-header-stckydealer").removeClass("dealer-fixed-headerclass");
+            }
+        });
+
+    </script>
+
+    <script>
+        if (window.matchMedia("(max-width: 991px)").matches) {
+            $("#show-menu-hide-fourdealer").click(function () {
+                $(".dealer-four-design").toggleClass("dealer-four-design-mobile");
+            });
+        } else {
+            $("#show-menu-hide-fourdealer").click(function () {
+                $(".dealer-four-design").toggleClass("dealer-four-design-show");
+            });
+        }
+
+    </script>
+
+    @*Four-Design-Script-End*@
+
+</body>
+</html>

@@ -1,0 +1,1427 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.Vandorlist
+@{
+    ViewBag.Title = "Vendor Details";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .btn-group, .btn-group-vertical {
+        box-shadow: none;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .toast-top-right1 {
+        top: 65px;
+        left: 81%;
+    }
+
+    #div_Loader {
+        background: rgba(0, 0, 0, 0.6) none repeat scroll 0 0;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 999999;
+    }
+
+
+   
+    @@keyframes ldio-zdyd6mf6t5 {
+        0% {
+            top: 96px;
+            left: 96px;
+            width: 0;
+            height: 0;
+            opacity: 1;
+        }
+
+        100% {
+            top: 18px;
+            left: 18px;
+            width: 156px;
+            height: 156px;
+            opacity: 0;
+        }
+    }
+
+
+
+    .ldio-zdyd6mf6t5 div {
+        position: absolute;
+        border-width: 4px;
+        border-style: solid;
+        opacity: 1;
+        border-radius: 50%;
+        animation: ldio-zdyd6mf6t5 1s cubic-bezier(0,0.2,0.8,1) infinite;
+    }
+
+        .ldio-zdyd6mf6t5 div:nth-child(1) {
+            border-color: var(--main-bg-lcolor);
+        }
+
+        .ldio-zdyd6mf6t5 div:nth-child(2) {
+            border-color: #c7c7c7;
+            animation-delay: -0.5s;
+        }
+
+    .loadingio-spinner-ripple-92ar2pfqk5j {
+        width: 200px;
+        height: 200px;
+        display: inline-block;
+        overflow: hidden;
+        background: #ffffff;
+    }
+
+
+    .ldio-zdyd6mf6t5 {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform: translateZ(0) scale(1);
+        backface-visibility: hidden;
+        transform-origin: 0 0;
+    }
+
+        .ldio-zdyd6mf6t5 div {
+            box-sizing: content-box;
+        }
+    .for-search{position: absolute;
+right: 15px;}
+    .for-search input{width: 250px;border: 1px solid #dbdbdb;
+padding: 3px 10px;}
+    @@media only screen and (max-width:520px) {
+        .web-white-filter{position: static !important;}
+        
+         .for-search input {
+              width: 100%;
+            }
+    }
+</style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+<section class="content Vendor_List_Page">
+    <div class="container-fluid">
+
+        <div class="page-header-third pageheader-margin-third">
+            <div class="bread-same-all-page">
+                <ul>
+                    <li class="smli">
+                        <a href="@Url.Action("Dashboard", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                            Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;" />
+                        </a>
+                    </li>
+                    <li class="fullbodydycolorbg tmw-total-color-one">
+                        Vendor
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="for-search">
+                <div class="search-after-third">
+                    <input id="myInput" type="text" placeholder="Search..." onkeyup="myFunction()" />
+                </div>
+            </div>
+            </div>
+
+            <div class="row clearfix" style="margin-bottom:40px;">
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="left-tabs-head width100 float-left  custom-table-responsive input-border-third" style="height: 80vh !important;">
+                        <h2 class="fullbodydycolorbg width100 float-left"><img src="~/images/reportimage/add-user-button.svg" alt="add user" class="create-add-image">Create Seller</h2>
+
+                        @*@using (Html.BeginForm("Insert_vendor", "Home", FormMethod.Post))*@
+                        @using (Ajax.BeginForm("Insert_vendor", new AjaxOptions { HttpMethod = "Post", OnBegin = "ajaxValidate()", OnSuccess = "RegisterSuccess", LoadingElementId = "div_Loader" }))
+
+                        {
+
+                            <div class="row clearfix">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <label for="email_address_2">
+                                        Seller Name
+                                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                                    </label>
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Enter User Name", required = "required" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--.row-->
+
+                            <div class="row clearfix">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <label for="email_address_2">
+                                        Firm Name
+                                        @Html.ValidationMessageFor(m => m.FarmName, "", new { @class = "text-danger" })
+                                    </label>
+
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.FarmName, new { @class = "form-control", placeholder = "Enter Firm Name", maxlength = "40", required = "required" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--.row-->
+
+                            <div class="row clearfix">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <label for="email_address_2">
+                                        Email-ID
+                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                    </label>
+
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter Email Id", required = "required" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--.row-->
+
+                            <div class="row clearfix">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                    <label for="email_address_2">
+                                        (+91) Mobile
+                                        @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger" })
+                                    </label>
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Phone Number", required = "required", onkeypress = "return isNumber(event)", maxlength = "10" })
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                    <label for="email_address_2">PAN Card @Html.ValidationMessageFor(m => m.pancard, "", new { @class = "text-danger" })</label>
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.pancard, new { @class = "form-control", placeholder = "Enter PAN Card", maxlength = 10, })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--.row-->
+
+                            <div class="row clearfix">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                    <label for="email_address_2">
+                                        State
+                                        @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
+                                    </label>
+
+                                    <div class="form-group">
+                                        <div class="custom-district">
+                                            @Html.DropDownListFor(model => model.State, new SelectList(ViewBag.state, "Value", "Text"), "Select State", new { @class = "form-control", data_live_search = "true" })
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                    <label for="email_address_2">
+                                        District
+                                        @Html.ValidationMessageFor(m => m.District, "", new { @class = "text-danger" })
+                                    </label>
+
+                                    <div class="form-group">
+                                        <div class="custom-district">
+                                            @Html.DropDownListFor(m => m.District,
+                               new SelectList(Enumerable.Empty<SelectListItem>(), "Dist_id", "Dist_Desc"),
+                                 "Select district",
+                                  new { @class = "form-control" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--.row-->
+                            <div class="row clearfix">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <label for="email_address_2">
+                                        Address
+                                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                                    </label>
+
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.Address, new { @class = "form-control", minlength = "15", placeholder = "Enter Address", required = "required" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--.row-->
+                            <div class="row clearfix">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <label for="email_address_2">
+                                        Pin Code
+                                        @Html.ValidationMessageFor(m => m.Pincode, "", new { @class = "text-danger" })
+                                    </label>
+
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.Pincode, new { @class = "form-control", placeholder = "Enter Pin Code", required = "required", onkeypress = "return isNumber(event)", maxlength = "6" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--.row-->
+
+
+
+                            <div class="row clearfix">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                    <label for="email_address_2">
+                                        Aadhar Card
+                                        @Html.ValidationMessageFor(m => m.aadharnumber, "", new { @class = "text-danger" })
+                                    </label>
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.aadharnumber, new { @class = "form-control", placeholder = "Enter Aadhaar Number", onkeypress = "return isNumber(event)", maxlength = "12" })
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                    <label for="email_address_2">
+                                        Gst Number  @Html.ValidationMessageFor(m => m.gstnumber, "", new { @class = "text-danger" })
+                                    </label>
+                                    <div class="form-group">
+                                        <div class="">
+                                            @Html.TextBoxFor(m => m.gstnumber, new { @class = "form-control", placeholder = "Enter Gst Number", maxlength = "15", })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div><!--.row-->
+
+
+
+                            <div class="">
+
+                                <label id="lblerror1" class="danger" style="color:#fff;font-size: 16px;background: green;width: 100%;display:block;"></label>
+                                <label id="lblerror" class="danger" style="color:#fff;font-size: 16px;background: red;width: 100%;display:block;"></label>
+                                <button type="submit" class="btn pull-right fullbodydycolorbg button-third" style="margin-left:15px;color:#fff;border-color:transparent;margin-top:5px;">
+                                    Create Seller
+                                </button>
+                                <button type="reset" class="btn pull-right button-third-design" style="margin-top:5px;">
+                                    Reset
+                                </button>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <div id="vendorlisttable" class="right-tabs width100 float-left">
+                        @Html.Partial("_VendorlistPartial")
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+</section>
+<div id="div_Loader" style="display:none; position: fixed;top: 0px;background: rgba(0,0,0,.5);left: 0px;bottom: 0px;right: 0px;width: 100%;height: 100vh;z-index: 9999;">
+    <div id="loader" style="position: absolute;right: 34%;top: 50%;display:block; transform: translate(-34%,-50%);">
+        <div class="loadingio-spinner-ripple-92ar2pfqk5j" style="background:transparent;">
+            <div class="ldio-zdyd6mf6t5">
+                <div></div><div></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Add New Master Distributor  modal-->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add New Vendor</h4>
+            </div>
+
+            @using (Html.BeginForm("Insert_vendor", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Name</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Enter User Name", required = "required" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Firm Name</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.FarmName, new { @class = "form-control", placeholder = "Enter Firm Name", required = "required" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.FarmName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">State</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.DropDownListFor(model => model.State, new SelectList(ViewBag.state, "Value", "Text"), "Select State", new { @class = "selectpicker form-control", data_live_search = "true" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">District</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.DropDownListFor(m => m.District,
+       new SelectList(Enumerable.Empty<SelectListItem>(), "Dist_id", "Dist_Desc"),
+              "Select district",
+              new { @class = "form-control" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.District, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Address</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control", placeholder = "Enter Address", required = "required" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Pin Code</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.Pincode, new { @class = "form-control", placeholder = "Enter Pin Code", required = "required", onkeypress = "return isNumber(event)", maxlength = "6" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Pincode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Mobile</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Phone Number", required = "required", onkeypress = "return isNumber(event)", maxlength = "10" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Email-ID</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter Email Id", required = "required" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Aadhar Card</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.aadharnumber, new { @class = "form-control", placeholder = "Enter Aadhaar Number", required = "required", onkeypress = "return isNumber(event)", maxlength = "12" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.aadharnumber, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Pancard</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.pancard, new { @class = "form-control", placeholder = "Enter Pan Card", required = "required", maxlength = 10, @style = "text-transform:uppercase" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.pancard, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Gst Number</label>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        @Html.TextBoxFor(m => m.gstnumber, new { @class = "form-control", placeholder = "Enter Gst Number", required = "required", maxlength = "15", @style = "text-transform:uppercase" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.gstnumber, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                        <span style="top:-2px;color:black;">Save Change</span>
+                    </button>
+                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                        <span style="top:-2px;color:black;">Close</span>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!--Edit Master Distributor  modal-->
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Edit Vendor</h4>
+
+            </div>
+            @using (Html.BeginForm("EditVendor_list", "Home", FormMethod.Post))
+            {
+                @Html.HiddenFor(m => m.userid)
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form id="form_validation" method="POST">
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.Name1, new { @class = "form-control", placeholder = "Enter User Name", required = "required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Name1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Firm Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.FarmName1, new { @class = "form-control", placeholder = "Enter User Name", required = "required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.FarmName1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">State</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+
+                                            @Html.DropDownListFor(model => model.State1, new SelectList(ViewBag.state, "Value", "Text"), "Select State", new { @class = "form-control", data_live_search = "true" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.State1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">District</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownListFor(m => m.District1,
+       new SelectList(Enumerable.Empty<SelectListItem>(), "Dist_id", "Dist_Desc"),
+              "Select district",
+              new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.District1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextAreaFor(m => m.Address1, new { @class = "form-control", placeholder = "Enter Address ", @onkeypress = "javascript:return AddValidation(event)", required = "required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Address1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pin Code</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.Pincode1, "", new { @class = "form-control", placeholder = "Enter Pincode No", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Pincode1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Aadhar Card</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.aadharnumber1, "", new { @class = "form-control", placeholder = "Enter Pincode No", required = "required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.aadharnumber1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pancard</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.pancard1, "", new { @class = "form-control", placeholder = "Enter Pincode No", required = "required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.pancard1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Gst Number</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.gstnumber1, "", new { @class = "form-control", placeholder = "Enter Pincode No", required = "required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.gstnumber1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal mastetr222Modal" id="defaultModal222" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content width100 float-left">
+            <div class="modal-header width100 float-left">
+                <div class="modal-back width100 float-left">
+                    <div class="sam">
+                        <h4 class="oneh">
+                            <span class="first">
+                                M
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <div class="sam">
+                        <h4 class="twoh">
+                            <span class="first">
+                                D
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <div class="sam">
+                        <h4 class="threeh">
+                            <span class="first">
+                                R
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <button type="button" class="btn waves-effect" data-dismiss="modal">
+                        <i class="fa fa-times fullbodydycolorbg fulltextbodycolor" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div><!--.modal-header-->
+            <div class="modal-body width100 float-left">
+                <div class="background-kk width100 float-left">
+                    <div class="thisLeft float-left">
+                        <img src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" />
+                    </div>
+                    <div class="thisRight">
+                        <ul class="float-left width100">
+                            <li><span><b>Name:</b></span><span>TestTest</span></li>
+                            <li><span><b>Firm:</b></span><span>TestTest</span></li>
+                            <li><span><b>Registered Date:</b></span><span>9837452845</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="float-left width100">
+
+                    <form class="first-form">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" placeholder="EmailID" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Pancard</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pancard No" readonly />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Aadhar Card</label>
+                                    <input type="text" class="form-control" placeholder="Enter Aadhaar Number" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Firm Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter Firm Registration No" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>GST Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter GST Registration No" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <input type="text" class="form-control" placeholder="Select District" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <input type="text" class="form-control" placeholder="Select State" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <textarea class="form-control" placeholder="Enter Address" readonly></textarea>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Pin Code</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pin Code" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </form>
+
+                    <!--=============-->
+                    <form class="second-form" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" placeholder="EmailID" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Pancard</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pancard No" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Firm Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter Firm Registration No" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>GST Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter GST Registration No" />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Aadhar Card</label>
+                                    <input type="text" class="form-control" placeholder="Enter Aadhaar Number" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <select class="form-control">
+                                        <option value="" selected>Select District</option>
+                                        <option value="1">Test</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <select class="form-control">
+                                        <option value="" selected>Select State</option>
+                                        <option value="1">Test</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <textarea class="form-control" placeholder="Enter Address"></textarea>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Pin Code</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pin Code" />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </form>
+
+                </div>
+            </div><!--.modal-body-->
+
+            <div class="modal-footer width100 float-left">
+                <ul class="width100 float-left">
+                    <li class="one">
+                        <button type="button" value="Edit" class="btn">Edit</button>
+                    </li>
+                    <li class="One2" style="display:none;">
+                        <button type="button" value="SaveChange" class="btn special-iii btnssl2233" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Save Change</button>
+                    </li>
+                    <li class="two">
+                        <button type="button" value="Change" class="btn special-iii btnssl2233" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Reset Password</button>
+                    </li>
+                    <li class="three">
+                        <button type="button" value="Email_Verify" class="btn">Email Verify</button>
+                    </li>
+                    <li class="four">
+                        <button type="button" value="Delet" class="btn">Delete</button>
+                    </li>
+                </ul>
+            </div><!--.modal-footer-->
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<!-- Custom Js -->
+
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/select2/dist/css/select2.css" rel="stylesheet" />
+<script src="~/select2/dist/js/select2.min.js"></script>
+<script>
+    function ToastrMessage() {
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "positionClass": "toast-top-right1",
+            "newestOnTop": false,
+            "progressBar": true,
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "100",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "show",
+            "hideMethod": "hide"
+        };
+        //toastr.info('MY MESSAGE!');
+    }
+</script>
+<script>
+    var ravi = $.noConflict()
+    ravi(document).ready(function () {
+
+        // Initialize select2
+        ravi("select").select2();
+
+        // Read selected option
+
+    });
+    $(document).ajaxComplete(function () {
+        ravi("select").select2();
+    });
+</script>
+<!--Window load Popuop message-->
+<script>
+     function RegisterSuccess(data) {
+         var sts = data.type;
+         $('#lblerror').text(data.msg)
+          // swal(data.msg, sts);
+           if (data.msg === "Register SuccessFully.") {
+                     ToastrMessage();
+                     toastr.success('Congratulations Account Create successfully');
+               $('#lblerror1').text('Congratulations Account Create successfully')
+               $('#lblerror1').css('padding', '5px');
+             $('#lblerror1').show();
+            $('#lblerror').hide();
+                   }
+
+             else {
+              $('#lblerror').text('☒' + " " + data.msg)
+            $('#lblerror').css('padding', '5px');
+             $('#lblerror1').hide();
+                    ToastrMessage();
+                    toastr.error(data.msg);
+                 }
+
+          if (sts === "Success") {
+                        // var reason = data.value;
+                        $.ajax({
+                            url: '@Url.Action("venderlistPart","Home")',
+                            type: 'GET',
+                            cache: false,
+                            success: function (response) {
+                                 $('#vendorlisttable').html(response);
+                                $('#Name').val('');
+                                $('#FarmName').val('');
+                                $('#Email').val('');
+                                $('#Mb').val('');
+                                $('#txtpancard').val('');
+                                 $('#Address').val('');
+
+                                $('#Pincode').val('');
+                                 $('#txtaadharcard').val('');
+                                $('#gstnumber').val('');
+
+
+
+                             $("#District1").empty();
+
+                                  ravi("select").select2("val", 0);
+
+
+                            }
+                        })
+
+                    }
+    }
+
+
+
+</script>
+
+
+<script>
+    function ajaxValidate() {
+
+        
+        var aadhar = $('#aadharnumber').val();//document.getElementById("adharcard").value;
+        var gst = $('#gstnumber').val();
+        var pancard = $('#pancard').val();
+
+        if (pancard.length > 0) {
+            var regex = /([A-Z]){5}([0-9]){4}([A-Z]){1}$/;
+            if (!regex.test(pancard.toUpperCase())) {
+                // $('#error').text('Invalid Pan No')
+                // return false;
+                $('#lblerror').text('☒ Invalid PAN No')
+                $('#lblerror').css('padding' , '5px')
+                $('#lblerror1').hide();
+                RegisterSuccess.stopImmediatePropagation();
+
+                return false;
+            }
+
+
+
+        }
+
+        if (aadhar.length > 0) {
+
+
+
+            var res = validatesss(aadhar)
+
+            if (res == false) {
+                $('#lblerror').text('☒ Invalid AADHAR No.')
+                $('#lblerror').css('padding' , '5px')
+                $('#lblerror1').hide();
+
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+
+            }
+
+
+        }
+
+
+        if (gst.length > 0) {
+            var gstinformat = new RegExp('^([0][1-9]|[1-2][0-9]|[3][0-5])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$$');
+            if (!gstinformat.test(gst)) {
+                //   $('#error').text('Invalid GST No')
+                //  return false;
+                $('#lblerror').text('☒ Invalid GST No')
+                $('#lblerror').css('padding' , '5px')
+                $('#lblerror1').hide();
+
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+            }
+
+
+        }
+
+
+    }
+    // multiplication table
+    const d = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+        [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+        [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+        [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+        [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+        [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+        [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+        [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+        [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    ]
+
+    // permutation table
+    const p = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+        [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+        [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+        [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+        [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+        [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+        [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+    ]
+
+    // validates Aadhar number received as string
+    function validatesss(aadharNumber) {
+        let c = 0
+        let invertedArray = aadharNumber.split('').map(Number).reverse()
+
+        invertedArray.forEach((val, i) => {
+            c = d[c][p[(i % 8)][val]]
+        })
+
+        return (c === 0)
+    }
+</script>
+
+
+
+<!--Add fill dropdown list-->
+<script language="javascript" type="text/javascript">
+                    $(function () {
+                        ravi('#State').change(function () {
+                            // alert('Value:' + ' ' + $('#State1').val())
+                            var stid = $('#State').val()
+                                GetDistrict(stid)
+                        });
+                    })
+
+                    function GetDistrict(_stateId) {
+                        var procemessage = "<option value='0'> Please wait...</option>";
+                        $("#District").html(procemessage).show();
+                        var url = '@Url.Action("DistrictList","Home")'
+                        $.ajax({
+                            url: url,
+                            data: { Id: _stateId },
+                            cache: false,
+                            type: "POST",
+                            success: function (data) {
+                                ravi("#District").html("");
+                                for (var x = 0; x < data.length; x++) {
+                                    //alert(markup)
+                                    ravi("#District").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                                }
+
+                            },
+                            error: function (reponse) {
+                                alert("error : " + reponse);
+                            }
+                        });
+                    }
+
+    function GetDistrict1(_stateId) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#District1").html(procemessage).show();
+        var url = '@Url.Action("DistrictList","Home")'
+        $.ajax({
+            url: url,
+            data: { Id: _stateId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $("#District1").html("");
+                for (var x = 0; x < data.length; x++) {
+                    //alert(markup)
+                    $("#District1").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                }
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+
+</script>
+<!--edit fill dropdown-->
+<script language="javascript" type="text/javascript">
+                    $(function () {
+                        $('#State1').change(function () {
+                            // alert('Value:' + ' ' + $('#State1').val())
+                            var stid = $('#State1').val()
+                            if (stid === "") {
+                                stid = 0;
+                                //alert(stid)
+                            }
+                            else {
+                                //alert(stid)
+                                GetDistrict(stid)
+                            }
+                            function GetDistrict(_stateId) {
+                                var procemessage = "<option value='0'> Please wait...</option>";
+                                $("#District1").html(procemessage).show();
+                                var url = '@Url.Action("DistrictList","Home")'
+                                $.ajax({
+                                    url: url,
+                                    data: { Id: _stateId },
+                                    cache: false,
+                                    type: "POST",
+                                    success: function (data) {
+                                        $("#District1").html("");
+                                         for (var x = 0; x < data.length; x++) {
+                                            $("#District1").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                                          }
+                                    },
+                                    error: function (reponse) {
+                                        alert("error : " + reponse);
+                                    }
+                                });
+                            }
+                        });
+                    })
+</script>
+<!--Edit master detail-->
+<script type="text/javascript">
+    var val1 = "";
+    function animation(userid) {
+        var url = '@Url.Action("VendorIdSearch", "Home")'
+        $.ajax({
+            url: url,
+            data: { userid: userid },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+
+                $("#userid").val(userid);
+                $("#Name1").val(data[0].Name);
+                $("#FarmName1").val(data[0].Firmname);
+
+                $("#Address1").val(data[0].address);
+                $("#Pincode1").val(data[0].pin);
+
+                $("#aadharnumber1").val(data[0].aadharnumber);
+                $("#pancard1").val(data[0].pancardnumber);
+                $("#gstnumber1").val(data[0].gstnumber);
+
+
+                $("#State1").val(data[0].state);
+                GetDistrict1(data[0].state)
+                var objSelect1 = document.getElementById("District1");
+                binddist(data[0].state, data[0].district, objSelect1);
+                $('#defaultModal1').modal('show');
+            }
+        });
+
+    }
+        function binddist(staid, dist, objSelect1) {
+            var url = '@Url.Action("DistrictList","Home")'
+            $.ajax({
+                url: url,
+                data: { Id: staid },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var markup = "<option value='0'>Select District</option>";
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+                    $("#District").html(markup).show();
+                    setSelectedValue(objSelect1, dist);
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+    function setSelectedValue(selectObj, valueToSet) {
+
+            for (var i = 0; i < selectObj.options.length; i++) {
+                if (selectObj.options[i].value == valueToSet) {
+                    //alert(selectObj.options[i].value);
+                    selectObj.options[i].selected = true;
+                    return;
+                }
+            }
+        }
+</script>
+<!--Insert Popuop-->
+<script>
+    $(document).ready(function () {
+        var message = '@TempData["msgrem"]'
+        if (message != "" && message != null) {
+            //swal("Good job!", message, "success");
+             ToastrMessage();
+                     toastr.success(message);
+
+        }
+        var mobileconfrimation = '@TempData["mobileno"]'
+        if (mobileconfrimation != "" && mobileconfrimation != null) {
+            //swal("Oops...", mobileconfrimation, "error");
+             ToastrMessage();
+                     toastr.error(mobileconfrimation);
+
+        }
+
+        var mailconfrimation = '@TempData["emailconfrim"]'
+        if (mailconfrimation != "" && mailconfrimation != null) {
+            //swal("Oops...", mailconfrimation, "error");
+             ToastrMessage();
+                     toastr.error(mailconfrimation);
+        }
+
+        var errormessage = '@TempData["Error"]'
+        if (errormessage != "" && errormessage != null) {
+            //swal("Oops...", errormessage, "error");
+              ToastrMessage();
+                     toastr.error(errormessage);
+         
+        }
+        //Edit Message
+        var editdata = '@TempData["edit"]'
+        if (editdata != null && editdata != "") {
+            //swal("Good job!", editdata, "success");
+            ToastrMessage();
+            toastr.success(editdata);
+        }
+        var resendmail = '@ViewData["ResendMail"]'
+        if (resendmail != null && resendmail != "") {
+            //swal("Good job!", resendmail, "success");
+             ToastrMessage();
+            toastr.success(resendmail);
+        }
+    });
+</script>
+
+<script>
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    $(function () {
+        var val = '@ViewData["value"]';
+
+        if(val=="OK")
+        {
+
+            $('#clickshow').click();
+        }
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.mastetr222Modal button.btn[value="Edit"]').click(function () {
+            $(".mastetr222Modal .first-form").hide();
+            $(".mastetr222Modal .second-form").show();
+            $('.mastetr222Modal .modal-footer li.one').hide();
+            $('.mastetr222Modal .modal-footer li.One2').show();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".body .tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,122 @@
+﻿@model List<Vastwebmulti.Models.Aeps_Report_New_Result>
+@{
+    Layout = null;
+}
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AEPS report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <table cellspacing="0">
+        <thead style="background-color: whitesmoke; display:table-header-group;">
+            <tr>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Sr.&nbsp;</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Status</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Merchant&nbsp;ID</th>
+
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Aadhaar&nbsp;Number</th>
+                <th style="padding-left: 2px;padding-right: 2px;text-align:center;">Customer&nbsp;Bank&nbsp;Name</th>
+                <th style="padding-left: 2px;padding-right: 2px;text-align:center;">T-Type</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Transfer&nbsp;Amount</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">User&nbsp;Credit&nbsp;</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">MY&nbsp;Post&nbsp;</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Bank&nbsp;UTR</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;"> Req&nbsp;Date</th>
+
+
+
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                int i = 1;
+                foreach (var item in Model)
+                {
+
+
+
+                    <tr style="font-weight:700;">
+                        <td>@i</td>
+                        <td>@item.Status</td>
+                        <td>
+
+
+                            <span style="font-size:12px; margin-left:5px;">@item.MerchantTxnId</span>
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(@item.AccountHolderAadhaar))
+                            {
+                                var aadhar = item.AccountHolderAadhaar;
+                                var len = aadhar.Length;
+                                var last = aadhar.Substring(len - 4, 4);
+                                var first = new String('x', 8);
+
+                                <p style="font-size:12px; margin-left:9px;">&nbsp; @first@last&nbsp;</p>
+                            }
+                            else
+                            {
+                                <p></p>
+                            }
+                        </td>
+                        <td>
+                            <p style="font-size:12px;margin-left:9px;">&nbsp;@item.BankName&nbsp;</p>
+                        </td>
+                        <td>
+                            <p style="font-size:12px;">&nbsp;@item.Type&nbsp;</p>
+                        </td>
+                        <td>
+                            <p style="font-size:12px;">&nbsp;@item.Amount&nbsp;</p>
+                        </td>
+
+                        <td>
+                            @{
+                                decimal amount = 0;
+                                decimal remincome = 0;
+                                decimal usercredit = 0;
+                                if (item.Role == "Retailer")
+                                {
+                                    amount = Convert.ToDecimal(item.Amount);
+                                    remincome = Convert.ToDecimal(item.RemIncome);
+                                    usercredit = (amount + remincome);
+                                }
+
+                            }
+                            <p style="font-size:12px;">&nbsp;@usercredit&nbsp;</p>
+                        </td>
+                        <td>
+                            <p style="font-size:12px;">&nbsp;@item.MdPost&nbsp;</p>
+                        </td>
+                        <td>
+                            <p style="font-size:12px;">&nbsp;@item.BankRRN&nbsp;</p>
+                        </td>
+                        <td>
+
+                            <span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.Txn_Date)</span>
+                            @*<p style="font-size:11px;margin-left:-7px; margin-top:-2px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.Txn_Date)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p>*@
+
+                        </td>
+                    </tr>
+                    i++;
+                }
+            }
+        </tbody>
+    </table>
+</body>
+</html>

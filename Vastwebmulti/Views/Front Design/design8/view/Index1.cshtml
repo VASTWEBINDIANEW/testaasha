@@ -1,0 +1,995 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    string urllinks = @ViewBag.urllink;
+
+    VastwebmultiEntities db2 = new VastwebmultiEntities();
+    var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+    var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+    var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+
+}
+
+<style>
+    .banner-seven {
+        background: #e8eceb;
+        position: relative;
+    }
+</style>
+
+<link href="~/MainFrontDesign/Bootstrap5/vendor/aos/aos.css" rel="stylesheet">
+<link href="~/MainFrontDesign/Bootstrap5/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="~/MainFrontDesign/Bootstrap5/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link href="~/MainFrontDesign/Bootstrap5/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+<link href="~/MainFrontDesign/Bootstrap5/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+<link href="~/MainFrontDesign/Bootstrap5/vendor/remixicon/remixicon.css" rel="stylesheet">
+<link href="~/MainFrontDesign/Bootstrap5/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+
+
+<link href="~/MainFrontDesign/Bootstrap5/css/bootstrap.min.css" rel="stylesheet" />
+
+<link href="~/MainFrontDesign/Bootstrap5/css/front-style.css" rel="stylesheet" />
+
+
+<link href="~/MainFrontDesign/Bootstrap5/css/style.css" rel="stylesheet" />
+
+<meta name="viewport" content="width=device-width">
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var col = "";
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "";
+    }
+    var color = col;
+    var Apk_Version = "";
+    var apkversion = db.uploaded_apklink.SingleOrDefault();
+    if (apkversion != null)
+    {
+        if (!string.IsNullOrWhiteSpace(apkversion.Apk_Version))
+        {
+            Apk_Version = apkversion.Apk_Version;
+        }
+
+    }
+
+    var aboutbac = db.tblAboutUsBackgroundColorChanges.Where(p => p.Role == "ADMIN").ToList();
+    var aboutbaccolor = aboutbac.Count == 0 ? "" : aboutbac.SingleOrDefault().MultipalAboutUsColor;
+
+    var service = db.tblServiceOuterColors.Where(p => p.Role == "ADMIN").ToList();
+    var servicecolor = service.Count == 0 ? "" : service.SingleOrDefault().ServiceBackGroundcolor;
+
+    ViewBag.Services = db.tblServices.Where(p => p.Role == "ADMIN").ToList();
+
+    ViewBag.product = db.tblProducts.ToList();
+
+    var productcolor = db.tblProductBackColors.ToList();
+    var productbackcolor = productcolor.Count == 0 ? "" : productcolor.SingleOrDefault().ProductBackColor;
+
+    ViewBag.works = db.tblWorks.ToList();
+    var workbackcolor1 = db.tblWorkbackColors.ToList();
+    var workbackcolor = workbackcolor1.Count == 0 ? "" : workbackcolor1.SingleOrDefault().WorkBackColor;
+
+    var border = db.Admin_Outer_Border.ToList();
+    var bordersize = border.Count == 0 ? "" : border.SingleOrDefault().Border;
+
+    ViewBag.card = db.tblCards.Where(p => p.Role == "ADMIN").ToList();
+    var cardbackcolor1 = db.tblCardBackColors.Where(p => p.Role == "ADMIN").ToList();
+    var cardbackcolor = cardbackcolor1.Count == 0 ? "" : cardbackcolor1.SingleOrDefault().CardBackColor;
+    ViewBag.about = db.tblAboutUsContents.Where(p => p.Role == "ADMIN").ToList();
+    ViewBag.address = db.tblContects.ToList();
+    var st = db.tblMenus.Where(p => p.Role == "ADMIN").ToList();
+    var homests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "HOME").SingleOrDefault().Status;
+    var aboutsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "ABOUT").SingleOrDefault().Status;
+    var servicests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "SERVICES").SingleOrDefault().Status;
+    var productsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "PRODUCTS").SingleOrDefault().Status;
+    var worksts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "WORKS ").SingleOrDefault().Status;
+    //var cardsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "CARDS").SingleOrDefault().Status;
+    var travelsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "TRAVEL").SingleOrDefault().Status;
+    var dthsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "DTHCONNECTION").SingleOrDefault().Status;
+    var teamsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "TEAM").SingleOrDefault().Status;
+    var contactsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "CONTACTUS").SingleOrDefault().Status;
+    var whychoosests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "WHYCHOOSEUS").SingleOrDefault().Status;
+    var newupdatasts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "NEWUPDATE").SingleOrDefault().Status;
+}
+
+<div class="android">
+
+    <a class="nav-link scrollto" href="#cta"><span class="android2"><img src="~/MainFrontDesign/Bootstrap5/img-desing-8/android-menu.svg" style="width:25px;margin-top:-1px;">&nbsp;Android</span></a>
+
+</div>
+
+<!-- ======= Hero Section ======= -->
+
+<section id="hero" class="d-flex align-items-center">
+
+
+    <div style="position: relative; width: 100%; float: left;">
+
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+            <source src="~/MainFrontDesign/Bootstrap5/design8.mp4" type="video/mp4">
+
+        </video>
+
+    </div>
+
+    <div class="website_h">
+        <div>
+            <h1>Welcome and promised to provide the best services</h1>
+            <p>We are big players in recharge and financial industries. We provide services in Recharge Services, Utilities, Financial Services, Travel Services@*, Digital Gift Cards*@, Device Security and Ecommerce sectors.</p>
+            <button>Get Started</button>
+        </div>
+    </div>
+
+    @*<div col-md-12 id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/1-silder.png" class="d-block w-100" alt="...">
+                    <div class=" col-md-12 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                        <h2 data-aos="fade-up" class="aos-init aos-animate">Financial Services</h2>
+                        <p data-aos="fade-up" data-aos-delay="100" class="aos-init aos-animate">New answers for sustainability and inclusion<br /> with the power of digital finance</p>
+
+                        <div class="pulse">
+                            <a href="#about" class="read-more">Read More <i class="bi bi-arrow-right-short"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/2-silder.png" class="d-block w-100" alt="...">
+                    <div class="col-md-12 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                        <h2 data-aos="fade-up" class="aos-init aos-animate">Financial Services</h2>
+                        <p data-aos="fade-up" data-aos-delay="100" class="aos-init aos-animate">Financial services are the economic services provided by the finance industry,</p>
+
+
+                        <div class="pulse">
+                            <a href="#about" class="read-more">Read More <i class="bi bi-arrow-right-short"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/1-silder.png" class="d-block w-100" alt="...">
+                    <div class="col-md-12 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                        <h2 data-aos="fade-up" class="aos-init aos-animate">Financial Services</h2>
+                        <p data-aos="fade-up" data-aos-delay="100" class="aos-init aos-animate">New answers for sustainability and inclusion<br /> with the power of digital finance</p>
+
+                        <div class="pulse">
+                            <a href="#about" class="read-more">Read More <i class="bi bi-arrow-right-short"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>*@
+
+</section>
+<!-- End Hero -->
+
+<main id="main">
+
+    <!-- ======= Clients Section ======= -->
+    <section id="clients" class="clients">
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center" data-aos="zoom-in" data-aos-delay="100">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/facebook.svg" class="img-fluid" alt="">
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center" data-aos="zoom-in" data-aos-delay="200">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/instagram-sketched.svg" class="img-fluid" alt="">
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center" data-aos="zoom-in" data-aos-delay="300">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/linkedin.svg" class="img-fluid" alt="">
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center" data-aos="zoom-in" data-aos-delay="400">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/pinterest.svg" class="img-fluid" alt="">
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center" data-aos="zoom-in" data-aos-delay="500">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/twitter.svg" class="img-fluid" alt="">
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center" data-aos="zoom-in" data-aos-delay="600">
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/youtube.svg" class="img-fluid" alt="">
+                </div>
+
+            </div>
+
+        </div>
+    </section><!-- End Clients Section -->
+    <!----->
+    <div class="">
+        <div class="icon">
+
+            <div class="social">
+                <a href=""><i class="ri-twitter-fill"></i></a>
+                <a href=""><i class="ri-facebook-fill"></i></a>
+                <a href=""><i class="ri-instagram-fill"></i></a>
+                <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+            </div>
+
+        </div>
+    </div>
+    <!---->
+    <!-- ======= About Section ======= -->
+    <section id="about" class="about">
+        <div class="container">
+
+            <div class="row content">
+
+                <h2>
+                    About Us
+                </h2>
+                <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
+
+                    <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/office.gif" />
+
+                </div>
+                <div class="col-lg-6 pt-4 pt-lg-0" data-aos="fade-left" data-aos-delay="200">
+                    <h4 style=" font-weight: bold; text-align: center; padding: 27px;">WHO WE ARE</h4>
+                    <p>
+                        We offer the biggest multi-recharge platform in India. We are the largest eCommerce company that provides complete payment services for customers and merchants. We work in Prepaid & DTH Recharge, Postpaid payments, Electricity bill payments, Gas & insurance payments, Domestic & International Hotel booking, Domestic & International Flight booking, Bus booking, New PAN registration & edit, Mini ATM (M-Pos), AEPS services, and other related fields. We provide over 5000 customers with mobile payment solutions so they can make secure payments using their cards, bank accounts, and digital credit, among other sources. Our partners and investors have travelled throughout India. We work hard to uphold an open workplace environment where everyone takes initiative and feels free to voice their thoughts. We are working hard.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section><!-- End About Section -->
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services section-bg" style="padding:inherit;">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title" data-aos="fade-right" style="padding-bottom: 138px;">
+                        <h2>Services</h2>
+                        <p>@*Magnam dolores commodi suscipit nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.*@</p>
+                    </div>
+                </div>
+                <div class="row" style="position: relative; height: 630px;">
+                    <div class="col-lg-4 col-sm-8">
+
+                        <article class="service-default block-md">
+                            <div class="service-default-icon thin-icon-network">
+                                <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/PREPAID3.png" />
+                            </div>
+                            <div class="service-default-caption">
+                                <div class="heading-6 service-default-title"><a href="#">Prepaid & Dth</a></div>
+                                <p class="service-default-text">We are provide all prepaid and DTH recharge with live response, you feel real speed with US.</p>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-lg-4 col-sm-8">
+                        <article class="service-default block-md">
+                            <div class="service-default-icon thin-icon-network">
+                                <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/Utility-2.png" />
+                            </div>
+                            <div class="service-default-caption">
+                                <div class="heading-6 service-default-title"><a href="#">All Utilities</a></div>
+
+                                <p class="service-default-text">Postpaid Mobile, Landline, Broadband, Electricity bill with BBPS, Insurance premium, and Water Bill Payment.</p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-4 col-sm-8">
+                        <article class="service-default block-md">
+                            <div class="service-default-icon thin-icon-network">
+                                <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/M-POS Device2.png" />
+                            </div>
+                            <div class="service-default-caption">
+                                <div class="heading-6 service-default-title"><a href="#"> M-POS Device </a></div>
+
+                                <p class="service-default-text" style="padding: 12px;">M POS (Mobile Point of Sale) 24x7 Fast services with maximum commission.</p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-4 col-sm-8" style="margin-top: 100px;">
+                        <article class="service-default block-md2">
+                            <div class="service-default-icon thin-icon-network-1">
+                                <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/BILL-PAYMENT3.png" />
+                            </div>
+                            <div class="service-default-caption">
+                                <div class="heading-6 service-default-title"><a href="#">Bill Payment</a></div>
+
+                                <p class="service-default-text">Pay all your bills online with the BBPS. Postpaid mobile, landline, electricity bill, and water bill payment.</p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-4 col-sm-8" style="margin-top: 100px;">
+                        <article class="service-default block-md2">
+                            <div class="service-default-icon thin-icon-network-1">
+                                <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/6356873.png" />
+                            </div>
+                            <div class="service-default-caption">
+                                <div class="heading-6 service-default-title"><a href="#">Bus & Flight</a></div>
+
+                                <p class="service-default-text" style="padding: 12px;">All domestic Bus booking and All domestic & international Flight booking.</p>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-lg-4 col-sm-8" style="margin-top: 100px;">
+                        <article class="service-default block-md2">
+                            <div class="service-default-icon thin-icon-network-1">
+                                <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/E-COMMERCE3.png" />
+                            </div>
+                            <div class="service-default-caption">
+                                <div class="heading-6 service-default-title"><a href="#">E-Commerce</a></div>
+
+                                <p class="service-default-text">We are provide India largest E commerce market minimum price and maximum standard.</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Services Section -->
+    <!-- ======= Testimonials Section ======= -->
+    <section id="testimonials" class="testimonials section-bg">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title" data-aos="fade-right" style="padding:0px;">
+                        <h2>OUR MAIN WORKS</h2>
+                        <p>@*Magnam dolores commodi suscipit uisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.*@</p>
+                    </div>
+                </div>
+                <div class="col-lg-12" data-aos="fade-up" data-aos-delay="100">
+
+                    <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
+                        <div class="swiper-wrapper">
+
+                            <div class="col-md-6 swiper-slide">
+                                <div class="testimonial-item" style="background-image: url(~/images/Pancard-Offers.png); background-size: cover; background-repeat: no-repeat;  display: flex; align-items: center; ">
+
+                                    <img class="test1" src="~/images/pancard.png" style="width:100%;" />
+
+                                    <p>
+                                        <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+
+
+                                        We offer Permanent Account Numbers (PANs), which are used to identify various taxpayers across the nation. PAN is a special identification number given to Indians, primarily to those who pay taxes. Every Indian tax-paying entity is given a special identifying number via the computer-based PAN system of identification. By using this technique, a person's whole tax-related information is stored against a single PAN number, which serves as the main key for information storage. Since this is shared throughout the nation, no two individuals on tax-paying entities can have the same PAN. The concept behind PAN is comparable to that of the Social Security Number, or SSN, used in the United States. The SSN is a special nine-digit number used in the US.
+
+                                        <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+                                    </p>
+
+                                    <h3></h3>
+                                    <h4></h4>
+                                </div>
+                            </div><!-- End testimonial item -->
+
+                            <div class="col-md-6 swiper-slide">
+                                <div class="testimonial-item" style="background-image: url(~/images/Pancard-Offers.png); background-size: cover; background-repeat: no-repeat;  display: flex; align-items: center; ">
+                                    <img class="test1" src="~/images/Pancard.png" style="width:100%;" />
+                                    <p>
+                                        <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+
+
+                                        The largest online bus booking service in India, with widespread Indian confidence. With over Bus tickets sold via the online, mobile devices, and our bus agents, and dominates the bus ticketing market.& runs on more than 8020 routes with reputable bus companies. It began selling its bus booking services in 2018, giving users access to all available travel alternatives on a single website. As everything linked to travel—including flights, vacation packages, train bookings, and auto rentals—was now available on this portal, it became the ultimate one-stop trip planner. Bus services are offered throughout all of India, and this portal has partnered with the country's top bus operators since it recognises the importance of this sector.
+
+                                        <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+                                    </p>
+
+                                    <h3></h3>
+                                    <h4></h4>
+                                </div>
+                            </div><!-- End testimonial item -->
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section><!-- End Testimonials Section -->
+    <!-- ======= Counts Section ======= -->
+    <section id="counts" class="counts">
+        <div class="container">
+
+            <div class="row counters">
+
+                <div class="col-lg-3 col-6 text-center">
+                    <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1" class="purecounter"></span>
+                    <p>Clients</p>
+                </div>
+
+                <div class="col-lg-3 col-6 text-center">
+                    <span data-purecounter-start="0" data-purecounter-end="350" data-purecounter-duration="1" class="purecounter"></span>
+                    <p>Projects</p>
+                </div>
+
+                <div class="col-lg-3 col-6 text-center">
+                    <span data-purecounter-start="0" data-purecounter-end="55" data-purecounter-duration="1" class="purecounter"></span>
+                    <p>Office  Of Support</p>
+                </div>
+
+                <div class="col-lg-3 col-6 text-center">
+                    <span data-purecounter-start="0" data-purecounter-end="20" data-purecounter-duration="1" class="purecounter"></span>
+                    <p>Hard Workers</p>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Counts Section -->
+
+
+    <section id="menu" class="menu">
+        <div class="container aos-init aos-animate" data-aos="fade-up">
+
+            <div class="section-title" data-aos="fade-left" style="padding-bottom:31px !important;">
+                <h2>travel</h2>
+                <p>Travel <span> & Hotel</span> Services</p>
+            </div>
+
+            <ul class="nav nav-tabs d-flex justify-content-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="200" role="tablist">
+                <li class="nav-item" role="presentation"> <a class="nav-link" data-bs-toggle="tab" data-bs-target="#menu-starters" aria-selected="true" role="tab"><h4> <i class="ri-bus-line"></i> Bus</h4> </a></li>
+                <li class="nav-item" role="presentation"> <a class="nav-link show active" data-bs-toggle="tab" data-bs-target="#menu-breakfast" aria-selected="false" role="tab" tabindex="-1"><h4><i class="bi bi-airplane"></i>Flight</h4> </a></li>
+                <li class="nav-item" role="presentation"> <a class="nav-link" data-bs-toggle="tab" data-bs-target="#menu-lunch" aria-selected="false" role="tab" tabindex="-1"><h4><i class="ri-hotel-line"></i> Hotel</h4> </a></li>
+
+            </ul>
+            <div class="tab-content aos-init aos-animate" data-aos="fade-up" data-aos-delay="300">
+
+                <div class="tab-pane fade" id="menu-starters" role="tabpanel">
+                    <div class="tab-header text-center"><p>Menu</p><h3> Bus</h3></div>
+                    <div class="row g-0">
+
+
+                        <div class="col-lg-4 reservation-img p-3 padding aos-init aos-animate">
+                            <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/Tour-Bus-1.png">
+                        </div>
+
+                        <div class="col-lg-8 d-flex align-items-center  p-3 reservation-form-bg" id="before">
+                            <form action="forms/book-a-table.php" method="post" role="form" class="php-email-form aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
+                                <p>
+                                    The largest online bus booking service in India, with widespread Indian confidence. With over Bus tickets sold via the online, mobile devices, and our bus agents, and dominates the bus ticketing market.& runs on more than 8020 routes with reputable bus companies. It began selling its bus booking services in 2018, giving users access to all available travel alternatives on a single website. As everything linked to travel—including flights, vacation packages, train bookings, and auto rentals—was now available on this portal, it became the ultimate one-stop trip planner. Bus services are offered throughout all of India, and this portal has partnered with the country's top bus operators since it recognises the importance of this sector.
+                                </p>
+                            </form>
+                        </div><!-- End Reservation Form -->
+
+                    </div>
+                </div>
+                <div class="tab-pane fade active show" id="menu-breakfast" role="tabpanel">
+                    <div class="tab-header text-center"><p>Menu</p><h3> Flight</h3></div>
+                    <div class="row g-0">
+
+
+                        <div class="col-lg-4 reservation-img p-3 padding aos-init aos-animate">
+                            <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/airplane-removebg-preview.png" style="margin-top: 65px;" />
+                        </div>
+
+                        <div class="col-lg-8 d-flex align-items-center  p-3 reservation-form-bg" id="before">
+                            <form action="forms/book-a-table.php" method="post" role="form" class="php-email-form aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
+                                <p>
+                                    the top company in India for internet flight reservations.This website provides fantastic deals, some of the most affordable flights, unique discounts, and a smooth online booking process. Booking flights on the desktop or mobile site is a pleasantly user-friendly process, and it only takes a few clicks to finish. The total booking experience with features like Instant Discounts, Fare Calendar, MyRewards Program, MyWallet, and many more continuously improves its product and offers the best to its clients. You may anticipate the best online booking experience when using our gateway to buy flights. This portal takes great pride in facilitating consumer satisfaction thanks to quality customer care, a dedicated helpline that is available around-the-clock, and over 99% satisfied customers. the least expensive flight.
+                                </p>
+                            </form>
+                        </div><!-- End Reservation Form -->
+
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade" id="menu-lunch" role="tabpanel">
+                    <div class="tab-header text-center">
+                        <p>Menu</p><h3> Hotel</h3>
+
+                    </div>
+                    <div class="row g-0">
+
+
+                        <div class="col-lg-4 reservation-img p-3 padding aos-init aos-animate">
+                            <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/resort-1.png" style="margin-top: 0px;" />
+                        </div>
+
+                        <div class="col-lg-8 d-flex align-items-center reservation-form-bg p-3" id="before2">
+                            <form action="forms/book-a-table.php" method="post" role="form" class="php-email-form aos-init aos-animate" data-aos="fade-up" data-aos-delay="100" ">
+                                <p>
+                                    The part of any vacation plan where you have to pick a great hotel that fits your budget is the most crucial. Your vacation will be more convenient and memorable if you stay in a quality hotel. So that you can experience luxury like never before, we bring to you mind-blowing hotel discounts and a variety of hotel deals on both domestic and foreign hotels. Whatever your needs are, we have hotels that fit them, from the most luxurious to the most affordable. Simply click on the name of the hotel when you locate it to view a detailed description. In addition to Goa, our database contains several properties in all of India's tourist and business locations. Our payment processor fully.
+                                </p>
+                            </form>
+                        </div><!-- End Reservation Form -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--End Portfolio Section -->
+    <!-- ======= Team Section ======= -->
+    <section id="team" class="team">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title" data-aos="fade-right" style="padding-bottom: 38px; text-align: initial; ">
+                        <h2>Why Choose</h2>
+                        <p>This Portal is a best Multi Recharge Company In India, and provide the multi services with single plateform and support the all client's. </p>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="row">
+
+
+                        <div class="col-lg-6 mt-4 mt-lg-0 kkloss">
+                            <img src="~/MainFrontDesign/images/ableft.png" style="display:none;" />
+                            <div class="pic">  <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/finance_sercices.png" /></div>
+
+                            <div class="member" data-aos="zoom-in" data-aos-delay="100">
+                                <div class="member-info">
+                                    <h4>MULTI SERVICE WITH SINGLE PLATEFORM</h4>
+
+                                    <p>
+                                        Our Multi-Services Platform, a flexible, high-density media resource platform with built-in signalling capabilities, is intended to make it easier for developers to launch new services rapidly and affordably.
+                                    </p>
+                                    <div class="social">
+                                        <a href=""><i class="ri-twitter-fill"></i></a>
+                                        <a href=""><i class="ri-facebook-fill"></i></a>
+                                        <a href=""><i class="ri-instagram-fill"></i></a>
+                                        <a href=""><i class="ri-linkedin-box-fill"></i> </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mt-4 mt-lg-0 kkloss">
+                            <div class="pic"><img src="~/MainFrontDesign/Bootstrap5/img-desing-8/soppurt img.png" class="img-fluid" alt=""></div>
+
+                            <div class="member" data-aos="zoom-in" data-aos-delay="200">
+                                <div class="member-info">
+                                    <h4>SUPPORT SERVICE</h4>
+
+                                    <p>
+                                        In India, we offer the greatest customer support. Customers contact with customer service and support teams when they need help. Discover the variations between service and support and how they function.
+                                    </p>
+                                    <div class="social">
+                                        <a href=""><i class="ri-twitter-fill"></i></a>
+                                        <a href=""><i class="ri-facebook-fill"></i></a>
+                                        <a href=""><i class="ri-instagram-fill"></i></a>
+                                        <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mt-4 kkloss">
+                            <div class="pic"><img src="~/MainFrontDesign/Bootstrap5/img-desing-8/team work (2).png" class="img-fluid" alt=""></div>
+
+                            <div class="member" data-aos="zoom-in" data-aos-delay="300">
+                                <div class="member-info">
+                                    <h4>TEAM</h4>
+
+                                    <p>All of our customers can readily reach our team. We value every one of our customers and work hard to make sure that our goods are operating at their best. and offers a variety of tailored, specialised support and technical services to all of its clients.</p>
+                                    <div class="social">
+                                        <a href=""><i class="ri-twitter-fill"></i></a>
+                                        <a href=""><i class="ri-facebook-fill"></i></a>
+                                        <a href=""><i class="ri-instagram-fill"></i></a>
+                                        <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mt-4 kkloss">
+                            <div class="pic"><img src="~/MainFrontDesign/Bootstrap5/img-desing-8/e comm.jpg" class="img-fluid" alt=""></div>
+
+                            <div class="member" data-aos="zoom-in" data-aos-delay="400">
+                                <div class="member-info">
+                                    <h4>E-COMMERCE</h4>
+
+                                    <p>
+                                        Searching for a premier e-commerce development firm? Get reliable website design services and custom e-commerce development services at affordable rates. Our devoted web designers are renowned for providing the best service!
+                                    </p>
+                                    <div class="social">
+                                        <a href=""><i class="ri-twitter-fill"></i></a>
+                                        <a href=""><i class="ri-facebook-fill"></i></a>
+                                        <a href=""><i class="ri-instagram-fill"></i></a>
+                                        <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section><!-- End Team Section -->
+    <!-- ======= Cta Section ======= -->
+    <section id="cta" class="cta">
+        <div class="container">
+            <div class="row zoom11">
+                <div class="col-lg-6 text-center ab_set" data-aos="zoom-in">
+                    <h4 class="versi"><img src="~/MainFrontDesign/Bootstrap5/img-desing-8/7205679.png" style="width:8%;" />@Apk_Version</h4>
+                    <img src="~/images/Download_app.png" />
+
+                    <div class="ab_box">
+
+                    </div>
+
+                </div>
+                <div class="col-lg-6 text-center ab_set1" data-aos="zoom-in">
+                    <h2> Download Our App</h2>
+                    <p>To download the Android application directly from the website, the download button is given below, to download the application, open the website in the Android device.</p>
+
+                    <div class="app_icon">
+                        <div style="width:100%;text-align:center;">
+                            <i class="fa fa-android" style="font-size: 20px;"></i>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(urllinks))
+                    {
+                        <a class="cta-btn downloadourapp" href="@Url.Action("DownloadAPK", "Home")">Download Android App<img src="~/MainFrontDesign/Bootstrap5/img-desing-8/icons8-download-48.png" /></a>
+                    }
+                    else
+                    {
+                        <a class="cta-btn downloadourapp" style="cursor:pointer;">App Link Not Available<img src="~/MainFrontDesign/Bootstrap5/img-desing-8/icons8-download-48.png" /></a>
+                    }
+
+                    <a onclick="myFunction()" onmouseout="outFunc()" class="cta-btn downloadourapp" href="javascript:void(0);">Copy Download Link <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/1782721.png" /> </a>
+
+
+
+                    <a class="cta-btn downloadourapp" href="javascript:void(0);">Download Play Store Link <img src="~/MainFrontDesign/Bootstrap5/img-desing-8/6124997.png" /></a>
+
+
+
+                </div>
+
+                @if (!string.IsNullOrEmpty(urllinks))
+                {
+                    <input type="text" id="txthdlink" name="txthdlink" readonly value="@urllinks" style="opacity:0;" />
+                }
+            </div>
+        </div>
+    </section>
+
+    @{
+
+        var desktopimgurl = (from img in db.message_popup select img.imageurl).FirstOrDefault() ?? "";
+        var headercontent = (from content in db.message_popup select content.Heardercontent).FirstOrDefault() ?? "";
+        var imgsts = (from img in db.message_popup select img.sts).FirstOrDefault() ?? "N";
+
+        if (imgsts == "Y")
+        {
+            <input type="button" value="sleep" id="btnsleep" data-toggle="modal" data-target="#sleep-modal" style="display:none;">
+            <div class="modal fade" id="desktoppopup-modal" role="dialog" style="opacity: 1; background: #0000007d;display:block;">
+                <div class="modal-dialog modal-lg" style="margin-top: 85px; max-width: 60%; top: 40px;">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <p class="modal-title" style="font-size:20px;color:#000;text-align:center;">@headercontent</p>
+                            <button type="button" onclick="closebtn()" class="close" data-dismiss="modal" style="border: 2px solid #000; padding: 0 7px;">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <img style="float: left; width: 100%;" src="@Url.Content("~/" + @desktopimgurl)" class="img-responsive" />
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+        else
+        {
+
+        }
+
+        }
+
+
+    </main><!-- End #main -->
+<!-- Vendor JS Files -->
+<script src="~/MainFrontDesign/Bootstrap5/vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="~/MainFrontDesign/Bootstrap5/vendor/aos/aos.js"></script>
+<script src="~/MainFrontDesign/Bootstrap5/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/MainFrontDesign/Bootstrap5/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="~/MainFrontDesign/Bootstrap5/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="~/MainFrontDesign/Bootstrap5/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="~/MainFrontDesign/Bootstrap5/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+
+<script>
+    function closebtn() {
+        document.getElementById('desktoppopup-modal').style.display = 'none';
+    }
+    
+    var a = document.querySelectorAll(".menu a");
+    for (var i = 0, length = a.length; i < length; i++) {
+        a[i].onclick = function () {
+            var b = document.querySelector(".menu li.active");
+            if (b) b.classList.remove("active");
+            this.parentNode.classList.add('active');
+        };
+    }
+
+</script>
+
+<script src="~/MainFrontDesign/Bootstrap5/js/main.js"></script>
+
+<script>
+    const words = ["team", "startup"];
+    let i = 0;
+    let timer;
+
+    function typingEffect() {
+        let word = words[i].split("");
+        var loopTyping = function () {
+            if (word.length > 0) {
+                document.getElementById('wordcontent').innerHTML += word.shift();
+            } else {
+                deletingEffect();
+                return false;
+            };
+            timer = setTimeout(loopTyping, 500);
+        };
+        loopTyping();
+    };
+
+    function deletingEffect() {
+        let word = words[i].split("");
+        var loopDeleting = function () {
+            if (word.length > 0) {
+                word.pop();
+                document.getElementById('wordcontent').innerHTML = word.join("");
+            } else {
+                if (words.length > (i + 1)) {
+                    i++;
+                } else {
+                    i = 0;
+                };
+                typingEffect();
+                return false;
+            };
+            timer = setTimeout(loopDeleting, 200);
+        };
+        loopDeleting();
+    };
+
+    typingEffect();
+</script>
+<script>
+    // Some random colors
+    const colors = ["#3CC157", "#2AA7FF", "#1B1B1B", "#FCBC0F", "#F85F36"];
+
+    const numBalls = 50;
+    const balls = [];
+
+    for (let i = 0; i < numBalls; i++) {
+        let ball = document.createElement("div");
+        ball.classList.add("ball");
+        ball.style.background = colors[Math.floor(Math.random() * colors.length)];
+        ball.style.left = `${Math.floor(Math.random() * 100)}vw`;
+        ball.style.top = `${Math.floor(Math.random() * 100)}vh`;
+        ball.style.transform = `scale(${Math.random()})`;
+        ball.style.width = `${Math.random()}em`;
+        ball.style.height = ball.style.width;
+
+        balls.push(ball);
+        document.body.append(ball);
+    }
+
+    // Keyframes
+    balls.forEach((el, i, ra) => {
+        let to = {
+            x: Math.random() * (i % 2 === 0 ? -11 : 11),
+            y: Math.random() * 12
+        };
+
+        let anim = el.animate(
+            [
+                { transform: "translate(0, 0)" },
+                { transform: `translate(${to.x}rem, ${to.y}rem)` }
+            ],
+            {
+                duration: (Math.random() + 1) * 2000, // random duration
+                direction: "alternate",
+                fill: "both",
+                iterations: Infinity,
+                easing: "ease-in-out"
+            }
+        );
+    });
+
+</script>
+
+@* ============================================================== *@
+
+
+<script src="~/Custom-Animation/js/jquery.min.js"></script>
+<script src="~/Custom-Animation/js/wow.min.js"></script>
+<script src="~/Custom-Animation/js/main.js"></script>
+
+
+@*<script src="~/AdminDesign/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="~/MainFrontDesign/js/vendor/jquery-1.11.2.min.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.easing.1.3.js"></script>*@
+
+@*<script src="~/CSS/multislider.js"></script>*@
+
+
+<script>
+
+    function myFunction() {
+        var copyText = document.getElementById("txthdlink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+
+        var tooltip = document.getElementById("myTooltip");
+        tooltip.innerHTML = "Copied: " + copyText.value;
+    }
+
+    function outFunc() {
+        var tooltip = document.getElementById("myTooltip");
+        tooltip.innerHTML = "Copy to clipboard";
+    }
+</script>
+
+
+
+<script>
+$(document).ready(function () {
+var sil1 = '@ViewBag.silder1';
+if (sil1 == "Y") {
+document.getElementById("silder1").style.display = "block";
+document.getElementById("silder2").style.display = "none";
+}
+else {
+document.getElementById("silder1").style.display = "none";
+document.getElementById("silder2").style.display = "block";
+}
+var succ = '@TempData["front"]';
+if (succ != null && succ != "") {
+if (succ.includes("Successfully")) {
+swal("Good job!", succ, "success");
+}
+else {
+swal("Oops!", succ, "error");
+}
+}
+});
+</script>
+<script>
+
+    $("#readmore").click(function () {
+        var collapse_content_selector = $(this).attr('href');
+        var toggle_switch = $(this);
+        $(collapse_content_selector).toggle(function () {
+            if ($(this).css('display') == 'none') {
+                toggle_switch.html('Read More');
+            }
+            else {
+                toggle_switch.html('Read Less');
+            }
+        });
+    });
+</script>
+<script>
+    $("#readmorebus").click(function () {
+        var collapse_content_selector = $(this).attr('href');
+        var toggle_switch = $(this);
+        $(collapse_content_selector).toggle(function () {
+            if ($(this).css('display') == 'none') {
+                toggle_switch.html('View More');
+            }
+            else {
+                toggle_switch.html('View Less');
+            }
+        });
+    });
+</script>
+<script>
+    $("#readmoreflight").click(function () {
+        var collapse_content_selector = $(this).attr('href');
+        var toggle_switch = $(this);
+        $(collapse_content_selector).toggle(function () {
+            if ($(this).css('display') == 'none') {
+                toggle_switch.html('View More');
+            }
+            else {
+                toggle_switch.html('View Less');
+            }
+        });
+    });
+</script>
+<script>
+    $("#readmorehotel").click(function () {
+        var collapse_content_selector = $(this).attr('href');
+        var toggle_switch = $(this);
+        $(collapse_content_selector).toggle(function () {
+            if ($(this).css('display') == 'none') {
+                toggle_switch.html('View More');
+            }
+            else {
+                toggle_switch.html('View Less');
+            }
+        });
+    });
+</script>
+<script>
+    $('button').click(function () {
+        if (this.id == 'viewmore') {
+            $('#allcard').show();
+            $('#silderid').hide();
+            $('#viewless').show();
+            $('#viewmore').hide();
+        }
+        else {
+            $('#allcard').hide();
+            $('#silderid').show();
+            $('#viewless').hide();
+            $('#viewmore').show();
+        }
+    })
+</script>
+
+
+<script>
+    $("#readmorewhy").click(function () {
+        var collapse_content_selector = $(this).attr('href');
+        var toggle_switch = $(this);
+        $(collapse_content_selector).toggle(function () {
+            if ($(this).css('display') == 'none') {
+                toggle_switch.html('Read More');
+            }
+            else {
+                toggle_switch.html('Read Less');
+            }
+        });
+</script>
+<script>
+    var j = $.noConflict();
+    j(document).ready(function () {
+        j('.my-slick').slick({
+            dots: false,
+            infinite: true,
+            speed: 1200,
+            fade: true,
+            autoplay: true,
+            cssEase: 'linear'
+
+        });
+    });
+
+</script>

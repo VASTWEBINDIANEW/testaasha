@@ -1,0 +1,213 @@
+﻿@model IEnumerable<Vastwebmulti.Models.tbl_Whitelabel_Holiday>
+@{
+    ViewBag.Title = "Holidaycalendar";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+
+
+    <style>
+    .slab-setting-menu li a.activee {
+
+    background:linear-gradient(to right, @PageData["Globalfirst"],@PageData["GlobalSecond"]);
+
+    }
+
+    </style>
+
+
+<section class="content">
+    <div class="container-fluid">
+
+
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+
+
+                <div class="card">
+                    <div class="col-md-3">
+                        @Html.Partial("_newsandupdate_menu")
+                    </div>
+                    @using (Html.BeginForm("Holidaycalendar", "Home", FormMethod.Post))
+                    {
+
+                        <div class="col-md-3" style="padding: 0px 5px;padding-left:0px;">
+
+                        </div>
+
+                        <div class="col-md-2" style="padding-right:5px;">
+                            <div class="form-group" style="margin-bottom:0px;">
+                                <div class="" style="border:1px solid #dddddd;">
+                                    <input type="text" id="txtdate" name="txtdate" class="form-control" placeholder="Ex: yyyy-mm-dd" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="padding:0px;">
+                            <div class="form-group" style="margin-bottom:0px;">
+                                <div class="" style="border:1px solid #dddddd;">
+                                    <input type="text" id="txtname" name="txtname" class="form-control" placeholder="Enter Holiday Name" required="">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-1" style="padding-left:5px;">
+                            <button type="submit" class="btn waves-effect" style="height:36px;width:100%;border:1px solid #bbb;">
+                                <span style="color:black;">Submit</span>
+                            </button>
+
+                        </div>
+                    }
+                </div>
+
+          
+
+
+
+
+
+
+
+
+
+        @*<div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="header navbar" style="position:initial;">
+                        <h2 style="color:white;">
+                            <i class="fa fa-calendar"></i>&nbsp;Holiday Calendar
+                        </h2>
+                    </div>
+                    @using (Html.BeginForm("Holidaycalendar", "Home", FormMethod.Post))
+                    {
+                        <div class="body">
+                            <form>
+                                <label for="email_address">Select Date</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <input type="text" id="txtdate" name="txtdate" class="form-control" placeholder="Ex: yyyy-mm-dd" required="">
+                                    </div>
+                                </div>
+                                <label for="password">Holiday&nbsp;Name</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <input type="text" id="txtname" name="txtname" class="form-control" placeholder="Enter Holiday Name" required="">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn bg-blue-grey waves-effect">Submit</button>
+                            </form>
+                        </div>
+                    }
+                </div>*@
+                <div class="card">
+                    <div class="body" style="margin-top:-20px;">
+                        <div class=" web-white-table" style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Holiday Name</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr role="row" class="odd">
+                                            <td>@item.HolidayDate</td>
+                                            <td>@item.HolidayName</td>
+                                            <td>
+                                                <button type="button" style="background-color:transparent; border: 1px solid #ddd;padding: 0px 7px;padding-bottom: 3px;" onclick="deletedata('@item.id')">
+                                                   <img src="/MainFrontDesign/images/delete.svg" style="width:16px;" />
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                    }
+
+                                </tbody>
+
+
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!--Window onload javascript-->
+<script>
+    window.onload=function()
+    {
+        var msg = '@ViewData["success"]';
+        if(msg != "")
+        {
+            swal("Good job!", msg, "success");
+        }
+    }
+</script>
+<script>
+   
+    var dates = $("#txtdate").datepicker({
+            minDate: "+1",
+            maxDate: "+2Y",
+            defaultDate: "+1w",
+            dateFormat: 'yy-mm-dd',
+            numberOfMonths: 1,
+            onSelect: function (date) {
+                for (var i = 0; i < dates.length; ++i) {
+                    if (dates[i].id < this.id)
+                        $(dates[i]).datepicker('option', 'maxDate', date);
+                    else if (dates[i].id > this.id)
+                        $(dates[i]).datepicker('option', 'minDate', date);
+                }
+            }
+        });
+  
+</script>
+<script type="text/javascript">
+
+    function deletedata(e) {
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Data !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("deleteholidaycalendar", "Home")', data: { id: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("Deleted!", "Data Deleted Successfully.", "success");
+                var url = '@Url.Action("Holidaycalendar", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Holidaycalendar", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>

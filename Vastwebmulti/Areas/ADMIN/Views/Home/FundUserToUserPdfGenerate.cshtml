@@ -1,0 +1,416 @@
+﻿@model Vastwebmulti.Areas.ADMIN.ViewModel.FundUserViewModel
+@{ decimal? runningTotal = 0M; decimal? Totalcharges = 0M; decimal? TotalNetTransfer = 0M; decimal? total = 0M; decimal? oldcrs; decimal? currentcr; decimal? totalcrsattelment = 0; }
+{
+}
+<style>
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+
+
+
+</style>
+<section class="content">
+    <div class="container-fluid">
+        @if (Model.master_to_dealer_report_BYAdmin_Result != null)
+        {
+            <table id="tbldata" data-hrefscroll="@Url.Action("InfiniteScrollFundUserr","Home",new { tabtype="Master"})" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Master Distributor</th>
+                        <th>Distributor</th>
+                        <th>Type</th>
+                        <th>Total</th>
+                        <th>Charge</th>
+
+                        <th>CR / STL</th>
+                        <th>Net T/F</th>
+
+                        <th>Transfer&nbsp;Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        List<decimal?> termsList = new List<decimal?>();
+                    }
+
+                    @foreach (var item in Model.master_to_dealer_report_BYAdmin_Result.OrderByDescending(a => a.date_dlm))
+                    {
+
+                        runningTotal = Model.master_to_dealer_report_BYAdmin_Result.Sum(x => x.Newbalance);
+                        //Totalcharges += item.commistion;
+                        Totalcharges = Model.master_to_dealer_report_BYAdmin_Result.Sum(x => x.comm);
+                        TotalNetTransfer = Model.master_to_dealer_report_BYAdmin_Result.Sum(x => x.balance);
+                        var charge = item.comm == null ? 0 : item.comm;
+                        oldcrs = item.oldcrbalance == null ? 0 : item.oldcrbalance;
+                        currentcr = item.cr == null ? 0 : item.cr;
+                        decimal? totalsattlement = 0;
+                        totalsattlement = oldcrs - currentcr;
+                        if (totalsattlement <= 0)
+                        {
+                            totalsattlement = 0;
+                        }
+                        //totalcrsattelment = Model.master_to_dealer_report_BYAdmin_Result.Sum(x => x.oldcrbalance) - Model.master_to_dealer_report_BYAdmin_Result.Sum(x => x.cr);
+
+                        //if (totalcrsattelment < 0)
+                        //{
+                        //    totalcrsattelment = 0;
+                        //}
+                        termsList.Add(totalsattlement);
+                        var colrss = "";
+                        if (@item.bal_type == "Charge Back")
+                        {
+                            colrss = "#ff000063";
+                        }
+                        else
+                        {
+                            colrss = "#eae9e9";
+                        }
+
+
+                        <tr style="background: @colrss">
+
+
+                            <td><p style="margin-top:6px;">  @item.masterfarmname</p></td>
+                            <td>@item.dealerFarmName</td>
+
+                            <td><p style="margin-top:6px;margin-bottom:3px;">@item.bal_type</p><span style="background: #bbb;padding: 1px 5px;font-size: 11px;">@item.Head</span></td>
+
+                            <td><p style="margin-top:6px;">@item.Newbalance</p></td>
+
+
+                            @if (item.comm == null)
+                            {
+                                <td><p style="margin-top:6px;"> <span>0.00</span>@item.comm</p></td>
+
+                            }
+                            else
+                            {
+                                <td><p style="margin-top:6px;">@item.comm</p></td>
+                            }
+
+                            @*
+                            <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                            <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td><p style="margin-top:6px;">@totalsattlement</p></td>
+
+
+                            @*<td><p style="margin-top:6px;">@item.cr</p></td>*@
+                            <td>
+                                <p style="margin-top:6px;">
+
+                                    @if (@item.balance < 0)
+                                    {
+                                        decimal bb = Convert.ToDecimal(item.balance);
+                                        bb = -bb;
+                                        <span>  (-) @bb</span>
+                                    }
+                                    else
+                                    {
+                                        @item.balance
+                                    }
+
+                                </p>
+                            </td>
+                            @*
+                            <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.date_dlm  <span class="fftt" data-toggle="modal" onclick="tablerowshowdetail('Dealer','@item.masterfarmname','@item.Head','@item.bal_type','@item.Newbalance','@charge','@item.cr','@item.Newbalance','@item.dealer_prebal','@item.dealer_postbal','@item.oldcrbalance','@item.cr','@item.comment','@item.balance','@item.date_dlm','@item.dealerFarmName','@item.admin_prebal','@item.admin_postbal','@totalsattlement')" data-target="#m-d-fund-transfer"> <i class="fa fa-angle-double-right" aria-hidden="true" style="border: 1px solid #c7c2c2;padding: 3px 5px;font-size: 10px;"></i> </span></p></td>
+
+                        </tr>
+                    }
+
+                    @{
+                        decimal? sum = termsList.Sum();
+                    }
+                    <tr><td colspan="3">Total</td><td>@runningTotal</td><td>@Totalcharges</td><td>@sum</td><td>@TotalNetTransfer</td><td></td></tr>
+
+                </tbody>
+            </table>
+
+        }
+
+
+
+       else if (Model.dealer_to_rem_fund_report != null)
+        {
+            <table id="tbldata" data-hrefscroll="@Url.Action("InfiniteScrollFundUserr","Home",new { tabtype="Dealer"})" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Dealer Firm</th>
+                        <th>Retailer Firm</th>
+                        <th>Head</th>
+                        <th>Payment&nbsp;Type</th>
+                        <th>Total AMT</th>
+                        <th>Charge</th>
+
+                        <th>CR Adjust</th>
+                        <th>Net T/F</th>
+
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        List<decimal?> termsList = new List<decimal?>();
+                    }
+
+                    @foreach (var item in Model.dealer_to_rem_fund_report.OrderByDescending(a => a.rechargedate))
+                    {
+
+                        runningTotal = Model.dealer_to_rem_fund_report.Sum(x => x.totalbal);
+                        //Totalcharges += item.commistion;
+                        Totalcharges = Model.dealer_to_rem_fund_report.Sum(x => x.commission);
+                        TotalNetTransfer = Model.dealer_to_rem_fund_report.Sum(x => x.balance);
+                        oldcrs = item.oldcrbalance == null ? 0 : item.oldcrbalance;
+                        currentcr = item.cr == null ? 0 : item.cr;
+                        decimal? totalsattlement = 0;
+                        totalsattlement = oldcrs - currentcr;
+
+                        if (totalsattlement <= 0)
+                        {
+                            totalsattlement = 0;
+
+                        }
+                        termsList.Add(totalsattlement);
+
+
+
+
+                        //totalcrsattelment =Model.dealer_to_rem_fund_report.Sum(x => x.oldcrbalance) - Model.dealer_to_rem_fund_report.Sum(x => x.cr);
+                        //if (totalcrsattelment < 0)
+                        //{
+                        //    totalcrsattelment = 0;
+                        //}
+
+
+                        var charge = item.commission == null ? 0 : item.commission;
+
+                        var colrss = "";
+                        if (@item.bal_type == "Charge Back")
+                        {
+                            colrss = "#ff000063";
+                        }
+                        else
+                        {
+                            colrss = "#eae9e9";
+                        }
+
+                        <tr data-toggle="modal" onclick="tablerowshowdetail('DLMTORET','@item.retailername','@item.Head','@item.bal_type','@item.totalbal','@charge','@item.cr','@item.balance','@item.remain_pre_amount','@item.remain_amount','@item.oldcrbalance','@item.cr','@item.comment','@item.balance','@item.rechargedate','@item.dealername','@item.remain_pre_amount_dealer','@item.remain_amount_dealer')" data-target="#m-d-fund-transfer" style="background: @colrss">
+
+
+                            <td><p style="margin-top:6px;">  @item.FarmName</p></td>
+                            <td><p style="margin-top:6px;">  @item.Frm_Name</p></td>
+                            <td>@item.Head</td>
+
+                            <td><p style="margin-top:6px;">@item.bal_type</p></td>
+
+                            <td><p style="margin-top:6px;">@item.totalbal</p></td>
+                            @*
+                            <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+                            @if (item.commission == null)
+                            {
+                                <td><p style="margin-top:6px;"> <span>0.00</span>@item.commission</p></td>
+
+                            }
+                            else
+                            {
+                                <td><p style="margin-top:6px;">@item.commission</p></td>
+                            }
+                            <td>@totalsattlement</td>
+                            @*
+                            <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                            <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td>
+                                <p style="margin-top:6px;">
+
+                                    @if (item.balance < 0)
+                                    {
+                                        decimal bb = Convert.ToDecimal(item.balance);
+                                        bb = -bb;
+                                        <span>  (-) @bb</span>
+                                    }
+                                    else
+                                    {
+                                        @item.balance
+                                    }
+
+                                </p>
+                            </td>
+                            @*
+                            <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.rechargedate</p></td>
+
+                        </tr>
+                    }
+                    @{
+                        decimal? sum = termsList.Sum();
+                    }
+
+                    <tr>
+                        <td colspan="4">Total</td>
+                        <td>@runningTotal</td>
+                        <td>@Totalcharges</td>
+                        <td>@sum</td>
+                        <td>@TotalNetTransfer</td>
+                        <td></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        }
+
+        else if (Model.show_rem_to_rem_balByAdmin != null)
+        {
+            <table id="tbldata" data-hrefscrollf="@Url.Action("InfiniteScrollFundUserr","Home",new { tabtype="Retailer"})" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>From Retailer Firm</th>
+                        <th>To Retailer Frm </th>
+
+                        <th>Total AMT</th>
+                        <th>Net Transfer</th>
+                        <th>Transfer Date</th>
+                        @*
+                        <th>CR Adjust</th>*@
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.show_rem_to_rem_balByAdmin.OrderByDescending(a => a.tran_date).ToList())
+                    {
+                        runningTotal = Model.show_rem_to_rem_balByAdmin.Sum(x => x.value);
+                        //Totalcharges += item.commistion;
+
+                        TotalNetTransfer = Model.show_rem_to_rem_balByAdmin.Sum(x => x.value);
+
+                        var charge = item.value == null ? 0 : item.value;
+                        //    var headtype = item.Head == null || item.Head == "DirectT" ? "Direct" : item.Head;
+                        <tr data-toggle="modal" onclick="tableretailershowdetail('@item.Retailerfrom','@item.RetailerTOFrm','@item.value','@item.value','@item.tran_date','@item.rem_to_old_bal','@item.rem_to_new','@item.comment','@item.rem_from_old_bal','@item.rem_from_new')" data-target="#retailer-fund-transfer" style="background:no-repeat;">
+
+
+                            <td><p style="margin-top:6px;">  @item.Retailerfrom</p></td>
+
+
+                            <td><p style="margin-top:6px;">@item.RetailerTOFrm</p></td>
+
+                            <td><p style="margin-top:6px;">@item.value</p></td>
+                            @*
+                            <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+
+
+                            @*
+                            <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                            <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.value</p></td>
+                            @*
+                            <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.tran_date</p></td>
+
+                        </tr>
+                    }
+                    <tr><td colspan="2">Total</td><td>@runningTotal</td><td>@TotalNetTransfer</td><td></td></tr>
+
+                </tbody>
+            </table>
+        }
+
+
+       else if (Model.show_rem_to_rem_balByAdmin_Recived != null)
+        {
+            <table id="tbldata" class="table table-bordered table-striped table-hover third-design-table">
+                <thead>
+                    <tr>
+                        <th>Reciver</th>
+                        <th>Transfer By </th>
+
+                        <th>Total AMT</th>
+                        <th>Net Transfer</th>
+                        <th>Transection Id</th>
+                        <th>Transfer Date</th>
+                        @*
+                        <th>CR Adjust</th>*@
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.show_rem_to_rem_balByAdmin_Recived.OrderByDescending(a => a.tran_date).ToList())
+                    {
+                        runningTotal = Model.show_rem_to_rem_balByAdmin_Recived.Sum(x => x.value);
+                        //Totalcharges += item.commistion;
+
+                        TotalNetTransfer = Model.show_rem_to_rem_balByAdmin_Recived.Sum(x => x.value);
+
+                        var charge = item.value == null ? 0 : item.value;
+                        //    var headtype = item.Head == null || item.Head == "DirectT" ? "Direct" : item.Head;
+                        <tr data-toggle="modal" onclick="tableretailershowdetail('@item.RetailerTOFrm','@item.Retailerfrom','@item.value','@item.value','@item.tran_date','@item.rem_to_old_bal','@item.rem_to_new','@item.comment','@item.rem_from_old_bal','@item.rem_from_new')" data-target="#retailer-fund-transfer" style="background:no-repeat;">
+
+                            <td><p style="margin-top:6px;">@item.RetailerTOFrm</p></td>
+
+                            <td><p style="margin-top:6px;">  @item.Retailerfrom</p></td>
+
+
+
+
+                            <td><p style="margin-top:6px;">@item.value</p></td>
+                            @*
+                            <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+
+
+                            @*
+                            <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                            <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.value</p></td>
+                            @*
+                            <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td>
+                                <p style="margin-top:6px;">
+
+                                    @if (item.Transectionid == null)
+                                    {
+                                        <span> "Not Found"</span>
+                                    }
+                                    else
+                                    {
+                                        @item.Transectionid;
+                                    }
+
+
+                                </p>
+                            </td>
+
+                            <td><p style="margin-top:6px;">@item.tran_date</p></td>
+
+                        </tr>
+                    }
+                    <tr><td colspan="2">Total</td><td>@runningTotal</td><td>@TotalNetTransfer</td><td></td></tr>
+
+                </tbody>
+            </table>
+        }
+
+    </div>
+</section>

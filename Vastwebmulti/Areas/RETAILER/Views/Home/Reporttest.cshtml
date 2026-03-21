@@ -1,0 +1,92 @@
+﻿@model List<Vastwebmulti.Models.Sp_Recharge_info_LazyLoad_Result>
+@{
+    ViewBag.Title = "Reporttest";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content" style="margin:90px 0px 0px 0px;">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="body" style="margin-top:-18px; padding:12px;">
+                        <div class="table-responsive" style="position:inherit;margin-top:-10px;">
+                            <table class="table table-responsive table-striped table-bordered" id="tbldata">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">ReqID</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Status</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Recharge&nbsp;No</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Operator</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Opt&nbsp;Type</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Rch&nbsp;Amt</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Income</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Remain</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Type</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Operator&nbsp;ID</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Rch&nbsp;Date</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Resp&nbsp;Date</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Dispute</th>
+                                        <th style="padding-left:2px; padding-right:2px;text-align:center;">Print</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trow">
+                                    @{
+
+                                        Html.RenderAction("_Rechargereport", "Home", new { Model = Model });
+
+                                    }
+                                </tbody>
+                            </table>
+                            <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:20px;">
+                                <img src="~/Resource/ajax-loader.gif" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+        var pageindex = 2;
+
+    var NoMoredata = false;
+
+    var inProgress = false;
+
+    $(window).scroll(function () {
+  
+            if ($(window).scrollTop() > Number($("#tbldata").height()) / 4 && !NoMoredata && !inProgress) {
+              
+
+
+                inProgress = true;
+
+                $("#loadingdiv").show();
+
+                $.post("@Url.Action("InfiniteScroll","Home")", { "pageindex": pageindex },
+
+                    function (data) {
+                   
+                        pageindex = pageindex + 1;
+
+                        NoMoredata = data.NoMoredata;
+
+                        $("#trow").append(data.HTMLString);
+
+                        $("#loadingdiv").hide();
+
+                        inProgress = false;
+
+                    }
+
+                    );
+
+            }
+
+        });
+
+</script>

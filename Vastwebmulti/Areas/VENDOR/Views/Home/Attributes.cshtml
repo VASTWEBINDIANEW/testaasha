@@ -1,0 +1,233 @@
+﻿@using System.Net.Mime
+@using Vastwebmulti.Models
+@model List<Vastwebmulti.Models.proc_ProductAssignedAttributeList_Result>
+@{
+    ViewBag.Title = "Attributes";
+    Layout = "~/Areas/VENDOR/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-10">
+                        <p style="font-size:22px;margin-top:4px;font-weight:500;">All Attributes Details</p>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#" class="btn waves-effect" style="margin-left:15%; margin-top:5px;border:1px solid #c7c2c2;background:#dedddd;" data-toggle="modal" data-target="#defaultModal">
+                            <i class="fa fa-plus" style="top:-1px;font-size:16px;color:black;"></i>
+                            <span style="top:-2px;color:black;">Add&nbsp;New&nbsp;Attributes </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-23px;">
+                <div class="card" style="margin-top:7px;">
+                 <div class="body">
+                        <div class="row">
+                            <div class="table-responsive" style="position:inherit;margin-top:-15px;">
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                    <thead  style="color:black;background-color:whitesmoke;">
+                                        <tr>
+                                            <th style="padding-left:2px;">Product Name</th>
+                                            <th style="padding-left:2px;">Attribute</th>
+                                            <th style="padding-left:2px;">Value</th>
+                                            <th style="padding-left:2px;">QTY</th>
+                                            <th style="padding-left:2px;">DELETE</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td style="padding:3px;">@item.ProductName</td>
+                                                <td style="padding:3px;">@item.AttrName</td>
+                                                <td style="padding:3px;">@item.AttValue</td>
+                                                <td style="padding:3px;">@item.Quantity</td>
+                                                <td style="padding:3px;">
+                                                    <button type="button" style="background-color:transparent; border:none;color:#03a9f4;"  onclick="deleteitem('@item.AttID')">
+                                                        <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Delete</p>
+                                                    </button>
+                                                  </td>
+
+                                            </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Add New   modal-->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Add New Attribute</h4>
+            </div>
+            @using (Html.BeginForm("AssignAttribute", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="ProductId">Product</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownList("ProductId", new SelectList(ViewBag.Products, "ProductID", "Name"), new { @class = "form-control",  required = "required" })
+                                            @Html.ValidationMessage("ProductId", "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="AttName">Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("AttName", "", new { @class = "form-control", placeholder = "Enter Attribute Name. For Example Color", required = "required" })
+                                            @Html.ValidationMessage("AttName", "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="AttValue">Value</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("AttValue", "", new { @class = "form-control", placeholder = "Enter Attribute Value. For Example Red", required = "required" })
+                                            @Html.ValidationMessage("AttValue", "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="QTY">Quantity</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBox("QTY", "", new { @class = "form-control", placeholder = "Enter Numer of Items", required = "required" })
+                                            @Html.ValidationMessage("QTY", "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-blue-grey waves-effect">Save Change</button>
+                                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<script>
+    window.onload = function () {
+        var success = '@ViewData["success"]';
+        var duplicate = '@ViewData["duplicate"]';
+        var limitexceed = '@ViewData["limitexceed"]';
+        if (success != "" && success != null) {
+            swal("Good job!", success, "success");
+
+        }
+        if (duplicate != "" && duplicate != null) {
+            swal("Oops..", duplicate, "error");
+
+        }
+        if (limitexceed != "" && limitexceed != null) {
+            swal("Oops..", limitexceed, "error");
+
+        }
+
+    }
+</script>
+
+<!--delete id javscript-->
+<script type="text/javascript">
+
+    function deleteitem(e) {
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Attributes Data !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("RemoveAttribute", "Home")', data: { Id: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("Deleted!", " Data Deleted Successfully.", "success");
+                var url = '@Url.Action("Attributes", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Attributes", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>
+
+
+

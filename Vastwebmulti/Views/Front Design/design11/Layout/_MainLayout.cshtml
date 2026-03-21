@@ -1,0 +1,546 @@
+﻿<!DOCTYPE html>
+@using Vastwebmulti.Models;
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+
+    <title>@ViewBag.compnay</title>
+    @{
+        var favimage = "";
+        VastwebmultiEntities db2 = new VastwebmultiEntities();
+        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+            }
+        }
+        else
+        {
+            <link rel="icon" href="~/images/Fevicon.png" type="image/x-icon" />
+        }
+        var admindetail = db2.Admin_details.ToList();
+        var mailid = admindetail.SingleOrDefault().email;
+        var mobile = admindetail.SingleOrDefault().mobile;
+        var Address = admindetail.SingleOrDefault().Address;
+        var Firm_Name = admindetail.SingleOrDefault().Companyname;
+        var cin_number = admindetail.SingleOrDefault().registrationno;
+        var gst_number = admindetail.SingleOrDefault().Gstno;
+        var SupportMail = admindetail.SingleOrDefault().email1;
+        var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
+        var PinCode = admindetail.SingleOrDefault().pincode;
+
+        int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
+        int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
+        var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
+        var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+
+        var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+        var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+        var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+
+
+    }
+
+
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" sizes="32x32" />
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" sizes="192x192" />
+    <link rel="apple-touch-icon" href="@Url.Content("~/" + @favimage)" />
+    <meta name="msapplication-TileImage" content="@Url.Content("~/" + @favimage)" />
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!---  main links    -->
+    <link href="~/MainFrontDesign/theme11_css/npm/bootstrap-5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Fontawesome Link-->
+    <link href="~/MainFrontDesign/theme11_css/releases/v5.8.2/css/all.css" rel="stylesheet" />
+    <!-- Css Link -->
+    <link href="~/CSS/aaaaa.css" rel="stylesheet" />
+    <link href="~/CSS/StyleSheet1.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/Custom-style.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/theme11_css/assets/css/style.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/theme11_css/assets/css/responsive.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/theme11_css/assets/css/default.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/theme11_css/ajax/libs/owl-carousel/1.3.3/owl.carousel.css" rel="stylesheet" />
+    <!-- Font Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />
+
+    <!---  main links end   -->
+
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        @*
+            <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>*@
+    }
+    @{
+        var selectedcolor = "";
+        var menucolor = "";
+        VastwebmultiEntities db1 = new VastwebmultiEntities();
+        var allcolor = db1.tblMenuColors.ToList();
+        if (allcolor.Count > 0)
+        {
+            selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+            menucolor = allcolor.SingleOrDefault().MenuColor;
+        }
+        else
+        {
+            selectedcolor = "Green";
+            menucolor = "White";
+        }
+
+        //var selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+        //var menucolor = allcolor.SingleOrDefault().MenuColor;
+    }
+
+    <style>
+        #SERVICES .img {
+            filter: none;
+        }
+
+        footer img {
+            height: 52px;
+            width: 60px;
+        }
+
+        footer .text-muted {
+            color: #bb4ebb !important;
+        }
+    </style>
+
+
+</head>
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var Afacelink = db.tblFooterlinks.Where(p => p.FooterType == "Facebook" && p.Role == "ADMIN").ToList();
+    ViewBag.Afac = Afacelink.Count == 0 ? "" : Afacelink.SingleOrDefault().FooterLink;
+    var Atwitter = db.tblFooterlinks.Where(p => p.FooterType == "Twitter" && p.Role == "ADMIN").ToList();
+    ViewBag.Atwi = Atwitter.Count == 0 ? "" : Atwitter.SingleOrDefault().FooterLink;
+    var AInstagram = db.tblFooterlinks.Where(p => p.FooterType == "Instagram" && p.Role == "ADMIN").ToList();
+    ViewBag.AInstagra = AInstagram.Count == 0 ? "" : AInstagram.SingleOrDefault().FooterLink;
+    var Alinked = db.tblFooterlinks.Where(p => p.FooterType == "LinkedIn" && p.Role == "ADMIN").ToList();
+    ViewBag.Alinked = Alinked.Count == 0 ? "" : Alinked.SingleOrDefault().FooterLink;
+    var APinterest = db.tblFooterlinks.Where(p => p.FooterType == "Pinterest" && p.Role == "ADMIN").ToList();
+    ViewBag.APinteres = APinterest.Count == 0 ? "" : APinterest.SingleOrDefault().FooterLink;
+    var AYoutube = db.tblFooterlinks.Where(p => p.FooterType == "Youtube" && p.Role == "ADMIN").ToList();
+    ViewBag.AYoutub = AYoutube.Count == 0 ? "" : AYoutube.SingleOrDefault().FooterLink;
+    var ABlogger = db.tblFooterlinks.Where(p => p.FooterType == "Blogger" && p.Role == "ADMIN").ToList();
+    ViewBag.ABlogge = ABlogger.Count == 0 ? "" : ABlogger.SingleOrDefault().FooterLink;
+    var ATumblr = db.tblFooterlinks.Where(p => p.FooterType == "Tumblr" && p.Role == "ADMIN").ToList();
+    ViewBag.ATumbl = ATumblr.Count == 0 ? "" : ATumblr.SingleOrDefault().FooterLink;
+
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    var col = "";
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "#da097d";
+    }
+    if (col == "")
+    {
+        col = "#da097d";
+    }
+    var color = col;
+
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var logoimage = "";
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    var vv = from tbl in db.tblMenus
+             where tbl.Status == "Y" && tbl.Role == "ADMIN"
+             select new
+             {
+                 tbl.MenuName
+             };
+    ViewBag.menuname = vv;
+
+
+
+    List
+<Vastwebmulti.JsonData.Hlp_TC_Privacy>
+    people = new List<Vastwebmulti.JsonData.Hlp_TC_Privacy>
+        ();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("PrivacyAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Privacy = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("OutHelpForAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Help = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("TnCAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var TC = people.ToList();
+
+    var Great_Help_News = db.Message_top.Where(a => a.users == "Outer").ToList();
+
+    var statuschkGreat = Great_Help_News.Where(aa => aa.name == "Great News" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+    var statuschkNeed = Great_Help_News.Where(aa => aa.name == "Need Help" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+
+    JSONReadWrite readWrit1e = new JSONReadWrite();
+    dynamic people1 = Newtonsoft.Json.JsonConvert.DeserializeObject(readWrit1e.Read("LogoBackgroundColor.json", "~/Areas/ADMIN/Models/JsonData/"));
+    string logoBgColor = people1.ColorCode;
+}
+<body data-spy="scroll" data-target=".navbar-collapse">
+
+    <header>
+        <div class="header-top-wrap" style="background-image: url(image/service_bg.png); background-color: var(--main-bg-lcolor); ">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-7 d-none d-md-block">
+                        <div class="header-top-contact">
+                            <ul>
+                                <li>
+                                    <a href='tel:(+91)@CustCareNo'><i class='fa fa-headphones'></i>@CustCareNo,@mobile</a>
+                                </li>
+                                <li>
+                                    <a href='mailto:@SupportMail'><i class='fa fa-envelope-open-text'></i><span class='__cf_email__'>@SupportMail</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5">
+                        <div class="header-top-right">
+                            <ul>
+                                <li class="header-social">
+                                    <span>Follow :</span>
+                                    @if (ViewBag.Afac != "")
+                                    {
+                                        <a href="@ViewBag.Afac" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                                    }
+
+
+                                    @if (ViewBag.Atwi != "")
+                                    {
+                                        <a href="@ViewBag.Atwi" target="_blank"><i class="fab fa-twitter"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#"><i class="fab fa-twitter"></i></a>
+                                    }
+
+
+                                    @if (ViewBag.AInstagra != "")
+                                    {
+                                        <a href="@ViewBag.AInstagra" target="_blank"><i class="fab fa-instagram"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
+                                    }
+
+
+                                    @if (ViewBag.Alinked != "")
+                                    {
+                                        <a href="@ViewBag.Alinked" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                                    }
+
+
+                                    @if (ViewBag.APinteres != "")
+                                    {
+                                        <a href="@ViewBag.APinteres" target="_blank"><i class="fab fa-pinterest"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                                    }
+
+
+                                    @if (ViewBag.AYoutub != "")
+                                    {
+                                        <a href="@ViewBag.AYoutub" target="_blank"><i class="fab fa-youtube"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#"><i class="fab fa-youtube"></i></a>
+                                    }
+
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="sticky-header" class="main-header menu-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="mobile-nav-toggler"><i class="fas fa-bars"></i></div>
+                        <div class="menu-wrap">
+                            <nav class="menu-nav show">
+                                <div class="logo">
+                                    <a href="@Url.Action("Index1", "Home")">
+                                        <img class='companylogo img-fluid' src='@Url.Content("~/"+@logoimage)' alt='logo' />
+                                    </a>
+                                </div>
+                                <div class="navbar-wrap main-menu d-none d-lg-flex">
+                                    <ul class="navigation">
+                                        <li><a href="@Url.Action("Index1", "Home")">Home</a></li>
+                                        <li><a href="@Url.Action("about_us","Home")">About Us</a></li>
+                                        <li class="dropdown show navbar-wrap">
+                                            <a class="navbar-wrap dropdown-toggle " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Services
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <a class="dropdown-item" href="@Url.Action("aeps", "Home")">AEPS</a>
+                                                <a class="dropdown-item" href="@Url.Action("matm", "Home")">Micro ATM</a>
+                                                <a class="dropdown-item" href="@Url.Action("domestic_transfer", "Home")">Money Transfer</a>
+                                                <a class="dropdown-item" href="@Url.Action("recharge_api", "Home")">Recharge</a>
+                                                <a class="dropdown-item" href="@Url.Action("bbps", "Home")">Bill Payment</a>
+                                            </div>
+                                        </li>
+                                        <li class="responsive-nav">
+                                            <a href="@Url.Action("Contact", "Home")">Contact</a>
+                                        </li>
+                                        <li class="header-btn">
+                                            <a href="@Url.Action("Login","Home",new { id="singin" })" class="btn1 text-white">LOGIN <span></span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                        <!-- Mobile Menu  -->
+                        <div class="mobile-menu">
+                            <nav class="menu-box">
+                                <div class="close-btn"><i class="fas fa-times"></i></div>
+                                <div class="nav-logo">
+                                    <a href="@Url.Action("Index1", "Home")">
+                                        <img src='@Url.Content("~/"+@logoimage)' alt='logo' />
+                                    </a>
+                                </div>
+                                <div class="menu-outer">
+                                </div>
+                                <div class="social-links">
+                                    <ul class="clearfix">
+                                        @if (ViewBag.Afac != "")
+                                        {
+                                            <li><a href="@ViewBag.Afac" target="_blank"><span class="fab fa-facebook-square"></span></a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a href="" target="_blank"><span class="fab fa-facebook-square"></span></a></li>
+                                        }
+
+
+                                        @if (ViewBag.Atwi != "")
+                                        {
+                                            <li><a href="@ViewBag.Atwi" target="_blank"><span class="fab fa-twitter"></span></a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a href="#"><span class="fab fa-twitter"></span></a></li>
+                                        }
+
+
+                                        @if (ViewBag.AInstagra != "")
+                                        {
+                                            <li><a href="@ViewBag.AInstagra" target="_blank"><span class="fab fa-instagram"></span></a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a href="" target="_blank"><span class="fab fa-instagram"></span></a></li>
+                                        }
+
+
+                                        @if (ViewBag.Alinked != "")
+                                        {
+                                            <li><a href="@ViewBag.Alinked" target="_blank"><span class="fab fa-linkedin-in"></span></a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a href="" target="_blank"><span class="fab fa-linkedin-in"></span></a></li>
+                                        }
+
+
+                                        @if (ViewBag.APinteres != "")
+                                        {
+                                            <li><a href="@ViewBag.APinteres" target="_blank"><span class="fab fa-pinterest-p"></span></a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a href="#"><span class="fab fa-pinterest-p"></span></a></li>
+                                        }
+
+
+                                        @if (ViewBag.AYoutub != "")
+                                        {
+                                            <li><a href="@ViewBag.AYoutub" target="_blank"><span class="fab fa-youtube"></span></a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a href="#"><span class="fab fa-youtube"></span></a></li>
+                                        }
+
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                        <div class="menu-backdrop"></div>
+                        <!-- End Mobile Menu -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    @*Header Section End*@
+
+
+    @RenderBody()
+
+    @*Footer Section Start*@
+    <footer class="bg-white my-2 py-5">
+        <div class="container">
+            <div class="hd" style="text-align:center;">
+                <h1 class="title " style="color: var(--main-bg-lcolor);">@Firm_Name</h1>
+            </div>
+            <div class="row py-3">
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h6 class="text-uppercase font-weight-bold mb-4 headigbdrgd">About</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="@Url.Action("Contact", "Home")" class="text-muted">Contact Us</a></li>
+                        <li class="mb-2"><a href="@Url.Action("about_us","Home")" class="text-muted">About Us</a></li>
+                        <li class="mb-2"><a href="@Url.Action("Index1","Home")/#SERVICES" class="text-muted">Services</a></li>
+
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h6 class="text-uppercase font-weight-bold mb-4 headigbdrgd">Services</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="@Url.Action("aeps", "Home")" class="text-muted">AEPS</a></li>
+                        <li class="mb-2"><a href="@Url.Action("domestic_transfer", "Home")" class="text-muted">Money Transfer</a></li>
+                        <li class="mb-2"><a href="@Url.Action("bbps", "Home")" class="text-muted">Bill Payment</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h6 class="text-uppercase font-weight-bold mb-4 headigbdrgd">Policy</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="@Url.Action("privacy", "Home")" class="text-muted">Privacy Policy |</a></li>
+                        <li class="mb-2"><a href="@Url.Action("termsconditions", "Home")" class="text-muted">Terms & Conditions |</a></li>
+                        <li class="mb-2"><a href="@Url.Action("RefundCancellation", "Home")" class="text-muted">Refund & Cancellation Policy |</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-5 col-md-6 mb-lg-0">
+                    <h6 class="text-uppercase font-weight-bold mb-4">Registered Office Address</h6>
+                    <p class="text-muted">
+                        Address :- @Address
+                    </p>
+                    <p class="text-muted">
+                        Customer Care :- @CustCareNo,@mobile
+                    </p>
+
+                    <ul class="list-inline mt-4">
+
+                        <li class="list-inline-item">
+
+                            @if (ViewBag.Afac != "")
+                            {
+                                <a href="@ViewBag.Afac" target="_blank"><img src="~/AdminDesign/images/facebook.svg" /></a>
+                            }
+                            else
+                            {
+                                <img src="~/AdminDesign/images/facebook.svg" />
+                            }
+
+                        </li>
+                        <li class="list-inline-item">
+
+                            @if (ViewBag.Atwi != "")
+                            {
+                                <a href="@ViewBag.Atwi" target="_blank"><img src="~/AdminDesign/images/twitter.svg" /></a>
+                            }
+                            else
+                            {
+                                <img src="~/AdminDesign/images/twitter.svg" />
+                            }
+                        </li>
+                        <li class="list-inline-item">
+                            @if (ViewBag.AInstagra != "")
+                            {
+                                <a href="@ViewBag.AInstagra" target="_blank"><img src="~/AdminDesign/images/instagram-sketched.svg" /></a>
+                            }
+                            else
+                            {
+                                <img src="~/AdminDesign/images/instagram-sketched.svg" />
+                            }
+                        </li>
+                        <li class="list-inline-item">
+                            @if (ViewBag.Alinked != "")
+                            {
+                                <a href="@ViewBag.Alinked" target="_blank"><img src="~/AdminDesign/images/linkedin.svg" /></a>
+                            }
+                            else
+                            {
+                                <img src="~/AdminDesign/images/linkedin.svg" />
+                            }
+                        </li>
+                        <li class="list-inline-item">
+                            @if (ViewBag.AYoutub != "")
+                            {
+                                <a href="@ViewBag.AYoutub" target="_blank"><img style="height: 60px;" src="~/AdminDesign/images/youtube.svg" /></a>
+                            }
+                            else
+                            {
+                                <img style="height: 60px;" src="~/AdminDesign/images/youtube.svg" />
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <hr class="p-0 m-0 b-0" />
+        <div class="bg-light py-2" style="background-color: #3f48cc !important;">
+            <div class="container text-center">
+                <p class="text-muted mb-0 py-2" style="color: #fff !important;">&copy;  @DateTime.Now.Year @Firm_Name All Rights Reserved. Design & Developed by <a style="color: #fff !important;" href="@Url.Action("Index1", "Home")"> @Firm_Name </a></p>
+            </div>
+        </div>
+    </footer>
+
+
+    @*Footer Section End*@
+
+    <script src="~/MainFrontDesign/theme11_css/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="~/MainFrontDesign/theme11_css/ajax/libs/popper_js/1.16.0/umd/popper.min.js"></script>
+    <script src="~/MainFrontDesign/theme11_css/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="~/MainFrontDesign/theme11_css/assets/js/jscount.js"></script>
+    <script src="~/MainFrontDesign/theme11_css/npm/bootstrap-5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/MainFrontDesign/theme11_css/ajax/libs/owl-carousel/1.3.3/owl.carousel.js"></script>
+    <script src="~/MainFrontDesign/theme11_css/assets/js/main.js"></script>
+
+
+
+</body>
+</html>

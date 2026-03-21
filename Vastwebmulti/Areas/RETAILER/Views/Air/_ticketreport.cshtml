@@ -1,0 +1,151 @@
+﻿@model List<Vastwebmulti.Models.proc_FlightReport_Result>
+@using Newtonsoft.Json;
+@{
+    Layout = null;
+}
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        #region CssSettings
+        var color = "";
+        var fontweight = "";
+        var text = "";
+        var emailid = "";
+        var Retailername = "";
+        var framname = "";
+        var mobile = "";
+        var rolename = "";
+        var icon = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var sts = "";
+        var refundcolor = "";
+        var dmtytpe = "";
+        var img = "";
+        var style = "";
+
+        if (item.TicketStatus.ToUpper() == "SUCCESS")
+        {
+            img = "../../ashok-images/correct.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        else if (item.TicketStatus.ToUpper() == "FAILED")
+        {
+            img = "../../ashok-images/closes.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+            color = "red";
+        }
+        else if (item.TicketStatus.Contains("Refund"))
+        {
+            img = "../../ashok-images/undo.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+            color = "#673ab7";
+        }
+
+
+        sts = ((Vastwebmulti.Areas.RETAILER.Enums.TicketStatus)Convert.ToInt32(item.TicketStatusCode)).ToString();
+
+        if (item.TicketStatusCode == 0 || item.TicketStatusCode == 3 || item.TicketStatusCode == 4 || item.TicketStatusCode == 6 || item.TicketStatusCode == 8 || item.TicketStatusCode == 9)
+        {
+
+            fontweight = "700";
+        }
+        else if (item.TicketStatusCode == 5 || item.TicketStatusCode == 1)
+        {
+            color = "green";
+            fontweight = "700";
+        }
+        if (item.TicketStatusCode == 2)
+        {
+            color = "#ff9600";
+            fontweight = "700";
+
+        }
+
+        #endregion
+    <tr style="font-weight:700;">
+        <td>
+            @if (!item.TicketStatus.Contains("Refund"))
+            {
+                <p style="font-size:13px;text-transform:uppercase;"><span style="color:;"><img style="@style background-color:@color;" src=@img />@item.BookingId</span>&nbsp;</p>
+            }
+            else
+            {
+                <p style="font-size:13px;text-transform:uppercase;"><span style="color:;"><img style="@style background-color:@color;" src=@img />@item.TicketStatus&nbsp;@item.BookingId</span>&nbsp;</p>
+            }
+
+        </td>
+        <td><p style="font-size:13px;text-transform:uppercase;"><span style="color:;">@sts</span>&nbsp;</p></td>
+        <td>
+            <p style="font-size:13px;">&nbsp;@item.LeadPaxFirstName @item.LeadPaxLastName&nbsp;</p>
+        </td>
+        <td style="font-size:13px;">@item.AirlineName</td>
+        <td style="font-size:13px;display:none;">@item.BookingId</td>
+        <td style="font-size:13px;">@item.PNR</td>
+        <td><p style="font-size:11px;margin-top:2px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.TicketDate)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+        <td style="font-size:13px;">@Math.Round(item.FareAmount, 2)</td>
+        <td style="font-size:13px;">@Math.Round(item.RemPre, 2)</td>
+        <td style="font-size:13px;">@Math.Round(item.RemPost, 2)</td>
+        <td>U&nbsp;Fee</td>
+        <td style="font-size:13px;">
+            @Math.Round(item.RemInc, 2)
+            @if (item.TicketStatus.Contains("Refund"))
+            {
+                <span><sup>(-)</sup></span>
+            }
+        </td>
+        <td>
+            @if (!item.TicketStatus.Contains("Refund"))
+            {
+                <center>
+
+                    <span id="statusLink" onclick="getTicketStatus('@item.TraceId','@item.BookingId','@item.PNR')"><a class="btn btn-primary">Current Status</a></span>
+
+                </center>
+            }
+
+        </td>
+        <td>
+            @if (item.TicketStatusCode == 1 && item.ResponseJson != null && item.ResponseJson.Contains("TicketId"))
+            {
+                var response = JsonConvert.DeserializeObject<Vastwebmulti.Areas.RETAILER.Models.JsonRespost>(item.ResponseJson);
+                var FlightItinerary = response.Content.Addinfo.Response.FlightItinerary;
+                var ids = response.Content.Addinfo.Response.FlightItinerary.Passenger.Select(a => a.Ticket.TicketId).ToList();
+                var str = string.Join(",", ids);
+
+                <span onclick="changerequest('@item.idno','@item.BookingId','@FlightItinerary.Origin','@FlightItinerary.Destination','@str')"><a class="btn btn-primary">Ticket Cancel</a></span>
+            }
+            else
+            {
+                <span></span>
+            }
+        </td>
+        <td>
+            @if (item.TicketStatusCode == 1 && item.ResponseJson != null && item.ResponseJson.Contains("TicketId"))
+            {
+                <span><a href="@Url.Action("ViewTicket","Air",new { idno = item.idno, firsName =item.LeadPaxFirstName,lastName= item.LeadPaxLastName})" target="_blank" class="btn btn-primary">Print</a></span>
+            }
+            else
+            {
+                <span></span>
+            }
+        </td>
+    </tr>
+    }
+}
+
+else
+{
+<tr>
+    @if (@ViewBag.checkdata != null)
+    {
+        <td colspan="13"><h3 style="text-align:center;">No Data For Current Search</h3></td>
+    }
+    else
+    {
+        <td colspan="13"><h3 style="text-align:center;">Data Not Found</h3></td>
+    }
+</tr>
+
+}

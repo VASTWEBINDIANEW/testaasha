@@ -1,0 +1,124 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.HotelSlab
+@using (Ajax.BeginForm("_common_Hotel", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+{
+    <input id="btnsubmit" type="submit" value="Save Data" class="btn  waves-effect" style="display:none;" />
+    <table class="table table-bordered slab-table example-second" style="margin-top:15px;">
+        <thead class="navbar" style="position:initial;">
+            <tr>
+                <th>User</th>
+                <th>Hotel&nbsp;Type</th>
+                <th>Charge&nbsp;&&nbsp;Sharing(%)</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyshow">
+            @foreach (var item in Model.common)
+            {
+                var type = "% Share"; var jj = " - Offered Fare MarkUP";
+                var usertype = item.Role; var backcolor = ""; var color = "";
+                if (usertype == "Retailer" || usertype == "Whitelabel")
+                {
+                    type = "% Charge";
+                    usertype = usertype + "" + jj;
+                    backcolor = "Black";
+                    color = "White";
+                }
+                if (usertype == "Dealer")
+                {
+                    usertype = "Distributor";
+                }
+                <tr style="background-color:@backcolor;color:@color">
+                    <td>@usertype</td>
+                    <td>@string.Format("{0}", item.IsDomestic == true ? "Domestic" : "International")</td>
+                    <td>@item.marginPercentage &nbsp; @type</td>
+                </tr>
+            }
+
+        </tbody>
+        <tbody id="tbodyedit" style="display:none;">
+            @for (int i = 0; i < Model.common.Count; i++)
+            {
+                var type = "% Share"; var jj = " - Offered Fare MarkUP";
+                var backcolor = ""; var color = "";
+                var name = Model.common[i].Role;
+                if (name == "Dealer")
+                {
+                    name = "Distributor";
+                }
+                if (name == "Retailer" || name == "Whitelabel")
+                {
+                    type = "% Charge";
+                    name = name + "" + jj;
+                    backcolor = "Black";
+                    color = "White";
+                }
+                <tr style="background-color:@backcolor;color:@color">
+                    @Html.HiddenFor(a => a.common[i].idno)
+                    @Html.HiddenFor(a => a.common[i].Email)
+                    @Html.HiddenFor(a => a.common[i].UserId)
+                    @Html.HiddenFor(a => a.common[i].IsDomestic)
+                    <td>
+                        @name
+                    </td>
+                    <td>@string.Format("{0}", Model.common[i].IsDomestic == true ? "Domestic" : "International")</td>
+                    <td>
+                        <div>
+                            @if (Model.common[i].Role == "Retailer" || Model.common[i].Role == "Whitelabel")
+                            {
+                                @Html.DropDownListFor(a => a.common[i].marginPercentage, new List<SelectListItem>
+                                {
+                                new SelectListItem{Text="0.00%",Value="0.00",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(0.00)? true:false},
+                                new SelectListItem{Text="0.25%",Value="0.25",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(0.25)? true:false},
+                                new SelectListItem{Text="0.50%",Value="0.50",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(0.50)? true:false},
+                                new SelectListItem{Text="0.75%",Value="0.75",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(0.75)? true:false},
+                                new SelectListItem{Text="1.00%",Value="1.00",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(1.00)? true:false},
+                                new SelectListItem{Text="1.25%",Value="1.25",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(1.25)? true:false},
+                                new SelectListItem{Text="1.50%",Value="1.50",Selected= Model.common[i].marginPercentage==Convert.ToDecimal(1.50)? true:false}
+                                 }, "Select Commission", new { @class = "form-control", @style = "padding:0px; -webkit-appearance:none;" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(aa => aa.common[i].marginPercentage, new { @class = "form-control", @style = "padding:0px; -webkit-appearance:none;" })
+                            }
+                        </div>
+                        @Html.ValidationMessageFor(a => a.common[i].marginPercentage)
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+
+<script>
+    $(document).ready(function () {
+        $('.second-design .example-second').DataTable({
+            paging: false
+        });
+    });
+
+</script>
+
+<script>
+    function OnSuccess() {
+        $('#btnsubmit').hide();
+        $('#btnEdit').show();
+    }
+</script>
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

@@ -1,0 +1,166 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.MicroAtmSlabModel
+@using (Ajax.BeginForm("_Common_Microatm", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+{
+    <input id="btnsubmit" type="submit" value="Save Data" class="btn  waves-effect" style="display:none;" />
+    <table class="table table-bordered slab-table example-second thpadding-second third-design-table" style="margin-top:15px;">
+        <thead class="navbar" style="position:initial;">
+            <tr>
+                <th>User&nbsp;Type</th>
+                <th>Card&nbsp;Type</th>
+                <th>Card&nbsp;Category</th>
+                <th>Card&nbsp;Name</th>
+                <th>Minimum&nbsp;Amount</th>
+                <th>Maximum&nbsp;Amount</th>
+                <th>Charge/Comm</th>
+                <th>Charge&nbsp;Type</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyshow">
+            @foreach (var item in Model.common)
+            {
+                var usertype = item.usertype;
+                if (usertype == "Dealer")
+                {
+                    usertype = "Distributor commission";
+                }
+                if (item.usertype == "Distributor-Rem")
+                {
+                    usertype = "Retailer Charge";
+                }
+                var data = " ";
+                if (item.usertype == "Retailer")
+                {
+                    usertype = "Retailer > Common";
+                    data = "none";
+                }
+                var color = "";
+                if (item.usertype == "Purchase")
+                {
+                    usertype = "Purchase Charge";
+                    color = "#f9f9cb";
+                }
+                if (item.usertype == "Whitelabel")
+                {
+                    usertype = "WhiteLabel Charge";
+                }
+
+                if (item.usertype == "Master")
+                {
+                    usertype = "Master commission";
+                }
+                <tr style="background-color:@color;display:@data">
+                    <td><p>@usertype</p></td>
+                    <td>@item.cardtype</td>
+                    <td>@item.cardcategorytype</td>
+                    <td>@item.cardname</td>
+                    <td>@item.minvalue</td>
+                    <td>@item.maxvalue</td>
+                    <td>@item.Charge</td>
+                    <td>@item.chargetype</td>
+                </tr>
+            }
+
+        </tbody>
+        <tbody id="tbodyedit" style="display:none;">
+            @for (int i = 0; i < Model.common.Count; i++)
+            {
+                var usertype = Model.common[i].usertype;
+                if (usertype == "Dealer")
+                {
+                    usertype = "Distributor commission";
+                }
+                if (Model.common[i].usertype == "Distributor-Rem")
+                {
+                    usertype = "Retailer Charge";
+                }
+                var data = " ";
+                if (Model.common[i].usertype == "Retailer")
+                {
+                    usertype = "Retailer > Common";
+                    data = "none";
+                }
+                var color = "";
+                if (Model.common[i].usertype == "Purchase")
+                {
+                    usertype = "Purchase Charge";
+                    color = "#f9f9cb";
+                }
+                if (Model.common[i].usertype == "Whitelabel")
+                {
+                    usertype = "WhiteLabel Charge";
+                }
+
+                if (Model.common[i].usertype == "Master")
+                {
+                    usertype = "Master commission";
+                }
+            <tr style="background-color:@color;display:@data">
+                @Html.HiddenFor(a => a.common[i].idno)
+                <td>
+                    @usertype
+                </td>
+                <td>
+                    @Html.DisplayFor(aa => aa.common[i].cardtype)
+                </td>
+                <td>
+                    @Html.DisplayFor(aa => aa.common[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.DisplayFor(aa => aa.common[i].cardname)
+                </td>
+                <td>
+                    @Html.DisplayFor(aa => aa.common[i].minvalue)
+                </td>
+                <td>
+                    @Html.DisplayFor(aa => aa.common[i].maxvalue)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.common[i].Charge, new { htmlAttributes = new { @style = "width:100%" } })
+                    @Html.ValidationMessageFor(a => a.common[i].Charge)
+                </td>
+                <td>
+                    @Html.DisplayFor(aa => aa.common[i].chargetype)
+                </td>
+            </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+<script>
+    function OnSuccess() {
+        $('#btnsubmit').hide();
+        $('#btnEdit').show();
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('.second-design .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

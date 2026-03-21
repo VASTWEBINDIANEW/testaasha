@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Vastwebmulti.Models.pos_ledger_report_Result>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>POS Report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        thead {
+            display: table-header-group
+        }
+
+        tfoot {
+            display: table-row-group
+        }
+
+        tr {
+            page-break-inside: avoid
+        }
+    </style>
+</head>
+<body>
+    <table class="table table-bordered table-striped table-hover example-second third-design-table" style="width:100%;background:#eae9e9;">
+        <thead>
+            <tr>
+                <th>S.N.</th>
+                <th>Details</th>
+                <th>Amount</th>
+                <th>Remain&nbsp;POS&nbsp;Bal&nbsp;Pre</th>
+                <th>Remain&nbsp;POS&nbsp;Bal&nbsp;Post</th>
+                <th>Transaction&nbsp;Date</th>
+                <th>Credit</th>
+                <th>Debit</th>
+                <th>Comm</th>
+                <th>GST</th>
+                <th>TDS</th>
+            </tr>
+        </thead>
+        <tbody style="background-color:whitesmoke;">
+            @{int i = 1;}
+            @foreach (var item in Model)
+            {
+                DateTime ledgerdate = Convert.ToDateTime(item.ledgerdate);
+                <tr>
+                    <td>@i</td>
+                    <td>@Html.DisplayFor(modelItem => item.Details)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                    <td>@Html.DisplayFor(modelItem => item.remainpre)</td>
+                    <td>@Html.DisplayFor(modelItem => item.remainpost)</td>
+                    <td>@ledgerdate.ToString("d-MMM-yyyy HH:mm:ss")</td>
+                    <td>@Html.DisplayFor(modelItem => item.cr)</td>
+                    <td>@Html.DisplayFor(modelItem => item.dr)</td>
+                    <td>@Html.DisplayFor(modelItem => item.comm)</td>
+                    <td>@Html.DisplayFor(modelItem => item.gst)</td>
+                    <td>@Html.DisplayFor(modelItem => item.tds)</td>
+                </tr>
+                i++;
+
+            }
+            @if (Model.Count() > 0)
+            {
+                <tr>
+                    <td style="font-weight: bolder;">Total&nbsp;</td>
+                    <td></td>
+                    <td style="font-weight: bolder;">@Model.Sum(a => a.Amount)</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="font-weight: bolder;">@Model.Sum(a => a.cr)</td>
+                    <td style="font-weight: bolder;">@Model.Sum(a => a.dr)</td>
+                    <td style="font-weight: bolder;">@Model.Sum(a => a.comm)</td>
+                    <td style="font-weight: bolder;">@Model.Sum(a => a.gst)</td>
+                    <td style="font-weight: bolder;">@Model.Sum(a => a.tds)</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,233 @@
+﻿@using Vastwebmulti.Models;
+@model RegisterViewModel
+
+<div class="for-outer" style="display:none;">
+
+    <div class="for-outer-in">
+        <div class="for-outer-close"> &#10006; </div>
+        <div class="login-form">
+
+            <div class="">
+                <div class="col-md-12">
+                    <h2 style="margin-bottom:10px;">Login</h2>
+                    <h4 style="color: #000;text-align: center;margin-bottom: 20px;">Welcome Back, Glad To See You</h4>
+                </div>
+            </div>
+
+            @*@using (Html.BeginForm("NewLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "UpdateForm" }))*@
+            @using (Ajax.BeginForm("NewLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "divEmp" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("latloc")
+                @Html.Hidden("longloc")
+
+                <div class="">
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(m => m.USERCHECK, new { @placeholder = "enter user id", @required = "" })
+                        @Html.ValidationMessageFor(m => m.USERCHECK, "", new { @class = "text-danger ", @style = "color:red;" })
+                    </div>
+                </div>
+                <div class="">
+                    <div class="col-md-12">
+                        @Html.PasswordFor(m => m.Password, new { @placeholder = "Enter Password", @required = "" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger ", @style = "color:red;" })
+                    </div>
+                </div>
+                <div class="">
+                    <div class="col-md-6">
+                        <span>@Html.CheckBoxFor(m => m.RememberMe)&nbsp;Remember Me?</span>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="for-forget" href="javascript:void(0);">Forget Password</a>
+                    </div>
+                </div>
+                <div class=" justify-content-end">
+                    <div class="col-md-12">
+                        <button type="submit">Submit</button>
+                    </div>
+                </div>
+            }
+
+            <div class="">
+                <div class="col-md-12">
+                    <p class="for-create">I'm New Here</p>
+                </div>
+            </div>
+        </div>
+        <div class="create-form" style="display:none;">
+            <div class="">
+                <div class="col-md-12">
+                    <h2>Create An Account</h2>
+                </div>
+            </div>
+
+            @using (Html.BeginForm("insert_WhiteLabel", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "frmsignup" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="">
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.Name, new { @placeholder = "Enter Name", @required = "" })
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger ", @style = "color:red;" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.Email, new { @placeholder = "Enter Email Id", @required = "" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger ", @style = "color:red;" })
+                    </div>
+                </div>
+                <div class="">
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.Mobile, new { maxlength = "10", @placeholder = "Enter Mobile No", @required = "" })
+                        @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "text-danger ", @style = "color:red;" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.Passwordnew, new { @placeholder = "Enter Password", @required = "" })
+                        @Html.ValidationMessageFor(m => m.Passwordnew, "", new { @class = "text-danger ", @style = "color:red;" })
+                    </div>
+                </div>
+                <div class="">
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.Pin, new { @placeholder = "Enter Pin", @required = "" })
+                        @Html.ValidationMessageFor(m => m.Pin, "", new { @class = "text-danger ", @style = "color:red;" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.referralcode, new { @placeholder = "Enter Referral Code" })
+                    </div>
+                </div>
+                <div class="">
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.state, (IEnumerable<SelectListItem>)ViewBag.Sate, "-- Select State--", new { @onchange = "FillDistict()", @required = "" })
+                        @Html.ValidationMessageFor(m => m.state, "", new { @class = "text-danger " })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.distict, new SelectList("Value", "Text"), "-- Select District--", new { @required = "" })
+                        @Html.ValidationMessageFor(m => m.distict, "", new { @class = "text-danger " })
+                    </div>
+                </div>
+                <div class="">
+                    <div class="col-md-12">
+                        <span>@Html.CheckBoxFor(m => m.RememberMe)&nbsp;Remember Me?</span>
+                    </div>
+                </div>
+
+                <div class=" justify-content-end">
+                    <div class="col-md-12">
+                        <button type="submit">Create Account</button>
+                    </div>
+
+                </div>
+            }
+
+            <div class="">
+                <div class="col-md-12">
+                    <p class="for-login">Back To Login</p>
+                </div>
+            </div>
+        </div>
+        <div class="forget-form" style="display:none;">
+            <div class="">
+                <div class="col-md-12">
+                    <h2>Enter Your Email</h2>
+                </div>
+            </div>
+
+            @using (Html.BeginForm("ForgotPassword", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "ForgtFrm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="">
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(m => m.Email, new { @placeholder = "enter user id", @required = "" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class=" justify-content-end">
+                    <div class="col-md-12">
+                        <button type="submit">Submit</button>
+                    </div>
+
+                </div>
+                <div class="">
+                    <div class="col-md-12">
+                        <p class="for-forget-login">Back To Login</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@if (PageData["OpenOtpBox"] == "LoginOtpON")
+{
+    <div class="verfy" style="background: rgba(0,0,0,.7); position: fixed; top: 0px; height: 100%; left: 0px; width: 100%; z-index: 3;">
+        <div class="verfy-in" style="position: absolute; background: #fff; min-height: 40%; width: 632px; top: 30%; left: 50%; transform: translate(-50%,-30%);">
+            <div class="verify-form">
+                <div class="">
+                    <div class="col-md-12">
+                        <h2>One Time Password</h2>
+                    </div>
+                </div>
+                @using (Html.BeginForm("VerifyCode", "Account", new { ReturnUrl = ViewBag.returnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("provider", TempData["provider"])
+                    @*<input type="hidden" name="rememberMe" value="@ViewBag.rememberMe" />*@
+                    <div class="">
+                        <div class="col-md-12" style="text-align:center;">
+                            <div class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
+                                <input type="text" id="digit-1" name="digit-1" data-next="digit-2" autocomplete="off" maxlength="1"><input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" autocomplete="off" maxlength="1"><input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" autocomplete="off" maxlength="1"><input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" autocomplete="off" maxlength="1"><input type="text" id="digit-5" name="digit-5" data-next="digit-6" data-previous="digit-4" autocomplete="off" maxlength="1"><input type="text" id="digit-6" name="digit-6" data-previous="digit-5" autocomplete="off" maxlength="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" justify-content-end" style="text-align:center;">
+                        <div class="col-md-12">
+                            <input type="hidden" id="Code" name="Code" autocomplete="off" />
+                            <button type="submit" id="subHere">Submit</button>
+                            <button type="submit" onclick="resendotp()" value="Resend OTP">Resend OTP</button>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else if (PageData["InvalidCode"] == "INVALIDCODE")
+{
+    <div class="verfy" style="background: rgba(0,0,0,.7); position: fixed; top: 0px; height: 100%; left: 0px; width: 100%; z-index: 3;">
+        <div class="verfy-in" style="position: absolute; background: #fff; min-height: 40%; width: 632px; top: 30%; left: 50%; transform: translate(-50%,-30%);">
+            <div class="row">
+                <div class="col-md-12">
+                    <span style="text-align: center;width: 100%;display: block;color: #fff;margin-top:10px; font-weight: 600;">Verification Code Is Incorrect, Please Re-Enter Verification Code</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+
+    $('.outer-log').click(function () {
+        $('.for-outer').fadeIn('slow');
+    })
+    $('.for-outer-close').click(function () {
+        $('.for-outer').fadeOut('slow');
+    })
+    $('.for-create').click(function () {
+        $('.login-form').fadeOut('slow');
+        $('.create-form').fadeIn('slow');
+    })
+    $('.for-login').click(function () {
+        $('.login-form').fadeIn('slow');
+        $('.create-form').fadeOut('slow');
+    })
+    $('.for-forget').click(function () {
+        $('.login-form').fadeOut('slow');
+        $('.forget-form').fadeIn('slow');
+    })
+    $('.for-forget-login').click(function () {
+        $('.login-form').fadeIn('slow');
+        $('.forget-form').fadeOut('slow');
+    })
+
+
+
+</script>

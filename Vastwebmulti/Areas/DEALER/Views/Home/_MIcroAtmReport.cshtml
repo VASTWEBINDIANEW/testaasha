@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Vastwebmulti.Models.microatm_report_Result>
+@{
+    Layout = null;
+}
+
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        //  decimal comm = 0;
+        decimal comm = 0;
+        var img = "";
+        var bcolor = "";
+        var transtype = "";
+        if (item.status.Contains("success"))
+        {
+            if (item.transaction_type == "microatm")
+            {
+                //comm = (item.amount.Value * item.Retailer_comm.Value) / 100;
+                //comm = comm + item.Retailer_gst.Value - item.Retailer_tds.Value;
+                comm = item.Retailer_comm.Value + item.Retailer_gst.Value + item.Retailer_tds.Value;
+                transtype = "COMM";
+
+            }
+            else if (item.transaction_type == "purchase")
+            {
+                comm = (item.amount.Value * item.Retailer_comm.Value) / 100;
+
+                transtype = "CH";
+            }
+
+            img = "../../ashok-images/correct.svg";
+            bcolor = "green";
+        }
+
+        if (item.status.Contains("Pending"))
+        {
+            img = "../../ashok-images/clkk.png";
+            bcolor = "#ffc107";
+        }
+        if (item.status.Contains("failed"))
+        {
+            img = "../../ashok-images/closes.svg";
+            bcolor = "red";
+        }
+
+
+<tr>
+
+    <td><img class="img-microatm" src="@img" style=" height: 20px;width: 18px;margin:5px;max-width: 100%;padding: 0; border-radius:50%; background-color:@bcolor;float:left;" />@item.status</td>
+    <td>@item.Frm_Name</td>
+
+    <td>@item.amount</td>
+    <td>@item.transtime</td>
+    <td>@item.rrn</td>
+    <td>@item.transaction_type</td>
+    <td>@item.card_payment_type</td>
+    <td>@item.masked_pan</td>
+    <td>@item.network</td>
+    <td>@item.retailer_remain_pre</td>
+    <td>@comm</td>
+    <td>@item.Retailer_gst</td>
+    <td>@item.Retailer_tds</td>
+    <td>@item.retailer_remain_post</td>
+    <td>
+        @if (item.transaction_type.ToUpper() == "REVERSAL" && item.status.ToUpper() == "SUCCESS")
+        {
+        <button id="fff" type="button" class="fftr" style="background-color:transparent; color:black;border:none;margin-top:0px;" data-toggle="modal" title="Refund" data-target="#defaultModal1" onclick="refundshow('@item.rrn')">
+            <i class="fa fa-times" style="top:1px;border: 1px solid #c7c2c2;padding: 3px 4px;font-size: 10px;" aria-hidden="true"></i>
+        </button>
+        }
+    </td>
+    <td>
+        @if (item.status.ToUpper() == "PENDING")
+        {
+        <div class="nrch" id="nrch'+@item.idno+'" style="display:flex;">
+
+        </div>
+        }
+    </td>
+
+</tr>
+    }
+}

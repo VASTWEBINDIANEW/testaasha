@@ -1,0 +1,667 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.Whitelabel_Notify
+@{
+    ViewBag.Title = "Notification";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+<style type="text/css">
+    .loadermoney {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 199999;
+        background: url('../../images/Progess.svg') 50% 50% no-repeat rgba(249, 249, 249, 0.9);
+    }
+</style>
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+</style>
+
+<div id="loadermoney" class="loadermoney" style="display:none;"></div>
+<section class="content tmw-notifications">
+    <div class="container-fluid">
+        <div class="bread-same-all-page">
+            <ul>
+                <li class="smli">
+                    <a href="@Url.Action("Dashboard", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                        Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;" />
+                    </a>
+                </li>
+                <li class="smli">
+                    <a href="@Url.Action("Dashboard", "Home")#setting" class="fullbodydycolorbg tmw-total-color-one">
+                        Basic&nbsp;Setting &nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;" />
+                    </a>
+                </li>
+                <li class="fullbodydycolorbg tmw-total-color-one">
+                    News & alerts
+                </li>
+            </ul>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+
+                <ul class="tabs2">
+                    <li class="tab-link current2" data-tab="tab-3"> <img src="~/images/reportimage/Desktop 1.svg" style="width:14px;" alt="Desktop Img" />&nbsp;Desktop Popup</li>
+                    <li class="tab-link" data-tab="tab-4"><img src="~/img/calnder.svg" alt="Calender" style="width:14px;" />&nbsp;Holiday Setting</li>
+                    <li class="tab-link" data-tab="tab-5"><img src="~/img/live-news-report.svg" style="width:14px;" alt="Live News" />&nbsp;Live News</li>
+                </ul>
+
+
+                <div id="tab-3" class="tab-content2 current2">
+
+                    @*@using (Html.BeginForm("PopupImageUpload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {*@
+
+                    <ul class="tk1">
+                        <li class="one">
+                            <textarea id="headercontent" name="headercontent" class="form-control" placeholder="Enter Header Content" required="" maxlength="70"></textarea>
+                        </li>
+                        <li class="two">
+                            <input type="file" name="file" id="file" class="custom-upload" />
+                            <label for="file" style="width:91px;">Browse...</label>
+                        </li>
+                        <li class="three">
+                            <button type="submit" class="btn waves-effect" id="PopupImageUpload">
+                                <span style="top:0px;color:black;">Upload Image</span>
+                            </button>
+                        </li>
+                    </ul>
+
+                    @*}*@
+
+                    <div class="tab2-sam2-start2">
+                        <div class="popup_img width100 float-left" id="PopUpStatus">
+                            <ul class="width100 float-left margin0">
+                                <li>
+                                    <h2>Popup Image</h2>
+                                </li>
+                                <li>
+                                    <span class="custom-off" onclick="Delete_desktop('@Url.Action("Delete_desktopsts","Home")')">Delete</span>
+
+                                </li>
+                                <li>
+                                    @{
+                                        var shopUrl = ViewData["but"] as string;
+                                    }
+
+                                    @if (shopUrl == "OPEN")
+                                    {
+                                        <center>
+                                            <span id="btttnON" onclick="status_desktop('Y')" class="btn" style="background-color:green;color:white;">Status ON</span>
+                                        </center>
+                                    }
+                                    else
+                                    {
+                                        <center>
+                                            <span id="btttnOFF" onclick="status_desktop('N')" class="btn" style="background-color:red;color:white;">Status OFF</span>
+                                        </center>
+
+                                    }
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="popup_img_second float-left width100">
+
+                            <img src="@Url.Content("~/"+@ViewBag.ImageURL)" class="img-responsive" id="DesktopPopUpImage" />
+
+                        </div>
+
+
+
+                    </div><!--.tab2-sam2-start2-->
+                </div><!--#tab-3-->
+
+                <div id="tab-4" class="tab-content2">
+                    <div class="holiday-cal width100 float-left">
+                        <ul class="width100 float-left">
+                            @using (Ajax.BeginForm("HolidayAdd", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "Success" }))
+                            {
+                                <li class="two">
+                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                    @Html.TextBox("date", "", new { @class = "timepicker-actions-exmpl width100 float-left", @placeholder = "Select Date & Time", required = "required", @style = "padding-left:40px;" })
+                                </li>
+                                <li class="three">
+                                    @Html.TextBox("desc", "", new { @placeholder = "Enter Description", @style = "padding-left:10px;", required = "required" })
+                                </li>
+                                <li class="four">
+                                    <input type="submit" class="btn special-iii" data-loading-text="<i class='fa fa-spinner fa-spin'></i>" value="Save" />
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="tab2-sam2-start2">
+                        <div id="divEmp" class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+
+                                        <th>Holiday&nbsp;Date</th>
+                                        <th>Day&nbsp;Info</th>
+                                        <th>Full&nbsp;Description</th>
+                                        <th>Aeps&nbsp;Status</th>
+                                        <th>mPos&nbsp;Status</th>
+                                        <th>DEL</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @if (Model.tbl_Holiday.Count() > 0)
+                                    {
+
+                                        foreach (var item in Model.tbl_Holiday)
+                                        {
+                                            var date = item.HolidayDate;
+                                            var day = Convert.ToDateTime(date).ToString("dddd");
+                                            <tr>
+                                                <td>@item.HolidayDate</td>
+                                                <td>@day</td>
+                                                <td>@item.HolidayName</td>
+                                                <td>
+                                                    @if (item.isAepsBlocked == true)
+                                                    {
+                                                        <button onclick="blockunblock('AEPS','@item.HolidayDate')" type="button" class="btn green-button">Unblock</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button onclick="blockunblock('AEPS','@item.HolidayDate')" type="button" class="btn red-button">Blocked</button>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (item.isMposBlocked == true)
+                                                    {
+                                                        <button onclick="blockunblock('MPOS','@item.HolidayDate')" type="button" class="btn green-button">Unblock</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button onclick="blockunblock('MPOS','@item.HolidayDate')" type="button" class="btn red-button">Blocked</button>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <button onclick="delet('@item.HolidayDate')" class="btnssl2233 custom-loading" data-loading-text="<i class='fa fa-spinner fa-spin'></i>" style="width:28px;height: 25px;background:transparent;border: 1px solid #bbb;">
+                                                        <img src="~/MainFrontDesign/images/delete.svg" style="width: 14px;display: block;margin: auto;">
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div><!--#tab-4-->
+
+                <div id="tab-5" class="tab-content2">
+                    <ul class="live_news_ul width100 float-left">
+                        <li class="one">
+                            <div class="custom-district">
+                                @Html.DropDownList("ddlUser", new List<SelectListItem>
+                                 {
+                                    new SelectListItem{ Text="All User",Value="All",},
+                                    new SelectListItem{Text="Master Distributor",Value="Master"},
+                                    new SelectListItem{Text="Distributor",Value="Distributor"},
+                                    new SelectListItem{Text="Retailer",Value="Retailer"},
+                                    new SelectListItem{Text="Outer News",Value="Outer"}
+                                  }, new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="two">
+                            <div class="custom-district">
+                                @Html.DropDownList("ddlType", new List<SelectListItem>
+                                {
+                                   new SelectListItem{ Text="Type Of Header",Value="",},
+                                   new SelectListItem{Text="Great News",Value="Great News"},
+                                   new SelectListItem{Text="Need Help",Value="Need Help"}
+                                 }, new { @class = "form-control" })
+                            </div>
+
+                        </li>
+                        <li class="three">
+                            <textarea id="txtmessage" name="txtmessage" class="form-control" placeholder="Enter Message"></textarea>
+                        </li>
+
+                        <li class="five">
+                            <button type="button" onclick="LiveNewschk()" class="btn special-iii btnssl2233" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Save</button>
+
+                        </li>
+
+                    </ul>
+                    <ul>
+                        <li>
+                            <label id="errr" style="color:red;"></label>
+                        </li>
+                    </ul>
+                    <div class="tab2-sam2-start2">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="LiveNewTbl">
+                                <thead>
+                                    <tr>
+                                        <th>Users</th>
+                                        <th>Header</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                        <th>DEL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Message_top.Count() > 0)
+                                    {
+                                        foreach (var item in Model.Message_top)
+                                        {
+                                            <tr>
+                                                <td>@item.users</td>
+                                                <td>@item.name</td>
+                                                <td>@item.message</td>
+
+                                                <td>
+                                                    <div class="onoffswitch status">
+                                                        @if (item.status == "Y")
+                                                        {
+                                                            <center>
+                                                                @*<a href="@Url.Action("blockmessage", "Home", new { id = item.idno })">*@
+                                                                <span class="costom-on" onclick="blockNews(@item.idno)">on</span>
+                                                                @*</a>*@
+                                                            </center>
+                                                        }
+                                                        else
+                                                        {
+                                                            <center>
+                                                                @*<a href="@Url.Action("blockmessage", "Home", new { id = item.idno })">*@
+                                                                <span class="custom-off" onclick="blockNews(@item.idno)">off</span>
+                                                                @*</a>*@
+                                                            </center>
+
+                                                        }
+
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <center class="btnssl2233 custom-loading" data-loading-text="<i class='fa fa-spinner fa-spin'></i>" style="width:28px;background:transparent;border: 1px solid #bbb;">
+                                                        @*<a href="@Url.Action("delMessage", "Home", new { id = item.idno })">*@
+                                                        <span onclick="delNews(@item.idno)">
+                                                            <img src="~/MainFrontDesign/images/delete.svg" style="width:16px;">
+                                                        </span>
+                                                        @*</a>*@
+                                                    </center>
+
+
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td><p style="font-size:22px;margin-top:20px;text-align:center;color:#e0dddd;font-weight:700;">No Data Found !</p></td>
+                                            <td></td>
+
+                                            <td></td>
+
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div><!--#tab-5-->
+
+            </div>
+            @* ======================================================================== *@
+        </div><!--.row-->
+    </div>
+</section>
+
+<link href="~/MainFrontDesign/css/datepicker.min.css" rel="stylesheet" />
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<script src="~/img/js/datepicker.min.js"></script>
+<script src="~/img/js/datepicker.en.js"></script>
+
+<script>
+    function delet(date) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Deleteholiday", "Home")',
+            data: { date: date },
+            success: function (data) {
+                        $("#divEmp").load(location.href + " #divEmp");
+            }
+        })
+    }
+    function blockunblock(type,date) {
+           $.ajax({
+            type: "POST",
+            url: '@Url.Action("Updateholiday", "Home")',
+            data: {type:type, date: date },
+            success: function (data) {
+                        $("#divEmp").load(location.href + " #divEmp");
+            }
+        })
+    }
+</script>
+
+<script>
+    function Success() {
+        $("#desc").val("");
+        $("#date").val("");
+        $("#divEmp").load(location.href + " #divEmp");
+    }
+</script>
+
+<script>
+
+    $('#Userform1').on('change', function () {
+        var responseId = $(this).val();
+        if (responseId == "Indivisual") {
+            document.getElementById("user").style.display = "block";
+        }
+        else {
+            document.getElementById("user").style.display = "none";
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SaveAll").click(function () {
+                     var optCode = []
+                     $("input:checkbox(:checked)").each(function () {
+                         if ($(this).prop('checked') == true) {
+                             optCode.push($(this).val() + ",Y");
+                         }
+                         if ($(this).prop('checked') == false) {
+                             optCode.push($(this).val() + ",N");
+                         }
+                     });
+                     //document.getElementById("loadermoney").style.display = "block";
+                     $.ajax({
+                         type: "POST",
+                         url: '@Url.Action("PushNotificationSave", "Home")',
+                         data: { 'ch': optCode },
+                         cache: false,
+                         dataType: 'json',
+                         async: true,
+                         success: function (data) {
+                             var pp = data.status;
+                             var mm = data.Message;
+
+                             if (pp == "Success") {
+                                 $.ajax({
+                                     type: "GET",
+                                     url: '@Url.Action("Check_UnchekPushNotification", "Home")',
+                                     cache: false,
+                                     dataType: 'html',
+                                     async: true,
+                                     success: function (data) {
+                                         var obj = JSON.parse(data);
+                                         for (var item in obj) {
+                                             var sts = obj[item].Status;
+                                             var name = obj[item].ServiceName;
+                                             if (sts == "Y") {
+                                                 $("#" + name + "").prop("checked", true);
+                                             }
+                                         }
+                                     }
+                                 });
+
+                             }
+                         }
+                     });
+                     return true;
+
+        });
+
+        });
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Check_UnchekPushNotification", "Home")',
+            cache: false,
+            dataType: 'html',
+            async: true,
+            success: function (data) {
+                var obj = JSON.parse(data);
+                for (var item in obj) {
+                    var sts = obj[item].Status;
+                    var name = obj[item].UserRole;
+                    if (sts == "Y") {
+                        $("#" + name + "").prop("checked", true);
+                    }
+                }
+            }
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".sweet-alert").addClass("fullbodydycolorbg");
+    });
+</script>
+@* For Calender *@
+<script>
+    // Create start date
+    var start = new Date(),
+        prevDay,
+        startHours = 9;
+
+    // 09:00 AM
+    start.setHours(24);
+    start.setMinutes(0);
+
+    // If today is Saturday or Sunday set 10:00 AM
+    if ([6, 0].indexOf(start.getDay()) != -1) {
+        start.setHours(24);
+        startHours = 9
+    }
+
+    $('.timepicker-actions-exmpl').datepicker({
+        timepicker: false,
+        language: 'en',
+        startDate: start,
+        minDate: new Date(),
+        onSelect: function (fd, d, picker) {
+            // Do nothing if selection was cleared
+            if (!d) return;
+
+            var day = d.getDay();
+
+            // Trigger only if date is changed
+            if (prevDay != undefined && prevDay == day) return;
+            prevDay = day;
+
+            // If chosen day is Saturday or Sunday when set
+            // hour value for weekends, else restore defaults
+            if (day == 6 || day == 0) {
+                picker.update({
+                    minHours: 24,
+                    maxHours: 24
+                })
+            } else {
+                picker.update({
+                    minHours: 24,
+                    maxHours: 24
+                })
+            }
+        }
+    })
+</script>
+<script>
+    function LiveNewschk() {
+        var ddlUser = $('#ddlUser').val();
+        var txtmessage = $('#txtmessage').val();
+        var ddlType = $('#ddlType').val();
+        if (txtmessage != "" && ddlType != "") {
+              $.ajax({
+            url: '@Url.Action("Message", "Home")',
+            type: 'POST',
+            data: { ddltop: ddlUser, txtmessage: txtmessage, txtname:ddlType },
+                  success: function (dlmresponse) {
+                   $('#errr').text("");
+                var dlmtblHtml = "";
+                var i = 0;
+                $.each(dlmresponse, function (a, b) {
+                    dlmtblHtml += "<tr><td style='display:none;'>" + b.idno + "</td>";
+                    dlmtblHtml += "<td>" + b.users + "</td>";
+                    dlmtblHtml += "<td>" + b.name + "</td>";
+                    dlmtblHtml += "<td>" + b.message + "</td>";
+                    dlmtblHtml += (b.status === "Y" ? "<td><div class='onoffswitch status'><span class='costom-on' onclick='blockNews(" + b.idno + ")'>" + "on" + "</span></div></td>" : "<td><div class='onoffswitch status'><span class='custom-off' onclick='blockNews(" + b.idno +")'>" + "off" + "</span></div></td>")
+                    dlmtblHtml += "<td><center class='btnssl2233 custom-loading' style='width: 28px; background: transparent; border: 1px solid #bbb;'><span onclick='delNews(" + b.idno +")'><img src='../../MainFrontDesign/images/delete.svg' style='width: 16px;'/></span></center</td></tr>";
+
+                    i++;
+                });
+                $('#LiveNewTbl > tbody').html(dlmtblHtml);
+            }
+          });
+        }
+        else {
+            $('#errr').text("Message and Header Are Required *");
+        }
+    }
+</script>
+<script>
+    function converttoDate(str) {
+        var date = new Date(str),
+            mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+            day = ("0" + date.getDate()).slice(-2),
+        return dd = [day, mnth, date.getFullYear()];
+    }
+
+
+
+
+</script>
+
+<script>
+ function delNews(id) {
+
+        $.ajax({
+            url: '@Url.Action("delMessage", "Home")',
+            type: 'POST',
+            data: { id: id },
+            cache: false,
+            success: function (dlmresponse) {
+                var dlmtblHtml = "";
+                var i = 0;
+                $.each(dlmresponse, function (a, b) {
+                    dlmtblHtml += "<tr><td style='display:none;'>" + b.idno + "</td>";
+                    dlmtblHtml += "<td>" + b.users + "</td>";
+                    dlmtblHtml += "<td>" + b.name + "</td>";
+                    dlmtblHtml += "<td>" + b.message + "</td>";
+                    dlmtblHtml += (b.status === "Y" ? "<td><div class='onoffswitch status'><span class='costom-on' onclick='blockNews(" + b.idno + ")'>" + "on" + "</span></div></td>" : "<td><div class='onoffswitch status'><span class='custom-off' onclick='blockNews(" + b.idno +")'>" + "off" + "</span></div></td>")
+                    dlmtblHtml += "<td><center class='btnssl2233 custom-loading' style='width: 28px; background: transparent; border: 1px solid #bbb;'><span onclick='delNews(" + b.idno +")'><img src='../../MainFrontDesign/images/delete.svg' style='width: 16px;'/></span></center</td></tr>";
+
+                    i++;
+                });
+                $('#LiveNewTbl > tbody').html(dlmtblHtml);
+            }
+        });
+    }
+
+
+
+    function blockNews(id) {
+        $.ajax({
+            url: '@Url.Action("blockmessage", "Home")',
+            type: 'POST',
+            data: { id: id },
+            cache: false,
+            success: function (dlmresponse) {
+                var dlmtblHtml = "";
+                var i = 0;
+                $.each(dlmresponse, function (a, b) {
+                    dlmtblHtml += "<tr><td style='display:none;'>" + b.idno + "</td>";
+                    dlmtblHtml += "<td>" + b.users + "</td>";
+                    dlmtblHtml += "<td>" + b.name + "</td>";
+                    dlmtblHtml += "<td>" + b.message + "</td>";
+                    dlmtblHtml += (b.status === "Y" ? "<td><div class='onoffswitch status'><span class='costom-on' onclick='blockNews(" + b.idno + ")'>" + "on" + "</span></div></td>" : "<td><div class='onoffswitch status'><span class='custom-off' onclick='blockNews(" + b.idno +")'>" + "off" + "</span></div></td>")
+                    dlmtblHtml += "<td><center class='btnssl2233 custom-loading' style='width: 28px; background: transparent; border: 1px solid #bbb;'><span onclick='delNews(" + b.idno +")'><img src='../../MainFrontDesign/images/delete.svg' style='width: 16px;'/></span></center</td></tr>";
+
+                    i++;
+                });
+                $('#LiveNewTbl > tbody').html(dlmtblHtml);
+            }
+        });
+    }
+</script>
+<script>
+    $("#PopupImageUpload").click(function () {
+
+        var files = $("#file").get(0).files;
+
+            var fileData = new FormData();
+
+            for (var i = 0; i < files.length; i++) {
+                fileData.append("file", files[i]);
+                fileData.append("headercontent", $('#headercontent').val());
+
+            }
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("PopupImageUpload", "Home")',
+            contentType: false,
+            processData: false,
+            data: fileData,
+            success: function (response) {
+
+                $('#DesktopPopUpImage').attr('src', "../.." + response[0].imageurl)
+                $('#headercontent').val('');
+                $('#file').val('');
+                //ToastrMessage();
+                //toastr.error('Desktop Popup Upload Successfully.');
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+});
+
+    function Delete_desktop(url) {
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "Json",
+            cache: false,
+            success: function (resp) {
+                $('#DesktopPopUpImage').attr('src', " ")
+
+                //ToastrMessage();
+                //toastr.error('Desktop Popup Deleted Successfully.');
+            }
+        });
+    }
+
+    function status_desktop(status) {
+        debugger
+        $.ajax({
+            url: '@Url.Action("Update_desktopsts", "Home")',
+            type: "POST",
+            data: { sts: status},
+            dataType: "Json",
+            cache: false,
+            success: function (data) {
+                $("#PopUpStatus").load(location.href + " #PopUpStatus");
+                //ToastrMessage();
+                //toastr.error('Desktop Popup Deleted Successfully.');
+            }
+        });
+    }
+</script>

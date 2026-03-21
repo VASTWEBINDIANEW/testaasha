@@ -1,0 +1,294 @@
+﻿
+@model IEnumerable<Vastwebmulti.Models.select_whitelabel_rem_pur_order_Result>
+@{
+    ViewBag.Title = "Orders Requests";
+    Layout = "~/Areas/WDealer/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    @using (Html.BeginForm("purcharge_request", "Home", FormMethod.Post))
+            {
+                        <div class="">
+                            <div class="col-md-7">
+                                <div class="form-group" style="margin-top: 2px;">
+                                    <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:-12px;">
+                                        <li class="active" style="color:#a79f9f; font-size:15px;font-weight:700;">Purchase Order Request Details</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-bottom:0px;">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-exchange"></i>
+                                        </span>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <center>
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;">
+                                        <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                        <span style="top:-2px;color:black;">Search</span>
+                                    </button>
+                                </center>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-18px;">
+                <div class="card">
+                    <div class="body">
+                        <div class="table-responsive" style="position:inherit;margin-top:-18px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead style="color:white;position:initial;" class="navbar">
+                                    <tr>
+                                        <th>Order&nbsp;No</th>
+                                        <th>Status</th>
+                                        <th>Retailer&nbsp;Info</th>
+                                        <th>₹&nbsp;Amount</th>
+                                        <th>Payment&nbsp;Mode</th>
+                                        <th>Action</th>
+                                        <th>Request&nbsp;Date</th>
+                                        <th>To&nbsp;Acc&nbsp;No</th>
+                                        <th>UtrNo/SlipNo</th>
+                                        <th>Comment</th>
+                                        <th>Screenshot </th>
+                                        <th>Response&nbsp;Date</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var color = "";
+                                        var stscolor = "";
+                                        if (item.type_.ToUpper() == "CASH")
+                                        {
+                                            color = "green";
+                                        }
+                                        if (item.type_.ToUpper() == "CREDIT")
+                                        {
+                                            color = "red";
+                                        }
+                                        if (item.sts == "Pending")
+                                        {
+                                            stscolor = "#FF9800";
+
+                                        }
+                                        if (item.sts == "APPROVED")
+                                        {
+                                            stscolor = "green";
+
+                                        }
+                                        if (item.sts == "REJECTED")
+                                        {
+                                            stscolor = "red";
+
+                                        }
+                                        <tr>
+
+                                            <td><p style="font-size:12px;">@item.orderno&nbsp;⇒&nbsp;<span style="color:@color;font-weight:600;">@item.type_.ToUpper()</span></p></td>
+                                            <td><p style="font-size:12px;text-align:center;"><span style="color:@stscolor;font-weight:600;">@item.sts.ToUpper()</span></p></td>
+                                            <td><p style="font-size:10px;font-weight:700;">@Html.DisplayFor(modelItem => item.RemEmail).ToString().ToUpper()</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.paymode).ToString().ToUpper()</p></td>
+                                            <td>
+                                                <div class="row">
+                                                    @if (item.sts == "Pending")
+                                                    {
+                                                        <div class="col-xs-6" style="margin-bottom:0px;">
+                                                            <center>
+                                                                <button type="button" name="type" onclick="return funin('@item.idno','APP')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa fa-check" style="color:green;"></li> </button>
+                                                            </center>
+                                                        </div>
+                                                        <div class="col-xs-6" style="margin-bottom:0px;">
+                                                            <center>
+                                                                <button type="button" name="type" onclick="return funin('@item.idno','REJ')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa  fa-ban" style="color:red;"></li> </button>
+                                                            </center>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.reqdate)</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.Toaccountno)</p></td>
+                                            <td>@Html.DisplayFor(modelItem => item.utrno).ToString().ToUpper()</td>
+                                            <td>@Html.DisplayFor(modelItem => item.details) </td>
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(item.Slip))
+                                                {
+                                                    <img src="@Url.Content("~/" + item.Slip)" height="60" width="60" />
+                                                }
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.responsedate) </td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot style="background-color:whitesmoke;">
+                                    <tr>
+                                        <td><p style="font-size:17px;">Total</p></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><p style="font-size:18px;text-align:center;">@Model.Sum(a => a.amount)</p></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header  navbar" style="position:initial;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="color:white;">Enter Comment</h4>
+            </div>
+            @using (Html.BeginForm("updatepurchage_rem", "Home", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <input type="text" id="id" name="id" class="form-control" style="display:none;" />
+                    <input type="text" id="type" name="type" class="form-control" style="display:none;" />
+                    <textarea id="txtcomment" name="txtcomment" class="form-control" required="" placeholder="Enter Comment"></textarea>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btn" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;">
+                        <span style="top:-2px;color:black;">Save Change</span>
+                    </button>
+                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                        <span style="top:-2px;color:black;">Close</span>
+                    </button>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+
+</script>
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    $(document).ready(function()
+    {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+    })
+</script>
+<!--Insert Popuop-->
+<script>
+    window.onload = function () {
+        var message = '@ViewData["successorder"]';
+        if (message != "" && message != null) {
+            swal("Good job!", message, "success");
+
+        }
+        var errormessage = '@ViewData["failedorder"]';
+        if (errormessage != "" && errormessage != null) {
+            swal("Oops!", errormessage, "error");
+
+        }
+
+    }
+</script>
+<script type="text/jscript">
+    $(function () {
+        var data = '@ViewData["show"]';
+        if (data != "") {
+            sweetAlert("Oops...", data, "error");
+        }
+        })
+
+
+</script>
+<script>
+    function funin(idno, status) {
+        var answer = confirm("ARE YOU SURE?")
+        if (answer) {
+            var id = $('#id').val(idno);
+            var type = $('#type').val(status);
+            $('#myModal').modal('show');
+                var txtcomment = $('#txtcomment').val();
+                var type = $('#type').val();
+                var id = $('#id').val();
+                return true;
+                  }
+           else {
+            return false;
+        }
+    }
+</script>
+
+

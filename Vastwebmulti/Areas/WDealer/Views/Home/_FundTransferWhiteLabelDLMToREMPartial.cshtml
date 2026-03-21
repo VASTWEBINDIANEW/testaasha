@@ -1,0 +1,286 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.WDealer.ViewModel.WhitelabelDealerfundtransfer
+@{ VastwebmultiEntities db = new VastwebmultiEntities(); }
+
+@{ decimal? runningTotal = 0M; decimal? Totalcharges = 0M; decimal? TotalNetTransfer = 0M; decimal? total = 0M; }
+@if (Model.Select_whitelabel_dealer_to_REM != null)
+{
+    <table id="tbldata" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Retailer Firm</th>
+                <th>Head</th>
+                <th>Payment&nbsp;Type</th>
+                <th>Total AMT</th>
+                <th>Charge</th>
+                @*
+                    <th>CR Adjust</th>*@
+                <th>Net T/F</th>
+
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.Select_whitelabel_dealer_to_REM.OrderByDescending(a => a.RechargeDate))
+            {
+                runningTotal = Model.Select_whitelabel_dealer_to_REM.Sum(x => Convert.ToDecimal(x.Balance));
+                //Totalcharges += item.commistion;
+                // var charge = item.Commision == null ? 0 : item.Commision;
+                Totalcharges = Model.Select_whitelabel_dealer_to_REM.Sum(x => x.commission);
+                TotalNetTransfer = Model.Select_whitelabel_dealer_to_REM.Sum(x => Convert.ToDecimal(x.finalbal));
+
+
+                var charge = item.commission == null ? 0 : item.commission;
+                var masterfarmname = item.WL_remfrm == null || item.WL_remfrm == "" ? item.WL_remfrm : item.WL_remfrm;
+
+                <tr data-toggle="modal" onclick="tablerowshowdetail('Dealer','@masterfarmname','@item.Head','@item.bal_type','@item.Balance','@charge','@item.cr','@item.finalbal','@item.remain_pre_amount','@item.remain_amount','@item.cr','@item.oldcrbalance','@item.comment','@item.finalbal','@item.RechargeDate','@masterfarmname','@item.CollectionBy','@item.remain_pre_amount_dealer','@item.remain_amount_dealer')" data-target="#m-d-fund-transfer" style="background:no-repeat;">
+
+
+                    <td><p style="margin-top:6px;">  @masterfarmname</p></td>
+                    <td>@item.Head</td>
+
+                    <td><p style="margin-top:6px;">@item.bal_type</p></td>
+
+                    <td><p style="margin-top:6px;">@item.Balance</p></td>
+                    @*
+                        <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+                    @if (item.commission == null)
+                    {
+                        <td><p style="margin-top:6px;"> <span>0.00</span>@charge</p></td>
+
+                    }
+                    else
+                    {
+                        <td><p style="margin-top:6px;">@charge</p></td>
+                    }
+
+                    @*
+                        <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                    @*
+                        <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                    <td><p style="margin-top:6px;">@item.finalbal</p></td>
+                    @*
+                        <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                    <td><p style="margin-top:6px;">@item.RechargeDate</p></td>
+
+                </tr>
+            }
+            <tr><td colspan="3">TOTAL</td><td>@runningTotal</td><td>@Totalcharges</td><td>@TotalNetTransfer</td><td></td></tr>
+        </tbody>
+    </table>
+
+}
+
+else if (Model.Wl_dlm_purchase_order_send != null)
+{
+    if (Model.Wl_dlm_purchase_order_send != null)
+    {
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead style="background-color:whitesmoke;">
+
+
+                <tr>
+
+                    <th>Status </th>
+                    <th>Order&nbsp;No</th>
+
+                    <th>Request To </th>
+                    <th><center>Amount</center></th>
+                    <th><center>Charge</center></th>
+                    <th>PayMent&nbsp;Mode</th>
+                    @*<th>To&nbsp;Acc&nbsp;No </th>*@
+                    @*<th>UtrNo/SlipNo </th>*@
+                    <th>Request&nbsp;Date </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Wl_dlm_purchase_order_send)
+                {
+
+
+                    <tr data-toggle="modal" onclick="tablerowshowdetail22('@item.FramName','@item.orderno','@item.sts','@item.paymode','@item.utrno','@item.details','@item.amount','@item.reqdate','@item.reqdate','@item.comm','@item.amount','Purchase Order')" data-target="#m-d-fund-transfer12" style="background:no-repeat;">
+
+                        <td>@item.sts</td>
+                        <td><p style="margin-top:6px;">  @item.orderno</td>
+
+                        <td><p style="margin-top:6px;">@item.FramName</p></td>
+                        <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p> </td>
+                        <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.comm)</p> </td>
+                        <td>@item.paymode.ToUpper()</td>
+                        <td>@Html.DisplayFor(modelItem => item.reqdate)<img src="~/ashok-images/rightaeps.svg" style="width:13px;cursor:pointer;" /></td>
+
+
+                    </tr>
+
+
+                }
+                <tr><td colspan="3">TOTAL</td><td>@runningTotal</td><td>@Totalcharges</td><td colspan="2"></td></tr>
+            </tbody>
+        </table>
+
+
+    }
+}
+
+
+else if (Model.Whitelabel_rem_pur_recive != null)
+{
+
+    <table class="table table-bordered table-striped table-hover">
+        <thead style="background-color:whitesmoke;">
+
+
+            <tr>
+
+                <th>Status </th>
+                <th>Order&nbsp;No</th>
+
+                <th>Request From </th>
+                <th><center>Amount</center></th>
+                <th><center>Charge</center></th>
+                <th>PayMent&nbsp;Mode</th>
+                @*<th>To&nbsp;Acc&nbsp;No </th>*@
+                @*<th>UtrNo/SlipNo </th>*@
+                <th>Request&nbsp;Date </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Whitelabel_rem_pur_recive)
+            {
+                runningTotal = Model.Whitelabel_rem_pur_recive.Sum(x => Convert.ToDecimal(x.amount));
+                //Totalcharges += item.commistion;
+                // var charge = item.Commision == null ? 0 : item.Commision;
+                Totalcharges = Model.Whitelabel_rem_pur_recive.Sum(x => x.comm);
+
+
+
+                <tr data-toggle="modal" onclick="tablerowshowdetailorderrecive('@item.RemEmail','@item.orderno','@item.sts','@item.paymode','@item.utrno','@item.details','@item.amount','@item.reqdate','@item.responsedate','@item.comm','@item.amount','@item.sts','@item.idno')" data-target="#m-d-fund-orderRecive" style="background:no-repeat;">
+
+                    <td>@item.sts</td>
+                    <td><p style="margin-top:6px;">  @item.orderno</td>
+
+                    <td><p style="margin-top:6px;">@item.RemEmail</p></td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p> </td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.comm)</p> </td>
+                    <td>@item.paymode.ToUpper()</td>
+                    <td>@Html.DisplayFor(modelItem => item.reqdate)<img src="~/ashok-images/rightaeps.svg" style="width:13px;cursor:pointer;" /></td>
+                    @*<td>
+                            <div class="row">
+                                @if (item.sts == "Pending")
+                                {
+                                    <div class="col-xs-6" style="margin-bottom:0px;">
+                                        <center>
+                                            <button type="button" name="type" onclick="return funin('@item.id','APP')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa fa-check" style="color:green;"></li> </button>
+                                        </center>
+                                    </div>
+                                    <div class="col-xs-6" style="margin-bottom:0px;">
+                                        <center>
+                                            <button type="button" name="type" onclick="return funin('@item.id','REJ')" style="background:transparent;border:none;font-size:20px;margin-top:-6px;"><li class="fa  fa-ban" style="color:red;"></li> </button>
+                                        </center>
+                                    </div>
+                                }
+                                else
+                                {
+
+                                }
+                            </div>
+                        </td>*@
+
+                </tr>
+
+
+            }
+            <tr><td colspan="3">TOTAL</td><td>@runningTotal</td><td>@Totalcharges</td><td colspan="2"></td></tr>
+        </tbody>
+    </table>
+
+
+}
+
+else if (Model.WL_dlm_bal_recived_reports != null)
+{
+    <table id="tbldata" class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Admin Firm Name</th>
+                <th>Head</th>
+                <th>Payment&nbsp;Type</th>
+                <th>Total AMT</th>
+                <th>Charge</th>
+                @*
+                    <th>CR Adjust</th>*@
+                <th>Net T/F</th>
+
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.WL_dlm_bal_recived_reports.OrderByDescending(a => a.transfer_date))
+            {
+
+                runningTotal = Model.WL_dlm_bal_recived_reports.Sum(x => Convert.ToDecimal(x.balance));
+                //Totalcharges += item.commistion;
+                // var charge = item.Commision == null ? 0 : item.Commision;
+                Totalcharges = Model.WL_dlm_bal_recived_reports.Sum(x => x.Commission);
+                TotalNetTransfer = Model.WL_dlm_bal_recived_reports.Sum(x => Convert.ToDecimal(x.Fundvalue));
+
+                var charge = item.Commission == null ? 0 : item.Commission;
+                var masterfarmname = db.Admin_details.FirstOrDefault().Companyname; ;
+
+                <tr data-toggle="modal" onclick="tablerowshowdetail('FUNDRECIVEFROMSDMIN','@masterfarmname','@item.Head','@item.bal_type','@item.balance','@charge','@item.cr','@item.Fundvalue','@item.dealerpre','@item.dealerpost','@item.cr','@item.oldcrbalance','@item.comment','@item.Fundvalue','@item.transfer_date','@masterfarmname','@item.CollectionBy','@item.dealerpre','@item.dealerpost')" data-target="#m-d-fund-transfer" style="background:no-repeat;">
+
+
+                    <td><p style="margin-top:6px;">  @masterfarmname</p></td>
+                    <td>@item.Head</td>
+
+                    <td><p style="margin-top:6px;">@item.bal_type</p></td>
+
+                    <td><p style="margin-top:6px;">@item.balance</p></td>
+                    @*
+                        <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+                    @if (item.Commission == null)
+                    {
+                        <td><p style="margin-top:6px;"> <span>0.00</span>@charge</p></td>
+
+                    }
+                    else
+                    {
+                        <td><p style="margin-top:6px;">@charge</p></td>
+                    }
+
+                    @*
+                        <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                    @*
+                        <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                    <td><p style="margin-top:6px;">@item.Fundvalue</p></td>
+                    @*
+                        <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                    <td><p style="margin-top:6px;">@item.transfer_date</p></td>
+
+                </tr>
+            }
+            <tr><td colspan="3">TOTAL</td><td>@runningTotal</td><td>@Totalcharges</td><td>@TotalNetTransfer</td><td></td></tr>
+        </tbody>
+    </table>
+
+}
+@{
+
+    var message = Model.message;
+    if (!string.IsNullOrEmpty(message))
+    {
+
+        <script type="text/javascript">
+         ToastrMessage();
+            toastr.warning('@message');
+
+        </script>
+    }
+}

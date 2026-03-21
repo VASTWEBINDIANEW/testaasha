@@ -1,0 +1,128 @@
+﻿@model Vastwebmulti.Areas.WRetailer.ViewModels.ProductDetails
+
+
+<div class="card">
+    <div class="header">
+        <div class="col-md-12">
+                    <div class="row clearfix">
+                        @using (Html.BeginForm("Index", "ECommerce"))
+                        {
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="material-icons">search</i>
+                                </span>
+                                <div class="form-line">
+                                    <input type="text" name="txtSearch" id="txtSearch"class="form-control" placeholder="Search product here">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <div>
+                                    <input type="submit" id="btnSearchSubmit" class="btn bg-primary btn-block btn-lg waves-effect" value="Search" style="margin-left:-14px;">
+                                </div>
+                            </div>
+                        </div>
+                        }
+                        <div class="col-md-2">
+                            <div class="info-box" onclick="javascript: location.href = '@Url.Action("viewCart")'" style="margin-bottom:0px;height:38px;">
+                                <div class="icon bg-red">
+                                    <i class="material-icons" style="font-size: 39px;line-height: 42px;">shopping_cart</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top:-4px;">CART ITEMS</div>
+                                    @if (Model.itemsInCart > 0)
+                                    {
+                                        <div class="number count-to" style="text-align: center;">@Model.itemsInCart</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="number count-to" style="text-align: center;">0</div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="" onclick="javascript: location.href = '@Url.Action("Transaction")'" style="margin-bottom:0px;height:38px;">
+                                <button type="button" class="btn bg-primary waves-effect">
+                                    <i class="material-icons">history</i>
+                                    <span>Transactions</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                    </div>
+        </div>
+        <br />
+        <h2>
+            @if (Model.CataTitle != null && !string.IsNullOrWhiteSpace(Model.CataTitle))
+            {
+                <span id="topProduct">
+                    @Model.CataTitle
+                </span>
+            }
+            else
+            {
+            <span id="topProduct">
+                
+            Top Products
+            </span>
+            }
+            @*<small>With a bit of extra markup, it's possible to add any kind of HTML content like headings, paragraphs, or buttons into thumbnails.</small>*@
+        </h2>
+        <ul class="header-dropdown m-r--5">
+            <li class="dropdown">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                    <i class="material-icons" style="font-size:36px;">more_vert</i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="@Url.Action("Index",new { SortBy = "Date"})" class="waves-effect waves-block">Sort by New</a></li>
+                    <li><a href="@Url.Action("Index",new { SortBy = "PriceLow"})" class="waves-effect waves-block">Sort by Low Price</a></li>
+                    <li><a href="@Url.Action("Index",new { SortBy = "PriceHigh"})" class="waves-effect waves-block">Sort by High Price</a></li>
+                    <li>@*<a href="javascript:void(0);" class="waves-effect waves-block">sort by ,filter by etc.</a>*@</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="body">
+        <div class="row">
+           
+                @if (Model.lstProducts != null && Model.lstProducts.Count > 0)
+                {
+                    foreach (var product in Model.lstProducts)
+                    {
+                <div class="col-sm-6 col-md-3">
+                    <div class="thumbnail">
+                        <div class="=image">
+                            <img class="object-fit_scale-down" src="@Url.Content("~" + product.Photo)" />
+                        </div>
+                        <div class="caption" style="text-align:center;">
+                            <h3 class="stringTrucateWithEllipsis">@product.Name</h3>
+                            <p class="stringTrucateWithEllipsis">
+                                @product.ShortDescription
+                            </p>
+                            <p>
+                               <span style="text-decoration:line-through;">MRP : @string.Format("{0:C2}", product.ListPrice)</span>  PRICE : @string.Format("{0:C2}", product.StandardPrice)
+                            </p>
+                            <p>
+                                <a href="@Url.Action("ProductView",new { id = product.ProductID})" target="_blank" class="btn btn-primary waves-effect" role="button">
+                                <span><i class="material-icons">add_shopping_cart</i></span> Add to Cart</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                    }
+                 }
+                else
+                {
+                    @Html.Partial("NoData")
+                }
+            
+        </div>
+    </div>
+</div>
+
+

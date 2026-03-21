@@ -1,0 +1,1351 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.GatewayPayment
+@using (Ajax.BeginForm("_UserPaymentGatewaySlab", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess1", OnFailure = "onfailed", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+{
+    <input id="btnsubmituser" type="submit" value="Update For Existing Users" class="btn  waves-effect" style="display:none;" />
+    <input id="btnsubmitusercommon" type="submit" name="Button" value="Update Existing & New Users" class="btn  waves-effect" style="display:none;" />
+    <input id="btnsubmitusercommondlmrem" type="submit" name="Button" value="Update Existing & New Users" class="btn  waves-effect" style="display:none;" />
+    @Html.HiddenFor(m => m.role)
+    <div class="row clearfix" style="margin-right:0px;">
+        <div class="col-md-12">
+            <div class="slab-master-block">
+                <div class="slab-master-block-left">
+                    <div id="allshow" class="row">
+                        <div class="col-md-12" style="padding-right:20px;">
+                            <div class="custom-district-img">
+                                <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                            </div>
+                            @Html.DropDownList("ddlUserId", Model.UserId, "All Users", new { @class = "for-select2 form-control", @onchange = "ddlUserIdChange()" })
+                        </div>
+                    </div>
+                    <div id="retailerdrop" class="row" style="display:none;">
+                        <div class="col-md-6" style="padding-right:0px;">
+                            <div>
+                                <div class="custom-district-img">
+                                    <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                                </div>
+                                @Html.DropDownList("ddldealer", Model.UserId, "All Distributor", new { @class = "for-select2 form-control", @onchange = "ddlretailerid()" })
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="padding-left:5px;padding-right:20px;">
+                            <div>
+                                <div class="custom-district-img">
+                                    <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                                </div>
+                                @Html.DropDownList("ddlUserIdrem", Model.Retailerid, "All Retailer", new { @class = "for-select2 form-control", @onchange = "ddlUserIdChangerem()" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slab-master-block-right">
+                    <div id="slab-master-message" class="slab-master-message slab-master-message-show" style="display: none;">
+                        <p>  If you edit the slabs of all the master distributors, you are given a data view of the common slabs.</p>
+                    </div>
+                    <div id="slab-master-detail" class="slab-master-detail slab-master-detail-hide" style="display: block;">
+                        <div class="row clearfix">
+
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon">
+                                    <img src="~/AdminDesign/images/user.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Name" value="@Model.Name">
+
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon" style="border-left: 1px solid #bbb;">
+                                    <img src="~/AdminDesign/images/number.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Registered Number" value="@Model.Phone">
+
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon" style="border-left: 1px solid #bbb;">
+                                    <img src="~/AdminDesign/images/email.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Registered Mail" value="@Model.Email">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slab-table">
+        <table class="table table-bordered third-design-table">
+            <thead class="navbar" style="position:initial;">
+                <tr>
+                    <th rowspan="2">USER&nbsp;ID </th>
+                    <th colspan="3" style="text-align:center;">Credit&nbsp;Card Charge/Limit</th>
+                    <th colspan="3" style="text-align:center">Debit&nbsp;Card Charge/Limit</th>
+                    <th colspan="4" style="text-align:center">Net&nbsp;Banking Charge/Limit</th>
+                    <th colspan="2" style="text-align:center">Wallet Charge/Limit</th>
+                    <th colspan="2" style="text-align:center">UPI Charge/Limit</th>
+                </tr>
+                <tr>
+                    <!----Retailer---->
+                    @*<td style="border-left: 1px; border-color: #aaa4a4;">Status</td>*@
+                    <td style="border-left: 1px; border-color: #aaa4a4;">
+                        Charge<sup>%</sup>
+                        <br /> <span style="font-size:10px; color:red;">Exclude&nbsp;GST</span>
+                    </td>
+                    <td style="border-left: 1px; border-color: #aaa4a4;">Max<sup>₹</sup></td>
+                    <td style="border-left: 1px; border-color: #aaa4a4;">Settlement</td>
+                    <!----Dealer---->
+                    @*<td style="border-left: 1px; border-color: #aaa4a4;">Status</td>*@
+                <td style="border-left: 1px; border-color: #aaa4a4;">
+                    UpTo 2K<sup>%</sup>
+                    <br /> <span style="font-size:10px; color:red;">Exclude&nbsp;GST</span>
+                </td>
+                <td style="border-left: 1px; border-color: #aaa4a4;">
+                    Above 2K<sup>%</sup>
+                    <br /> <span style="font-size:10px; color:red;">Exclude&nbsp;GST</span>
+                </td>
+                    <td style="border-left: 1px; border-color: #aaa4a4;">Max<sup>₹</sup></td>
+                    <!----Net Banking---->
+                    @*   <td style="border-left: 1px; border-color: #aaa4a4;">Status</td>*@
+                <td style="border-left: 1px; border-color: #aaa4a4;">
+                    HDFC/ICICI<sup>%</sup>
+                    <br /> <span style="font-size:10px; color:red;">Exclude&nbsp;GST</span>
+                </td>
+                <td style="border-left: 1px; border-color: #aaa4a4;">
+                    AXIS/SBI/KOTAK<sup>%</sup>
+                    <br /> <span style="font-size:10px; color:red;">Exclude&nbsp;GST</span>
+                </td>
+                <td style="border-left: 1px; border-color: #aaa4a4;">
+                    Others<sup>₹</sup>
+                    <br /> <span style="font-size:10px; color:red;">Exclude&nbsp;GST</span>
+                </td>
+                    <td style="border-left: 1px; border-color: #aaa4a4;">Max<sup>₹</sup></td>
+                    <!----Wallet---->
+                    @*   <td style="border-left: 1px; border-color: #aaa4a4;">Status</td>*@
+                <td style="border-left: 1px; border-color: #aaa4a4;">
+                    Charge<sup>%</sup>
+                    <br /> <span style="font-size:10px; color:red;">Exclude&nbsp;GST</span>
+                </td>
+                    <td style="border-left: 1px; border-color: #aaa4a4;">Max<sup>₹</sup></td>
+                    <!----UPI---->
+                    @*   <td style="border-left: 1px; border-color: #aaa4a4;">Status</td>*@
+                <td style="border-left: 1px; border-color: #aaa4a4;">
+                    Charge<sup>%</sup>
+                    <br /> <span style="font-size:10px; color:red;">Exclude&nbsp;GST</span>
+                </td>
+                    <td style="border-left: 1px; border-color: #aaa4a4;">Max<sup>₹</sup></td>
+                </tr>
+            </thead>
+            <tbody id="tbodyshow">
+                <!--Master-->
+                @if (Model.Materuser != null)
+                {
+                    for (int i = 0; i < Model.Materuser.Count; i++)
+                    {
+                        @Html.HiddenFor(a => a.Materuser[i].idno)
+                        string email = string.Empty;
+                        using (Vastwebmulti.Models.VastwebmultiEntities db = new Vastwebmulti.Models.VastwebmultiEntities())
+                        {
+                            var id = Model.Materuser[i].userid;
+                            email = db.Users.Where(a => a.UserId.ToLower() == id.ToLower()).FirstOrDefault().Email;
+                        }
+
+                        <tr>
+                            <td>@email</td>
+                            <td>
+                                @Model.Materuser[i].creditcard
+                                @if (Model.Materuser[i].CreditCardsts == true)
+                                {
+                                    <i class="fa fa-toggle-on" style="color:green"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-toggle-off" style="color:red"></i>
+                                }
+                            </td>
+                            <td>@Model.Materuser[i].creditcardmax</td>
+                            <td>@Model.Materuser[i].creditsettlement</td>
+                            <td>
+                                @Model.Materuser[i].debitupto2000
+                                @if (Model.Materuser[i].DebitCardsts == true)
+                                {
+                                    <i class="fa fa-toggle-on" style="color:green"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-toggle-off" style="color:red"></i>
+                                }
+                            </td>
+                            <td>@Model.Materuser[i].debitabove2000</td>
+                            <td>@Model.Materuser[i].debitmax</td>
+                            <td>
+                                @Model.Materuser[i].netbanking
+                                @if (Model.Materuser[i].netbankingsts == true)
+                                {
+                                    <i class="fa fa-toggle-on" style="color:green"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-toggle-off" style="color:red"></i>
+                                }
+                            </td>
+                            <td>@Model.Materuser[i].axis</td>
+                            <td>@Model.Materuser[i].others</td>
+                            <td>@Model.Materuser[i].netbankmax</td>
+                            <td>
+                                @Model.Materuser[i].wallet
+                                @if (Model.Materuser[i].walletsts == true)
+                                {
+                                    <i class="fa fa-toggle-on" style="color:green"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-toggle-off" style="color:red"></i>
+                                }
+                            </td>
+                            <td>@Model.Materuser[i].walletmax</td>
+                            <td>
+                                @Model.Materuser[i].UPI
+                                @if (Model.Materuser[i].upists == true)
+                                {
+                                    <i class="fa fa-toggle-on" style="color:green"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-toggle-off" style="color:red"></i>
+                                }
+                            </td>
+                            <td>@Model.Materuser[i].upimax</td>
+                        </tr>
+
+                    }
+                }
+                <!--End Master-->
+                <!--Dealer-->
+                @if (Model.Dealeruser != null)
+                {
+                    for (int i = 0; i < Model.Dealeruser.Count; i++)
+                    {
+
+                        @Html.HiddenFor(a => a.Dealeruser[i].idno)
+
+                        string email = string.Empty;
+                        using (Vastwebmulti.Models.VastwebmultiEntities db = new Vastwebmulti.Models.VastwebmultiEntities())
+                        {
+                            var id = Model.Dealeruser[i].userid;
+                            email = db.Users.Where(a => a.UserId.ToLower() == id.ToLower()).FirstOrDefault().Email;
+                        }
+
+            <tr>
+                <td>@email</td>
+                <td>
+                    @Model.Dealeruser[i].creditcard
+                    @if (Model.Dealeruser[i].CreditCardsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Dealeruser[i].creditcardmax</td>
+                <td>@Model.Dealeruser[i].creditsettlement</td>
+                <td>
+                    @Model.Dealeruser[i].debitupto2000
+                    @if (Model.Dealeruser[i].DebitCardsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Dealeruser[i].debitabove2000</td>
+                <td>@Model.Dealeruser[i].debitmax</td>
+                <td>
+                    @Model.Dealeruser[i].netbanking
+                    @if (Model.Dealeruser[i].netbankingsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Dealeruser[i].axis</td>
+                <td>@Model.Dealeruser[i].others</td>
+                <td>@Model.Dealeruser[i].netbankmax</td>
+                <td>
+                    @Model.Dealeruser[i].wallet
+                    @if (Model.Dealeruser[i].walletsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Dealeruser[i].walletmax</td>
+                <td>
+                    @Model.Dealeruser[i].UPI
+                    @if (Model.Dealeruser[i].upists == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Dealeruser[i].upimax</td>
+            </tr>
+
+
+                    }
+                }
+                <!--End Dealer-->
+                <!--Retailer-->
+                @if (Model.Retaileruser != null)
+                {
+                    for (int i = 0; i < Model.Retaileruser.Count; i++)
+                    {
+
+                        @Html.HiddenFor(a => a.Retaileruser[i].idno)
+
+                        string email = string.Empty;
+                        using (Vastwebmulti.Models.VastwebmultiEntities db = new Vastwebmulti.Models.VastwebmultiEntities())
+                        {
+                            var id = Model.Retaileruser[i].userid;
+
+                            var emailchk = db.Users.Where(a => a.UserId.ToLower() == id.ToLower()).FirstOrDefault();
+                            if (emailchk != null)
+                            {
+                                email = emailchk.Email;
+                            }
+                        }
+                        if (email != "")
+                        {
+            <tr>
+                <td>@email</td>
+                <td>
+                    @Model.Retaileruser[i].creditcard
+                    @if (Model.Retaileruser[i].CreditCardsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Retaileruser[i].creditcardmax</td>
+                <td>@Model.Retaileruser[i].creditsettlement</td>
+                <td>
+                    @Model.Retaileruser[i].debitupto2000
+                    @if (Model.Retaileruser[i].DebitCardsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Retaileruser[i].debitabove2000</td>
+                <td>@Model.Retaileruser[i].debitmax</td>
+                <td>
+                    @Model.Retaileruser[i].netbanking
+                    @if (Model.Retaileruser[i].netbankingsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Retaileruser[i].axis</td>
+                <td>@Model.Retaileruser[i].others</td>
+                <td>@Model.Retaileruser[i].netbankmax</td>
+                <td>
+                    @Model.Retaileruser[i].wallet
+                    @if (Model.Retaileruser[i].walletsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Retaileruser[i].walletmax</td>
+                <td>
+                    @Model.Retaileruser[i].UPI
+                    @if (Model.Retaileruser[i].upists == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.Retaileruser[i].upimax</td>
+            </tr>
+                        }
+                    }
+                }
+                <!--End Retailer-->
+                <!--API-->
+                @if (Model.APIuser != null)
+                {
+                    for (int i = 0; i < Model.APIuser.Count; i++)
+                    {
+                        @Html.HiddenFor(a => a.APIuser[i].idno)
+                        string email = string.Empty;
+                        using (Vastwebmulti.Models.VastwebmultiEntities db = new Vastwebmulti.Models.VastwebmultiEntities())
+                        {
+                            var id = Model.APIuser[i].userid;
+                            email = db.Users.Where(a => a.UserId.ToLower() == id.ToLower()).FirstOrDefault().Email;
+                        }
+
+            <tr>
+                <td>@email</td>
+                <td>
+                    @Model.APIuser[i].creditcard
+                    @if (Model.APIuser[i].CreditCardsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.APIuser[i].creditcardmax</td>
+                <td>@Model.APIuser[i].creditsettlement</td>
+                <td>
+                    @Model.APIuser[i].debitupto2000
+                    @if (Model.APIuser[i].DebitCardsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.APIuser[i].debitabove2000</td>
+                <td>@Model.APIuser[i].debitmax</td>
+                <td>
+                    @Model.APIuser[i].netbanking
+                    @if (Model.APIuser[i].netbankingsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.APIuser[i].axis</td>
+                <td>@Model.APIuser[i].others</td>
+                <td>@Model.APIuser[i].netbankmax</td>
+                <td>
+                    @Model.APIuser[i].wallet
+                    @if (Model.APIuser[i].walletsts == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.APIuser[i].walletmax</td>
+                <td>
+                    @Model.APIuser[i].UPI
+                    @if (Model.APIuser[i].upists == true)
+                    {
+                        <i class="fa fa-toggle-on" style="color:green"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-toggle-off" style="color:red"></i>
+                    }
+                </td>
+                <td>@Model.APIuser[i].upimax</td>
+            </tr>
+
+                    }
+                }
+                <!--End API-->
+            </tbody>
+            <tbody id="tbodyedit" style="display:none;">
+                <!--Master-->
+                @if (Model.Materuser != null)
+                {
+                    for (int i = 0; i < Model.Materuser.Count; i++)
+                    {
+                        string email = string.Empty;
+                        using (Vastwebmulti.Models.VastwebmultiEntities db = new Vastwebmulti.Models.VastwebmultiEntities())
+                        {
+                            var id = Model.Materuser[i].userid;
+                            email = db.Users.Where(a => a.UserId.ToLower() == id.ToLower()).FirstOrDefault().Email;
+                        }
+                <tr>
+                    @Html.HiddenFor(a => a.Materuser[i].idno)
+                    <td>  @Html.EditorFor(a => a.Materuser[i].userid, new { htmlAttributes = new { @style = "width:80px !important", @readonly = true } })</td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.Materuser[i].creditcard, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].creditcard)
+
+                        @Html.DropDownListFor(m => m.Materuser[i].CreditCardsts, new SelectList(new[]
+                         {
+                            new { Value = true, Text = "ON" },
+                            new { Value = false, Text = "OFF" },
+                         }, "Value", "Text", Model.Materuser[i].CreditCardsts))
+
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Materuser[i].creditcardmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].creditcardmax)
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.Materuser[i].creditsettlement, new SelectList(new[]
+                          {
+                             new { Value = "Live" , Text = "Live" },
+                             new { Value = "T+1", Text = "T+1" },
+                          }, "Value", "Text", Model.Materuser[i].creditsettlement))
+                    </td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.Materuser[i].debitupto2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].debitupto2000)
+                        @Html.DropDownListFor(m => m.Materuser[i].DebitCardsts, new SelectList(new[]
+                        {
+                          new { Value =true, Text = "ON" },
+                          new { Value = false, Text = "OFF" },
+                        }, "Value", "Text", Model.Materuser[i].DebitCardsts))
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Materuser[i].debitabove2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].debitabove2000)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Materuser[i].debitmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].debitmax)
+                    </td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.Materuser[i].netbanking, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].netbanking)
+                        @Html.DropDownListFor(m => m.Materuser[i].netbankingsts, new SelectList(new[]
+                        {
+                          new { Value = true, Text = "ON" },
+                          new { Value = false, Text = "OFF" },
+                        }, "Value", "Text", Model.Materuser[i].netbankingsts))
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Materuser[i].axis, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].axis)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Materuser[i].others, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].others)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Materuser[i].netbankmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].netbankmax)
+                    </td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.Materuser[i].wallet, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].wallet)
+                        @Html.DropDownListFor(m => m.Materuser[i].walletsts, new SelectList(new[]
+                        {
+                                new { Value = true, Text = "ON" },
+                          new { Value = false, Text = "OFF" },
+                        }, "Value", "Text", Model.Materuser[i].walletsts))
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Materuser[i].walletmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].walletmax)
+                    </td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.Materuser[i].UPI, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].UPI)
+                        @Html.DropDownListFor(m => m.Materuser[i].upists, new SelectList(new[]
+                        {
+                              new { Value = true, Text = "ON" },
+                          new { Value = false, Text = "OFF" },
+                        }, "Value", "Text", Model.Materuser[i].upists))
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.Materuser[i].upimax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.Materuser[i].upimax)
+                    </td>
+                </tr>
+                    }
+                }
+                <!--End Master-->
+                <!--Dealer-->
+                @if (Model.Dealeruser != null)
+                {
+                    for (int i = 0; i < Model.Dealeruser.Count; i++)
+                    {
+                        string email = string.Empty;
+                        using (Vastwebmulti.Models.VastwebmultiEntities db = new Vastwebmulti.Models.VastwebmultiEntities())
+                        {
+                            var id = Model.Dealeruser[i].userid;
+                            email = db.Users.Where(a => a.UserId.ToLower() == id.ToLower()).FirstOrDefault().Email;
+                        }
+
+            <tr>
+                @Html.HiddenFor(a => a.Dealeruser[i].idno)
+                <td>  @Html.EditorFor(a => a.Dealeruser[i].userid, new { htmlAttributes = new { @style = "width:80px !important", @readonly = true } })</td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Dealeruser[i].creditcard, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].creditcard)
+
+                    @Html.DropDownListFor(m => m.Dealeruser[i].CreditCardsts, new SelectList(new[]
+                     {
+                        new { Value = true, Text = "ON" },
+                        new { Value = false, Text = "OFF" },
+                     }, "Value", "Text", Model.Dealeruser[i].CreditCardsts))
+
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Dealeruser[i].creditcardmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].creditcardmax)
+                </td>
+                <td>
+                    @Html.DropDownListFor(m => m.Dealeruser[i].creditsettlement, new SelectList(new[]
+                      {
+                         new { Value = "Live" , Text = "Live" },
+                         new { Value = "T+1", Text = "T+1" },
+                      }, "Value", "Text", Model.Dealeruser[i].creditsettlement))
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Dealeruser[i].debitupto2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].debitupto2000)
+                    @Html.DropDownListFor(m => m.Dealeruser[i].DebitCardsts, new SelectList(new[]
+                    {
+                      new { Value =true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.Dealeruser[i].DebitCardsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Dealeruser[i].debitabove2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].debitabove2000)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Dealeruser[i].debitmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].debitmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Dealeruser[i].netbanking, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].netbanking)
+                    @Html.DropDownListFor(m => m.Dealeruser[i].netbankingsts, new SelectList(new[]
+                    {
+                      new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.Dealeruser[i].netbankingsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Dealeruser[i].axis, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].axis)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Dealeruser[i].others, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].others)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Dealeruser[i].netbankmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].netbankmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Dealeruser[i].wallet, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].wallet)
+                    @Html.DropDownListFor(m => m.Dealeruser[i].walletsts, new SelectList(new[]
+                    {
+                            new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.Dealeruser[i].walletsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Dealeruser[i].walletmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].walletmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Dealeruser[i].UPI, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].UPI)
+                    @Html.DropDownListFor(m => m.Dealeruser[i].upists, new SelectList(new[]
+                    {
+                          new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.Dealeruser[i].upists))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Dealeruser[i].upimax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Dealeruser[i].upimax)
+                </td>
+            </tr>
+                    }
+                }
+                <!--End Dealer-->
+                <!--Retailer-->
+                @if (Model.Retaileruser != null)
+                {
+                    for (int i = 0; i < Model.Retaileruser.Count; i++)
+                    {
+                        string email = string.Empty;
+                        using (Vastwebmulti.Models.VastwebmultiEntities db = new Vastwebmulti.Models.VastwebmultiEntities())
+                        {
+                            var id = Model.Retaileruser[i].userid;
+                            var emailchk = db.Users.Where(a => a.UserId.ToLower() == id.ToLower()).FirstOrDefault();
+                            if (emailchk != null)
+                            {
+                                email = emailchk.Email;
+                            }
+                        }
+            <tr>
+                @Html.HiddenFor(a => a.Retaileruser[i].idno)
+                <td>  @Html.EditorFor(a => a.Retaileruser[i].userid, new { htmlAttributes = new { @style = "width:80px !important", @readonly = true } })</td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Retaileruser[i].creditcard, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].creditcard)
+
+                    @Html.DropDownListFor(m => m.Retaileruser[i].CreditCardsts, new SelectList(new[]
+                     {
+                        new { Value = true, Text = "ON" },
+                        new { Value = false, Text = "OFF" },
+                     }, "Value", "Text", Model.Retaileruser[i].CreditCardsts))
+
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Retaileruser[i].creditcardmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].creditcardmax)
+                </td>
+                <td>
+                    @Html.DropDownListFor(m => m.Retaileruser[i].creditsettlement, new SelectList(new[]
+                      {
+                         new { Value = "Live" , Text = "Live" },
+                         new { Value = "T+1", Text = "T+1" },
+                      }, "Value", "Text", Model.Retaileruser[i].creditsettlement))
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Retaileruser[i].debitupto2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].debitupto2000)
+                    @Html.DropDownListFor(m => m.Retaileruser[i].DebitCardsts, new SelectList(new[]
+                    {
+                      new { Value =true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.Retaileruser[i].DebitCardsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Retaileruser[i].debitabove2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].debitabove2000)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Retaileruser[i].debitmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].debitmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Retaileruser[i].netbanking, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].netbanking)
+                    @Html.DropDownListFor(m => m.Retaileruser[i].netbankingsts, new SelectList(new[]
+                    {
+                      new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.Retaileruser[i].netbankingsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Retaileruser[i].axis, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].axis)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Retaileruser[i].others, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].others)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Retaileruser[i].netbankmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].netbankmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Retaileruser[i].wallet, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].wallet)
+                    @Html.DropDownListFor(m => m.Retaileruser[i].walletsts, new SelectList(new[]
+                    {
+                            new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.Retaileruser[i].walletsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Retaileruser[i].walletmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].walletmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.Retaileruser[i].UPI, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].UPI)
+                    @Html.DropDownListFor(m => m.Retaileruser[i].upists, new SelectList(new[]
+                    {
+                          new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.Retaileruser[i].upists))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.Retaileruser[i].upimax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.Retaileruser[i].upimax)
+                </td>
+            </tr>
+                    }
+                }
+                <!--End Retailer-->
+                <!--API-->
+                @if (Model.APIuser != null)
+                {
+                    for (int i = 0; i < Model.APIuser.Count; i++)
+                    {
+                        string email = string.Empty;
+                        using (Vastwebmulti.Models.VastwebmultiEntities db = new Vastwebmulti.Models.VastwebmultiEntities())
+                        {
+                            var id = Model.APIuser[i].userid;
+                            var emailchk = db.Users.Where(a => a.UserId.ToLower() == id.ToLower()).FirstOrDefault();
+                            if (emailchk != null)
+                            {
+                                email = emailchk.Email;
+                            }
+                        }
+            <tr>
+                @Html.HiddenFor(a => a.APIuser[i].idno)
+                <td>  @Html.EditorFor(a => a.APIuser[i].userid, new { htmlAttributes = new { @style = "width:80px !important", @readonly = true } })</td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.APIuser[i].creditcard, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].creditcard)
+
+                    @Html.DropDownListFor(m => m.APIuser[i].CreditCardsts, new SelectList(new[]
+                     {
+                        new { Value = true, Text = "ON" },
+                        new { Value = false, Text = "OFF" },
+                     }, "Value", "Text", Model.APIuser[i].CreditCardsts))
+
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.APIuser[i].creditcardmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].creditcardmax)
+                </td>
+                <td>
+                    @Html.DropDownListFor(m => m.APIuser[i].creditsettlement, new SelectList(new[]
+                      {
+                         new { Value = "Live" , Text = "Live" },
+                         new { Value = "T+1", Text = "T+1" },
+                      }, "Value", "Text", Model.APIuser[i].creditsettlement))
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.APIuser[i].debitupto2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].debitupto2000)
+                    @Html.DropDownListFor(m => m.APIuser[i].DebitCardsts, new SelectList(new[]
+                    {
+                      new { Value =true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.APIuser[i].DebitCardsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.APIuser[i].debitabove2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].debitabove2000)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.APIuser[i].debitmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].debitmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.APIuser[i].netbanking, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].netbanking)
+                    @Html.DropDownListFor(m => m.APIuser[i].netbankingsts, new SelectList(new[]
+                    {
+                      new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.APIuser[i].netbankingsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.APIuser[i].axis, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].axis)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.APIuser[i].others, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].others)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.APIuser[i].netbankmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].netbankmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.APIuser[i].wallet, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].wallet)
+                    @Html.DropDownListFor(m => m.APIuser[i].walletsts, new SelectList(new[]
+                    {
+                            new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.APIuser[i].walletsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.APIuser[i].walletmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].walletmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.APIuser[i].UPI, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].UPI)
+                    @Html.DropDownListFor(m => m.APIuser[i].upists, new SelectList(new[]
+                    {
+                          new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.APIuser[i].upists))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.APIuser[i].upimax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.APIuser[i].upimax)
+                </td>
+            </tr>
+                    }
+                }
+                <!--End API-->
+            </tbody>
+            <tbody id="tbodyeditAll" style="display:none;">
+                <!--Master-->
+                @if (Model.Materuser != null)
+                {
+                    for (int i = 0; i < Model.UpdateMaster.Count; i++)
+                    {
+                <tr>
+                    @Html.HiddenFor(a => a.UpdateMaster[i].idno)
+                    <td>  @Html.EditorFor(a => a.UpdateMaster[i].userid, new { htmlAttributes = new { @style = "width:80px !important", @readonly = true } })</td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.UpdateMaster[i].creditcard, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].creditcard)
+
+                        @Html.DropDownListFor(m => m.UpdateMaster[i].CreditCardsts, new SelectList(new[]
+                         {
+                            new { Value = true, Text = "ON" },
+                            new { Value = false, Text = "OFF" },
+                         }, "Value", "Text", Model.UpdateMaster[i].CreditCardsts))
+
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.UpdateMaster[i].creditcardmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].creditcardmax)
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.UpdateMaster[i].creditsettlement, new SelectList(new[]
+                          {
+                             new { Value = "Live" , Text = "Live" },
+                             new { Value = "T+1", Text = "T+1" },
+                          }, "Value", "Text", Model.UpdateMaster[i].creditsettlement))
+                    </td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.UpdateMaster[i].debitupto2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].debitupto2000)
+                        @Html.DropDownListFor(m => m.UpdateMaster[i].DebitCardsts, new SelectList(new[]
+                        {
+                          new { Value =true, Text = "ON" },
+                          new { Value = false, Text = "OFF" },
+                        }, "Value", "Text", Model.UpdateMaster[i].DebitCardsts))
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.UpdateMaster[i].debitabove2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].debitabove2000)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.UpdateMaster[i].debitmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].debitmax)
+                    </td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.UpdateMaster[i].netbanking, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].netbanking)
+                        @Html.DropDownListFor(m => m.UpdateMaster[i].netbankingsts, new SelectList(new[]
+                        {
+                          new { Value = true, Text = "ON" },
+                          new { Value = false, Text = "OFF" },
+                        }, "Value", "Text", Model.UpdateMaster[i].netbankingsts))
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.UpdateMaster[i].axis, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].axis)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.UpdateMaster[i].others, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].others)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.UpdateMaster[i].netbankmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].netbankmax)
+                    </td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.UpdateMaster[i].wallet, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].wallet)
+                        @Html.DropDownListFor(m => m.UpdateMaster[i].walletsts, new SelectList(new[]
+                        {
+                                new { Value = true, Text = "ON" },
+                          new { Value = false, Text = "OFF" },
+                        }, "Value", "Text", Model.UpdateMaster[i].walletsts))
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.UpdateMaster[i].walletmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].walletmax)
+                    </td>
+                    <td style="display:flex">
+                        @Html.EditorFor(a => a.UpdateMaster[i].UPI, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].UPI)
+                        @Html.DropDownListFor(m => m.UpdateMaster[i].upists, new SelectList(new[]
+                        {
+                              new { Value = true, Text = "ON" },
+                          new { Value = false, Text = "OFF" },
+                        }, "Value", "Text", Model.UpdateMaster[i].upists))
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.UpdateMaster[i].upimax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                        @Html.ValidationMessageFor(a => a.UpdateMaster[i].upimax)
+                    </td>
+                </tr>
+                    }
+                }
+                <!--End Master-->
+                <!--Dealer-->
+                @if (Model.Dealeruser != null)
+                {
+                    for (int i = 0; i < Model.UpdateDealer.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.UpdateDealer[i].idno)
+                <td>  @Html.EditorFor(a => a.UpdateDealer[i].userid, new { htmlAttributes = new { @style = "width:80px !important", @readonly = true } })</td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateDealer[i].creditcard, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].creditcard)
+
+                    @Html.DropDownListFor(m => m.UpdateDealer[i].CreditCardsts, new SelectList(new[]
+                     {
+                        new { Value = true, Text = "ON" },
+                        new { Value = false, Text = "OFF" },
+                     }, "Value", "Text", Model.UpdateDealer[i].CreditCardsts))
+
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateDealer[i].creditcardmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].creditcardmax)
+                </td>
+                <td>
+                    @Html.DropDownListFor(m => m.UpdateDealer[i].creditsettlement, new SelectList(new[]
+                      {
+                         new { Value = "Live" , Text = "Live" },
+                         new { Value = "T+1", Text = "T+1" },
+                      }, "Value", "Text", Model.UpdateDealer[i].creditsettlement))
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateDealer[i].debitupto2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].debitupto2000)
+                    @Html.DropDownListFor(m => m.UpdateDealer[i].DebitCardsts, new SelectList(new[]
+                    {
+                      new { Value =true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateDealer[i].DebitCardsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateDealer[i].debitabove2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].debitabove2000)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateDealer[i].debitmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].debitmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateDealer[i].netbanking, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].netbanking)
+                    @Html.DropDownListFor(m => m.UpdateDealer[i].netbankingsts, new SelectList(new[]
+                    {
+                      new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateDealer[i].netbankingsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateDealer[i].axis, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].axis)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateDealer[i].others, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].others)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateDealer[i].netbankmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].netbankmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateDealer[i].wallet, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].wallet)
+                    @Html.DropDownListFor(m => m.UpdateDealer[i].walletsts, new SelectList(new[]
+                    {
+                            new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateDealer[i].walletsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateDealer[i].walletmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].walletmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateDealer[i].UPI, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].UPI)
+                    @Html.DropDownListFor(m => m.UpdateDealer[i].upists, new SelectList(new[]
+                    {
+                          new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateDealer[i].upists))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateDealer[i].upimax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateDealer[i].upimax)
+                </td>
+            </tr>
+                    }
+                }
+                <!--End Dealer-->
+                <!--Retailer-->
+                @if (Model.Retaileruser != null)
+                {
+                    for (int i = 0; i < Model.UpdateRetailer.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.UpdateRetailer[i].idno)
+                <td>  @Html.EditorFor(a => a.UpdateRetailer[i].userid, new { htmlAttributes = new { @style = "width:80px !important", @readonly = true } })</td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateRetailer[i].creditcard, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].creditcard)
+
+                    @Html.DropDownListFor(m => m.UpdateRetailer[i].CreditCardsts, new SelectList(new[]
+                     {
+                        new { Value = true, Text = "ON" },
+                        new { Value = false, Text = "OFF" },
+                     }, "Value", "Text", Model.UpdateRetailer[i].CreditCardsts))
+
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateRetailer[i].creditcardmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].creditcardmax)
+                </td>
+                <td>
+                    @Html.DropDownListFor(m => m.UpdateRetailer[i].creditsettlement, new SelectList(new[]
+                      {
+                         new { Value = "Live" , Text = "Live" },
+                         new { Value = "T+1", Text = "T+1" },
+                      }, "Value", "Text", Model.UpdateRetailer[i].creditsettlement))
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateRetailer[i].debitupto2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].debitupto2000)
+                    @Html.DropDownListFor(m => m.UpdateRetailer[i].DebitCardsts, new SelectList(new[]
+                    {
+                      new { Value =true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateRetailer[i].DebitCardsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateRetailer[i].debitabove2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].debitabove2000)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateRetailer[i].debitmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].debitmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateRetailer[i].netbanking, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].netbanking)
+                    @Html.DropDownListFor(m => m.UpdateRetailer[i].netbankingsts, new SelectList(new[]
+                    {
+                      new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateRetailer[i].netbankingsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateRetailer[i].axis, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].axis)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateRetailer[i].others, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].others)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateRetailer[i].netbankmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].netbankmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateRetailer[i].wallet, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].wallet)
+                    @Html.DropDownListFor(m => m.UpdateRetailer[i].walletsts, new SelectList(new[]
+                    {
+                            new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateRetailer[i].walletsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateRetailer[i].walletmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].walletmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateRetailer[i].UPI, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].UPI)
+                    @Html.DropDownListFor(m => m.UpdateRetailer[i].upists, new SelectList(new[]
+                    {
+                          new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateRetailer[i].upists))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateRetailer[i].upimax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailer[i].upimax)
+                </td>
+            </tr>
+                    }
+                }
+                <!--End Retailer-->
+                <!--API-->
+                @if (Model.APIuser != null)
+                {
+                    for (int i = 0; i < Model.UpdateAPI.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.UpdateAPI[i].idno)
+                <td>  @Html.EditorFor(a => a.UpdateAPI[i].userid, new { htmlAttributes = new { @style = "width:80px !important", @readonly = true } })</td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateAPI[i].creditcard, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].creditcard)
+
+                    @Html.DropDownListFor(m => m.UpdateAPI[i].CreditCardsts, new SelectList(new[]
+                     {
+                        new { Value = true, Text = "ON" },
+                        new { Value = false, Text = "OFF" },
+                     }, "Value", "Text", Model.UpdateAPI[i].CreditCardsts))
+
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateAPI[i].creditcardmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].creditcardmax)
+                </td>
+                <td>
+                    @Html.DropDownListFor(m => m.UpdateAPI[i].creditsettlement, new SelectList(new[]
+                      {
+                         new { Value = "Live" , Text = "Live" },
+                         new { Value = "T+1", Text = "T+1" },
+                      }, "Value", "Text", Model.UpdateAPI[i].creditsettlement))
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateAPI[i].debitupto2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].debitupto2000)
+                    @Html.DropDownListFor(m => m.UpdateAPI[i].DebitCardsts, new SelectList(new[]
+                    {
+                      new { Value =true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateAPI[i].DebitCardsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateAPI[i].debitabove2000, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].debitabove2000)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateAPI[i].debitmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].debitmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateAPI[i].netbanking, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].netbanking)
+                    @Html.DropDownListFor(m => m.UpdateAPI[i].netbankingsts, new SelectList(new[]
+                    {
+                      new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateAPI[i].netbankingsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateAPI[i].axis, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].axis)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateAPI[i].others, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].others)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateAPI[i].netbankmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].netbankmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateAPI[i].wallet, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].wallet)
+                    @Html.DropDownListFor(m => m.UpdateAPI[i].walletsts, new SelectList(new[]
+                    {
+                            new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateAPI[i].walletsts))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateAPI[i].walletmax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].walletmax)
+                </td>
+                <td style="display:flex">
+                    @Html.EditorFor(a => a.UpdateAPI[i].UPI, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].UPI)
+                    @Html.DropDownListFor(m => m.UpdateAPI[i].upists, new SelectList(new[]
+                    {
+                          new { Value = true, Text = "ON" },
+                      new { Value = false, Text = "OFF" },
+                    }, "Value", "Text", Model.UpdateAPI[i].upists))
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.UpdateAPI[i].upimax, new { htmlAttributes = new { @style = "width:50px !important" } })
+                    @Html.ValidationMessageFor(a => a.UpdateAPI[i].upimax)
+                </td>
+            </tr>
+                    }
+                }
+                <!--End API-->
+            </tbody>
+        </table>
+    </div>
+}
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script>
+    $('.for-select2').select2();
+
+
+</script>
+<script>
+    function OnSuccess1(data) {
+        $('#btnsubmituser').hide();
+        $('#btnsubmitusercommon').hide();
+        $('#btnEdit').show();
+         var chk = '@Model.role';
+            if (chk == "Retailer") {
+                $('#retailerdrop').show();
+                $('#allshow').hide();
+            }
+            else {
+                $('#retailerdrop').hide();
+                $('#allshow').show();
+            }
+    }
+    function onfailed(error) {
+        alert(error.responseText);
+    }
+</script>
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

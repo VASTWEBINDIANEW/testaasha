@@ -1,0 +1,56 @@
+﻿@using Vastwebmulti.Models;
+@{
+    Layout = "~/Areas/WDealer/Views/Shared/_Layout.cshtml";
+}
+
+
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    string currenturl = HttpContext.Current.Request.Url.Authority;
+    currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+    currenturl = currenturl.ToUpper();
+    var whitelabelid = "";
+    if (currenturl.Contains("LOCALHOST"))
+    {
+        whitelabelid = db.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+    }
+    else
+    {
+        whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+    }
+    //PageData["globalCol"] = col;
+
+    //var vv = db.changecolors.Where(a => a.UserId == whitelabelid && a.Role == "WHITELABEL").ToList();
+
+
+    List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.ColorSetting> people = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.ColorSetting>();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.ColorSetting>>(readWrite.Read("ColorSetting.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
+
+    var vv = people.Where(a => a.UserId == whitelabelid && a.Role == "WHITELABEL").ToList();
+
+    if (vv.Count > 0)
+    {
+        var cc = vv.FirstOrDefault().multipaloutercolor;
+        if (cc == "" || cc == null)
+        {
+            PageData["GlobalFirst"] = "#08a187";
+            PageData["GlobalSecond"] = "#ed164c";
+        }
+        else
+        {
+            string[] Multicolor = cc.Split(',', ')');
+            string hexcode = Multicolor[1].ToString();
+            string rgbcode = Multicolor[2].ToString();
+            PageData["GlobalFirst"] = hexcode;
+            PageData["GlobalSecond"] = rgbcode;
+
+        }
+
+    }
+    else
+    {
+        PageData["GlobalFirst"] = "#08a187";
+        PageData["GlobalSecond"] = "#ed164c";
+    }
+}

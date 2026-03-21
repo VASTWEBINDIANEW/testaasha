@@ -1,0 +1,306 @@
+﻿@model Vastwebmulti.Areas.Employee.ViewModel.EmployeFundtransferviewmodel
+
+@{ decimal? runningTotal = 0M; decimal? Totalcharges = 0M; decimal? TotalNetTransfer = 0M; decimal? total = 0M; }
+{
+}
+<style>
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <table class="table table-bordered table-striped table-hover">
+            @if (Model != null && Model.Superstocklistbalance != null)
+            {
+                <thead>
+                    <tr>
+                        <th>MD Firm</th>
+                        <th>Head</th>
+                        <th>Payment&nbsp;Type</th>
+                        <th>Total AMT</th>
+                        <th>Charge</th>
+                        @*<th>CR Adjust</th>*@
+                        <th>Net T/F</th>
+
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.Superstocklistbalance.OrderByDescending(a => a.RechargeDate))
+                    {
+                        runningTotal = Model.Superstocklistbalance.Sum(x => x.fund_transfer);
+                        //Totalcharges += item.commistion;
+                        Totalcharges = Model.Superstocklistbalance.Sum(x => x.commistion);
+                        TotalNetTransfer = Model.Superstocklistbalance.Sum(x => x.Balance);
+                        var charge = item.commistion == null ? 0 : item.commistion;
+                        <tr data-toggle="modal" onclick="tablerowshowdetail('MD','@item.FarmName','@item.Head','@item.bal_type','@item.remainsuperafter','@charge','@item.cr','@item.fund_transfer','@item.remainsuper','@item.remainsuperafter','@item.oldcrbalance','@item.cr','@item.comment','@item.Balance','@item.RechargeDate')" data-target="#m-d-fund-transfer" style="background:no-repeat;">
+
+
+                            <td><p style="margin-top:6px;">  @item.FarmName</p></td>
+                            <td>@item.Head</td>
+
+                            <td><p style="margin-top:6px;">@item.bal_type</p></td>
+
+                            <td><p style="margin-top:6px;">@item.fund_transfer</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+                            @if (item.commistion == null)
+                            {
+                                <td><p style="margin-top:6px;"> <span>0.00</span>@item.commistion</p></td>
+
+                            }
+                            else
+                            {
+                                <td><p style="margin-top:6px;">@item.commistion</p></td>
+                            }
+
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                                <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.Balance</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.RechargeDate</p></td>
+
+                        </tr>
+                    }
+                    <tr><td colspan="3">Total</td><td>@runningTotal</td><td>@Totalcharges</td><td>@TotalNetTransfer</td><td></td></tr>
+
+                </tbody>
+            }
+            else if (Model.admintodealerllist != null)
+            {
+                <thead>
+                    <tr>
+                        <th>Distributor Firm</th>
+                        <th>Head</th>
+                        <th>Payment&nbsp;Type</th>
+                        <th>Total AMT</th>
+                        <th>Charge</th>
+                        @*
+                            <th>CR Adjust</th>*@
+                        <th>Net T/F</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.admintodealerllist.OrderByDescending(a => a.date_dlm))
+                    {
+                        runningTotal = Model.admintodealerllist.Sum(x => x.final);
+                        //Totalcharges += item.commistion;
+                        Totalcharges = Model.admintodealerllist.Sum(x => x.comm);
+                        TotalNetTransfer = Model.admintodealerllist.Sum(x => x.balance);
+                        var charge = item.comm == null ? 0 : item.comm;
+                        <tr data-toggle="modal" onclick="tablerowshowdetail('Dealer','@item.FarmName','@item.Head','@item.bal_type','@item.dealer_prebal','@charge','@item.cr','@item.final','@item.dealer_prebal','@item.dealer_postbal','@item.oldcrbalance','@item.cr','@item.comment','@item.balance','@item.date_dlm')" data-target="#m-d-fund-transfer" style="background:no-repeat;">
+
+
+                            <td><p style="margin-top:6px;">  @item.FarmName</p></td>
+                            <td>@item.Head</td>
+
+                            <td><p style="margin-top:6px;">@item.bal_type</p></td>
+
+                            <td><p style="margin-top:6px;">@item.final</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+
+                            <td><p style="margin-top:6px;"> @charge</p></td>
+
+
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                                <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.balance</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.date_dlm</p></td>
+
+                        </tr>
+                    }
+                    <tr><td colspan="3">Total</td><td>@runningTotal</td><td>@Totalcharges</td><td>@TotalNetTransfer</td><td></td></tr>
+
+                </tbody>
+            }
+            else if (Model.AdminTORetailer != null)
+            {
+                <thead>
+                    <tr>
+                        <th>Retailer Firm Firm</th>
+                        <th>Head</th>
+                        <th>Payment&nbsp;Type</th>
+                        <th>Total AMT</th>
+                        <th>Charge</th>
+                        @*
+                            <th>CR Adjust</th>*@
+                        <th>Net T/F</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.AdminTORetailer.OrderByDescending(a => a.RechargeDate))
+                    {
+                        runningTotal = Model.AdminTORetailer.Sum(x => x.TotalBal);
+                        //Totalcharges += item.commistion;
+                        Totalcharges = Model.AdminTORetailer.Sum(x => x.commission);
+                        TotalNetTransfer = Model.AdminTORetailer.Sum(x => x.Balance);
+                        var charge = item.commission == null ? 0 : item.commission;
+                        <tr data-toggle="modal" onclick="tablerowshowdetail('RLM','@item.Frm_Name','@item.Head','@item.bal_type','@item.remain_pre_amount','@charge','@item.cr','@item.TotalBal','@item.remain_pre_amount','@item.remain_amount','@item.oldcrbalance','@item.cr','@item.comment','@item.TotalBal','@item.RechargeDate')" data-target="#m-d-fund-transfer" style="background:no-repeat;">
+
+
+                            <td><p style="margin-top:6px;">  @item.Frm_Name</p></td>
+                            <td>@item.Head</td>
+
+                            <td><p style="margin-top:6px;">@item.bal_type</p></td>
+
+                            <td><p style="margin-top:6px;">@item.TotalBal</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+
+                            <td><p style="margin-top:6px;"> @charge</p></td>
+
+
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                                <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.Balance</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.RechargeDate</p></td>
+
+                        </tr>
+                    }
+                    <tr><td colspan="3">Total</td><td>@runningTotal</td><td>@Totalcharges</td><td>@TotalNetTransfer</td><td></td></tr>
+
+                </tbody>
+            }
+            else if (Model.API_balance_transfer_reportList != null)
+            {
+                <thead>
+                    <tr>
+                        <th>API Firm</th>
+                        <th>Head</th>
+                        <th>Payment&nbsp;Type</th>
+                        <th>Total AMT</th>
+                        <th>Charge</th>
+                        @*
+                            <th>CR Adjust</th>*@
+                        <th>Net T/F</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.API_balance_transfer_reportList)
+                    {
+                        runningTotal = Model.API_balance_transfer_reportList.Sum(x => x.TotalFund);
+                        //Totalcharges += item.commistion;
+                        Totalcharges = Model.API_balance_transfer_reportList.Sum(x => x.commistion);
+                        TotalNetTransfer = Model.API_balance_transfer_reportList.Sum(x => x.balance);
+                        var charge = item.commistion == null ? 0 : item.commistion;
+                        <tr data-toggle="modal" onclick="tablerowshowdetail('API','@item.farmname','@item.Head','@item.bal_type','@item.remianold','@charge','@item.cr','@item.TotalFund','@item.remainamount','@item.remianold','@item.oldcrbalance','@item.cr','@item.comment','@item.TotalFund','@item.date')" data-target="#m-d-fund-transfer" style="background:no-repeat;">
+
+
+                            <td><p style="margin-top:6px;">  @item.farmname</p></td>
+                            <td>@item.Head</td>
+
+                            <td><p style="margin-top:6px;">@item.bal_type</p></td>
+
+                            <td><p style="margin-top:6px;">@item.TotalFund</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+
+                            <td><p style="margin-top:6px;"> @charge</p></td>
+
+
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                                <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.balance</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.date</p></td>
+
+                        </tr>
+                    }
+                    <tr><td colspan="3">Total</td><td>@runningTotal</td><td>@Totalcharges</td><td>@TotalNetTransfer</td><td></td></tr>
+
+                </tbody>
+            }
+            else if (Model.whitelabel_balance_transfer_report_List != null)
+            {
+                <thead>
+                    <tr>
+                        <th>White Label Firm</th>
+                        <th>Head</th>
+                        <th>Payment&nbsp;Type</th>
+                        <th>Total AMT</th>
+                        <th>Charge</th>
+                        @*
+                            <th>CR Adjust</th>*@
+                        <th>Net T/F</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.whitelabel_balance_transfer_report_List)
+                    {
+                        runningTotal = Model.whitelabel_balance_transfer_report_List.Sum(x => x.TotalFund);
+                        //Totalcharges += item.commistion;
+                        Totalcharges = Model.whitelabel_balance_transfer_report_List.Sum(x => x.comm);
+                        TotalNetTransfer = Model.whitelabel_balance_transfer_report_List.Sum(x => x.balance);
+                        var charge = item.comm == null ? 0 : item.comm;
+                        <tr data-toggle="modal" onclick="tablerowshowdetail('WL','@item.FrmName','@item.Head','@item.bal_type','@item.remianold','@charge','@item.cr','@item.TotalFund','@item.remainamount','@item.remianold','@item.oldcrbalance','@item.cr','@item.comment','@item.TotalFund','@item.date')" data-target="#m-d-fund-transfer" style="background:no-repeat;">
+
+
+                            <td><p style="margin-top:6px;">  @item.FrmName</p></td>
+                            <td>@item.Head</td>
+
+                            <td><p style="margin-top:6px;">@item.bal_type</p></td>
+
+                            <td><p style="margin-top:6px;">@item.TotalFund</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuper</p></td>*@
+
+                            <td><p style="margin-top:6px;"> @charge</p></td>
+
+
+                            @*
+                                <td><p style="margin-top:6px;">@item.remainsuperafter</p></td>*@
+                            @*
+                                <td><p style="margin-top:6px;">@item.cr</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.balance</p></td>
+                            @*
+                                <td><p style="margin-top:6px;">@item.oldcrbalance</p></td>*@
+
+                            <td><p style="margin-top:6px;">@item.date</p></td>
+
+                        </tr>
+                    }
+                    <tr><td colspan="3">Total</td><td>@runningTotal</td><td>@Totalcharges</td><td>@TotalNetTransfer</td><td></td></tr>
+
+                </tbody>
+            }
+        </table>
+    </div>
+</section>

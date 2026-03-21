@@ -1,0 +1,114 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.APIModelcs
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF Whitelabeluser Report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        td, th {
+            padding: 8px 5px;
+        }
+
+        thead {
+            display: table-header-group
+        }
+
+        tfoot {
+            display: table-row-group
+        }
+
+        tr {
+            page-break-inside: avoid
+        }
+    </style>
+   </head>
+    <body>
+    <table cellspacing="0">
+        <thead style="background-color: whitesmoke; display:table-header-group;">
+            <tr>
+                <th>Sr</th>
+                <th>User&nbsp;Firm</th>
+                <th>User&nbsp;Name</th>
+                <th>Mobile&nbsp;No</th>
+                <th>PAN&nbsp;No</th>
+                <th>KYC</th>
+                <th>Email&nbsp;V/F</th>
+
+              </thead>
+             <tbody>
+
+            @if (Model.ApiList != null)
+            {
+                int i = 0;
+                int id = 1;
+                foreach (var item in Model.ApiList)
+                {
+                    var idno = "subTbl";
+                    idno = idno + i;
+
+                    var idshow = "subTblshow";
+                    idshow = idshow + i;
+
+                    var idhide = "subTblhide";
+                    idhide = idhide + i;
+
+                    var colorchange = "";
+                    if (item.aadharcardPath != null && item.BackSideAadharcardphoto != null && item.pancardPath != null)
+                    {
+                        if (item.PSAStatus == "N" && item.AadhaarStatus == "N")
+                        {
+                            colorchange = "red";
+                        }
+                        }
+                    <tr class="tr" style="background-color:@colorchange">
+                        <td>@id</td>
+                        <td>@item.farmname</td>
+                        <td>@item.username</td>
+                        <td>@item.mobile</td>
+                        <td> @item.pancard</td>
+                        <td class="kyc-button">
+                            @if (item.PSAStatus == "Y" && item.AadhaarStatus == "Y")
+                            {
+                             <p>Done</p>
+                               }
+                            else
+                            {
+                             <p>Due</p>
+                            }
+                        </td>
+                        <td data-toggle="modal" data-target="#defaultModal222" onclick="mdActionBtn('@item.apiid')">
+                            @if (item.EmailConfirmed == true)
+                            {
+                            <p>Done</p>
+                             }
+                            else
+                            {
+                             <p>Due</p>
+                             }
+                            </td>
+                        </tr>
+                         i++;
+                       id++;
+                 }
+
+            }
+
+        </tbody>
+    </table>
+</body>
+</html>
+

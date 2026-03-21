@@ -1,0 +1,240 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Api_ip_address>
+@{
+    ViewBag.Title = "TokenSetting";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    .master-four-design .token-codecopy-api table tr td input {
+        border-color: var(--fullbodybg-four) !important;
+    }
+    .master-four-design .token-codecopy-api table tr td button.btn-copy-api {
+        background: var(--fullbodybg-four) !important;
+    }
+    .master-four-design .api-token-sett fieldset {
+        border-color: var(--four-design-bg-first);
+    }
+
+    @@media screen and (max-width:991px){
+        .api-token-sett input {
+            width: 100%;
+        }
+        .api-token-sett button {
+            float: right;
+            margin-top: 10px;
+        }
+    }
+
+
+    @@media only screen and (max-width:480px) {
+        .api-token-sett fieldset {
+            padding: 10px;
+        }
+        .api-token-sett input {width:100%;margin-bottom:5px;
+        }
+        .api-token-sett button{float:right;}
+        .api-token-sett {
+    margin-bottom: 10px;
+}
+        .ls-closed section.content {
+    margin-left: 0px;
+}
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Generate Token</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Basic Setting&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Generate Token</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="api-token-sett">
+                    <fieldset>
+                        <legend>Generate Token</legend>
+                        <div id="Main" class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                                <label>Enter IP Address</label>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 ">
+                                @Html.TextBox("enterip", "", new { placeholder = "Enter Your IP Address" })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                                <button type="button" onclick="ValidateIPaddress()" class="fullbodydycolorbg">Generate</button>
+                            </div>
+                            <label id="txtmsg" style="color:red;padding-left:10px;"></label>
+                        </div>
+                        <div class="row clearfix" id="otpmsg" style="display:none;">
+                            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                                <label>Enter OTP</label>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 ">
+                                @Html.TextBox("enterotp", "", new { placeholder = "Enter OTP" })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                                <button type="button" onclick="OTPVERIFY()" class="fullbodydycolorbg">Verify OTP</button>
+                            </div>
+                            <label id="txtmsgotp" style="color:red;padding-left:10px;"></label>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h2 style="font-size: 24px;">Token's List</h2>
+                <div class="table-responsive token-codecopy-api">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead style="background-color:whitesmoke;">
+                            <tr>
+                                <th>Register IP Address</th>
+                                <th><center>Token No</center></th>
+                                <th><center>Delete</center></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.ipaddress</td>
+                                    <td align="center">
+                                        <input type="text" id="@item.token" name="myInput" value="@item.token" style="border: 1px dashed var(--main-bg-lcolor);padding: 2px 10px;border-right: 0px;height: 32px;width:300px;" readonly="">
+                                        <button class="btn btn-copy-api" style="margin-top:-2px;height:32px;background: var(--main-bg-lcolor);color: #fff;font-weight: 600;" onclick='myFunction("@item.token")'>Copy</button>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <button class="btn btn  default first-btn" style="background-color:transparent;border:1px solid #c7c2c2; padding:5px;margin-top:2px;">
+                                                <img src="../../MainFrontDesign/images/delete.svg" style="width: 20px;" />
+                                            </button>
+                                            <button class="btn btn fullbodydycolorbg default second-btn" onclick='Delete("@item.token")' style="background-color:transparent; border:none;border:1px solid #c7c2c2; padding:2px 11px 1px 11px;margin-top:2px;display:none;color:#fff;background: red !important;padding: 1px 3px;font-size: 12px;text-align: center;">
+                                                Sure<br />?
+                                            </button>
+                                        </center>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function Delete(token) {
+        $.ajax({
+            url: '@Url.Action("DeleteToken","Home")',
+            type: "POST",
+            data: { token: token },
+            success: function (response) {
+                var urlchk = '@Url.Action("TokenSetting","Home")';
+                location.href = urlchk;
+            }
+            
+        });
+    }
+</script>
+<script>
+    function myFunction(copyText) {
+        /* Get the text field */
+     var copyText = document.getElementById(copyText);
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+}
+</script>
+<script>
+    function ValidateIPaddress() 
+    {
+        $('#txtmsg').text("");
+        var ipaddress = $('#enterip').val();
+        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress))
+        {
+            $.ajax({
+                url: '@Url.Action("tokenotp","Home")',
+                type: "POST",
+                data: { enterip: ipaddress },
+                success: function (response) {
+                    if (response == "OK") {
+                        $('#Main').hide();
+                        $('#otpmsg').show();
+                    }
+                    else {
+                        $('#txtmsg').text(response);
+                    }
+                }
+            });
+        }
+        else {
+            $('#txtmsg').text("You have entered an invalid IP address!");
+        }
+}
+</script>
+
+<script>
+    function OTPVERIFY() {
+        var otp = $('#enterotp').val();
+        var enterip = $('#enterip').val();
+        if (otp != "") {
+    $.ajax({
+      url: '@Url.Action("TokenSetting","Home")',
+            type: "POST",
+            data: { enterip: enterip,otp:otp },
+        success: function (response) {
+            if (response == "OK") {
+                 var urlchk = '@Url.Action("TokenSetting","Home")';
+                location.href = urlchk;
+            }
+            else {
+                $('#txtmsgotp').text(response);
+            }
+
+            }  
+     });
+        }
+        else {
+            $('#txtmsgotp').text("Please Enter OTP");
+        }
+    }
+</script>
+
+<script>
+    var $input = $('#enterip'),
+        $register = $('.submitip');
+
+    $register.attr('disabled', true);
+    $input.keyup(function () {
+        var trigger = false;
+        $input.each(function () {
+            if (!$(this).val()) {
+                trigger = true;
+            }
+        });
+        trigger ? $register.attr('disabled', true) : $register.removeAttr('disabled');
+    });
+</script>
+<script>
+    $('.first-btn').click(function () {
+        $(this).hide();
+        $(this).next('.second-btn').show();
+    })
+</script>
+<script>
+    $(document).ready(function(){
+        var msg = '@ViewBag.msg';
+        $('#txtmsg').text(msg);
+});
+</script>

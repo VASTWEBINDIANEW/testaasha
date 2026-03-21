@@ -1,0 +1,354 @@
+﻿
+@model List<Vastwebmulti.Models.proc_FlightCancellationReport_Result>
+@using Newtonsoft.Json;
+@{
+    ViewBag.Title = "Flight";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-5">
+                        <div style="margin-left:-14px;">
+                            @Html.Partial("_Flightpartialmenu")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-17px;">
+                <div class="card">
+                    @using (Html.BeginForm("CancellationReport", "Home", FormMethod.Post))
+                    {
+                        <div class="">
+
+                            <div class="col-md-1">
+                                <div class="" style="margin-top:6px; margin-left:-13px;width:108%;border:1px solid #dddddd;padding-bottom:10px;">
+                                    @Html.DropDownList("ddlusers", new List<SelectListItem>
+                              {
+                         
+                           new SelectListItem{Text="Master",Value="Master"},
+                           new SelectListItem{Text="Distributor",Value="Dealer"},
+                           new SelectListItem{Text="Retailer",Value="Retailer"},
+                          
+                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;", @onchange = "answers()" })
+
+                                </div>
+                            </div>
+
+                          
+                            <div class="col-md-2" style="display:none;" id="dlm">
+                                <div class="form-line" style="margin-top:6px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("alldealer", ViewBag.alldealer as SelectList, " All Distubutor", new { id = "alldealer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="display:none;" id="rem">
+                                <div class="form-line" style="margin-top:6px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-1" id="top">
+                                <div class="" style="margin-top:6px;margin-left:-16px;width:109%;border:1px solid #dddddd;padding-bottom:10px;">
+                                    @Html.DropDownList("ddl_top", new List<SelectListItem>
+                              {
+                           new SelectListItem{ Text="TOP 50",Value="50"},
+                           new SelectListItem{Text="TOP 100",Value="100"},
+                           new SelectListItem{Text="TOP 200",Value="200"},
+                           new SelectListItem{Text="TOP 500",Value="500"},
+                           new SelectListItem{Text="TOP 1500",Value="1500"},
+                           new SelectListItem{Text="All Entry",Value=null}
+                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;" })
+                                </div>
+
+                            </div>
+                            <div class="col-md-1" id="sts">
+                                <div class="" style="margin-top:6px;margin-left:-13px;width:108%;border:1px solid #dddddd;padding-bottom:10px;">
+                                    @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                {
+                        new SelectListItem{ Text="Status",Value="ALL",},
+                        new SelectListItem{Text="Success",Value="SUCCESS"},
+                        new SelectListItem{Text="Pending",Value="PENDING"},
+                        new SelectListItem{Text="Failed",Value="FAILED"}
+                         }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;" })
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-2">
+                                <div class="input-group" style="border:1px solid #bfbebe;margin-top:6px;margin-left:-17px;width:108%;">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-search" style="margin-left:3px;color:#9999b3;padding-top:3px;"></i>
+                                    </span>
+                                    <div class="">
+                                        @Html.TextBox("PNR", "", new { @class = "form-control", @placeholder = "PNR", @style = "height:30px;margin-left:-8px;padding:0px; background:none;font-size:12px;padding-top:4px;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-bottom:0px;margin-left:-10px;width:100%;margin-top:2px;">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:32px;width:88px;", autocomplete = "off" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-exchange" style="padding-top:10px;"></i>
+                                        </span>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:32px;width:86px;", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+
+
+                                <div class="col-md-6">
+                                    <center>
+                                        <button type="submit" value="Old" name="submit" class="btn" style="margin-top: 6px; margin-left:-9px; height:31px;border:1px solid #c7c2c2;background:#dedddd;">
+                                            <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                            <span style="top:-2px;color:black;">Search</span>
+                                        </button>
+                                    </center>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-26px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">FLIGHT&nbsp;REPORT&nbsp;></li>
+                        </ol>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-42px;">
+                            <div class="">
+                                <div class="table-responsive" style="position:inherit;">
+                                    <table id="example" class="table table-bordered table-striped table-hover dataTable js-exportable" cellspacing="0" style="width:100%;font-size:12px;">
+                                        <thead style="background-color:whitesmoke;position:inherit; color:black;">
+                                            <tr>
+                                                <th style="width:110px;">Live&nbsp;Status</th>
+                                                <th>Email&nbsp;Id</th>
+                                                <th>Retailer&nbsp;Name</th>
+                                                <th>Frim&nbsp;Name</th>
+                                                <th>Request&nbsp;Type</th>
+                                                <th>Cancel&nbsp;Type</th>
+                                                <th>Cancellation&nbsp;Id</th>
+                                                <th>Request&nbsp;Date</th>
+                                                <th>Response&nbsp;Date</th>
+                                                <th>Refunded&nbsp;Amount</th>
+                                                <th>Charge</th>
+                                                <th>Retailer&nbsp;Pre</th>
+                                                <th>Retailer&nbsp;Income</th>
+                                                <th>Retailer&nbsp;Post</th>
+                                                  <th>Dealer&nbsp;Pre</th>
+                                                <th>Dealer&nbsp;Income</th>
+                                                <th>Dealer&nbsp;Post</th>
+                                                 <th>Master&nbsp;Pre</th>
+                                                <th>Master&nbsp;Income</th>
+                                                <th>Master&nbsp;Post</th>
+                                               
+                                          
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model != null && Model.Count > 0)
+                                            {
+                                                foreach (var item in Model)
+                                                {
+                                                    #region CssSettings
+                                                    var color = "";
+                                                    var fontweight = "";
+                                                    var text = "";
+                                                    var emailid = "";
+                                                    var Retailername = "";
+                                                    var framname = "";
+                                                    var mobile = "";
+                                                    var rolename = "";
+                                                    var icon = "";
+                                                    var rchtype = "";
+                                                    var rchtypeicon = "";
+                                                    var sts = "";
+                                                    var refundcolor = "";
+                                                    var dmtytpe = "";
+
+                                                    sts = ((Vastwebmulti.Areas.RETAILER.Enums.ChangeRequestStatus)Convert.ToInt32(item.ChangeRequestStatus)).ToString();
+
+                                                    if (item.ChangeRequestStatus == 5)
+                                                    {
+                                                        color = "red";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.ChangeRequestStatus == 4)
+                                                    {
+                                                        color = "green";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.ChangeRequestStatus <= 3)
+                                                    {
+                                                        color = "#ff9600";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.ChangeRequestStatus == 6 || item.ChangeRequestStatus == 8)
+                                                    {
+                                                        color = "#9C27B0";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.ChangeRequestStatus == 7)
+                                                    {
+                                                        color = "#2196F3";
+                                                        fontweight = "700";
+                                                    }
+                                                    #endregion
+                                                    <tr style="font-weight:700;">
+                                                        <td><p style="font-size:13px;text-transform:uppercase;"><span style="color:@color;">@sts</span>&nbsp;</p></td>
+                                                        <td>
+                                                            <p style="font-size:13px;">&nbsp;@item.Email</p>
+                                                        </td>
+                                                        <td>
+                                                            <p style="font-size:13px;">&nbsp;@item.RetailerName</p>
+                                                        </td>
+                                                        <td>
+                                                            <p style="font-size:13px;">&nbsp;@item.Frm_Name</p>
+                                                        </td>
+                                                        <td>
+                                                            <p style="font-size:13px;margin-left:-8px;">&nbsp;@item.RequestType&nbsp;</p>
+                                                        </td>
+                                                        <td>
+                                                            <p style="font-size:13px;margin-left:-7px; ">@item.CancellationType</p>
+                                                        </td>
+                                                        <td style="font-size:13px;margin-left:-7px;">@item.ChangeRequestId</td>
+                                                        <td><p style="font-size:11px;margin-left:-7px; margin-top:2px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.CancellationRequestDate)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+                                                        <td><p style="font-size:11px;margin-left:-7px; margin-top:2px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.CancellationResponseDate)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+
+                                                        <td style="font-size:13px;margin-left:-7px;">@item.RefundedAmount</td>
+                                                        <td style="font-size:13px;margin-left:-7px;">@item.CancellationCharge</td>
+                                                    
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.RemPre, 2)</td>
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.RemInc, 2)</td>
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.RemPost, 2)</td>
+                                                       
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.DlmPre, 2)</td>
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.DlmInc, 2)</td>
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.DlmPost, 2)</td>
+                                                      
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.MdPre, 2)</td>
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.MdPost, 2)</td>
+                                                        <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.MdPre, 2)</td>
+                                                   
+                                                    </tr>
+                                                }
+                                            }
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+
+
+<script>
+    $(document).ready(function () {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+        answers();
+    });
+</script>
+<script type="text/javascript">
+    function answers() {
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer") {
+           document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+     
+        }
+   
+        else if (answer == "Master") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+   
+        }
+   
+        else if (answer == "Retailer") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+         }
+    
+    }
+</script>
+
+
+

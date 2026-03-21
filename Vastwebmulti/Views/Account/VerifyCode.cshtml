@@ -1,0 +1,196 @@
+﻿@*@model Vastwebmulti.Models.VerifyCodeViewModel*@
+@using Vastwebmulti.Models;
+@{
+    ViewBag.Title = "Verify";
+    Layout = null;
+}
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    string currenturl = HttpContext.Current.Request.Url.Authority;
+    currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+    currenturl = currenturl.ToUpper();
+    var whitelabelid = "";
+    if (currenturl.Contains("LOCALHOST"))
+    {
+        whitelabelid = db.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+    }
+    else
+    {
+        whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+    }
+    var image = db.tblWhiteLabelLoginBackImages.Where(p => p.Role == "WHITELABEL" && p.UserID == whitelabelid).ToList();
+    if (image.Count > 0)
+    {
+        ViewBag.image = image.FirstOrDefault().ImageUrl;
+    }
+    else
+    {
+        ViewBag.image = "img85.png";
+    }
+    //ViewBag.image = image.Count == 0 ? "" : image.SingleOrDefault().ImageUrl;
+}
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+    .verify-form .digit-group {
+        border: 1px dashed #000;
+        padding: 5px 0px;
+        display: inline-block;
+        width: 80%;
+        margin: auto;
+    }
+
+        .verify-form .digit-group input {
+            width: 15%;
+            height: 60px;
+            background-color: #555;
+            border: none;
+            line-height: 50px;
+            text-align: center;
+            font-size: 45px;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 600;
+            color: #fff;
+            margin: 0 .8%;
+            float: left;
+        }
+
+    .verify-form button {
+        margin: 25px auto;
+        display: block;
+        background: #000;
+        color: #fff;
+        padding: 8px 30px;
+        border: 0px;
+        font-size: 20px;
+        display: inline-block;
+    }
+    body{margin:0px;}
+    @@media screen and (max-width:470px) {
+        .verfy-in {
+            width: 90% !important;
+        }
+        .verify-form h2{font-size:22px !important;}
+        .verify-form .digit-group{width:90%;}
+        .verify-form .digit-group input{height:40px;font-size:35px;}
+        .verify-form button{padding: 8px 20px;}
+    }
+</style>
+<div class="section secondary-section" style="background:url(../../AdminDesign/images/wl-banner.jpg)no-repeat top center;position:relative;">
+
+    @*</div>
+        <div class="section primary-section" id="about" style="height:150px; background:url(@Url.Content("~/FooterImages/"+ViewBag.image)">*@
+    <div class="container" style="padding-top:0px;">
+        <div class="verfy" style=" height: 100%; left: 0px; width: 100%; z-index: 3;">
+            
+                <div class="verfy-in" style="position: absolute; background: #fff; min-height: 40%; width: 632px; top: 30%; left: 50%; transform: translate(-50%,-30%);">
+                    <div class="verify-form">
+                        <div class="">
+                            <div class="col-md-12">
+                                <h2 style="text-align:center;font-size:30px;"><i class="fa fa-check-square-o"></i> Verify Code Confirmation</h2>
+                            </div>
+                        </div>
+                        @using (Html.BeginForm("VerifyCode", "Account", new { ReturnUrl = ViewBag.returnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("provider", TempData["provider"])
+                            <input type="hidden" name="rememberMe" value="@ViewBag.rememberMe" />
+                            @*<input type="hidden" name="rememberMe" value="@ViewBag.rememberMe" />*@
+                            <div class="">
+                                <div class="col-md-12" style="text-align:center;">
+                                    <div class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
+                                        <input type="text" id="digit-1" name="digit-1" data-next="digit-2" autocomplete="off" maxlength="1"><input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" autocomplete="off" maxlength="1"><input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" autocomplete="off" maxlength="1"><input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" autocomplete="off" maxlength="1"><input type="text" id="digit-5" name="digit-5" data-next="digit-6" data-previous="digit-4" autocomplete="off" maxlength="1"><input type="text" id="digit-6" name="digit-6" data-previous="digit-5" autocomplete="off" maxlength="1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" justify-content-end" style="text-align:center;">
+                                <div class="col-md-12">
+                                    <input type="hidden" id="Code" name="Code" autocomplete="off" />
+                                    <button type="submit" id="subHere" value="Submit">Submit</button>
+                                    <button type="submit" onclick="resendotp()" value="Resend OTP">Resend OTP</button>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <span id="otp-mess"></span>
+                                    <span id="otp-mess2"></span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+        </div>
+
+        
+    </div>
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminDesign/plugins/sweetalert/sweetalert-dev.js"></script>
+<script>
+    function resendotp()
+    {
+       var url = '@Url.Action("VerifyCode", "Account")?provider=' + "Email Code" + '&returnUrl=' + null + '&rememberMe=' + false + '';
+        location.href = url;
+    }
+</script>
+<script>
+        window.onload = function()
+        {
+            var message = '@TempData["invalidcode"]'
+            if(message !="" && message !=null)
+            {
+                swal("Oops...", message, "error")
+            }
+
+        }
+</script>
+
+
+<script>
+    $("#digit-1, #digit-2, #digit-3, #digit-4, #digit-5, #digit-6").on("keyup", function () {
+
+        var OtpDigit = $("#digit-1").val() + $("#digit-2").val() + $("#digit-3").val() + $("#digit-4").val() + $("#digit-5").val() + $("#digit-6").val();
+
+
+        if (OtpDigit.length == 6) {
+            $('#Code').val(OtpDigit);
+
+            $('#subHere').click();
+        }
+    });
+</script>
+<script>
+    $('.digit-group').find('input').each(function () {
+        $(this).attr('maxlength', 1);
+        $(this).on('keyup', function (e) {
+            var parent = $($(this).parent());
+
+            if (e.keyCode === 8 || e.keyCode === 37) {
+                var prev = parent.find('input#' + $(this).data('previous'));
+
+                if (prev.length) {
+                    $(prev).select();
+                }
+            } else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                var next = parent.find('input#' + $(this).data('next'));
+
+                if (next.length) {
+                    $(next).select();
+                } else {
+                    if (parent.data('autosubmit')) {
+                        parent.submit();
+                    }
+                }
+            }
+        });
+    });
+</script>
+@if (!HttpContext.Current.Request.IsLocal)
+{
+    <!-- To Disable Inspect Element -->
+    <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+}

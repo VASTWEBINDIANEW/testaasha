@@ -1,0 +1,130 @@
+﻿@model Vastwebmulti.Areas.WHITELABEL.Models.WhitelabelAEPSCommonModel
+@using (Ajax.BeginForm("_common_aeps", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", UpdateTargetId = "divEditFormComm", InsertionMode = InsertionMode.Replace }))
+{
+    <input id="btnsubmit" type="submit" value="Save Data" class="btn  waves-effect" style="display:none;" />
+    <table class="table table-bordered slab-table" style="margin-top:15px;">
+        <thead class="navbar" style="position:initial; ">
+            <tr>
+                <th>User&nbsp;Type</th>
+                <th>Sharing&nbsp;(%) </th>
+                <th>Max Sharing&nbsp;(₹)</th>
+                <th>Minimum&nbsp;₹-(Nill&nbsp;Comm)&nbsp;</th>
+                <th>Mini Statement&nbsp;(₹)</th>
+                <th>Aadhar&nbsp;Pay&nbsp;Charge(%)</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyshow">
+            @foreach (var item in Model.common)
+            {
+                var usertype = item.usertype;
+                if (usertype == "Dealer")
+                {
+                    usertype = "Distributor commission";
+                }
+                if (item.usertype == "Distributor-Rem")
+                {
+                    usertype = "Retailer commission";
+                }
+                var data = " ";
+                if (item.usertype == "Retailer")
+                {
+                    usertype = "Retailer > Common";
+                    data = "none";
+                }
+                var color = "";
+                if (item.usertype == "Purchase")
+                {
+                    usertype = "Purchase commission";
+                    color = "#f9f9cb";
+                }
+                if (item.usertype == "Whitelabel")
+                {
+                    usertype = "WhiteLabel commission";
+                }
+
+                if (item.usertype == "Master")
+                {
+                    usertype = "Master commission";
+                }
+
+                <tr style="background-color:@color;display:@data">
+                    <td>@usertype</td>
+                    <td>@item.comm</td>
+                    <td>@item.maxrs</td>
+                    <td>@item.minvalue</td>
+                    <td>@item.M_statement</td>
+                    <td>@item.aadharpay</td>
+                </tr>
+            }
+
+        </tbody>
+        <tbody id="tbodyedit" style="display:none;">
+            @for (int i = 0; i < Model.common.Count; i++)
+            {
+                var usertype = Model.common[i].usertype;
+                if (usertype == "Dealer")
+                {
+                    usertype = "Distributor commission";
+                }
+                if (Model.common[i].usertype == "Distributor-Rem")
+                {
+                    usertype = "Retailer Charge";
+                }
+                var data = " ";
+                if (Model.common[i].usertype == "Retailer")
+                {
+                    usertype = "Retailer > Common";
+                    data = "none";
+                }
+                var color = "";
+                if (Model.common[i].usertype == "Purchase")
+                {
+                    usertype = "Purchase Charge";
+                    color = "#f9f9cb";
+                }
+                if (Model.common[i].usertype == "Whitelabel")
+                {
+                    usertype = "WhiteLabel Charge";
+                }
+
+                if (Model.common[i].usertype == "Master")
+                {
+                    usertype = "Master commission";
+                }
+                <tr style="background-color:@color;display:@data">
+                    @Html.HiddenFor(a => a.common[i].idno)
+                    <td>
+                        @usertype
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.common[i].comm, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.common[i].comm)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.common[i].maxrs, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.common[i].maxrs)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.common[i].minvalue, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.common[i].minvalue)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.common[i].M_statement, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.common[i].M_statement)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.common[i].aadharpay, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.common[i].aadharpay)
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+<script>
+    function OnSuccess() {
+        $('#btnsubmit').hide();
+        $('#btnEdit').show();
+    }
+</script>

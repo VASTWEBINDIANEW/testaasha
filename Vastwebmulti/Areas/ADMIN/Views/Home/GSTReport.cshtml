@@ -1,0 +1,279 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.GSTReportModel
+@{
+    ViewBag.Title = "GSTReport";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:0px;">
+                <div class="card">
+                    @using (Html.BeginForm("GSTReport", "Home", FormMethod.Post))
+                    {
+                        <div class="">
+
+                            <div class="col-md-2">
+                                <div class="form-line" style="margin-top:6px;border:1px solid #dddddd; margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("ddlusers", new List<SelectListItem>
+                           {
+                           new SelectListItem{ Text="Admin",Value="Admin"},
+                           new SelectListItem{Text="Master",Value="Master"},
+                           new SelectListItem{Text="Dealer",Value="Dealer"},
+                           new SelectListItem{Text="Retailer",Value="Retailer"},
+
+                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;height:32px;", @onchange = "answers()" })
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-2" style="display:none;" id="allmaster">
+                                <div class="form-line" style="margin-top:6px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("allmaster", ViewBag.allmaster as SelectList, "All Master", new { @style = "margin-top:0px;height:32px;", @class = "selectpicker form-control", data_live_search = "true", })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2" style="display:none;" id="dlm">
+                                <div class="form-line" style="margin-top:6px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("alldealer", ViewBag.alldealer as SelectList, " All Distubutor", new { id = "alldealer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;height:32px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="display:none;" id="rem">
+                                <div class="form-line" style="margin-top:6px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;height:32px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                            </div>
+                            <div class="col-md-1">
+                                <center>
+                                    <input id="submit" type="submit" style="margin-top: 6px; margin-left: -16px; height:32px;border:1px solid #c7c2c2;background:#dedddd;" name="submit" value='@ViewBag.CurrentMonthName'>
+                                </center>
+                            </div>
+                            <div class="col-md-1">
+                                <center>
+                                    <input id="submit" type="submit" style="margin-top: 6px; margin-left: -16px; height:32px;border:1px solid #c7c2c2;background:#dedddd;" name="submit" value='@ViewBag.OldMonth1'>
+                                </center>
+                            </div>
+                            <div class="col-md-1">
+                                <center>
+                                    <input id="submit" type="submit" style="margin-top: 6px; margin-left: -16px; height:32px;border:1px solid #c7c2c2;background:#dedddd;" name="submit" value='@ViewBag.OldMonth2'>
+                                </center>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-26px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;"><b style="font-size:20px;">Month&nbsp;:-&nbsp;@ViewBag.Crmonth</b></li>
+                        </ol>
+                    </div>
+                    <div class="body" style="padding:7px;">
+                        <div class="table-responsive" style="position:inherit;margin-top:-50px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%; font-size:12px;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Sr.</th>
+                                        <th>Role</th>
+                                        <th>FarmName</th>
+                                        <th>Name</th>
+                                        <th>Account Transfer&nbsp;GST</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var i = 1;
+                                    }
+                                    @if (Model.GSTAdmin != null)
+                                    {
+                                        foreach (var item in Model.GSTAdmin)
+                                        {
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.Role</td>
+                                                <td>@item.FarmName</td>
+                                                <td>@item.Name</td>
+                                                <td>@item.gst</td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else if (Model.GSTMaster != null)
+                                    {
+                                        foreach (var item in Model.GSTMaster)
+                                        {
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.Role</td>
+                                                <td>@item.FarmName</td>
+                                                <td>@item.Name</td>
+                                                <td>@item.gst</td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else if (Model.GSTDealer != null)
+                                    {
+                                        foreach (var item in Model.GSTDealer)
+                                        {
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.Role</td>
+                                                <td>@item.FarmName</td>
+                                                <td>@item.Name</td>
+                                                <td>@item.gst</td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                    else if (Model.GSTRetailer != null)
+                                    {
+                                        foreach (var item in Model.GSTRetailer)
+                                        {
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.Role</td>
+                                                <td>@item.FarmName</td>
+                                                <td>@item.Name</td>
+                                                <td>@item.gst</td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot class="navbar" style="color:white;position:inherit;">
+                                    @if (Model.GSTAdmin != null)
+                                    {
+                                        <tr>
+                                            <td style="font-size:18px;">Total</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="font-size:18px;">@Model.GSTAdmin.Sum(a => a.gst)</td>
+                                        </tr>
+                                    }
+                                    else if (Model.GSTMaster != null)
+                                    {
+                                        <tr>
+                                            <td style="font-size:18px;">Total</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="font-size:18px;">@Model.GSTMaster.Sum(a => a.gst)</td>
+                                        </tr>
+                                    }
+                                    else if (Model.GSTDealer != null)
+                                    {
+                                        <tr>
+                                            <td style="font-size:18px;">Total</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="font-size:18px;">@Model.GSTDealer.Sum(a => a.gst)</td>
+                                        </tr>
+                                    }
+                                    else if (Model.GSTRetailer != null)
+                                    {
+                                        <tr>
+                                            <td style="font-size:18px;">Total</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="font-size:18px;">@Model.GSTRetailer.Sum(a => a.gst)</td>
+                                        </tr>
+                                    }
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<script>
+    $(document).ready(function()
+    {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+        answers();
+    });
+</script>
+<script type="text/javascript">
+    function answers() {
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer") {
+            document.getElementById("allmaster").style.display = "none";
+             document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+
+        }
+
+        else if (answer == "Master") {
+            document.getElementById("allmaster").style.display = "block";
+           document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+
+        }
+        else if (answer == "Admin") {
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+                }
+        else if (answer == "Retailer") {
+
+            document.getElementById("allmaster").style.display = "none";
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+
+          }
+
+    }
+</script>
+

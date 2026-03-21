@@ -1,0 +1,933 @@
+﻿@model Vastwebmulti.Areas.FeeCollector.Models.StdModel
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="body">
+                        <div class="demo-button">
+                            <div class="row">
+                                <h3>Please insert fixed external fee charges before inserting a new student.</h3>
+                                <br />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3" style="margin-top:-10px;">
+                                    <button type="button" class="btn bg-indigo waves-effect" data-toggle="modal" data-target="#defaultModal">
+                                        <i class="material-icons" style="top:0px;">group</i>
+                                        <span style="top:-5px;">Add&nbsp;New</span>
+                                    </button>
+                                </div>
+                                <div class="col-md-3" style="margin-top:-10px;">
+                                    <button type="button" class="btn bg-indigo waves-effect" data-toggle="modal" data-target="#excelModal">
+                                        <i class="fa fa-file-excel-o" style="top:0px;"></i>
+                                        <span style="top:-5px;">Upload&nbsp;Excel</span>
+                                    </button>
+                                </div>
+                                <div class="col-md-3" style="margin-top:-10px;">
+                                    <a href="@Url.Action("Download","Home")" class="btn bg-indigo waves-effect">
+                                        <i class="fa fa-cloud-download"  style="top:0px;"></i>
+                                        <span style="top:-5px;">Download&nbsp;Formate</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-33px;">
+                <div class="card">
+                    <div class="">
+                        <h2 style="color:black; font-size:16px;padding-top:9px; padding-left:22px;">
+                            Student Details
+                        </h2>
+                    </div>
+                    <div class="body">
+                        <div class="table-responsive" style="position:inherit;margin-top:-20px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable" style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th style="padding-left:2px;">Roll&nbsp;No</th>
+
+                                        <th style="padding-left:2px;">Std&nbsp;Name</th>
+                                        <th style="padding-left:2px;">Father&nbsp;Name</th>
+                                        <th style="padding-left:2px;">Fee</th>
+                                       
+                                        @*<th style="padding-left:2px;">Status</th>*@
+                                        <th style="padding-left:2px;">Edit</th>
+                                        <th style="padding-left:2px;">View</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.students)
+                                    {
+                                        <tr>
+                                            <td>@item.RollNo</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.FName</td>
+                                            <th>@item.AnnualFee</th>
+                                           
+                                            @*<td style="padding:3px;">
+                                                @if (item.Status == "Y")
+                                                {
+                                                    <div class="demo-switch">
+
+
+                                                        <div class="switch">
+                                                            <label>
+                                                                <a href="@Url.Action("FCstatus",new { id = item.RollNo })" style="text-decoration:none;"><input type="checkbox" checked /> <span class="lever" style="background-color:green;"></span></a>
+                                                            </label>
+
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="demo-switch">
+                                                        <div class="switch">
+                                                            <label>
+                                                                <a href="@Url.Action("FCstatus",new { id = item.RollNo  })" style="text-decoration:none;"><span class="lever" style="background-color:red;"></span></a>
+                                                            </label>
+
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </td>*@
+                                            <td>
+                                                <button id="but" onclick="animation('@item.RollNo')" style="background-color:transparent;color:#03a9f4; border:none;">
+                                                    <i class="fa fa-edit fa-2x" style="font-size:24px;color:#673ab7;"></i>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button type="button" style="background-color:transparent; border:none;" onclick="showdata('@item.RollNo')">
+                                                    <i class="fa fa-eye fa-2x" style="font-size:23px;color:#009688;"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Add New Fee Collector  modal-->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Add New Student</h4>
+            </div>
+            @using (Html.BeginForm("insert_Std", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Roll No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.StdID, "", new { @class = "form-control", placeholder = "Enter Roll No", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.StdID, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.StdName, "", new { @class = "form-control", placeholder = "Enter Name", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.StdName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Father Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.FName, "", new { @class = "form-control", placeholder = "Enter Father Name", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.FName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Mobile Number", onkeypress = "return isNumber(event)", maxlength = "10", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextAreaFor(m => m.Address, new { @class = "form-control", placeholder = "Enter Address ", @onkeypress = "javascript:return AddValidation(event)", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">DOB</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.DOB,"", new { @type="date", @class = "form-control", placeholder = "Enter DOB ", required = "required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.DOB, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Class</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.EnumDropDownListFor(m => m.stdClass,new { @class="form-control"})
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.stdClass,"", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Section</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Section, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Section,"", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Fee</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.AnnualFee, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.AnnualFee, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Bus Fee</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.BusFee, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.BusFee, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Discount</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Discount, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Discount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="form-group">
+                                    <div class="col-lg-offset-3 col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                        @Html.LabelFor(m => m.FeeDiscountEnabled)
+                                        @Html.CheckBoxFor(m => m.FeeDiscountEnabled, new { @style = "left:0px; opacity:inherit;position:initial;" })
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+
+                                        @Html.LabelFor(m => m.BusDiscountEnabled)
+                                        @Html.CheckBoxFor(m => m.BusDiscountEnabled, new { @style = "left:0px; opacity:inherit;position:initial;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Session</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownListFor(m=>m.AcadminSession, (IEnumerable<SelectListItem>)ViewBag.AcadmicSession, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.AcadminSession, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Board</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.EnumDropDownListFor(m => m.Board, new { @class = "form-control",@required="required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Board, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Remark</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.remark, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.remark, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                      
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary waves-effect">Save Change</button>
+                                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Edit Master Distributor  modal-->
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Edit Master Distributor</h4>
+            </div>
+            @using (Html.BeginForm("EditStudent", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtRollNo" name="txtRollNo" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.StdName1, "", new { @class = "form-control", placeholder = "Enter Name", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.StdName1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Father Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.FName1, "", new { @class = "form-control", placeholder = "Enter Father Name", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.FName1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Mb1, new { @class = "form-control", placeholder = "Enter Mobile Number", onkeypress = "return isNumber(event)", maxlength = "10", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Mb1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextAreaFor(m => m.Address1, new { @class = "form-control", placeholder = "Enter Address ", @onkeypress = "javascript:return AddValidation(event)", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Address1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">DOB</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.DOB1, "", new { @type = "date", @class = "form-control", placeholder = "Enter DOB ", required = "required" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.DOB1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Class</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.EnumDropDownListFor(m => m.stdClass1, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.stdClass1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Section</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Section1, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Section1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Board</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.EnumDropDownListFor(m => m.Board1, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Board1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Fee</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.AnnualFee1, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.AnnualFee1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Session</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownListFor(m => m.AcadminSession1, (IEnumerable<SelectListItem>)ViewBag.AcadmicSession, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.AcadminSession1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Remark</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.remark1, new { @class = "form-control" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.remark1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+             
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary waves-effect">Save Change</button>
+                                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--Excel modal-->
+<div class="modal fade" id="excelModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="excelModalLabel" style="color:white;">Upload Student Via Excel</h4>
+            </div>
+            @using (Html.BeginForm("UploadExcel", "Home", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return myFunction()" }))
+            {
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">File</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBox("FileUpload", "", new { @type = "file",@class="form-control" })
+
+                                        </div>
+                                        @Html.ValidationMessage("FileUpload", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary waves-effect">Upload</button>
+                                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--View all Details-->
+<div class="modal fade" id="largeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar">
+                <h4 class="modal-title" id="largeModalLabel" style="color:white;">Student Detail</h4>
+            </div>
+            <div class="modal-body">
+                <div class="body" style="margin-top:50px;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Roll Number :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtRollNo1" name="txtRollNo1" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" style="border:none; background-color:white; display:none;" class="form-control" id="idno" name="idno" readonly="">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Father Name :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtFName" name="txtFName" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Class :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtClass" name="txtClass" readonly="">
+                                </div>
+                            </div>
+                            @*<div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">School :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtSchool" name="txtSchool" readonly="">
+                                </div>
+                            </div>*@
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Fee :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtFee" name="txtFee" readonly="">
+                                </div>
+                            </div>
+                            
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Name :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtName" name="txtName" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">DOB :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtDOB" name="txtDOB" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Section:</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtSection" name="txtSection" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Phone :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtPhone" name="txtPhone" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-line" style="border-bottom:1px solid #00b0e4;">
+                                    <span style="font-weight:600;">Address :</span>
+                                    <input type="text" style="border:none; background-color:white;" class="form-control" id="txtAddress" name="txtAddress" readonly="">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<!--Add fill dropdown list-->
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#State').change(function () {
+            // alert('Value:' + ' ' + $('#State1').val())
+            var stid = $('#State').val()
+            GetDistrict(stid)
+        });
+    })
+    $(function () {
+        $('#State1').change(function () {
+            // alert('Value:' + ' ' + $('#State1').val())
+            var stid = $('#State1').val()
+            GetDistrict1(stid)
+        });
+    })
+
+    function GetDistrict(_stateId) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#District").html(procemessage).show();
+        var url = '@Url.Action("DistrictList","Home")'
+        $.ajax({
+            url: url,
+            data: { Id: _stateId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $("#District").html("");
+                for (var x = 0; x < data.length; x++) {
+                    //alert(markup)
+                    $("#District").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                }
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function GetDistrict1(_stateId) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#District1").html(procemessage).show();
+        var url = '@Url.Action("DistrictList","Home")'
+        $.ajax({
+            url: url,
+            data: { Id: _stateId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $("#District1").html("");
+                for (var x = 0; x < data.length; x++) {
+                    //alert(markup)
+                    $("#District1").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                }
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+
+</script>
+<!--Edit master detail-->
+<script type="text/javascript">
+    var val1 = "";
+    function animation(RollNo) {
+        var url = '@Url.Action("RollNoSearch", "Home")'
+            $.ajax({
+                url: url,
+                data: { id: RollNo },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                  var obj = JSON.parse(data);
+                  $("#StdName1").val(obj.Name);
+                  $("#txtRollNo").val(obj.RollNo);
+                $("#FName1").val(obj.FName);
+                $("#Mb1").val(obj.Phone);
+                $("#Address1").val(obj.stdAddress);
+                $("#DOB1").val(moment(new Date(obj.DOB)).format("YYYY-MM-DD"));
+              
+                $("#stdClass1").val(obj.stdClass);
+                $("#Section1").val(obj.Section);
+                //alert(obj.Board);
+                $("#Board1").val(obj.Board);
+
+              
+                $("#Commission1").val(obj.Commission);
+                $("#AnnualFee1").val(obj.AnnualFee);
+                
+                $("#remark1").val(obj.Remark);
+
+                //GetDistrict1(data[0].State)
+                //var objSelect1 = document.getElementById("District1");
+                //binddist(data[0].State, data[0].District, objSelect1);
+                $('#defaultModal1').modal('show');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+    function cleanDate(d) {
+        if (typeof d == 'string') {
+            return new Date(d) || Date.parse(d) || new Date(parseInt(d));
+        }
+        if (typeof d == 'number') {
+            return new Date(d);
+        }
+        return d;
+    }
+    function binddist(staid, dist, objSelect1) {
+        var url = '@Url.Action("DistrictList","Home")'
+        $.ajax({
+            url: url,
+            data: { Id: staid },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Select District</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#District").html(markup).show();
+                setSelectedValue(objSelect1, dist);
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+    function setSelectedValue(selectObj, valueToSet) {
+
+        for (var i = 0; i < selectObj.options.length; i++) {
+            if (selectObj.options[i].value == valueToSet) {
+                //alert(selectObj.options[i].value);
+                selectObj.options[i].selected = true;
+                return;
+            }
+        }
+    }
+</script>
+<!--Insert Popuop-->
+<script>
+    window.onload = function () {
+        var message = '@TempData["msgrem"]'
+        if (message != "" && message != null) {
+            swal("Good job!", message, "success");
+
+        }
+        var mobileconfrimation = '@TempData["mobileno"]'
+        if (mobileconfrimation != "" && mobileconfrimation != null) {
+            swal("Oops...", mobileconfrimation, "error");
+
+        }
+
+        var mailconfrimation = '@TempData["emailconfrim"]'
+        if (mailconfrimation != "" && mailconfrimation != null) {
+            swal("Oops...", mailconfrimation, "error");
+
+        }
+        //Edit Message
+        var editdata = '@TempData["edit"]'
+        if (editdata != null && editdata != "") {
+            swal("Good job!", editdata, "success");
+        }
+
+    }
+</script>
+<!--Show data on click view-->
+<script>
+    function showdata(RollNo) {
+        var url = '@Url.Action("RollNoSearch", "Home")'
+        $.ajax({
+            url: url,
+            data: { id: RollNo },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var obj = JSON.parse(data);
+                $("#txtRollNo1").val(obj.RollNo);
+                $("#txtName").val(obj.Name);
+                $("#txtFName").val(obj.FName);
+                $("#txtDOB").val(moment(new Date(obj.DOB)).format("YYYY-MM-DD"));
+                $("#txtClass").val(obj.stdClass);
+                $("#txtSection").val(obj.Section);
+                $("#txtPhone").val(obj.Phone);
+                //$("#txtSchool").val(obj.SchoolName);
+                $("#txtAddress").val(obj.stdAddress);
+                $("#txtFee").val(obj.AnnualFee);
+
+                $('#largeModal').modal('show');
+            }
+        });
+    }
+</script>
+<script>
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    $(function () {
+        var val = '@ViewData["value"]';
+
+        if (val == "OK") {
+
+            $('#clickshow').click();
+        }
+
+    });
+</script>
+<script>
+    @*function GetSession()
+    {
+        var borad = $("#Board").val();
+        var url = '@Url.Action("GetSession", "Home")'
+        $.ajax({
+            url: url,
+            data: { stdBoard: borad },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                alert();
+                alert(data);
+               
+            }
+        });
+    }*@
+    function myFunction()
+    {
+        //alert("myFunction");
+        return true;
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+

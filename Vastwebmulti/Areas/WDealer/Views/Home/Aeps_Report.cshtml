@@ -1,0 +1,366 @@
+﻿@model IEnumerable<Vastwebmulti.Models.proc_whitelabel_AepsReport_Result>
+@{
+    ViewBag.Title = "Aeps_Report";
+    Layout = "~/Areas/WDealer/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .ss :hover {
+        color: green;
+    }
+
+    .ff :hover {
+        color: red;
+    }
+
+    .view :hover {
+        color: #3F51B5;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+
+<section class="content" style="overflow-x:hidden;">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-6">
+                        <p style="font-size:21px;margin-top:6px;color:#0000004f;font-weight:700;">AEPS&nbsp;Report</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group" style="margin-top:-17px; ">
+                                <div style="padding-top: 22px;  padding-left: 10px; float:right;">
+                                    <button type="button" class="btn btn-success waves-effect" style="margin-top:2px;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totals"]</button>
+                                    <button type="button" class="btn btn-danger waves-effect" style="margin-top:2px;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalf"]</button>
+                                    <button type="button" class="btn btn-warning waves-effect" style="margin-top:2px;" title="Total  Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalp"]</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-19px;">
+                <div class="card">
+                    @using (Html.BeginForm("Aeps_Report", "Home", FormMethod.Post))
+                    {
+                        <div class="">
+                            <div class="col-md-2">
+                                <div class="form-line" style="margin-top:3px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <div class="form-line" style="margin-top:3px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("ddl_top", new List<SelectListItem>
+                              {
+                           new SelectListItem{ Text="50",Value="50"},
+                           new SelectListItem{Text="100",Value="100"},
+                           new SelectListItem{Text="200",Value="200"},
+                           new SelectListItem{Text="500",Value="500"},
+                           new SelectListItem{Text="1500",Value="1500"},
+                           new SelectListItem{Text="All",Value="All"}
+                          }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                </div>
+
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-line" style="margin-top:3px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                    @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                {
+                        new SelectListItem{ Text="Status",Value="ALL",},
+                        new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                        new SelectListItem{Text="Pending",Value="PENDING"},
+                        new SelectListItem{Text="FAILED",Value="FAILED"}
+                         }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-bottom:0px;margin-left:-6px;width:108%;margin-top:3px;">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:3px;height:32px;", autocomplete = "off" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-exchange"></i>
+                                        </span>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:3px;height:32px;", autocomplete = "off" })
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <center>
+                                    <button type="submit" class="btn" style="margin-top:6px; margin-left: -61px; height:32px;border:1px solid #c7c2c2;background:#dedddd;">
+                                        <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                        <span style="top:-2px;color:black;">Search</span>
+                                    </button>
+                                </center>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-26px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">AEPS REPORT&nbsp;></li>
+                        </ol>
+                    </div>
+                    <div class="body" style="padding:7px;">
+                        <div class="table-responsive" style="position:inherit;margin-top:-49px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;font-size:12px;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th style="width:110px;">Live&nbsp;Status</th>
+                                        <th>From</th>
+                                        <th>Retailer&nbsp;Frim&nbsp;Name</th>
+                                        <th>Aadhaar&nbsp;Number</th>
+                                        <th>Customer&nbsp;Bank&nbsp;Name</th>
+                                        <th>Merchant&nbsp;ID</th>
+                                        <th>Req&nbsp;Date</th>
+                                        <th>Transfer&nbsp;</th>
+                                        <th>User&nbsp;Credit&nbsp;</th>
+                                        <th>Bank&nbsp;RRN&nbsp;</th>
+                                        <th style="width:300px; ">User&nbsp;Information</th>
+                                        <th>User&nbsp;Pre&nbsp;₹&nbsp;│&nbsp;Credit&nbsp;│&nbsp;Post&nbsp;Amt&nbsp;₹</th>
+                                        <th>Dealer&nbsp;Pre&nbsp;₹&nbsp;│&nbsp;Credit&nbsp;│&nbsp;Post&nbsp;Amt&nbsp;₹</th>
+                                        <th>Terminal ID</th>
+                                        <th>Remark</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+
+                                            var color = "";
+                                            var fontweight = "";
+                                            var text = "";
+                                            var emailid = "";
+                                            var Retailername = "";
+                                            var framname = "";
+                                            var mobile = "";
+                                            var icon = "";
+                                            var rchtype = "";
+                                            var rchtypeicon = "";
+                                            var sts = "";
+                                            var refundcolor = "";
+                                            var rolename = "";
+
+                                            if (item.ApplicationType == "web")
+                                            {
+                                                rchtypeicon = "fa fa-globe";
+                                            }
+                                            if (item.ApplicationType == "app")
+                                            {
+                                                rchtypeicon = "fa fa-android";
+                                            }
+                                            if (item.Role == "WRetailer")
+                                            {
+                                                emailid = item.Email;
+                                                Retailername = item.RetailerName;
+                                                mobile = item.Mobile;
+                                                framname = item.Frm_Name;
+
+
+
+                                            }
+                                            if (item.Status.Contains("Pending"))
+                                            {
+                                                color = "#ff9600";
+                                                fontweight = "700";
+                                                sts = item.Status;
+
+                                            }
+                                            if (item.Status.Contains("Failed"))
+                                            {
+                                                color = "#9C27B0";
+                                                fontweight = "700";
+                                                sts = item.Status;
+
+                                            }
+                                            if (item.Status.Contains("Success"))
+                                            {
+                                                color = "green";
+                                                fontweight = "700";
+                                                sts = item.Status;
+
+                                            }
+                                            if (item.Status.ToUpper().Contains("REFUND"))
+                                            {
+                                                color = "blue";
+                                                sts = "Refund";
+                                            }
+                                            if (item.Status.ToUpper().Contains("SETTLEMENT"))
+                                            {
+                                                color = "#9C27B0";
+                                                sts = "Settlement";
+                                            }
+                                            <tr style="font-weight:700;">
+                                                <td><p style="font-size:13px;text-transform:uppercase;"><span style="color:@color;">@sts</span>&nbsp;</p></td>
+                                                <td>
+                                                    <p style="font-size:16px;margin-left:-8px;margin-top:-2px;">&nbsp;<i class="@rchtypeicon"></i>&nbsp;</p>
+                                                </td>
+                                                <td>
+                                                    <p style="font-size:10px;margin-left:-8px;margin-top:1px;">&nbsp;@framname&nbsp;</p>
+                                                </td>
+
+                                                <td>
+                                                    <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.AccountHolderAadhaar&nbsp;</p>
+                                                </td>
+                                                <td>
+                                                    <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.BankName&nbsp;</p>
+                                                </td>
+                                                <td>
+                                                    <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.MerchantTxnId&nbsp;</p>
+                                                </td>
+                                                <td><p style="font-size:11px;margin-left:-7px; margin-top:-2px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.Txn_Date)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+                                                <td>
+                                                    <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.Amount&nbsp;</p>
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        decimal amount = 0;
+                                                        decimal remincome = 0;
+                                                        decimal usercredit = 0;
+                                                        if (item.Role == "WRetailer")
+                                                        {
+                                                            amount = Convert.ToDecimal(item.Amount);
+                                                            remincome = Convert.ToDecimal(item.RemIncome);
+                                                            usercredit = (amount + remincome);
+                                                        }
+
+                                                    }
+                                                    <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@string.Format("{0:N}", usercredit)&nbsp;</p>
+                                                </td>
+
+                                                <td>
+                                                    <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.BankRRN&nbsp;</p>
+                                                </td>
+                                                <td>
+                                                    <p style="font-size:13px;">@emailid</p>
+                                                </td>
+
+                                                <td>
+                                                    @{
+                                                        decimal usercredit1 = 0;
+                                                        if (item.Role == "WRetailer")
+                                                        {
+
+                                                            usercredit1 = (Convert.ToDecimal(item.Amount) + Convert.ToDecimal(item.RemIncome));
+                                                        }
+                                                    }
+                                                    <p style="font-size:13px;">@string.Format("{0:N}", item.RemPre)&nbsp;│&nbsp;@string.Format("{0:N}", usercredit1)&nbsp;│&nbsp;@string.Format("{0:N}", item.RemPost)</p>
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        decimal usercredit2 = 0;
+
+
+                                                        usercredit2 = (Convert.ToDecimal(item.DlmPre) + Convert.ToDecimal(item.DlmIncome));
+
+                                                    }
+                                                    <p style="font-size:13px;">@string.Format("{0:N}", item.DlmPre)&nbsp;│&nbsp;@string.Format("{0:N}", item.DlmIncome)&nbsp;│&nbsp;@string.Format("{0:N}", usercredit2)</p>
+                                                </td>
+
+                                                <td>
+                                                    <p style="font-size:13px;">@item.TerminalId</p>
+                                                </td>
+                                                <td>
+                                                    <p style="font-size:13px;">@item.Remark</p>
+                                                </td>
+
+                                            </tr>
+                                                            }
+                                                        }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+<!--Calendar Javascript-->
+<script>
+    $(document).ready(function () {
+
+       $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "bottom auto",
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+              });
+</script>
+
+

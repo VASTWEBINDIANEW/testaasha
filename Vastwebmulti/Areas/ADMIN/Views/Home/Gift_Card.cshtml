@@ -1,0 +1,342 @@
+﻿
+@{
+    ViewBag.Title = "Gift_Card";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+                <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-20px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:9px;margin-top:9px;">
+                        <li class="active" style="color:#b5b2b2; font-weight:700;font-size:17px;"> All Gift Card Details</li>
+                        </ol>
+                        <button type="button" class="btn  waves-effect" style="float:right; margin-top:-34px;margin-right:22px;border:1px solid #c7c2c2;background:#dedddd;" data-toggle="modal" data-target="#defaultModal">
+                            <i class="fa fa-plus" style="top:1px;font-size:15px;"></i>
+                            <span style="top:0px;">Add New</span>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="body">
+                                <div class="table-responsive" style="position:inherit;margin-top:-20px;">
+                                    <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                        <thead style="background-color:whitesmoke;">
+                                            <tr>
+                                                <th>Category</th>
+                                                <th>Gift&nbsp;Name</th>
+                                                @*<th>Maximum&nbsp;Amt</th>
+                                                <th>Minimum&nbsp;Amt</th>
+                                                <th>Fixed&nbsp;Amt&nbsp;1st</th>
+                                                <th>Fixed&nbsp;Amt&nbsp;2nd</th>
+                                                <th>Fixed&nbsp;Amt&nbsp;3rd</th>
+                                                <th>Fixed&nbsp;Amt&nbsp;4th</th>*@
+                                                <th>Image</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                                <th>View Image</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in ViewBag.giftdata)
+                                            {
+                                                <tr>
+                                                    <td>@item.Category</td>
+                                                    <td>@item.GiftName</td>
+                                                    @*<td>@item.MaximumAmt</td>
+                                                    <td>@item.MinimumAmt</td>
+                                                    <td>@item.FirstAmt</td>
+                                                    <td>@item.SecondAmt</td>
+                                                    <td>@item.ThirdAmt</td>
+                                                    <td>@item.FourthAmt</td>*@
+
+                                                    <td> <img src="@Url.Content("~/"+item.GiftImage)" width="100" height="70" /></td>
+                                                    <td>
+                                                        <center>
+                                                            <a class="btn btn-default waves-effect"  href="@Url.Action("Edit_Giftcard","Home",new { id=item.ID , type =item.type , category = item.Category })" style="border:1px solid #c7c2c2;">
+                                                              Edit
+                                                            </a>
+                                                        </center>
+                                                    </td>
+                                                    <td>
+                                                        <center>
+                                                            <button class="btn btn-default waves-effect"  type="button" style="background-color:transparent; border:none;border:1px solid #c7c2c2;" onclick="delGift('@item.ID')">
+                                                             Delete
+                                                            </button>
+                                                        </center>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-default waves-effect" href="@Url.Content("~/" + item.GiftImage)" style="border:1px solid #c7c2c2;" target="_blank">
+                                                            View
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+             
+                        </div>
+                        
+                   
+                          
+                        </div>
+                    </div>
+                </div>
+     
+</section>
+
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add Gift Card Content</h4>
+            </div>
+            @using (Html.BeginForm("Gift_Card", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                       
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Select Category</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownList("ddlCategory", new List<SelectListItem>
+                         {
+   new SelectListItem{ Text="Please Select",Value="",},
+   new SelectListItem{ Text="Apparel",Value="Apparel",},
+   new SelectListItem{Text="Accessories",Value="Accessories"},
+   new SelectListItem{Text="Health & Beauty",Value="HealthBeauty"},
+   new SelectListItem{Text="Restaurants",Value="Restaurants"},
+   new SelectListItem{Text="Travel",Value="Travel"},
+    new SelectListItem{Text="Entertainment",Value="Entertainment"},
+     new SelectListItem{Text="Sports",Value="Sports"},
+   new SelectListItem{Text="Electronics",Value="Electronics"}
+   }, new { @class = "form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Enter Gift Card Amount</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                <input name="radiogroup" type="radio" id="radio_1" class="with-gap" value="Variable" onclick="val()" checked>
+                                                <label for="radio_1">Variable</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input name="radiogroup" type="radio" id="radio_2" class="with-gap" value="Fixed" onclick="val()">
+                                                <label for="radio_2">Fixed</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix" id="variablediv" style="display:block;">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            <input type="text" id="txtminimum" name="txtminimum" class="form-control"  placeholder="Minimum Amount" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            <input type="text" id="txtmiximum" name="txtmiximum" class="form-control"  placeholder="Maximum Amount" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="fixeddiv" style="display:none;">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5">
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                <input type="text" id="txtfirst" name="txtfirst" class="form-control"  placeholder="First Amount(100)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                <input type="text" id="txtsecond" name="txtsecond" class="form-control"  placeholder="Second Amount(500)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                <input type="text" id="txtthird" name="txtthird" class="form-control"  placeholder="Third Amount(1000)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                <input type="text" id="txtfourth" name="txtfourth" class="form-control"  placeholder="Fourth Amount(5000)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Gift Card Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            <input type="text" id="txtGift" name="txtGift" class="form-control" required="" placeholder="Allen Solly E-Gift (Instant Voucher)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Gift Card Image</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            <input type="file" name="file" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <p style="color:red;">Image Size will Be :- 320 * 220 Pixel</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;" onclick="return check()">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                    
+                            </div>
+                        
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+
+<script>
+            function val() {
+                var vv = document.querySelector('input[name="radiogroup"]:checked').value;
+                if (vv == "Variable")
+                {
+                    document.getElementById("variablediv").style.display = "block";
+                    document.getElementById("fixeddiv").style.display = "none";
+                }
+                else {
+                    document.getElementById("fixeddiv").style.display = "block";
+                    document.getElementById("variablediv").style.display = "none";
+                }
+            }
+</script>
+<script>
+    $(document).ready(function () {
+
+        var succ = '@TempData["success"]';
+
+        if (succ != null && succ != "") {
+            if (succ.includes("successfully")) {
+                swal("Data Upload!", succ, "success");
+            }
+            else {
+                swal("Oops!", succ, "error");
+            }
+        }
+    });
+
+</script>
+<script>
+
+    function check() {
+        var hh = $('#ddlCategory').val();
+        if (hh != "") {
+            return true;
+        }
+        else {
+            swal("Ooops!", "Please Select One Category", "error");
+            return false;
+        }
+    }
+</script>
+<script type="text/javascript">
+
+    function delGift(e) {
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Gift Card Data !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("delGift", "Home")', data: { ID: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("File Removed!", "Gift Card Data Deleted Successfully.", "success");
+                var url = '@Url.Action("Gift_Card", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Gift_Card", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>

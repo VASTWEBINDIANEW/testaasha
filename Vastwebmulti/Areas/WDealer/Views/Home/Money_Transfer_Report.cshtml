@@ -1,0 +1,587 @@
+﻿@model Vastwebmulti.Areas.WDealer.Models.Money_transfer_Report_whitelabel
+@{
+    ViewBag.Title = "Money_Transfer_Report";
+    Layout = "~/Areas/WDealer/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="">
+                        <div class="col-md-7">
+                            <div style="margin-left:-13px;">
+                                <p style="font-size:20px;margin-top:6px;">Money Transfer&nbsp;Report&nbsp;&nbsp;</p>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="form-group" style="margin-top:-18px; ">
+                                    <div style="padding-top: 22px;  margin-right: 4px; float:right;">
+
+                                        <button type="button" class="btn btn-success waves-effect" style="margin-top:2px;" title="Total Imps Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["totals"]</button>
+                                        <button type="button" class="btn btn-danger waves-effect" style="margin-top:2px;" title="Total Imps Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["totalf"]</button>
+                                        <button type="button" class="btn btn-warning waves-effect" style="margin-top:2px;" title="Total Imps Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["totalp"]</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                @using (Html.BeginForm("Money_Transfer_Report", "Home", FormMethod.Post))
+            {
+                    <div class="card" style="margin-top: -17px;">
+                        <div class="">
+                            <div class="col-md-2" style="display:block;" id="rem">
+                                <div class="form-group">
+                                    <div class="" style="margin-top:4px;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <div class="" style="margin-top:4px;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("ddl_top", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="50",Value="50"},
+                                new SelectListItem{Text="100",Value="100"},
+                                new SelectListItem{Text="200",Value="200"},
+                                new SelectListItem{Text="500",Value="500"},
+                                new SelectListItem{Text="1500",Value="1500"},
+                                new SelectListItem{Text="All",Value="All"}
+                                }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <div class="" style="margin-top:4px;border:1px solid #dddddd;padding-bottom:10px;">
+                                        @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="Status",Value="ALL",},
+                                new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                                new SelectListItem{Text="Pending",Value="PENDING"},
+                                new SelectListItem{Text="FAILED",Value="FAILED"}
+                                }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="" style="margin-top:4px;border:1px solid #dddddd;padding-bottom:10px;">
+                                    @Html.DropDownList("api_name", ViewBag.apiname as SelectList, "Select Api Name", new { @style = "margin-top:0px", @class = "selectpicker form-control", data_live_search = "true", })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-bottom:0px;margin-top:0px;">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:33px;", autocomplete = "off" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-exchange"></i>
+                                        </span>
+                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:33px;", autocomplete = "off" })
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="form-line" style="border-bottom:none;">
+                                        <button value="LIVE" type="submit" class="btn" id="btntype" name="btntype" style="margin-top:5px; margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;">
+                                            <i class="fa fa-search" style="top:-1px;font-size:13px;color:black;"></i>
+                                            <span style="top:-1px;color:black;">Today</span>
+                                        </button>
+                                        <button value="OLD" type="submit" class="btn" id="btntype" name="btntype" style="margin-top:5px; margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;">
+                                            <i class="fa fa-search" style="top:-1px;font-size:13px;color:black;"></i>
+                                            <span style="top:-1px;color:black;">OLD</span>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card" style="margin-top:-27px;">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">MONEY TRANSFER REPORT&nbsp;></li>
+                        </ol>
+                    </div>
+
+                    <div class="body" style="margin-top: -62px;">
+                        <div class="row">
+                            <div class="table-responsive" style="position:inherit;">
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%; font-size:12px;">
+                                    <thead style="color:white; position:initial;" class="navbar">
+                                        <tr>
+                                            <th style="width:100px;">Status</th>
+                                            <th>Sender&nbsp;No</th>
+                                            <th>Beneficiary&nbsp;Account&nbsp;Information</th>
+                                            <th>Type</th>
+                                            <th>Request&nbsp;Date</th>
+                                            <th>Transfer&nbsp;&#x002B;&nbsp;Fee&nbsp;=&nbsp;Total</th>
+                                            <th>Total.Trans</th>
+                                            <th>My&nbsp;Sharing</th>
+                                            <th>GST&nbsp;│&nbsp;TDS</th>
+                                            <th>Net&nbsp;INC</th>
+                                            <th>Pre&nbsp;Amt&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;Post&nbsp;Amt</th>
+                                            <th>Bank&nbsp;Ref&nbsp;No</th>
+                                            <th>Bank&nbsp;Name</th>
+                                            <th>IFSC&nbsp;Code</th>
+                                            <th>Request&nbsp;ID</th>
+                                            <th>Common&nbsp;Trans&nbsp;ID</th>
+                                            <th>REM&nbsp;ID</th>
+                                            <th>REM&nbsp;Name</th>
+                                            <th>REM&nbsp;Frm&nbsp;Name</th>
+                                            <th>
+                                                <span>REM.Pre&nbsp;Amt&nbsp;</span><span style="padding-left:-4px;">&nbsp;│&nbsp;</span>Debit<span style="padding-left:38px;">&nbsp;│&nbsp;</span><span>REM.Post&nbsp;Amt</span>
+                                            </th>
+                                            @*<th>Total&nbsp;Amount</th>*@
+                                            <th>Response&nbsp;Date</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Money_live != null)
+                                        {
+                                            foreach (var item in Model.Money_live)
+                                            {
+                                                var color = "";
+                                                var fontsize = "";
+                                                var rchtype = "";
+                                                var rchtypeicon = "";
+                                                var dmtytpe = "";
+
+                                                if (item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST"))
+                                                {
+                                                    color = "#673AB7";
+                                                    fontsize = "9px;";
+                                                }
+                                                if (item.status.ToUpper().Contains("PENDING"))
+                                                {
+                                                    color = "#FF9800";
+                                                }
+                                                if (item.status.ToUpper().Contains("SUCCESS"))
+                                                {
+                                                    color = "green";
+                                                }
+                                                if (item.status.ToUpper().Contains("FAILED"))
+                                                {
+                                                    color = "red";
+                                                }
+                                                if (item.trans_from == "ONLINE")
+                                                {
+                                                    rchtype = "WEB";
+                                                    rchtypeicon = "fa fa-globe";
+                                                }
+                                                if (item.trans_from == "API")
+                                                {
+                                                    rchtype = "WEB";
+                                                    rchtypeicon = "fa fa-globe";
+
+                                                }
+                                                if (item.trans_from == "Apps")
+                                                {
+                                                    rchtype = "APP";
+                                                    rchtypeicon = "fa fa-android";
+                                                }
+                                                if (item.DmtType == "DMT1")
+                                                {
+                                                    dmtytpe = "➊";
+                                                }
+                                                if (item.DmtType == "DMT2")
+                                                {
+                                                    dmtytpe = "➋";
+                                                }
+                                                <tr>
+                                                    <td style="color:@color;font-weight:700;font-size:@fontsize;">@item.status&nbsp;<i class="@rchtypeicon" style="font-size:12px;"></i></td>
+                                                    <td>@item.senderno</td>
+                                                    <td>@item.accountno&nbsp;⇒&nbsp;@item.recivername</td>
+                                                    <td>
+                                                        @if (item.Trans_type == "IMPS")
+                                                        {
+                                                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid @color;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold;">IMPS</span></p>
+
+                                                        }
+                                                        else if (item.Trans_type == "NEFT")
+                                                        {
+
+                                                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid @color;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">NEFT</span></p>
+
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid @color;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">Verify</span></p>
+
+                                                        }
+                                                    </td>
+                                                    <td><span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)</span></td>
+                                                    <td>
+                                                        @{
+                                                            decimal amount = 0;
+                                                            decimal customerfee = 0;
+                                                            decimal total = 0;
+                                                            decimal debit = 0;
+                                                            decimal remcomm = 0;
+                                                            if (item.Trans_type.Contains("IMPS_VERIFY"))
+                                                            {
+                                                                amount = Convert.ToDecimal(item.amount);
+                                                                customerfee = Convert.ToDecimal(item.income);
+                                                                customerfee = customerfee - amount;
+                                                                total = amount + customerfee;
+                                                                debit = Convert.ToDecimal(item.income);
+                                                            }
+                                                            else
+                                                            {
+                                                                amount = Convert.ToDecimal(item.amount);
+                                                                customerfee = Convert.ToDecimal(item.customer_fee);
+                                                                total = amount + customerfee;
+                                                                remcomm = Convert.ToDecimal(item.income);
+                                                                debit = amount + remcomm;
+
+                                                            }
+                                                        }
+                                                        @item.amount&nbsp;&#x002B;&nbsp;@customerfee&nbsp;=&nbsp;@total
+                                                    </td>
+                                                    <td>@item.totalamount</td>
+                                                    <td>
+                                                        @{
+                                                            int dlmshare_comm = 0;
+                                                            int dlm_comm_include_gst = 0;
+                                                            if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                                                            {
+
+                                                                <p></p>
+                                                            }
+                                                            else
+                                                            {
+                                                                dlmshare_comm = Convert.ToInt32(item.share_dlm_comm);
+                                                                dlm_comm_include_gst = Convert.ToInt32(item.dlm_comm_include_gst);
+                                                                <p>@dlmshare_comm&nbsp;%&nbsp;│&nbsp;@dlm_comm_include_gst&nbsp;₹</p>
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                                                        {
+
+                                                            <p></p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>@item.dlm_gst&nbsp;│&nbsp;@item.dlm_comm_tds</p>
+                                                        }
+
+                                                    </td>
+                                                    <td>@item.dlm_income</td>
+                                                    <td>
+
+                                                        @item.dlm_remain_pre&nbsp;│&nbsp;@item.dlm_remain
+
+                                                    </td>
+                                                    <td>@item.bank_trans_id</td>
+                                                    <td>@item.bank_nm</td>
+                                                    <td>@item.ifsccode</td>
+                                                    <td>&nbsp;@item.trans_id</td>
+                                                    <td>&nbsp;@item.trans_common_id</td>
+                                                    <td>@item.email</td>
+                                                    <td>@item.retailername</td>
+                                                    <td>@item.frm_name</td>
+                                                    <td>
+                                                        <p>
+                                                            <span>@item.user_remain_pre</span><span style="padding-left:28px;">&nbsp;│&nbsp;</span>@debit<span style="padding-left:28px;">&nbsp;│&nbsp;</span><span>@item.user_remain</span>
+
+                                                        </p>
+
+                                                    </td>
+                                                    @*<td>@item.totalamount</td>*@
+                                                    <td>@item.response_time</td>
+                                                </tr>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                foreach (var item in Model.Money_old)
+                                                                {
+                                                                    var color = "";
+                                                                    var fontsize = "";
+                                                                    var rchtype = "";
+                                                                    var rchtypeicon = "";
+                                                                    var dmtytpe = "";
+
+                                                                    if (item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST"))
+                                                                    {
+                                                                        color = "#673AB7";
+                                                                        fontsize = "9px;";
+                                                                    }
+                                                                    if (item.status.ToUpper().Contains("PENDING"))
+                                                                    {
+                                                                        color = "#FF9800";
+                                                                    }
+                                                                    if (item.status.ToUpper().Contains("SUCCESS"))
+                                                                    {
+                                                                        color = "green";
+                                                                    }
+                                                                    if (item.status.ToUpper().Contains("FAILED"))
+                                                                    {
+                                                                        color = "red";
+                                                                    }
+                                                                    if (item.trans_from == "ONLINE")
+                                                                    {
+                                                                        rchtype = "WEB";
+                                                                        rchtypeicon = "fa fa-globe";
+                                                                    }
+                                                                    if (item.trans_from == "API")
+                                                                    {
+                                                                        rchtype = "WEB";
+                                                                        rchtypeicon = "fa fa-globe";
+
+                                                                    }
+                                                                    if (item.trans_from == "Apps")
+                                                                    {
+                                                                        rchtype = "APP";
+                                                                        rchtypeicon = "fa fa-android";
+                                                                    }
+                                                                    if (item.DmtType == "DMT1")
+                                                                    {
+                                                                        dmtytpe = "➊";
+                                                                    }
+                                                                    if (item.DmtType == "DMT2")
+                                                                    {
+                                                                        dmtytpe = "➋";
+                                                                    }
+                                                                    <tr>
+                                                                        <td style="color:@color;font-weight:700;font-size:@fontsize;">@item.status&nbsp;<i class="@rchtypeicon" style="font-size:12px;"></i></td>
+                                                                        <td>@item.senderno</td>
+                                                                        <td>@item.accountno&nbsp;⇒&nbsp;@item.recivername</td>
+                                                                        <td>
+                                                                            @if (item.Trans_type == "IMPS")
+                                                                            {
+                                                                                <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid @color;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold;">IMPS</span></p>
+
+                                                                            }
+                                                                            else if (item.Trans_type == "NEFT")
+                                                                            {
+
+                                                                                <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid @color;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">NEFT</span></p>
+
+                                                                            }
+                                                                            else
+                                                                            {
+
+                                                                                <p style="font-size:15px;margin-left:-7px;margin-top:-3px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid @color;" title="View" data-toggle="modal" data-target="#largeModal">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">Verify</span></p>
+
+                                                                            }
+                                                                        </td>
+                                                                        <td><span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)</span></td>
+                                                                        <td>
+                                                                            @{
+                                                                                decimal amount = 0;
+                                                                                decimal customerfee = 0;
+                                                                                decimal total = 0;
+                                                                                decimal debit = 0;
+                                                                                decimal remcomm = 0;
+                                                                                if (item.Trans_type.Contains("IMPS_VERIFY"))
+                                                                                {
+                                                                                    amount = Convert.ToDecimal(item.amount);
+                                                                                    customerfee = Convert.ToDecimal(item.income);
+                                                                                    customerfee = customerfee - amount;
+                                                                                    total = amount + customerfee;
+                                                                                    debit = Convert.ToDecimal(item.income);
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    amount = Convert.ToDecimal(item.amount);
+                                                                                    customerfee = Convert.ToDecimal(item.customer_fee);
+                                                                                    total = amount + customerfee;
+                                                                                    remcomm = Convert.ToDecimal(item.income);
+                                                                                    debit = amount + remcomm;
+
+                                                                                }
+                                                                            }
+                                                                            @item.amount&nbsp;&#x002B;&nbsp;@customerfee&nbsp;=&nbsp;@total
+                                                                        </td>
+                                                                        <td>@item.totalamount</td>
+                                                                        <td>
+                                                                            @{
+                                                                                int dlmshare_comm = 0;
+                                                                                int dlm_comm_include_gst = 0;
+                                                                                if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                                                                                {
+
+                                                                                    <p></p>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    dlmshare_comm = Convert.ToInt32(item.share_dlm_comm);
+                                                                                    dlm_comm_include_gst = Convert.ToInt32(item.dlm_comm_include_gst);
+                                                                                    <p>@dlmshare_comm&nbsp;%&nbsp;│&nbsp;@dlm_comm_include_gst&nbsp;₹</p>
+                                                                                }
+
+
+                                                                            }
+
+
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                                                                            {
+
+                                                                                <p></p>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <p>@item.dlm_gst&nbsp;│&nbsp;@item.dlm_comm_tds</p>
+                                                                            }
+
+                                                                        </td>
+                                                                        <td>@item.dlm_income</td>
+                                                                        <td>
+
+                                                                            @item.dlm_remain_pre&nbsp;│&nbsp;@item.dlm_remain
+
+                                                                        </td>
+                                                                        <td>@item.bank_trans_id</td>
+                                                                        <td>@item.bank_nm</td>
+                                                                        <td>@item.ifsccode</td>
+                                                                        <td>&nbsp;@item.trans_id</td>
+                                                                        <td>&nbsp;@item.trans_common_id</td>
+                                                                        <td>@item.email</td>
+                                                                        <td>@item.retailername</td>
+                                                                        <td>@item.frm_name</td>
+                                                                        <td>
+                                                                            <p>
+                                                                                <span>@item.user_remain_pre</span><span style="padding-left:28px;">&nbsp;│&nbsp;</span>@debit<span style="padding-left:28px;">&nbsp;│&nbsp;</span><span>@item.user_remain</span>
+
+                                                                            </p>
+
+                                                                        </td>
+                                                                        @*<td>@item.totalamount</td>*@
+                                                                        <td>@item.response_time</td>
+                                                                    </tr>
+                                                                                    }
+                                                                                }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<!--Calendar Javascript-->
+<script>
+    $(document).ready(function () {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+    });
+</script>
+<script type="text/javascript">
+    function answers() {
+
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer")
+        {
+            document.getElementById("rem").style.display = "none";
+        }
+        else if (answer == "Retailer")
+        {
+               document.getElementById("rem").style.display = "block";
+        }
+    }
+</script>
+<script type="text/javascript">
+                   function GotoPDF(e) {
+                       // alert(e)
+                       var idno = e.toString();
+                       var url = '@Url.Action("GeneratePDF", "Home")?Idno=' + idno + '';
+                       //window.location.href = url,;
+                       window.open(url, '_blank');
+                   }
+</script>
+
+

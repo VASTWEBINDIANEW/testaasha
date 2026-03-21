@@ -1,0 +1,367 @@
+﻿@model IEnumerable<Vastwebmulti.Models.show_recharge_switch_Result>
+@{
+    ViewBag.Title = "Recharge_switch";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+         <div class="col-md-12">
+          <div class="card">
+              <div class="col-md-7" style="margin-left:-14px;">
+                  @Html.Partial("_menunillcom")
+              </div>
+              <div class="col-md-5">
+@using (Html.BeginForm("Recharge_switch", "Home", FormMethod.Post))
+{
+             <div class="row">
+                 <div class="col-md-3">
+                     <div class="form-group" style="margin-bottom:0px;">
+                         <div class="" style="margin-top:4px;">
+                             @Html.DropDownList("ddl_rechargeTo", new List<SelectListItem>
+                                     {
+                                 new SelectListItem{Text="User From",Value="ALL"},
+                                 new SelectListItem{Text="Retailer",Value="Retailer"},
+                                 new SelectListItem{Text="API",Value="API"}
+                                   }, new { @class = "selectpicker form-control border-0", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                         </div>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="form-group" style="margin-bottom:0px;">
+                         <div class="" style="margin-top:4px;">
+                             @Html.DropDownList("ddl_type", new List<SelectListItem>
+                            {
+                                 new SelectListItem{Text="Transfer To",Value="ALL"},
+                                 new SelectListItem{Text="Machine",Value="Machine"},
+                                 new SelectListItem{Text="API",Value="API"}
+                            }, new { @class = "selectpicker form-control border-0", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                         </div>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="form-group" style="margin-bottom:0px;">
+                         <div class="" style="margin-top:4px;">
+                             @Html.DropDownList("optnm", ViewBag.optnm as SelectList, "Select Operator", new { id = "optnm", @class = "selectpicker form-control border-0", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                         </div>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="row">
+                         <div class="col-md-12">
+                             <button type="submit" class="btn btn-default waves-effect" style="height:36px; margin-top:4px;border:1px solid #dddddd;">
+                                 <i class="fa fa-search" style="top:1px;color:black;"></i>
+                             </button>
+                             <button type="button" class="btn"  style="float:right;height:36px; margin-top:4px;margin-right:-12px;border:1px solid #c7c2c2;background:#dedddd;" data-toggle="modal" data-target="#defaultModal">
+                                <span style="color:black;">New</span>
+                             </button>
+                           </div>
+                         </div>
+                     </div>
+
+                 </div>
+}
+             </div>
+
+              </div>
+          </div>
+         </div>
+          <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:12px;">
+                <div class="card">
+                
+                    <div class="body" style="margin-top:-30px;padding:7px;">
+                        <div class="table-responsive" style="position:inherit;">
+                            <table class="table table-bordered " style="width:100%;">
+                                <thead  style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Recharge&nbsp;From</th>
+                                        <th>User&nbsp;Id</th>
+                                        <th>Recharge&nbsp;To</th>
+                                        <th>Port&nbsp;No</th>
+                                        <th>Operator&nbsp;Name</th>
+                                        <th>Status</th>
+                                        <th>Delete</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Recharge_from</td>
+                                            <td>@item.Email</td>
+                                            <td>@item.Type</td>
+                                            <td>@item.portno</td>
+                                            <td>@item.operator_Name</td>
+                                            <td>
+                                                @if (item.sts == "Y")
+                                                {
+                                                    <center>
+                                                        <a href="@Url.Action("rch_switch", "Home", new { id = item.idno })" style="text-decoration:none;">
+                                                            <img src="~/images/reportimage/switch_on.png" style="margin-top:2px;height:23px;" />
+                                                        </a>
+                                                    </center>
+                                                }
+                                                else
+                                                {
+                                                    <center>
+                                                        <a href="@Url.Action("rch_switch", "Home", new { id = item.idno })" style="text-decoration:none;">
+                                                            <img src="~/images/reportimage/switchoff.png" style="margin-top:2px;height:23px;" />
+                                                        </a>
+                                                    </center>
+                  
+                                                }
+                                            </td>
+                                            <td>
+                                                <button id="DeleteBtn" onclick="Delete('@item.idno')" style="background-color:transparent; border:none;">
+                                                    <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Delete</p>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Add New  modal-->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Insert Operator Switch</h4>
+            </div>
+            @using (Html.BeginForm("Insert_Operator_switch", "Home", FormMethod.Post))
+            {
+
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Recharge From</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownList("ddl_rechargeTo_from", new List<SelectListItem>
+                            {
+                                 new SelectListItem{Text="Retailer",Value="Retailer"},
+                                 new SelectListItem{Text="Api User",Value="Api"}
+                         }, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix" id="divrem">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Retailer Id</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownList("RetailerId", ViewBag.RetailerId as SelectList, "Select RetailerId", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix" id="divapi" style="display:none;">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">API Id</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownList("Apiid", ViewBag.apiid as SelectList, "Select API ID", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Operator Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownList("optnm1", ViewBag.optnm1 as SelectList, "Select Operator", new { id = "optnm1", @class = "form-control", @required = true })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Recharge Send To</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownList("ddl_rechargeTo_to", new List<SelectListItem>
+                            {
+                           new SelectListItem{Text="Machine",Value="Machine"},
+                                 new SelectListItem{Text="Api",Value="Api"}
+                         }, new { @class = "form-control", maxlength = 10 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Port No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group" id="divmachine">
+                                        <div class="form-line">
+                                            @Html.DropDownList("machineport", ViewBag.machineport as SelectList, "Select Port", new { @class = "combobox form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="divmachineapi" style="display:none;">
+                                        <div class="form-line">
+                                            @Html.DropDownList("machineapi", ViewBag.machineapi as SelectList, "Select Port", new { @class = "combobox form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var message = '@TempData["add"]'
+        if (message != "" && message != null) {
+            swal("Good job!", message, "success");
+
+        }
+        var error = '@TempData["error"]'
+        if (error != "" && error != null) {
+            swal("Oops...", error, "error");
+
+        }
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+<script>
+    $(function () {
+        $("#ddl_rechargeTo_from").change(function () {
+            var nm = $('option:selected', this).val();
+            if (nm == 'Retailer') {
+                $('#divrem').show();
+                $('#divapi').hide();
+                $('#usersinfo').html("Retailer ID");
+            }
+            else {
+                $('#divrem').hide();
+                $('#divapi').show();
+                $('#usersinfo').html("Api ID");
+
+            }
+
+        });
+
+        $("#ddl_rechargeTo_to").change(function () {
+            var nm = $('option:selected', this).val();
+            if (nm == 'Machine') {
+
+                $('#divmachine').show();
+                $('#divmachineapi').hide();
+            }
+            else {
+
+                $('#divmachine').hide();
+                $('#divmachineapi').show();
+            }
+        });
+
+
+
+    });
+
+</script>
+
+
+<!--Delete Rch User-->
+<script type="text/javascript">
+    function Delete(e) {
+        //alert(e)
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete API " + e + " !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+    $.ajax({
+        type: "POST", url: "Delete_switch", data: { 'idno': e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("Deleted!", " Deleted Successfully.", "success");
+                var url = '@Url.Action("Recharge_switch", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Recharge_switch", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+    }
+
+</script>
+
+

@@ -1,0 +1,101 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+
+<style>
+    .wallet-bank-input input[readonly="readonly"] {
+        background: transparent;
+        border: 0px;
+    }
+</style>
+
+
+<table class="table special-iii table-bordered  table-hover paid-service-table example-second" id="dvCategoryResults">
+    <thead>
+        <tr>
+            <th>Role</th>
+            <th>Amount</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+
+    @foreach (var item in Model.lowbalance)
+    {
+        <tbody>
+            <tr>
+               <td>
+                   @item.Role
+               </td>
+
+                @if (item.idno == Model.lowbalanceBYID.idno)
+                {
+                    @Html.Hidden("idno", Model.lowbalanceBYID.idno)
+
+
+                    @*<td><input type="number" id="txtminbalUPIQRCODE" name="txtminbalUPIQRCODE" value="@item.Role" readonly="readonly" /></td>*@
+                    <td>@Html.TextBox("amount", Model.lowbalanceBYID.amount, new { @class = "form-control" })</td>
+
+
+                    <td>
+                        <button type="button" id="btnSavedata123" onclick="btnSavedata123(@item.idno)" value="Save" class="btn waves-effect btnssl1 switch-edit-button" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Save</button>
+
+
+                    </td>
+                }
+                else
+                {
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </td>*@
+                    <td>@Html.DisplayFor(modelItem => item.amount)</td>
+                    <td class="last-td">
+                        <button type="button" onclick="Editmode1lowbal('@item.idno')" id="btnEdit1" class="btn waves-effect shownextrow switch-edit-button" value="Edit">
+                            <p>Edit</p>
+                        </button>
+                    </td>
+                }
+
+            </tr>
+
+
+
+        </tbody>
+    }
+</table>
+
+
+@*<script>
+        $(document).ready(function () {
+            $('.second-design .example-second').DataTable({
+                paging: false
+            });
+        });
+
+    </script>*@
+<script>
+    function btnSavedata123(idno) {
+        console.log('test')
+         $.ajax({
+             url: '@Url.Action("EditLow_bal_Range", "Home")',
+             type:'POST',
+             data: { idno: idno, amount: $('#amount').val() },
+
+             success: function (data) {
+
+                 setTimeout(function () { $('#LOWBALRANGE').html(data); }, 500);
+
+            }
+        });
+
+
+    }
+
+     $('.btnssl1').on('click', function () {
+                    var $this = $(this);
+                    $this.button('loading');
+                    setTimeout(function () {
+                        $this.button('reset');
+                    }, 500);
+                });
+</script>
+
+

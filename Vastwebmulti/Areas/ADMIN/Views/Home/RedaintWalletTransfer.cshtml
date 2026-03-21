@@ -1,0 +1,344 @@
+﻿@model IEnumerable<Vastwebmulti.Models.RadiantTransfer_Report>
+
+@{
+    ViewBag.Title = "Redaint Wallet Transfer";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+    string role = Session["role"]?.ToString();
+}
+
+<style>
+    /* New css*/
+
+    .loader {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #fff;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-left: 8px;
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    option:nth-child(odd) {
+        background-color: #f1f1f1;
+    }
+    option:nth-child(even) {
+        background-color: #fff;
+    }
+
+    /* New css*/
+
+
+    .bread-same-all-page {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .align-items-end {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        margin: 0;
+    }
+
+    .form-control {
+        height: 32px;
+    }
+
+    .align-items-end div {
+        padding: 0px;
+    }
+
+    .res_set {
+        padding: 0px 3px !important;
+    }
+
+    @@media only screen and (max-width: 767px) {
+        .bread-same-all-page {
+            display: block;
+        }
+
+            .bread-same-all-page form {
+                width: 100%;
+                float: left;
+            }
+
+        .padding-top-third {
+            padding: 8px 4px;
+            float: left;
+        }
+
+        .align-items-end {
+            display: block;
+        }
+
+        .res_set {
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="page-title-box-fourde-admin">
+            <h3>Redaint Wallet Transfer Report</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard", "Home")">Home <i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Reports <i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Redaint Wallet Transfer Report</a></li>
+            </ul>
+        </div>
+
+        <div class="row clearfix">
+            @*<div class="col-lg-12 gift-card-top all-type-third">*@
+            <div class="col-lg-12 gift-card-top all-type-third" style="">
+                <div class="card margin-bottom-third page-header-third" style="margin-top: 10px;">
+                    <div class="bread-same-all-page breadsameall-second four-noneclass-admin-only">
+                        <ul class="padding-top-third" style=" margin: 0;">
+                            <li class="smli">
+                                <a href="@Url.Action("Dashboard","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                    Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;">
+                                </a>
+                            </li>
+
+                            <li class="fullbodydycolorbg tmw-total-color-one">
+                                <a href="@Url.Action("RedaintWalletTransfer","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                    Redaint Wallet Transfer
+                                </a>
+
+                            </li>
+                        </ul>
+
+
+                        @using (Html.BeginForm("RedaintWalletTransfer", "Home", FormMethod.Post))
+                        {
+
+
+                            <div class="row mb-3 align-items-end">
+
+
+                                <div class="col-md-2 res_set">
+                                    @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { @class = "form-control", @id = "allretailer" })
+
+                                    @*@{
+                                        var retailers = ViewBag.allretailer as IEnumerable<SelectListItem>;
+                                    }
+
+                                    <select id="allretailer" class="form-control" name="allretailer">
+                                        <option class="" value="">All Retailer</option>
+                                        @foreach (var retailer in retailers)
+                                        {
+                                            <option class="" value="@retailer.Value">@retailer.Text</option>
+                                        }
+                                    </select>*@
+
+
+
+                                    @*@Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { @class = "form-control" })*@
+                                </div>
+
+                                <div class="col-md-2 res_set">
+                                    @Html.DropDownList("ddl_status", ViewBag.StatusList as SelectList, "Status", new { @class = "form-control" })
+                                
+                                </div>
+
+
+                                <div class="col-md-4 respo-upup res_set" style="margin-top: 1px;padding: 0px;padding-left:3px;">
+                                    <div class="">
+                                        <div class="">
+                                            <div class="form-group" style="margin-bottom:0px;">
+                                                <div class="input-daterange input-group">
+                                                    <div class="custom-date-icon ner" style="border-color: #ddd !important;">
+                                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                    </div>
+                                                    @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; height:32px;", autocomplete = "off" })
+                                                    <span class="input-group-addon" style="padding:0px;min-width:3px;">
+
+                                                    </span>
+                                                    <div style="position:relative;">
+                                                        <div class="custom-date-icon ner" style="border-color: #ddd !important;">
+                                                            <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                        </div>
+                                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; ;height:32px;", autocomplete = "off" })
+                                                    </div>
+                                                </div>
+                                                <!-- /.input group -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 res_set">
+                                    <button type="submit" class="btn btn-block" id="searchBtn">
+                                        <span class="btn-text">Search</span>
+                                        <span class="loader"></span>
+                                    </button>
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="card mt-3  page-header-third">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+
+                                    <th>RetailerName</th>
+                                    <th>Frm_Name</th>
+                                    <th>Status</th>
+                                    <th>CEID</th>
+                                    <th>Request Date</th>
+                                    <th>Amount</th>
+                                    <th>Remain Pre</th>
+                                    <th>Remain Post</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    string rowClass = "";
+                                    switch (item.Sts.ToLower())
+                                    {
+                                        case "Approved":
+                                            rowClass = "table-success"; break;
+                                        case "Reject":
+                                            rowClass = "table-danger"; break;
+                                        case "pending":
+                                            rowClass = "table-warning"; break;
+                                    }
+
+
+                                    <tr class="@rowClass">
+
+                                        <td>@item.RetailerName</td>
+                                        <td>@item.Frm_Name</td>
+                                        <td>@item.Sts</td>
+                                        <td>@item.CEID</td>
+                                        <td>@item.Insertdate</td>
+                                        <td>@item.amount</td>
+                                        <td>@item.Remainpre</td>
+                                        <td>@item.Remainpost</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Scripts -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+
+
+<script>
+
+
+    @*$(document).ready(function () {
+        $('#ddl_status, #allretailer').select2();
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true
+        });
+
+        if ('@ViewBag.chk' != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+        $('.table').DataTable({
+            responsive: true,
+            paging: true,
+            ordering: true,
+            searching: true
+        });
+    });*@
+
+    //$(document).ready(function () {
+    //    $('#test_date').datepicker({
+    //        format: "yyyy-mm-dd",
+    //        todayHighlight: true,
+    //        autoclose: true
+    //    }).datepicker("setDate", new Date());
+    //});
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $('#allretailer, #ddl_status').select2();
+    });
+</script>
+
+<script>
+    $("#btnExport").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var allretailer = $('#allretailer').val();
+        var ddl_status = $('#ddl_status').val();
+        var url = '@Url.Action("ExcelWalletUnloadReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&allretailer=' + allretailer + '&ddl_status=' + ddl_status ;
+        location.href = url;
+});
+</script>
+
+
+<script>
+    $("#btnPDF").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var allretailer = $('#allretailer').val();
+        var ddl_status = $('#ddl_status').val();
+        var url = '@Url.Action("pdfWalletUnloadReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&allretailer=' + allretailer + '&ddl_status=' + ddl_status ;
+         window.open(
+url,
+  '_blank' // <- This is what makes it open in a new window.
+);
+    });
+</script>
+
+<script>
+    document.getElementById("searchBtn").addEventListener("click", function () {
+        this.querySelector(".btn-text").style.display = "none";
+        this.querySelector(".loader").style.display = "inline-block";
+    });
+</script>

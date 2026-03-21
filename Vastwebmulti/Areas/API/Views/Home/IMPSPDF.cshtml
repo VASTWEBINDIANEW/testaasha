@@ -1,0 +1,159 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Models.pdf_creator_Result>
+@{
+    Layout = null;
+}
+@{
+    var logoimage = "";
+    var admincolor = "";
+    var com = "";
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        logoimage = logo.SingleOrDefault().LogoImage;
+    }
+    else
+    {
+        logoimage = "";
+    }
+    var websiteurl = db.Admin_details.SingleOrDefault().WebsiteUrl;
+    var companyname = db.tblContects.ToList();
+    if(companyname.Count>0)
+    {
+        com = companyname.SingleOrDefault().CompnayName;
+    }
+    else
+    {
+        com = "";
+    }
+    var color = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    if(color.Count>0)
+    {
+        admincolor = color.SingleOrDefault().adminandouterheadercolor;
+    }
+    else
+    {
+        admincolor = "pink";
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@com</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div style="width:100%; height:150px;">
+        <div style="float:left;">
+            <div><span style="font-size:25px; ">@websiteurl</span></div>
+            <div><span style="font-size:18px;">Api Name : @ViewData["apiname"] </span> </div>
+            <div><span style="font-size:18px;">Firm Name : @ViewData["firmname"] </span> </div>
+            <div> <span style="font-size:18px; ">Mobile : @ViewData["apimobile"] </span></div>
+            <div> <span style="font-size:18px; ">Money Transfer Date : @ViewData["retailerdate"] </span></div>
+        </div>
+        <div style="float:right;">
+            <img src="@Url.Content("~/" +logoimage)" class="img-responsive" />
+        </div>
+    </div>
+    <div style="background-color:@admincolor;">
+        <center>
+            <h1 style="color:Black;font-size:30px;">TRANSACTION SLIP </h1>
+        </center>
+    </div>
+    <div style="height:40px;">
+        <div style="float:left;">
+            <span style="font-size:18px; ">Transaction Slip No : @ViewData["invoiceno"]  </span>
+        </div>
+        <div style="float:right;">
+            <span style="font-size:18px;">Date : @ViewData["date"] </span>
+        </div>
+    </div>
+    <table class="table">
+        <tr>
+            <th>Sr&nbsp;No.</th>
+            <th>Sender&nbsp;Mob.</th>
+            <th>Receiver</th>
+            <th>Bank&nbsp;Id</th>
+            <th>A/C&nbsp;No.</th>
+            <th>Bank&nbsp;Name </th>
+            <th>IFSC</th>
+            <th>Amount</th>
+        </tr>
+        @{int i = 1;}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@i</td>
+                <td>@Html.DisplayFor(modelItem => item.senderno)</td>
+                <td>@Html.DisplayFor(modelItem => item.recivername)</td>
+                <td>@Html.DisplayFor(modelItem => item.bank_trans_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.accountno)</td>
+                <td>@Html.DisplayFor(modelItem => item.bank_nm)</td>
+                <td>@Html.DisplayFor(modelItem => item.ifsccode)</td>
+                <td>@Html.DisplayFor(modelItem => item.amount)</td>
+            </tr>
+            i++;
+        }
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <th></th>
+        </tr>
+        
+    </table>
+    
+    <div style="height:40px; margin-top:50px;">
+        <div style="float:left; margin-left:580px;">
+            <span style="font-size:18px; "><b>Transaction Amount :</b></span>
+        </div>
+        <div style="float:right;">
+            <span style="font-size:18px;">@ViewData["Total"]</span>
+        </div>
+    </div>
+    <div style="height:40px;">
+        <div style="float:left; margin-left:580px;">
+            <span style="font-size:18px;"><b>Surcharge :</b></span>
+        </div>
+        <div style="float:right;">
+            <span style="font-size:18px;">@ViewData["surcharge"]</span>
+        </div>
+    </div>
+    <hr style="margin-bottom:5px; margin-top:0px; margin-left:570px; border:1px solid;" />
+    <div style="height:40px;">
+        <div style="float:left; margin-left:580px;">
+            <span style="font-size:18px; "><b>Total Amount :</b></span>
+        </div>
+        <div style="float:right;">
+            <span style="font-size:18px;">@ViewData["Totalamount"]</span>
+        </div>
+    </div>
+  
+            <div style="margin-top:50px;">
+                <center>
+                    <span style="font-size:22px; font-weight:bold;"> Thanks for using @com</span>
+                </center>
+            </div>
+            <div>
+                <div style="float:left;">
+                    <div style="font-size:14px; font-weight:bold;">  <span>Customer Signature</span></div>
+                    <div>
+                        @*<img src="@Context.Server.MapPath("~/Images/Signature.png")" alt="SIGNATURE" style="margin-top:20px;" />*@
+                    </div>
+                </div>
+                <div style="float:right;">
+                    <div style="font-size:14px; font-weight:bold;"> Retailer Signature</div>
+                    @*<div> <img src="@Context.Server.MapPath("~/Images/Signature.png")" alt="SIGNATURE" style="margin-top:20px;" /> </div>*@
+                </div>
+            </div>
+</body>
+</html>

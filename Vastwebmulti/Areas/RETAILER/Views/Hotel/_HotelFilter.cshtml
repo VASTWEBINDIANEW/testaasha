@@ -1,0 +1,103 @@
+﻿
+@model Vastwebmulti.Areas.RETAILER.ViewModels.HotelSearchResultVm
+<section>
+    <!-- Left Sidebar -->
+    <aside id="leftsidebar" class="sidebar sidebar-searchfilter searchfilterhotel searchfilterhoteldddffdsd dsdeqwtysd dsdeqwtysd-respon" style="width:20%;top: 153px !important;">
+        <!-- Menu -->
+        <div class="menu" style="">
+            <div class="hotelfilter" style="position: relative;height: 73vh;border: none;">
+                
+                <div class="hotel-price">
+                    <div class="filterHeader">
+                        <span><strong>Price Range</strong></span>
+                    </div>
+                    <div style="float: left;width: 100%;">
+                        <div class="range-slider">
+                            <input type="text" class="js-range-slider" name="my_range" value="" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hotel-rating border-full">
+                    <div class="filterHeader">
+                        <span><strong>Star Rating</strong></span>
+                    </div>
+                    <div class="demo-checkbox filter-checkbox">
+                        <input type="checkbox" id="md_checkbox_ALL_Opt" value="ALL" class="filled-in chk-col-blue hotelOptStarRateFilter" checked="">
+                        <label for="md_checkbox_ALL_Opt">Any Rated</label>
+                        <div class="str">
+                            <span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>
+                        </div>
+                        @foreach (var item in Model.Content.Addinfo.HotelResults.GroupBy(a => a.StarRating).OrderByDescending(r => r.First().StarRating).ToList())
+                        {
+                            <input type="checkbox" id="md_checkbox_@item.FirstOrDefault().StarRating" value="@item.FirstOrDefault().StarRating" class="filled-in chk-col-blue hotelOptStarRateFilter" checked="">
+                            <label for="md_checkbox_@item.FirstOrDefault().StarRating">@string.Format("{0}", item.First().StarRating == 0 ? "Unrated" : item.First().StarRating + " Star") </label>
+
+                          <div class="str2">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                var isChecked = "";
+                                if (i <= item.First().StarRating)
+                                {
+                                    isChecked = "checked";
+                                }
+                                <span class="fa fa-star @isChecked"></span>
+                            }
+                          </div>
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <!-- #Menu -->
+        <!-- Footer -->
+        <div class="legal">
+            <div class="copyright">
+                &copy; 2018 - 2019 <a href="javascript:void(0);">Vast web india pvt. ltd.</a>.
+            </div>
+            <div class="version">
+                <b>Version: </b> 1.0
+            </div>
+        </div>
+        <!-- #Footer -->
+    </aside>
+    <!-- #END# Left Sidebar -->
+</section>
+<script>
+    $(".js-range-slider").ionRangeSlider({
+        skin: "round",
+        type: "single",
+        min: 500,
+        max: 50000,
+        from: 40000,
+        step: 500,
+        grid: true,
+        onFinish: function (data) {
+            // Called then action is done and mouse is released
+            //alert(data.from);
+            //console.log(data.max);
+            var min = data.min;
+            var max = data.from;
+            //console.log('min ' + min);
+            //console.log('to ' + max);
+            var list = document.getElementsByClassName("hotel-col-lg-12");
+            var i = 0;
+            //$("#hotelLoader").show();
+            document.getElementById("loadermoney").style.display = "block";
+            for (var item of list) {
+                var dataPriceVal = list[i].getAttribute('data-hotel-price');
+                if (dataPriceVal >= min && dataPriceVal <= max) {
+                    $("div").find("[data-hotel-price='" + dataPriceVal + "']").show();
+                } else {
+                    $("div").find("[data-hotel-price='" + dataPriceVal + "']").hide();
+                }
+                i++;
+            }
+            //$("#hotelLoader").hide();
+            document.getElementById("loadermoney").style.display = "none";
+        },
+    });
+</script>

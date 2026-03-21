@@ -1,0 +1,327 @@
+﻿@model Vastwebmulti.Models.ServiceReport
+@using Vastwebmulti.Models;
+<style>
+
+    body {
+        background: #f3f3f3;
+    }
+
+    #head {
+        font-size: 20px;
+        width: 100%;
+        float: left;
+        text-align: center;
+        background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor));
+        color: #fff;
+        height: auto;
+        display: flow-root;
+        padding: 5px;
+        box-shadow: 0px 0px 5px -2px;
+        border-radius: 4px;
+    }
+
+    .button_o_f {
+        float: left;
+        display: flex;
+        margin-top: 4px;
+        width: 100%;
+        align-items: center;
+        justify-content: end;
+    }
+
+        .button_o_f a {
+            border: 1px solid #fff;
+            padding: 6px 18px;
+            font-size: 15px;
+            color: #fff;
+        }
+
+    .a_off {
+        background: red;
+    }
+
+    .a_on {
+        background: green;
+    }
+
+    .main_s {
+        padding: 0 15px;
+        background: #f3f3f3;
+        float: left;
+        width: 100%;
+    }
+
+    .box_feast {
+        width: 25%;
+        margin-top: 10px;
+        text-align: center;
+        height: auto;
+        display: flow-root;
+        margin-bottom: 11px;
+        background: rgb(255 255 255 / 95%);
+        padding: 25px;
+        box-shadow: 0px 0px 5px -2px;
+        border-radius: 4px;
+        float: left;
+    }
+
+        .box_feast button {
+            padding: 8px 12px;
+            font-size: 18px;
+            margin: 10px 0;
+            border: none;
+            background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor));
+            display: block;
+            width: 100%;
+            color: #fff;
+            border-radius: 0.25rem;
+            float: left;
+        }
+
+        .box_feast input {
+            padding: 8px 12px;
+            font-size: 18px;
+            margin: 10px 0;
+            border: none;
+            background: #ccc;
+            display: block;
+            width: 100%;
+            color: #495057;
+            border-radius: 0.25rem;
+            float: left;
+        }
+
+        .box_feast select {
+            padding: 8px 12px;
+            font-size: 18px;
+            margin: 5px 0;
+            display: block;
+            width: 100%;
+            color: #000;
+            border-radius: 0.25rem;
+            float: left;
+            border: 1px solid #000;
+        }
+
+    .box_secend {
+        width: 100%;
+        text-align: center;
+        height: auto;
+        display: flow-root;
+        margin-bottom: 11px;
+        background: rgb(255 255 255 / 95%);
+        padding: 25px;
+        box-shadow: 0px 0px 5px -2px;
+        border-radius: 4px;
+        float: left;
+    }
+
+    .box_secend1 {
+        width: 75%;
+        margin-top: 10px;
+        float: left;
+        padding-left: 20px;
+    }
+
+    .divvs input {
+        padding: 8px 10px;
+        font-size: 18px;
+        margin: 10px 21px;
+        border: none;
+        background: #ccc;
+        display: block;
+        width: 85%;
+        color: #495057;
+        border-radius: 0.25rem;
+        float: left;
+    }
+</style>
+
+<section class="content">
+
+    <div class="main_s" style="">
+        <div id="head">@Session["Servis"]</div>
+        <div class="button_o_f">
+            @{
+                VastwebmultiEntities DB1 = new VastwebmultiEntities();
+                var dds = Convert.ToString(Session["Servis"]);
+                var cher = DB1.ADDNEWSERVICES.Where(s => s.SERVICENAME == dds).SingleOrDefault();
+            }
+            @if (cher.status == true)
+            {
+                <a class="a_on" href="@Url.Action("servicestatus12", "Home", new { service = Session["Servis"] }, "")">ON</a>
+
+            }
+            else
+            {
+                <a class="a_off" href="@Url.Action("servicestatus12", "Home", new { service = Session["Servis"] }, "")">OFF</a>
+            }
+        </div>
+
+        <div class="box_feast">
+            <div>
+                <button style="background:#000;" onclick="set()">ADD+</button>
+            </div>
+
+            <div id="chalange">
+
+            </div>
+
+            <div>
+                <button onclick="set1()">Submit</button>
+            </div>
+        </div>
+
+        <div>
+
+
+            @Html.Partial("SERVICECOL_REPORT", Model)
+        </div>
+
+        <div id="saves"></div>
+        <script>
+            function dropp(s) {
+                var chalange = document.getElementById('chalange');
+
+                var chal11 = document.getElementById('yes1' + s).value;
+                if (chal11 == 'Dropdown') {
+
+                    var button = document.createElement('button');
+                    button.textContent = 'ADD +';
+                    button.setAttribute('onclick', 'subset1(' + s + ')');
+
+                    button.setAttribute('id', 'subset1' + s);
+                    /* chalange.appendChild(button);*/
+
+                    var chk = document.getElementById('divsss' + s);
+                    chk.appendChild(button);
+
+                }
+                else {
+                    var set = document.getElementById('subset1' + s);
+                    document.getElementById('divsss' + s).innerHTML = "";
+                    chalange.removeChild(set);
+
+                }
+            }
+        </script>
+        <script>
+            function subset1(i) {
+                var div = document.getElementById('divsss' + i);
+                var input = document.createElement('input');
+                input.setAttribute('type', 'text');
+                input.setAttribute('value', '');
+                input.setAttribute('class', 'divvs' + i)
+                input.setAttribute('style', 'background: white; border: solid 1px;');
+                input.setAttribute('id', 'divs' + i)
+                div.appendChild(input);
+
+
+            }
+        </script>
+        <script>
+
+            function set() {
+                var chalange = document.getElementById('chalange');
+                var chal11 = document.getElementsByClassName('yes');
+                var dfd = chal11.length;
+
+                dfd = dfd + 1;
+
+
+                // Create a new input element
+                var input = document.createElement('input');
+                input.setAttribute('type', 'text'); // Set the input type to text
+                input.setAttribute('value', ''); // Set the initial value of the input
+                input.setAttribute('class', 'yes')
+                input.setAttribute('id', 'yes' + dfd)
+                // Create a new select element (dropdown)
+                var dropdown = document.createElement('select');
+                dropdown.setAttribute('class', 'yes1')
+                dropdown.setAttribute('id', 'yes1' + dfd)
+                dropdown.setAttribute('onchange', 'dropp(' + dfd + ')')
+                // Create options for the dropdown
+                var option1 = document.createElement('option');
+                option1.value = 'text';
+                option1.text = 'text';
+
+                var option2 = document.createElement('option');
+                option2.value = 'Number';
+                option2.text = 'Number';
+                var option3 = document.createElement('option');
+                option3.value = 'date';
+                option3.text = 'date';
+                var option4 = document.createElement('option');
+                option4.value = 'Dropdown';
+                option4.text = 'dropdown';
+                // Append the options to the dropdown
+                dropdown.appendChild(option1);
+                dropdown.appendChild(option2);
+                dropdown.appendChild(option3);
+                dropdown.appendChild(option4);
+
+                // Append the new input and dropdown elements to the 'chalange' element
+                chalange.appendChild(input);
+                chalange.appendChild(dropdown);
+                var div = document.createElement('div');
+                div.setAttribute('id', 'divsss' + dfd);
+
+                chalange.appendChild(div);
+            }
+
+
+        </script>
+        <script>
+    function set1() {
+
+
+        var sesdf = document.getElementById('head').innerHTML;
+        var sesdf1 = sesdf.trimLeft();
+        var sesdf2 = sesdf.trimRight();
+
+        var elements = document.getElementsByClassName('yes');
+        var elements1 = document.getElementsByClassName('yes1');
+        var save = '';
+
+        debugger;
+        for (var i = 0; i < elements.length; i++) {
+            var clss = i + 1;
+            var class1 = 'divvs' + clss;
+            var sdd = elements[i].value;
+            var save11 = '';
+             var sdd1 = elements1[i].value;
+            if (sdd1 == 'Dropdown') {
+
+
+                var divvs = document.getElementsByClassName(class1);
+
+                for (var k = 0; k < divvs.length; k++) {
+                    save11 = save11 + divvs[k].value + 'मोनिका';
+                }
+                save = save + sdd + 'स' + sdd1 + 'मोनिका' + save11 + 'स';
+            }
+            else {
+                save = save + sdd + 'स' + sdd1 + 'स';
+            }
+        }
+       /* document.getElementById('saves').innerHTML = save;*/
+        debugger;
+        $.ajax({
+            url: '@Url.Action("saveFields")',
+            data: { set: save, sess: sesdf2 },
+            type: "GET",
+            cache: false,
+            success: function (data) {
+                alert(data);
+                location.reload();
+            }
+        })
+
+        }
+
+
+
+        </script>
+    </div>
+
+</section>

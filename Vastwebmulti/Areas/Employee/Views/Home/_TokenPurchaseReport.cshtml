@@ -1,0 +1,124 @@
+﻿@model List<Vastwebmulti.Models.PAN_CARD_IPAY_Token_report_paging_Result>
+@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity
+@{
+    Layout = null;
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var currentuser = User.Identity.GetUserId();
+    var iswritepermision = DB1.tbl_permission_Services.Where(x => x.Employee_ID == currentuser && x.Servicename == "PANCARD" && x.iswrite == true).Any();
+
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        var sts = "";
+        var color = "";
+        var icon = "";
+        if (item.Particulars.Contains("Pending"))
+        {
+            color = "#ff9600";
+            sts = "Pending";
+            icon = "../../ashok-images/clock.svg";
+        }
+        if (item.Particulars.Contains("Success"))
+        {
+            color = "green";
+            sts = "Success";
+            icon = "../../ashok-images/correct.svg";
+        }
+        if (item.Particulars.Contains("Failed"))
+        {
+            color = "red";
+            sts = item.Particulars;
+            icon = "../../ashok-images/closes.svg";
+        }
+        if (item.Particulars.Contains("Refund"))
+        {
+            color = "#9C27B0";
+            sts = "Refund";
+            icon = "../../ashok-images/closes.svg";
+
+        }
+        <tr>
+            <td>
+                @if (item.Particulars.Contains("Pending"))
+                {
+                    <img style="width: 18px;margin-right:8px;float:left;max-width: 100%;padding: 0 !important; background-color:transparent;" src="@icon">
+                }
+                @if (item.Particulars.Contains("Refund"))
+                {
+                    <img src="@icon" style="width: 18px;margin-right:8px;float:left; border-radius: 50%; background-color:#9C27B0;" />
+                }
+                @if (item.Particulars.Contains("Success"))
+                {
+                    <img src="@icon" style="width: 18px;margin-right:8px;float:left; background-color:green;border-radius:50%;" />
+                }
+                @if (item.Particulars.Contains("Failed"))
+                {
+                    <img src="@icon" style="width: 18px;margin-right:8px;float:left; border-radius: 50%; background-color:red;" />
+                }
+                <i></i>&nbsp;<span>@item.UserType</span>&nbsp;⇒&nbsp;@item.Frm_Name
+
+                @*<p style="font-size:12px;"><span>@item.UserType</span>&nbsp;⇒&nbsp;@item.Frm_Name</p>*@
+
+            </td>
+            @*<td></td>*@
+            <td><p style="font-size:12px;">@item.MerchantTxnId</p></td>
+            <td><p style="font-size:12px;">@item.PhysicalCount</p></td>
+            <td><p style="font-size:12px;">@item.DigitalCount</p></td>
+            <td><p style="font-size:12px;">@item.ProcessingFees</p></td>
+            <td><p style="font-size:12px;">@item.UTI_TXN_ID</p></td>
+            <td><p style="font-size:11px;">@item.RetailerIncome</p></td>
+            <td><p style="font-size:11px;">@item.retailer_remain_post</p></td>
+            <td><p style="font-size:11px;">@item.retailer_remain_pre</p></td>
+            @*<td><p style="font-size:12px;">@item.CouponStatus</p></td>*@
+            <td><p style="font-size:11px;">@item.Date</p></td>
+
+            @if (iswritepermision)
+            {
+
+            if (item.Particulars == "Pending")
+            {
+                <td title="Manually Failed" style="cursor:pointer;"><span onclick="manuallyfailed('@item.idno','Manually Failed')"><i class="fa fa-reply"></i></span></td>
+            }
+            else
+            {
+
+            }
+            }
+
+            @*<td><p style="font-size:11px;">@item.RetailerIncome</p></td>
+                <td><p style="font-size:11px;">@item.retailer_remain_post</p></td>
+                <td><p style="font-size:11px;">@item.retailer_dealer_pre</p></td>
+                <td><p style="font-size:11px;">@item.DealerIncome</p></td>
+                <td><p style="font-size:11px;">@item.retailer_dealer_post</p></td>
+                <td><p style="font-size:11px;">@item.retailer_master_pre</p></td>
+                <td><p style="font-size:11px;">@item.MDIncome</p></td>
+                <td><p style="font-size:11px;">@item.retailer_master_post</p></td>
+                <td><p style="font-size:11px;">@item.whitelabel_remain_pre</p></td>
+                <td><p style="font-size:11px;">@item.whitelabelincome</p></td>
+                <td><p style="font-size:11px;">@item.whitelabel_remain_post</p></td>*@
+            <td class="nrch">
+                @if (iswritepermision)
+                {
+                <span id="tokenStatus" onclick="tokenStatus('@item.idno')" class="fftt" style="float: left;cursor: pointer;margin-right: 4px;"><i class="fa fa-eye" style="font-size: 12px;"></i></span>
+                <div class="btn" style="background:#ff9e00;height: 25px;color:#fff; padding: 4px 10px; font-size: 11px; display:none "> due</div>
+                }
+                <span data-toggle="modal" data-target="#defaultModal222" onclick="mdActionBtn('@item.idno',this)" class="fftt"> <i class="fa fa-angle-double-right" aria-hidden="true" style="font-size: 12px;"></i> </span>
+
+            </td>
+        </tr>
+    }
+
+}
+
+else
+{
+    <tr>
+        <td colspan="13"><h2 style="text-align:center;">Data Not Found</h2></td>
+
+    </tr>
+
+}

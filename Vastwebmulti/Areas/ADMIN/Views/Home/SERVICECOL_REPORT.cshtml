@@ -1,0 +1,455 @@
+﻿@model Vastwebmulti.Models.ServiceReport
+    @using Vastwebmulti.Models;
+
+<style>
+    .box_secend input,select {
+        padding: 8px 12px;
+        font-size: 18px;
+        margin: 10px 0;
+        border: none;
+        background: #f3f3f3;
+        display: block;
+        width: 80%;
+        color: #495057;
+        border-radius: 0.25rem;
+        float: left;
+    }
+    .box_secend a {
+        padding: 7px 12px;
+        font-size: 18px;
+        margin: 10px 0;
+        border: 1px solid #000;
+        background: #f3f3f3;
+        display: block;
+        width: 10%;
+        color: #000;
+        border-radius: 0.25rem;
+        float: left;
+    }
+    #hisd {
+        width: 100%;
+        float: left;
+    }
+
+    .input_a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .box_secend button {
+        padding: 8px 12px;
+        font-size: 18px;
+        margin: auto;
+        border: none;
+        background: #f3f3f3;
+        display: block;
+        width: 15%;
+        color: #fff;
+        border-radius: 0.25rem;
+        background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor));
+    }
+
+    .table_set {
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+        height: auto;
+        display: flow-root;
+        margin-bottom: 11px;
+        background: rgb(255 255 255 / 95%);
+        padding: 25px;
+        box-shadow: 0px 0px 5px -2px;
+        border-radius: 4px;
+        float: left;
+    }
+        .table_set th, td {
+            border: 1px solid #cccccc;
+        }
+
+
+    #show {
+        width: 100%;
+        float: left;
+    }
+    .input_s {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+        .input_s select {
+            padding: 7px 12px;
+            font-size: 18px;
+            margin: 5px 0;
+            display: block;
+            color: #000;
+            border-radius: 0.25rem;
+            float: left;
+            border: 1px solid #000;
+        }
+    .input_but {
+        width: 100%;
+        float: left;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+    }
+
+        .input_but input {
+            padding: 3px 12px;
+            font-size: 16px;
+            margin: 0px 2px;
+            border: 1px solid #ccc;
+            background: #f3f3f3;
+            display: block;
+            color: #495057;
+            border-radius: 0.25rem;
+            float: left;
+        }
+        .input_but button {
+            padding: 3px 12px;
+            font-size: 18px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor));
+            display: block;
+            color: #fff;
+            border-radius: 0.25rem;
+            float: left;
+        }
+
+</style>
+<div id="divEditFormComm">
+    <div class="box_secend1">
+        <div class="box_secend" style="">
+            <button id="upd" onclick="document.getElementById('hisd').style.display = 'none';document.getElementById('upd').style.display = 'none'; document.getElementById('show').style.display = 'block';">UPDATE</button>
+            <div id="hisd">
+                @{
+                    var types = "";
+                    dynamic sd1 = "";
+                    var ff = 0;
+                    var ft = 0;
+
+
+                }
+                @foreach (var i in Model.s11)
+                {
+                    var sd = "";
+                    if (i.TYPE.Contains("??????"))
+                    {
+
+                        char setd = Convert.ToChar("?");
+                        var type = i.TYPE.Split(setd);
+
+                        for (int j = 0; j < type.Length; j++)
+                        {
+                            if (!string.IsNullOrEmpty(type[j]))
+                            {
+                                sd = sd + type[j] + "म";
+                            }
+                        }
+                        var sp = Convert.ToChar("म");
+                        sd1 = sd.Split(sp);
+                        types = "Dropdown";
+
+                    }
+                    else
+                    {
+                        types = i.TYPE;
+                    }
+
+                    if (i.isdeleted == false)
+                    {
+                        <div class="input_a">
+                            @if (types == "Dropdown")
+                            {
+                                <select>
+                                    @foreach (var t in sd1)
+                                    {
+                                        if (t != "Dropdown" && !string.IsNullOrEmpty(t))
+                                        {
+                                            <option>@t</option>
+                                        }
+                                    }
+                                </select> @Html.ActionLink("-", "Delete_servicefield", "Home", new { id = i.idno, serv = i.SERVICESNAME }, "")
+                            }
+                            else
+                            {
+
+                                <input type="@i.TYPE" placeholder="Enter your @i.header" readonly /> @Html.ActionLink("-", "Delete_servicefield", "Home", new { id = i.idno, serv = i.SERVICESNAME }, "")
+
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="input_a">
+                            @if (types == "Dropdown")
+                            {
+                                <select style="background:yellow">
+                                    @foreach (var t in sd1)
+                                    {
+                                        if (t != "Dropdown" && !string.IsNullOrEmpty(t))
+                                        {
+                                            <option>@t</option>
+                                        }
+                                    }
+                                </select> @Html.ActionLink("+", "ADD_servicefield", "Home", new { id = i.idno, serv = i.SERVICESNAME }, "")
+                            }
+                            else
+                            {
+                                <input type="@i.TYPE" placeholder="Enter your @i.header" readonly style="background:yellow" /> @Html.ActionLink("+", "ADD_servicefield", "Home", new { id = i.idno, serv = i.SERVICESNAME }, "")
+                            }
+                        </div>
+
+                    }
+
+
+                }
+            </div>
+
+            <div id="show" style="display:none">
+                <button onclick="seted1()">Cencle</button>
+
+                @foreach (var i in Model.s11)
+                {
+
+                    <div class="input_s">
+                        <input type="hidden" class="olds" value="@i.header" />
+                        <input type="text" class="news" value="@i.header" />
+
+                        <select class="news1" onchange="checkvaltype(@ff)">
+                            @if (i.TYPE == "text")
+                            {
+
+
+                                <option value="text">text</option>
+
+
+                                <option value="Number">Number</option>
+                                <option value="date">date</option>
+                                <option value="Dropdown">dropdown</option>
+
+                            }
+                            else if (i.TYPE == "Number")
+                            {
+
+
+
+
+
+                                <option value="Dropdown">dropdown</option>
+                                <option value="Number">Number</option>
+
+                                <option value="date">date</option>
+                                <option value="text">text</option>
+                            }
+                            else if (i.TYPE == "date")
+                            {
+
+
+                                <option value="date">date</option>
+                                <option value="Dropdown">dropdown</option>
+                                <option value="Number">Number</option>
+                                <option value="text">text</option>
+                            }
+                            else
+                            {
+                                <option value="Dropdown">dropdown</option>
+                                <option value="date">date</option>
+
+                                <option value="Number">Number</option>
+                                <option value="text">text</option>
+                            }
+                        </select>
+                        <br />
+                        @{
+                            var exclass = "exclass" + ff;
+                        }
+                        <div id=@exclass>
+                            @if (i.TYPE.Contains("Dropdown"))
+
+                            {
+
+                                var cdf = "addinput" + ff;
+
+                                <button class=@cdf onclick="addinput(@ff)">+</button>
+                                var ff1 = "updd" + ff;
+                                var spd = Convert.ToChar('?');
+                                var chjjk = i.TYPE.Split(spd);
+                                foreach (var b in chjjk)
+                                {
+                                    if (b != "Dropdown" && !string.IsNullOrEmpty(b))
+                                    {
+                                        <input type="text" value="@b" class=@ff1 />
+
+                                    }
+                                }
+
+
+                            }
+                        </div>
+                    </div>
+                    ff++;
+                }
+
+                <div style="width: 100%; float: left;">
+                    <button onclick="seted2()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table_set">
+
+        <div class="input_but">
+
+
+            @using (Ajax.BeginForm("ServicesALLREport_all_report", "Home", new AjaxOptions
+            {
+                HttpMethod = "POST",
+                UpdateTargetId = "divEd", // The div to update with the response
+                LoadingElementId = "loading", // An element to show while loading
+                OnSuccess = "handleSuccess" // JavaScript function to call on success
+            }))
+            {
+                <input type="hidden" name="servies" value="@Session["Servis"]" />
+                <input type="date" name="Date1" value="" />
+
+
+                <input type="date" name="Date2" value="" />
+                <input type="submit" value="Submit" />
+            }
+
+
+
+
+
+            @*@using (Html.BeginForm("ServicesALLREport_all_report", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess1", OnFailure = "onfailed", UpdateTargetId = "divEd", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+                {<div>
+
+                        <input type="hidden" name="servies" value="@Session["Servis"]" />
+                        <input type="date" name="Date1" value="" />
+
+
+                        <input type="date" name="Date2" value="" />
+
+
+
+                    </div>
+
+
+
+                    <button type="submit"> submit </button>
+                }*@
+        </div>
+
+
+
+        @Html.Partial("ServicesALLREport_all", Model)
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.unobtrusive-ajax/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script>
+        function OnSuccess1() {
+        }
+        function onfailed() {
+
+        }
+        function seted() {
+
+            document.getElementById('hisd').style.display='none'
+            document.getElementById('show').style.display='block'
+        }
+        function seted1() {
+            document.getElementById('upd').style.display = 'block';
+            document.getElementById('hisd').style.display='block'
+            document.getElementById('show').style.display='none'
+        }
+        function seted2() {
+
+            var sesdf = document.getElementById('head').innerHTML;
+            var sesdf1 = sesdf.trimLeft();
+                var sesdf2 = sesdf.trimRight();
+                console.log(sesdf2);
+                var element = document.getElementsByClassName('olds');
+                var element1 = document.getElementsByClassName('news');
+                var element2 = document.getElementsByClassName('news1');
+
+                var save = '';
+            var save1 = '';
+
+
+                for (var i = 0; i < element.length; i++) {
+
+                    var save11 = '';
+                    var sdd = element[i].value;
+
+                        var sdd1 = element1[i].value;
+
+                        var sdd2 = element2[i].value;
+                    if (sdd2 == "Dropdown") {
+
+                        var upds = document.getElementsByClassName('updd' + i);
+
+
+                        for (var l = 0; l < upds.length; l++) {
+                            if (upds[l].value != "") {
+                                save11 = save11 + upds[l].value + 'मोनिका'
+                            }
+                        }
+                        save = save + sdd + 'स' + sdd1 + 'स';
+                        save1 = save1 + sdd2 + 'मोनिका' + save11 + 'स';
+                    }
+                    else {
+                        save = save + sdd + 'स' + sdd1 + 'स';
+                        save1 = save1 + sdd2 + 'स';
+                    }
+            }
+            console.log(save1);
+
+                $.ajax({
+                    url: '@Url.Action("UpdateFields")',
+                    data: { set: save, set1:save1, sess: sesdf2 },
+                type: "GET",
+                cache: false,
+                    success: function (data) {
+                        alert(data);
+                    location.reload();
+                }
+       })
+
+        }
+
+    </script>
+    <script>
+        function checkvaltype(d) {
+            debugger;
+            var chk = document.getElementsByClassName('news1');
+            var valu = chk[d].value;
+            if (valu == 'Dropdown') {
+                //var chik = document.getElementsByClassName('exclass+' + d);
+                //chik[0].style.display = 'block';
+                $('#exclass' + d).show();
+                var input = document.createElement('button');
+                input.setAttribute('onclick', 'addinput(' + d + ')');
+                input.setAttribute('class', 'addinput' + d);
+                input.textContent = "+";
+                $('#exclass' + d).append(input);
+            }
+            else {
+                //var chik = document.getElementsByClassName('exclass+' + d);
+                //chik[0].style.display = 'none';
+                $('#exclass' + d).hide();
+                $('.addinput' + d).hide();
+            }
+
+        }
+        function addinput(d) {
+            var input = document.createElement('input');
+            input.setAttribute('class', 'updd' + d);
+
+            $('#exclass' + d).append(input);
+        }
+    </script>
+</div>

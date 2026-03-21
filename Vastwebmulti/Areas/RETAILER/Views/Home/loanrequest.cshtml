@@ -1,0 +1,150 @@
+﻿@model IEnumerable<Vastwebmulti.Models.loanrequest>
+@using Vastwebmulti.Models
+@{
+    ViewBag.Title = "loanrequest";
+    VastwebmultiEntities db = new VastwebmultiEntities();
+}
+<style>
+
+    /* new css  */
+
+
+
+    .layoutt-retailer section.content {
+        margin-top: 95px;
+        padding-top: 5px;
+    }
+
+    .bread-same-all-page li {
+        margin: 6px 0;
+    }
+
+    .bread-same-all-page {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .tmw-total-color-one {
+        -webkit-background-clip: text !important;
+        -moz-background-clip: text !important;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .bread-same-all-page li {
+        float: left;
+        list-style: none;
+    }
+
+    .form_set {
+        width: 40%;
+        margin: auto;
+        text-align: center;
+    }
+
+        .form_set input {
+            width: 100%;
+            height: 36px;
+            margin-bottom: 10px;
+            border: 1px solid #c2c2c2;
+            border-radius: 4px;
+        }
+
+        .form_set button {
+            padding: 3px 15px;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+    /* new css  */
+</style>
+@{ 
+    var set = db.loanlimits.ToList();
+}
+<section class="content">
+    <div class="container-fluid">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <!---   header menu    -->
+        <div class="page-header-third">
+            <div class="bread-same-all-page allpage-responshivenew">
+                <div class="col-md-6" style="width: auto; float: left; padding: 0;">
+                    <ul style="margin:0;">
+                        <li class="smli">
+                            <a href="@Url.Action("Dashboard","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width: 12px;margin-top: -2px;">
+                            </a>
+                        </li>
+
+                        <li class="fullbodydycolorbg tmw-total-color-one">
+                            Retailer Form
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="form_set">
+            <div class="page-header-third">
+                <h2>Request For Loan</h2>
+                @using (Html.BeginForm("loanrequest", "Home", FormMethod.Post))
+                {
+                    <input type="number" name="Amount" value="" placeholder="Enter Amount" required />
+                    <input type="number" id="daysInput" name="days" value="" placeholder="Enter Days" min="@set[0].min_days" required />
+
+                    <button>Submit</button>
+                    <div style="color:red">@TempData["Message"]</div>
+                }
+            </div>
+        </div>
+      
+        <div class="row clearfix">
+
+            <div class="page-header-third">
+                <table class="table table-bordered table-striped table-hover table-background-second third-design-table">
+                    <tr>
+
+                        <th>Status </th>
+                        <th>Amount</th>
+                        <th>Days</th>
+                        <th>Last Date</th>
+                        <th>Request Time</th>
+                        <th>response Time</th>
+                        <th>Loan ID</th>
+                        <th>#</th>
+
+                    </tr>
+                    @foreach (var i in Model)
+                    {
+
+                        <tr>
+                            <td>@i.status</td>
+                            <td>@i.amount</td>
+                            <td>@i.months</td>
+                            <td>@Convert.ToDateTime(i.minserverloandate).ToString("dd-MM-yyyy")</td>
+                            <td>@i.requesttime</td>
+                            <td>@i.responsetime</td>
+                            <td>@i.loanid</td>
+                            <td>
+                                @if (i.status == "Success")
+                                {
+                                    <a href="@Url.Action("loanrepayment","Home",new {id = i.idno})">
+                                        <button style="padding:3px;background:skyblue">
+                                            pay
+                                        </button>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</section>
+

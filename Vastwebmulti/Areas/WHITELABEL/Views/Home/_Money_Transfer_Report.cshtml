@@ -1,0 +1,355 @@
+﻿@model List<Vastwebmulti.Models.whitelabel_money_transfer_report_Paging_Result>
+@{
+    Layout = null;
+}
+
+@if (Model!= null)
+{
+    foreach (var item in Model)
+    {
+
+        var color = "";
+        var fontweight = "";
+        var text = "";
+        var emailid = "";
+        var Retailername = "";
+        var framname = "";
+        var mobile = "";
+        var rolename = "";
+        var icon = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var sts = "";
+        var refundcolor = "";
+        var dmtytpe = "";
+
+
+        emailid = item.email;
+        Retailername = item.retailername;
+        mobile = item.senderno;
+        framname = item.frm_name;
+        rolename = "Retailer";
+
+
+        if (item.status.Contains("Success To Failed"))
+        {
+            color = "red";
+            sts = "Success To Failed";
+            fontweight = "700";
+
+        }
+        if (item.status.Contains("Failed To Success"))
+        {
+            color = "green";
+            sts = "Failed To Success";
+            fontweight = "700";
+
+        }
+        if (item.status.Contains("SUCCESS"))
+        {
+            color = "green";
+            fontweight = "700";
+            sts = item.status;
+
+        }
+        if (item.status.Contains("REFUND AGAINST"))
+        {
+            color = "red";
+            fontweight = "700";
+            sts = "REFUND";
+            refundcolor = "red";
+        }
+
+        if (item.status.Contains("Pending"))
+        {
+            color = "#ff9600";
+            fontweight = "700";
+            sts = item.status;
+
+        }
+        if (item.status.Contains("FAILED"))
+        {
+            color = "#9C27B0";
+            fontweight = "700";
+            sts = item.status;
+
+        }
+        if (item.status.Contains("Resend"))
+        {
+            color = "#2196F3";
+            fontweight = "700";
+            sts = item.status;
+
+        }
+
+        if (item.trans_from == "ONLINE")
+        {
+            rchtype = "WEB";
+            rchtypeicon = "fa fa-globe";
+        }
+        if (item.trans_from == "API")
+        {
+            rchtype = "WEB";
+            rchtypeicon = "fa fa-globe";
+
+        }
+        if (item.trans_from == "Apps")
+        {
+            rchtype = "APP";
+            rchtypeicon = "fa fa-android";
+        }
+        if (item.DmtType == "DMT1")
+        {
+            dmtytpe = "➊";
+        }
+        if (item.DmtType == "DMT2")
+        {
+            dmtytpe = "➋";
+        }
+
+    <tr style="font-weight:700;">
+        <td style="text-align:center;"><p style="font-size:13px;text-transform:uppercase;"><span style="color:@color;">@sts</span>&nbsp;</p></td>
+        <td style="text-align:center;"><p style="font-size:13px;">&nbsp;@item.senderno&nbsp;</p></td>
+        <td style="text-align:center;"><p style="font-size:13px;">@item.accountno</p></td>
+        <td style="text-align:center;"><p style="font-size:13px;">&nbsp;@framname</p></td>
+        <td style="text-align:center;">
+            @if (item.Trans_type == "IMPS")
+            {
+
+                <p style="font-size:15px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid green;">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold;">IMPS</span></p>
+
+            }
+            else if (item.Trans_type == "NEFT")
+            {
+
+                <p style="font-size:15px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid green;">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">NEFT</span></p>
+
+            }
+            else
+            {
+
+                <p style="font-size:15px;font-weight:normal;padding:1px 11px 1px 11px;margin-bottom:0px;border:1px solid #dddddd;border-left:3px solid green;">@dmtytpe&nbsp;<span style="font-size:12px;font-weight:bold">Verify</span></p>
+
+            }
+        </td>
+
+        <td style="text-align:center;"><p style="font-size:11px;margin-left:-7px; margin-top:2px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+        <td style="text-align:center;">
+
+            @if (item.response_time != null)
+            {
+                DateTime end = (DateTime)item.response_time;
+                DateTime now = (DateTime)item.trans_time;
+                var diff = end.Subtract(now.TimeOfDay);
+                <p style="font-size:13px;font-weight:700;margin-left:-7px;">@String.Format("{0:HH:mm:ss}", diff)</p>
+            }
+            else
+            {
+                <p style="font-size:13px; margin-left:-7px;"></p>
+            }
+
+        </td>
+        <td style="text-align:center;">
+            <p style="font-size:13px;margin-left:-7px;">@item.amount</p>
+        </td>
+        <td style="text-align:center;">
+            <p style="font-size:13px;margin-left:-7px;">@item.totalamount</p>
+        </td>
+
+        <td style="text-align:center;">
+            @{
+                decimal debit11 = 0;
+                decimal amount11 = 0;
+                decimal usercomm1 = 0;
+
+                if (item.Trans_type.Contains("IMPS_VERIFY"))
+                {
+
+                    debit11 = Convert.ToDecimal(item.income);
+                }
+                else
+                {
+                    amount11 = Convert.ToDecimal(item.amount);
+                    usercomm1 = Convert.ToDecimal(item.income);
+                    debit11 = amount11 + usercomm1;
+
+                }
+
+
+            }
+            <p style="font-size:13px;margin-left:-7px;">@debit11</p>
+
+        </td>
+
+        <td style="text-align:center;"><p style="font-size:13px;margin-left:-7px;">@item.bank_trans_id</p></td>
+        
+        <td>
+            <img src="../../Images/double-down.png" style="width:16px;" />
+            <div style="display:none">
+                <table cellpadding="0" cellspacing="0" class="ChildGrid" style="text-align:center;">
+                    <thead>
+                        <tr style="background : aliceblue; text-align:center;">
+                            <th>Transfer&nbsp;&#x002B;&nbsp;Fee&nbsp;=&nbsp;Total</th>
+                            <th>User&nbsp;Pre&nbsp;₹&nbsp;│&nbsp;Debit&nbsp;│&nbsp;Post&nbsp;Amt&nbsp;₹</th>
+                            <th>Bank&nbsp;Name</th>
+                            <th>IFSC&nbsp;Code</th>
+                            <th>Reciver&nbsp;Name</th>
+
+                            <th><span>User&nbsp;Share</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">GST&nbsp;│&nbsp;TDS&nbsp;<span style="padding-left:9px;">⇒</span><span style="padding-left:10px;">Net&nbsp;INC</span></span></th>
+                            <th><span>Dealer&nbsp;Share</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">GST&nbsp;│&nbsp;TDS&nbsp;<span style="padding-left:9px;">⇒</span><span style="padding-left:10px;">Net&nbsp;INC</span><span style="padding-left:9px;">⇒</span><span style="padding-left:10px;">Frim&nbsp;Name</span></span></th>
+                            
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center;">
+                                @{
+                                    decimal amount = 0;
+                                    decimal customerfee = 0;
+                                    decimal totalamt = 0;
+                                    decimal debit = 0;
+                                    decimal remcomm = 0;
+                                    if (item.Trans_type.Contains("IMPS_VERIFY"))
+                                    {
+                                        amount = Convert.ToDecimal(item.amount);
+                                        customerfee = Convert.ToDecimal(item.income);
+                                        customerfee = customerfee - amount;
+                                        totalamt = amount + customerfee;
+
+                                    }
+                                    else
+                                    {
+                                        amount = Convert.ToDecimal(item.amount);
+                                        customerfee = Convert.ToDecimal(item.customer_fee);
+                                        totalamt = amount + customerfee;
+
+
+                                    }
+                                }
+                                @item.amount&nbsp;&#x002B;&nbsp;@customerfee&nbsp;=&nbsp;@totalamt
+                            </td>
+
+                            <td style="text-align:center;">
+                                @{
+                                    decimal debit1 = 0;
+                                    decimal amount1 = 0;
+                                    decimal usercomm = 0;
+                                    if (item.Trans_type.Contains("IMPS_VERIFY"))
+                                    {
+
+                                        debit1 = Convert.ToDecimal(item.income);
+                                    }
+                                    else
+                                    {
+                                        amount1 = Convert.ToDecimal(item.amount);
+                                        usercomm = Convert.ToDecimal(item.income);
+                                        debit1 = amount1 + usercomm;
+
+                                    }
+
+
+                                }
+                                @item.user_remain_pre&nbsp;│&nbsp;@debit1&nbsp;│&nbsp;@item.user_remain
+
+                            </td>
+
+                            <td style="text-align:center;"><p style="font-size:13px;">@item.bank_nm</p></td>
+                            <td style="text-align:center;"><p style="font-size:13px;">@item.ifsccode</p></td>
+                            <td style="text-align:center;"><p style="font-size:13px;">@item.recivername</p></td>
+
+                            <td style="text-align:center;">
+                                @{
+                                    int share_comm = 0;
+                                    int comm_include_gst = 0;
+
+                                    if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                                    {
+
+                                        <p></p>
+                                    }
+                                    else
+                                    {
+                                        share_comm = Convert.ToInt32(item.share_rem_comm);
+                                        comm_include_gst = Convert.ToInt32(item.rem_comm_include_gst);
+                                        <p>@share_comm%&nbsp;│&nbsp;@comm_include_gst₹&nbsp;&nbsp;<span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.rem_gst&nbsp;│&nbsp;@item.rem_comm_tds&nbsp;</span><span style="padding-left:9px;">⇒</span><span style="padding-left:18px;">@item.rem_settlement</span></p>
+                                    }
+
+                                }
+                            </td>
+                            <td style="text-align:center;">
+                                @{
+                                    int dlmshare_comm = 0;
+                                    int dlmcomm_include_gst = 0;
+
+                                    if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                                    {
+
+                                        <p></p>
+                                    }
+                                    else
+                                    {
+                                        dlmshare_comm = Convert.ToInt32(item.share_dlm_comm);
+                                        dlmcomm_include_gst = Convert.ToInt32(item.dlm_comm_include_gst);
+                                        <p>@dlmshare_comm%&nbsp;│&nbsp;@dlmcomm_include_gst₹&nbsp;&nbsp;<span style="padding-left:27px;">⇒</span><span style="padding-left:8px;">@item.dlm_gst&nbsp;│&nbsp;@item.dlm_comm_tds&nbsp;</span><span style="padding-left:9px;">⇒</span><span style="padding-left:18px;">@item.dlm_income</span><span style="padding-left:20px;">⇒</span>@*<span style="padding-left:11px;">@item.DealerFrmname</span>*@</p>
+
+                                    }
+
+                                }
+                            </td>
+                                                        
+                            <td>
+                                <img src="../../Images/double-down.png" style="width:16px;" />
+                                <div style="display:none">
+                                    <table cellpadding="0" cellspacing="0" class="ChildGrid" style="text-align:center;">
+                                        <thead>
+                                            <tr style="background : aliceblue; text-align:center;">
+                                                <th><span>Dealer&nbsp;Pre&nbsp;Amt</span><span style="padding-left:5px;">│</span><span>Credit</span><span style="padding-left:5px;">│</span><span>Dealer&nbsp;Post&nbsp;Amt</span></th>
+                                                <th><span>WAdmin&nbsp;Pre&nbsp;Amt</span><span style="padding-left:5px;">│</span><span>Debit</span><span style="padding-left:5px;">│</span><span>WAdmin&nbsp;Post&nbsp;Amt</span></th>
+                                                <th>Request&nbsp;ID&nbsp;</th>
+                                                <th>Common&nbsp;Trans&nbsp;ID</th>
+                                                <th>IMEI&nbsp;/&nbsp;IP</th>
+                                                <th>Request&nbsp;Url</th>
+                                                <th>Response&nbsp;Url</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <p><span>@item.dlm_remain_pre</span><span style="padding-left:39px;">+</span><span>&nbsp;@item.dlm_income</span><span style="padding-left:24px;">=</span><span>&nbsp;@item.dlm_remain</span></p>
+
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    <p><span>@item.whitelabel_remain_pre</span><span style="padding-left:57px;"></span><span>&nbsp;@item.whitelabel_income</span><span style="padding-left:24px;"></span><span>&nbsp;@item.whitelabel_remain</span></p>
+
+                                                </td>
+
+                                                <td style="text-align:center;">
+                                                    <p style="font-size:13px;color:@refundcolor;">@item.trans_id</p>
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    <p style="color:@refundcolor;">@item.trans_common_id</p>
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    @item.ipaddress
+                                                </td>
+                                                <td style="text-align:center; max-width: 150px; word-break: break-all;">
+                                                    <p> @item.Request</p>
+                                                </td>
+                                                <td style="text-align:center; max-width: 170px; word-break: break-all;">
+                                                    <p>@item.response_output</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+
+    </tr>
+    }
+}

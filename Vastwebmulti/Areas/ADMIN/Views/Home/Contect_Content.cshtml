@@ -1,0 +1,449 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+@{
+    ViewBag.Title = "Contect_Content";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+@{ 
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var allcontactdata = db.tblFrontContects.ToList();
+    ViewBag.allco = allcontactdata;
+}
+<style>
+    .scroll {
+        width: 100%;
+        max-height: 530px;
+        overflow: auto;
+    }
+
+        .scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scroll::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .scroll::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+        }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-2">
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="body scroll" style="max-height:572px;">
+                                <div class="demo-button ">
+                                    <div class="row">
+                                        <div class="col-md-12" style="margin-top:-10px;">
+                                            @Html.Partial("ColorPartial")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         <div class="col-md-10">
+             
+             <div class="row clearfix">
+                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-20px;">
+                     <div class="card">
+                         <div class="">
+                             <h2 style="color:#00000082; font-size:16px;padding-top:9px; padding-left:22px;">
+                                 All Contact Us Details
+                             </h2>
+                             <button type="button" class="btn  waves-effect" style="float:right; margin-top:-34px;margin-right:6px;border:1px solid #c7c2c2;background:#dedddd;" data-toggle="modal" data-target="#defaultModal">
+                                 <i class="fa fa-plus" style="top:1px;font-size:15px;"></i>
+                                 <span style="top:0px;">Add New</span>
+                             </button>
+                          
+                         </div>
+                         <div class="body">
+                             <div class="row">
+                                 <div class="table-responsive" style="position:inherit;margin-top:-20px;">
+                                     <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                         <thead style="background-color:whitesmoke;">
+                                             <tr>
+                                                 <th>Company&nbsp;Name</th>
+                                                 <th>Phone</th>
+                                                 <th>Email-Id</th>
+                                                 <th>Head&nbsp;Office&nbsp;Add.</th>
+                                                 <th>Branch&nbsp;Office&nbsp;Add.</th>
+                                                 <th>Landline&nbsp;No</th>
+                                                 <th>Edit</th>
+                                                 <th>Delete</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody>
+                                             @foreach (var item in ViewBag.contect)
+                                             {
+                                                 <tr>
+                                                     <td>@item.CompnayName</td>
+                                                     <td>@item.phone</td>
+                                                     <th>@item.Email</th>
+                                                     <td>@item.HeadOfficeAddress</td>
+                                                     <td>@item.BranceOfficeAddress</td>
+                                                     <td>@item.LandlineNo</td>
+                                                     <td>
+                                                         <a  class="btn btn-default waves-effect"  href='@Url.Action("Edit_ContectUsData", "Home", new {Contectid = item.Id})' style="border:1px solid #c7c2c2;">
+                                                           Edit
+                                                         </a>
+                                                     </td>
+                                                     <td>
+                                                         <button type="button" class="btn btn-default waves-effect" style="background-color:transparent; border:none;border:1px solid #c7c2c2;" onclick="delContect('@item.Id')">
+                                                            Delete
+                                                         </button>
+                                                     </td>
+                                                 </tr>
+                                             }
+                                         </tbody>
+                                     </table>
+                                 </div>
+                             </div>
+                             
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             @*<div class="row clearfix">
+                 <div class="col-md-12" style="margin-top:-30px; margin-bottom:30px;">
+                     <div class="card">
+                         <div class="">
+                        <h2 style="color:white; font-size:16px;padding-top:11px; padding-left:22px;padding-bottom:9px;background:linear-gradient(to right,@ViewData["first"],@ViewData["second"]);">
+                                 OUTSIDE CONTACT US BACKGROUND COLOR
+                             </h2>
+                         </div>
+                         <div class="body">
+                             <div class="row">
+                                 <div class="col-md-5">
+                                     <div class="form-group" style="border:1px solid #dddddd;">
+                                         <div class="input-group">
+                                             <div class="input-group-addon colorpicker-element" style="background:#dddddd; color:#000000b8;border:1px solid #dddddd;padding-top:7px;border-radius:0px;">
+                                                 <label>&nbsp;HEX CODE&nbsp;</label> <input type="color" id="color1" value="#ff0000">
+                                             </div>
+                                             <input type="text" id="txtcolor" name="txtcolor" class="form-control" autocomplete="off" style="border:1px solid #dddddd;padding-left:9px; height:45px;">
+                                             <div class="input-group-addon" style="padding-top:0px;">
+                                                 <button type="button" id="btn" onclick="fun()" class="btn  waves-effect" style="height:45px;border:1px solid #c7c2c2;background:#dedddd; margin:0px -12px -6px -5px;border-radius:0px;">&nbsp;Set Color</button>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="col-md-5">
+                                     <div class="form-group" style="border:1px solid #dddddd;">
+                                         <div class="input-group">
+                                             <div class="input-group-addon colorpicker-element" style="background:#dddddd; color:#000000b8;border:1px solid #dddddd;padding-top:7px;border-radius:0px;">
+                                                 <label>&nbsp;RGB CODE&nbsp;</label> <input type="color" id="color2" value="#ff0000">
+                                             </div>
+                                             <input type="text" id="txtcolor1" name="txtcolor1" class="form-control" autocomplete="off" style="border:1px solid #dddddd;padding-left:9px; height:45px;">
+                                             <div class="input-group-addon" style="padding-top:0px;">
+                                                 <button type="button" id="btn" onclick="fun()" class="btn  waves-effect" style="height:45px;border:1px solid #c7c2c2;background:#dedddd; margin:0px -13px -6px -5px;border-radius:0px;">&nbsp;Set Color</button>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div class="col-md-2">
+                                     <br />
+                                     <button type="button" id="btn" name="btnsave" onclick="Savecolor()" class="btn" style="margin-top:-19px;height:45px;border:1px solid #c7c2c2;background:#dedddd;">Save Color</button>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>*@
+             <div class="row clearfix">
+                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-60px;">
+                     <div class="card">
+                         <div class="">
+                             <h2 style="color:#00000082; font-size:16px;padding-top:9px; padding-left:22px;">
+                                 Outer Contact Us Data Details
+                             </h2>
+                         </div>
+                         <div class="body">
+                             <div class="table-responsive" style="position:inherit;margin-top:-20px;">
+                                 <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                     <thead style="background-color:whitesmoke;">
+                                         <tr>
+                                             <th>Name</th>
+                                             <th>Email-Id</th>
+                                             <th>Subject</th>
+                                             <th>Mobile No</th>
+                                             <th>Message</th>
+                                             <th>Delete</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody>
+                                         @if(ViewBag.allco != null)
+                                         {                                      
+                                         foreach (var item in ViewBag.allco)
+                                         {
+                                             <tr>
+                                                 <td>@item.Name</td>
+                                                 <td>@item.Email</td>
+                                                 <td>@item.Subject</td>
+                                                 <th>@item.MobileNo</th>
+                                                 <td>@item.Message</td>
+                                                 <td>
+                                                     <button type="button" class="btn btn-default waves-effect" style="background-color:transparent; border:none;border:1px solid #c7c2c2;" onclick="delAllContent('@item.Id')">
+                                                         <i class="fa fa-trash" style="font-size:23px; color:red;"></i>
+                                                     </button>
+                                                 </td>
+                                             </tr>
+                                             }
+                                         }
+                                         else
+                                         {
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td><p style="font-size:22px;margin-top:-5px;text-align:center;color:#e0dddd;font-weight:700;">No Data Found !</p></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                         }
+                                     </tbody>
+                                 </table>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+        </div>
+         
+    </div>
+</section>
+
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add Contact Us Content</h4>
+            </div>
+            @using (Html.BeginForm("Contect_Content", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                       @*// @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Company Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextBoxFor(m => m.SuperstokistName, "", new { @class = "form-control", @style = "color:black", placeholder = "Enter Name" })
+                                            @Html.ValidationMessageFor(m => m.SuperstokistName, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Head Office Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextAreaFor(m => m.Address, new { @class = "form-control", placeholder = "Enter Address " })
+                                            @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Branch Office Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextAreaFor(m => m.Address1, new { @class = "form-control", placeholder = "Enter Address " })
+                                            @Html.ValidationMessageFor(m => m.Address1, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Office Landline No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Landline Number" })
+                                            @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Mobile Number", maxlength = "10" })
+                                            @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Email</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control", placeholder = "Enter Email-id", required = "required" })
+                                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="modal-footer" id="silder1">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;" >
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<script>
+    $(document).ready(function () {
+        var succ = '@TempData["success"]';
+
+        if (succ != null && succ != "") {
+            if (succ.includes("Successfully")) {
+                swal("Data Upload!", succ, "success");
+            }
+            else {
+                swal("Oops!", succ, "error");
+            }
+        }
+        var first = '@ViewData["first"]';
+        var second = '@ViewData["second"]';
+        if (first != "" && second != "") {
+            $("#color1").val(first);
+            $("#color2").val(second);
+            $("#txtcolor").val(first);
+            $("#txtcolor1").val(second);
+        }
+    });
+</script>
+<script type="text/javascript">
+
+    function delContect(e) {
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Contect Us Data !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("delContect", "Home")', data: { Id: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("File Removed!", "Content Us Data Deleted Successfully.", "success");
+                var url = '@Url.Action("Contect_Content", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Contect_Content", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>
+<script type="text/javascript">
+
+    function delAllContent(e) {
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Outer Contect Us Data !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("delAllContent1", "Home")', data: { Id: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("File Removed!", "Outer Content Us Data Deleted Successfully.", "success");
+              
+                var url = '@Url.Action("Contect_Content", "Home")';
+                    window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Contect_Content", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>
+<script>
+      function fun() {
+           var col = document.getElementById("color1").value;
+           $("#txtcolor").val(col);
+           var col = document.getElementById("color2").value;
+           $("#txtcolor1").val(col);
+       }
+</script>
+<script>
+    function Savecolor() {
+        var vv = $("#txtcolor").val();
+        var col = $("#txtcolor1").val();
+        vv = vv.replace('#', "");
+        col = col.replace('#', "");
+        var url = '@Url.Action("OuterContectColorchange", "Home")?first=' + vv + '&second='+ col + '';
+        location.href = url;
+    }
+</script>
+
+

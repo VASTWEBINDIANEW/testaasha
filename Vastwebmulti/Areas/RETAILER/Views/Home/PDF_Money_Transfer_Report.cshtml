@@ -1,0 +1,206 @@
+﻿@model List<Vastwebmulti.Models.money_transfer_report_paging_Result>
+@{
+    ViewBag.Title = "PDF_Money_Transfer_Report";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF_M_PossReport</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        thead {
+            display: table-header-group
+        }
+
+        tfoot {
+            display: table-row-group
+        }
+
+        tr {
+            page-break-inside: avoid
+        }
+    </style>
+</head>
+<body>
+    <table class="table table-bordered table-striped table-hover third-design-table" style="width:100%; font-size:12px;">
+        <thead style="background-color:whitesmoke;">
+            <tr>
+                <th>S.&nbsp;No.</th>
+                <th class="first-statuswe">Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+
+                <th>Sender&nbsp;No</th>
+
+                <th>Beneficiary&nbsp;A/C</th>
+                <th>Beneficiary&nbsp;Name</th>
+
+                <th style="display:none;">Request&nbsp;Date</th>
+
+                <th>Net&nbsp;T/F</th>
+                <th>Charge</th>
+                @*<th>Tax</th>*@
+
+                <th style="display:none;">Total&nbsp;.&nbsp;Trans</th>
+                <th style="display:none;">My&nbsp;Sharing</th>
+                <th style="display:none;">GST&nbsp;│&nbsp;TDS</th>
+                <th style="display:none;">Net&nbsp;INC</th>
+
+                <th>Debit&nbsp;₹</th>
+                <th>Pre&nbsp;₹</th>
+                <th>Post&nbsp;₹</th>
+                @*<th>Earn</th>*@
+                <th>Request&nbsp;Time</th>
+                <th>Response&nbsp;Time</th>
+                <th>RRN&nbsp;(utr)&nbsp;no</th>
+                <th style="display:none;">View&nbsp;Sts</th>
+                <th style="display:none;">Bank&nbsp;Ref&nbsp;No</th>
+                <th style="display:none;">Bank&nbsp;Name</th>
+                <th style="display:none;">Request&nbsp;ID</th>
+                <th style="display:none;">Common&nbsp;Trans&nbsp;ID</th>
+                <th style="display:none;">IFSC&nbsp;Code</th>
+                <th style="display:none;">Response&nbsp;Date</th>
+
+
+            </tr>
+        </thead>
+        @if (Model != null && Model.Count > 0)
+        {
+            int sno = 0;
+            foreach (var item in Model)
+            {
+                sno += 1;
+
+                double difftime = DateTime.Now.Subtract(item.trans_time.Value).TotalMinutes;
+                var sts = item.status;
+                if (item.status.Contains("Pending"))
+                {
+                    if (difftime < 2)
+                    {
+                        sts = "In Process";
+                    }
+                }
+                <tr>
+                    <td>@sno</td>
+                    <td>@sts</td>
+
+                    <td>@item.senderno</td>
+                    <td>@item.accountno</td>
+                    <td>@item.recivername</td>
+
+                    <td style="display:none;"><span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)</span></td>
+
+                    <td>
+                        @{
+                            decimal amount = 0;
+                            decimal customerfee = 0;
+                            decimal total = 0;
+                            decimal debit = 0;
+                            decimal remcomm = 0;
+                            if (item.Trans_type.Contains("IMPS_VERIFY"))
+                            {
+                                amount = Convert.ToDecimal(item.amount);
+                                customerfee = Convert.ToDecimal(item.rem_comm);
+                                customerfee = customerfee - amount;
+                                total = amount + customerfee;
+                                debit = Convert.ToDecimal(item.rem_comm);
+                            }
+                            else
+                            {
+                                amount = Convert.ToDecimal(item.amount);
+                                customerfee = Convert.ToDecimal(item.customer_fee);
+                                total = amount + customerfee;
+                                remcomm = Convert.ToDecimal(item.rem_comm);
+                                debit = amount + remcomm;
+                            }
+                        }
+                        @item.amount&nbsp;
+                    </td>
+                    <td>@item.rem_comm_include_gst</td>
+                    @*<td>Tax</td>*@
+
+
+                    <td style="display:none;">@item.totalamount</td>
+
+
+                    <td style="display:none;">
+                        @{
+                            int share_rem_comm = 0;
+                            int rem_comm_include_gst = 0;
+                            if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                            {
+
+                                <p></p>
+                            }
+                            else
+                            {
+                                share_rem_comm = Convert.ToInt32(item.share_rem_comm);
+                                rem_comm_include_gst = Convert.ToInt32(item.rem_comm_include_gst);
+                                <p>@share_rem_comm&nbsp;%&nbsp;│&nbsp;@rem_comm_include_gst&nbsp;₹</p>
+                            }
+                        }
+                    </td>
+                    <td style="display:none;">
+                        @if ((item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST")) && item.Trans_type.Contains("IMPS_VERIFY"))
+                        {
+                            <p></p>
+                        }
+                        else
+                        {
+                            <p>@item.rem_gst&nbsp;│&nbsp;@item.rem_comm_tds</p>
+                        }
+                    </td>
+                    <td style="display:none;">@item.rem_settlement</td>
+
+                    <td>@debit</td>
+                    <td>@item.user_remain_pre</td>
+                    <td>@item.user_remain</td>
+                    @*<td>Earn</td>*@
+                    <td><span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)</span></td>
+                    <td><span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.response_time)</span></td>
+                    <td style="display:none;">&nbsp;@item.trans_id</td>
+                    <td>
+                        @item.bank_trans_id
+                    </td>
+                    <td style="display:none;">
+                        @if (item.DmtType == "DMT2" && item.status.ToUpper().Contains("PENDING") && (item.Trans_type == "IMPS" || item.Trans_type == "NEFT"))
+                        {
+                            <center style="margin-top:-21px;">
+                                <button id="but" onclick="GotoView('@item.trans_id')" href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="View Status"><i class="material-icons">visibility</i></button>
+                            </center>
+                        }
+                        else if (item.DmtType == "DMT1" && item.status.ToUpper().Contains("PENDING") && (item.Trans_type == "IMPS" || item.Trans_type == "NEFT"))
+                        {
+                            <center style="margin-top:-21px;">
+                                <button id="but" onclick="GotoViewDMT1('@item.trans_id')" href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="View Status"><i class="material-icons">visibility</i></button>
+                            </center>
+                        }
+                    </td>
+
+                    <td style="display:none;">@item.bank_nm</td>
+
+                    <td style="display:none;">&nbsp;@item.trans_common_id</td>
+                    <td style="display:none;">@item.ifsccode</td>
+                    <td style="display:none;">@item.response_time</td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <tr class="tfooter-trnone">
+                <td colspan="16"><h2 style="text-align:center;">Data Not Found</h2></td>
+
+            </tr>
+
+        }
+    </table>
+</body>
+</html>

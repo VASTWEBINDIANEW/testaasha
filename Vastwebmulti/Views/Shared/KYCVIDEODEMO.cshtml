@@ -1,0 +1,913 @@
+﻿@using Microsoft.AspNet.Identity
+@using Vastwebmulti.Models;
+@{
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var weburl = DB1.Admin_details.SingleOrDefault().WebsiteUrl;
+    var Userid = User.Identity.GetUserId();
+    var retailerinfor = DB1.Retailer_Details.Where(x => x.RetailerId == Userid).SingleOrDefault();
+    var dealerinfor = DB1.Dealer_Details.Where(x => x.DealerId == retailerinfor.DealerId).FirstOrDefault().DealerName;
+    var logoimage = "";
+    var logo = DB1.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Media Recorder in Javascript</title>
+    <link rel="stylesheet" href="main.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        button {
+            margin: 0 3px 10px 0;
+            padding-left: 2px;
+            padding-right: 2px;
+            width: 99px;
+        }
+
+            button:last-of-type {
+                margin: 0;
+            }
+
+        p.borderBelow {
+            margin: 0 0 20px 0;
+            padding: 0 0 20px 0;
+        }
+
+        video {
+            vertical-align: top;
+            --width: 50.6%;
+            width: var(--width);
+            @*height: calc(var(--width) * 0.5625);*@
+        }
+
+        .videoclass-play {
+            width: 100%;
+            float: left;
+            padding: 15px;
+        }
+
+        video:last-of-type {
+            margin: 0 0 20px 0;
+        }
+
+        video#gumVideo {
+            margin: 0 20px 20px 0;
+        }
+
+        .kyc-headerclass {
+            width: 100%;
+            float: left;
+            background: yellow;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            box-shadow: 0 0 5px 1px #555;
+        }
+
+            .kyc-headerclass ul {
+                width: 100%;
+                float: left;
+                display: flex;
+                align-items: center;
+            }
+
+                .kyc-headerclass ul li {
+                    list-style: none;
+                    width: 50%;
+                    float: left;
+                }
+
+                    .kyc-headerclass ul li strong {
+                        color: #000;
+                        font-size: 45px;
+                    }
+
+            .kyc-headerclass h2 {
+                margin: 0px;
+                text-align: center;
+                width: auto;
+                float: left;
+            }
+
+            .kyc-headerclass ul li span {
+                text-align: center;
+                float: none;
+                font-size: 45px;
+            }
+
+            .kyc-headerclass ul li:last-child {
+                border-left: 2px solid #000;
+                width: 50%;
+                padding-left: 1.9%;
+            }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .kyc-headerclass ul a {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 17px;
+            color: #000;
+            border: 1px solid #cccc04;
+            background: #fff;
+            padding: 6px 15px;
+            transition: all .4s linear;
+        }
+
+            .kyc-headerclass ul a:hover {
+                background: #000;
+                color: #fff;
+            }
+
+        .video-start {
+            width: 100%;
+            float: left;
+            text-align: center;
+        }
+
+            .video-start button {
+                width: auto;
+                padding: 15px 20px;
+                text-transform: uppercase;
+                font-size: 20px;
+                margin-top: 15px;
+                border: 1px solid #000;
+                border-radius: 0;
+            }
+
+        img {
+            width: 100%;
+        }
+
+        .kyc-headerclass ul li img {
+            width: 80px;
+            float: left;
+            margin-top: 10px;
+            margin-right: 15px;
+        }
+
+        .kyc-headerclass h2 {
+            display: flex;
+            align-items: center;
+        }
+
+        .kyc-headerclass ul li p {
+            display: block;
+            margin-top: 5px;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .kyc-headerclass ul a.active::before {
+            background: url('../../ashok-images/correct.svg')no-repeat;
+            content: "";
+            display: inline-block;
+            background-color: green;
+            background-position: center;
+            border-radius: 50%;
+            vertical-align: middle;
+            position: absolute;
+            left: 5px;
+            margin-top: 2px;
+            width: 18px;
+            height: 18px;
+            background-size: 10px;
+        }
+
+        .kyc-headerclass ul a {
+            position: relative;
+        }
+
+            .kyc-headerclass ul a.active {
+                padding-left: 31px;
+            }
+
+        .active.hindicontent ~ .hindispeakcontent {
+            display: block !important;
+        }
+
+        .englishcontent.active ~ .endlishspeakcontent {
+            display: block !important;
+        }
+
+        .video-start button {
+            width: auto;
+            padding: 15px 20px;
+            text-transform: uppercase;
+            font-size: 20px;
+            border: 1px solid #555;
+            background: #a4a0a0;
+            letter-spacing: 2px;
+            margin: 0px 0;
+            transition: .4s linear;
+            margin-bottom: 25px;
+            cursor: pointer;
+        }
+
+            .video-start button:hover {
+                box-shadow: 0 0 13px 3px #9f9f9f;
+                background: #000;
+                color: #fff;
+            }
+
+        .video-start {
+            padding: 0 15px;
+        }
+
+            .video-start p {
+                margin-top: 15px;
+                font-size: 14px;
+                font-weight: 400;
+                color: #000;
+            }
+
+        .video-start {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-buttclass {
+            width: 100%;
+            float: left;
+            padding: 10px 15px;
+        }
+
+            .upload-buttclass button {
+                width: auto;
+                padding: 5px 15px;
+                font-size: 20px;
+                text-transform: capitalize;
+                border: 1px solid #000;
+                background: yellow;
+                cursor: pointer;
+                font-weight: bold;
+                float: left;
+                transition: .4s linear;
+            }
+
+                .upload-buttclass button:hover {
+                    background: #000 !important;
+                    color: #fff;
+                }
+
+        .error-record {
+            position: fixed;
+            height: 88vh;
+            width: 100%;
+            float: left;
+            background: #fff;
+            top: 135px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-record {
+            text-transform: capitalize;
+            font-size: 30px;
+            color: red;
+        }
+
+        .kyc-headerclass ul li p span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .kyc-headerclass ul a.active {
+            background: #fff;
+            color: green;
+            font-weight: 600;
+        }
+
+        .video-start button img {
+            width: 45%;
+            text-align: center;
+            margin: 0px auto;
+            display: block;
+        }
+
+        .video-start button {
+            background: #000;
+            min-width: 70%;
+            display: block;
+            text-align: center;
+            margin: 0px auto;
+            margin-top: 0px;
+            margin-top: 15px;
+            color: #fff;
+            box-shadow: 0 0 13px 3px #9f9f9f;
+            font-size: 40px;
+        }
+
+        .error-record {
+            padding: 0 15px;
+        }
+        .loader {
+            position: fixed;
+            top: 0px;
+            left: 0;
+            background-color: rgba(255,255,255,0.7);
+            z-index: 999999999999;
+            display: none;
+            height: 100%;
+            width: 100%;
+            right: 0;
+        }
+            .loader::after {
+                content: '';
+                display: block;
+                position: absolute;
+                left: 48%;
+                top: 50%;
+                width: 100px;
+                height: 100px;
+                border-style: solid;
+                border-color: black;
+                border-top-color: transparent;
+                border-width: 4px;
+                border-radius: 50%;
+                -webkit-animation: spin .8s linear infinite;
+                animation: spin .8s linear infinite;
+            }
+        @@keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        strong.videostart-time {
+            width: 49.01vw;
+            color: #000;
+            font-size: 18px;
+            background: #fff;
+            float: left;
+            padding: 4px 5px;
+            background: #000;
+            color: #fff;
+        }
+        .videoclass-play video {
+            float: none;
+            text-align: center;
+            margin: 0px auto;
+            display: block;
+        }
+        strong.videostart-time {
+            display: flex;
+            align-items: center;
+            margin: 0px auto;
+            float: none;
+        }
+        .videoclass-play {
+            padding-bottom: 0;
+        }
+        .upload-buttclass {
+            background: #000;
+            width: 49.6%;
+
+            float: none;
+            margin: 0px auto;
+        }
+            .upload-buttclass button {
+                margin-bottom: 0;
+            }
+
+        .newbuttoncssadd {
+            text-align: center;
+            width: 100%;
+            float: left;
+            display: flex;
+            align-items: center;
+        }
+        .kyc-headerclass ul li h2 span {
+            font-size: 0;
+            width: 20px;
+            height: 20px;
+            background: red;
+            border-radius: 50%;
+        }
+        .kyc-headerclass ul li:last-child {
+            border-left: 2px solid #000;
+            padding-left: 1.9%;
+            width: 75%;
+        }
+        .kyc-headerclass ul li:first-child {
+            width: 35%;
+        }
+        .kyc-headerclass ul li p {
+            font-size: 18px;
+        }
+        .video-kyc {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            background: #fbfb00;
+            padding: 50px;
+            border: 5px solid #555;
+        }
+            .video-kyc h2 {
+                font-size: 30px;
+                text-align: center;
+                text-transform: capitalize;
+                line-height: 40px;
+            }
+        @@media screen and (max-width:767px) {
+            .kyc-headerclass ul {
+                display: inherit;
+            }
+
+            .kyc-headerclass {
+                display: inherit;
+            }
+
+                .kyc-headerclass ul li {
+                    width: 100% !important;
+                    padding: 0 !important;
+                    border-left: 0 !important;
+                    margin-top: 10px;
+                }
+
+            .video-start button {
+                width: 100%;
+            }
+
+            .error-record {
+                height: 40vh;
+                top: 373px;
+            }
+
+            .kyc-headerclass ul li strong, .kyc-headerclass ul li span {
+                font-size: calc(30px + 6 * ((100vw - 320px) / 680));
+            }
+
+            video {
+                vertical-align: top;
+            --width: 98vw;
+                width: var(--width);float:left;
+
+        }
+
+            .video-start {
+                min-height: inherit;
+            }
+            .videoclass-play video {
+                width: 100% !important;
+
+        }
+            .upload-buttclass {
+                width: 96%;
+
+            }
+
+            .videoclass-play {
+                position: relative;
+            }
+            .videoclass-play {
+                overflow: hidden;
+            }
+            strong.videostart-time {
+                width: 100%;
+            }
+        }
+
+        @@media screen and (max-width:400px) {
+            .upload-buttclass button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .upload-buttclass {
+                width: 91%;
+            }
+            .kyc-headerclass ul a.active::before {
+                position: static;
+                margin-right: 5px;
+            }
+
+            .kyc-headerclass ul a {
+                width: 100%;
+                margin-bottom: 10px;
+                text-align: center;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .video-start button {
+                font-size: 23px;
+            }
+
+            .error-record {
+                font-size: 25px;
+            }
+            .kycallbutton button {
+                width: 100% !important;
+                float: left;
+        }
+        }
+        @@keyframes backgrounder {
+            0% {
+                color: #5c0cc738;
+            }
+
+            50% {
+                color: red;
+            }
+
+            100% {
+                color: #831f08;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    @if (retailerinfor.videokycstatus == "N" && retailerinfor.videokycpath != null)
+    {
+        <div class="kyc-headerclass">
+            <div class="col-md-3" style="float:left;width:50%;">
+                <div class="navbar-header">
+
+                    <div class="for-mobile-log" style="display:none;"><a href="/Home/Login">LOGIN / SIGNUP</a></div>
+                    <a class="navbar-brand site-logo">
+                        <img src="@Url.Content("~/" + @logoimage)" class="img-responsive" alt="@weburl" ; title="@weburl" style="background-color:black;padding:1px;width: 100px;height: 50px;" />
+                    </a>
+                </div>
+
+            </div>
+            <div class="col-md-3"style="width: 50%; float: right;">
+ 
+                @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" style="background: #fff; float: right; border: 1px solid #cccc04; padding: 13px 15px; border-radius: 11px; cursor: pointer" title="Logout">
+                        <strong>LOGOUT</strong>
+                    </button>
+                }
+            </div>
+        </div>
+        <div class="video-kyc" style="font-family: sans-serif;">
+            <h2>Your Video KYC Uploaded Successfully. Please wait for admin approval for more information contact to customer care</h2>
+
+        </div>
+
+    }
+    else if (retailerinfor.videokycstatus == "Y" && retailerinfor.videokycpath != null)
+    {
+        @Html.Action("Dashboard", "Home");
+    }
+    else
+    {
+
+        <div id="container" style="font-family: sans-serif;">
+            <div class="loader" id="loaderkyc" style="display:none;"></div>
+            <div class="kyc-headerclass">
+                <div class="col-md-3">
+                    <div class="navbar-header">
+
+                        <div class="for-mobile-log" style="display:none;"><a href="/Home/Login">LOGIN / SIGNUP</a></div>
+                        <a class="navbar-brand site-logo">
+                            <img src="@Url.Content("~/" + @logoimage)" class="img-responsive" alt="@weburl" ; title="@weburl" style="background-color:black;padding:1px;width: 100px;height: 50px;" />
+                        </a>
+                    </div>
+
+                </div>
+                <ul>
+                    <li>
+                        <h2>
+
+                            <img src="~/ashok-images/videokyc.png" /> <strong>Video KYC</strong>&nbsp;
+                            <span>Required</span>
+                        </h2>
+                    </li>
+                    <li>
+                        <a href="#" class="active hindicontent">Speak In Hindi</a>
+                        <a href="#" class="englishcontent">Speak In English</a>
+                        <p class="hindispeakcontent" style="display: none;">मैं <span>@retailerinfor.RetailerName</span>  फर्म  का  नाम <span>@retailerinfor.Frm_Name</span> घोषणा करता हूं कि मैं <span>@dealerinfor</span> का रिटेलर हूं मेरा पता <span>@retailerinfor.Address</span> है। मैं अपनी दुकान के सामने खड़ा हूं और मेरे हाथ में आधार कार्ड है जिसे मैं दोनों तरफ से दिखा रहा हूं और साथ ही पैन कार्ड भी दिखा रहा हूं।</p>
+                        <p class="endlishspeakcontent" style="display: none;">I <span>@retailerinfor.RetailerName</span> name of firm <span>@retailerinfor.Frm_Name</span> declare that i am retailer of <span>@dealerinfor</span> my address is <span>@retailerinfor.Address</span> I am standing in front of my shop and I have Aadhaar Card in my hand which I am showing from both the sides as well as showing PAN Card.</p>
+                    </li>
+                </ul>
+                <div class="col-md-3">
+                    @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" style="background: #fff; border: 1px solid #cccc04; padding: 13px 15px; border-radius: 11px; cursor: pointer" title="Logout">
+                            <strong>LOGOUT</strong>
+                        </button>
+                    }
+                </div>
+            </div>
+
+
+            <div class="video-start">
+                <div style="width:100%;float:left;">
+                    <button id="start" style="font-weight:bold;" title="Click here to start Video KYC">
+                        <img src="~/ashok-images/recordvideokyc.png" />Start Video KYC
+                    </button>
+                    <p><strong style="color: red; font-size: 20px; letter-spacing: 1px; font-weight: 900; animation: backgrounder 2s linear infinite !important;">Note:- You Need a Webcam With Microphone and SSL is required before uploading video Kyc </strong></p>
+        
+                </div>
+            </div>
+
+            <div class="vider-record" style="display:none;">
+                <div class="videoclass-play">
+                    <video id="gum" class="videononeclasskycnewcss" playsinline autoplay="" muted></video>
+                    <video id="recorded" class="videononeclasskyc" style="display:none;" playsinline loop></video>
+                    <strong class="videostart-time" style="display:none;">Record Start: <span id="cco"></span></strong>
+                </div>
+                <div class="newbuttoncssadd">
+                    <div class="upload-buttclass">
+                        <div class="" style="width: 100%; float: left;">
+                            <div class="">
+                                <button id="record" disabled style="float:left;">Start Record</button>
+
+                                <button id="cancelrecord" onClick="window.location.reload();" style="float:right;background: #ddd;">Cancel Record</button>
+                            </div>
+                        </div>
+                        <div class="kycallbutton" style="text-align:center;width:100%;float:left;">
+                            <button id="play" disabled style="float:left;display:none;">Play Record</button>
+                            <button id="recoardagain" onClick="window.location.reload();" style="float:none;display:none;background: #ddd;">Record Again</button>
+                            <button id="download" disabled style="float:right;display:none;">KYC Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div style="display:none;">
+                <h4>Media Stream Constraints options</h4>
+                <p>
+                    Echo cancellation: <input type="checkbox" id="echoCancellation" />
+                </p>
+            </div>
+
+            <div class="">
+                <span class="error-record" id="errorMsg" style="display:none;"></span>
+            </div>
+        </div>
+        <script>
+
+        let mediaRecorder;
+                let recordedBlobs;
+
+                const errorMsgElement = document.querySelector('span#errorMsg');
+                const recordedVideo = document.querySelector('video#recorded');
+                const recordButton = document.querySelector('button#record');
+                const playButton = document.querySelector('button#play');
+                const downloadButton = document.querySelector('button#download');
+                const recordagainButton = document.querySelector('button#recoardagain');
+                const cancelrecordButton = document.querySelector('button#cancelrecord');
+                const gumVideoplay = document.querySelector('video#gum');
+                const loaderkycLoader = document.querySelector('#loaderkyc');
+                const videoStarttime = document.querySelector('.videostart-time');
+
+
+
+                recordButton.addEventListener('click', () => {
+
+            if (recordButton.textContent === 'Start Record') {
+                startRecording();
+                document.getElementById("record").style.display = "none";
+
+                setTimeout(function () {
+
+                    document.getElementById("record").click();
+
+
+                }, 38000);
+
+            } else {
+                stopRecording();
+            recordButton.textContent = 'Start Record';
+                playButton.disabled = false;
+                downloadButton.disabled = false;
+                alert("Recording Complete Click To Upload");
+            playButton.style.display = "block";
+                downloadButton.style.display = "block";
+                recordagainButton.style.display = "inline-block";
+                cancelrecordButton.style.display = "none";
+                videoStarttime.style.display = "none";
+
+
+
+
+
+            }
+        });
+
+
+        playButton.addEventListener('click', () => {
+            const superBuffer = new Blob(recordedBlobs, { type: 'video/webm' });
+        recordedVideo.src = null;
+        recordedVideo.srcObject = null;
+        recordedVideo.src = window.URL.createObjectURL(superBuffer);
+        recordedVideo.controls = true;
+        recordedVideo.play();
+        });
+
+
+        downloadButton.addEventListener('click', () => {
+            const blob = new Blob(recordedBlobs, { type: 'video/mp4' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        //a.style.display = 'none';
+        //a.href = url;
+        //a.download = 'test.mp4';
+        //document.body.appendChild(a);
+        //a.click();
+
+        var formData = new FormData();
+        formData.append('video_filename', "mpaaa.mp4");
+        formData.append('video_blob', blob);
+
+        makeXMLHttpRequest('@Url.Action("UploadVideoforKYC", "Home")', formData);
+
+        setTimeout(() => {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 100);
+        });
+
+        function makeXMLHttpRequest(url, data, callback) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    alert("Successfully Updated")
+                  //  loaderkycLoader.style.display = "none";
+                  //  var urlss = '@Url.Action("Dashboard", "Home")';
+
+                    var urls = '@Url.Action("Dashboard", "Home")';
+                    location.href = urls;
+                }
+            };
+            request.open('POST', url);
+            request.send(data);
+        }
+
+
+        function handleDataAvailable(event) {
+            console.log('handleDataAvailable', event);
+            if (event.data && event.data.size > 0) {
+            recordedBlobs.push(event.data);
+        }
+        }
+        var myVar;
+        function startRecording() {
+            recordedBlobs = [];
+            let options = { mimeType: 'video/webm;codecs=vp9,opus' };
+        try {
+            mediaRecorder = new MediaRecorder(stream, {
+                    audioBitsPerSecond: 128 * 1000, // 128 kbit/s
+                    videoBitsPerSecond: 2 * 1000 * 1000, // 2 Mbit/s
+                });/*(window.stream, options);*/
+
+        } catch (e) {
+            console.error('Exception while creating MediaRecorder:', e);
+            errorMsgElement.innerHTML = 'Exception while creating MediaRecorder: ${JSON.stringify(e)Urlrl';
+            return;
+            errorMsgElement.style.display = "flex";
+        }
+
+        console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+        recordButton.textContent = 'Stop Recording';
+        playButton.disabled = true;
+        downloadButton.disabled = true;
+        mediaRecorder.onstop = (event) => {
+            console.log('Recorder stopped: ', event);
+            console.log('Recorded Blobs: ', recordedBlobs);
+        };
+        mediaRecorder.ondataavailable = handleDataAvailable;
+        mediaRecorder.start();
+
+        console.log('MediaRecorder started', mediaRecorder);
+            (function count(cc) {
+            document.getElementById("cco").innerHTML = cc;
+            if (cc > 0)
+                setTimeout(function () { count(--cc); }, 1000);
+        })(38);
+
+        //  setTimeout($('#record').click(), 5000);
+
+
+
+        }
+
+
+
+        function stopRecording() {
+            mediaRecorder.stop();
+        }
+
+
+
+        function handleSuccess(stream) {
+            recordButton.disabled = false;
+            document.getElementById("record").style.display = "block";
+            console.log('getUserMedia() got stream:', stream);
+            window.stream = stream;
+
+            const gumVideo = document.querySelector('video#gum');
+            gumVideo.srcObject = stream;
+        }
+
+        async function init(constraints) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                handleSuccess(stream);
+            } catch (e) {
+                console.error('navigator.getUserMedia error:', e);
+                errorMsgElement.innerHTML = "Your Browser Not Support WebCam <br /> please open laptop or mobile."; //'navigator.getUserMedia error:${e.toString()}';
+                errorMsgElement.style.display = "flex";
+            }
+        }
+
+        document.querySelector('button#start').addEventListener('click', async () => {
+            const hasEchoCancellation = document.querySelector('#echoCancellation').checked;
+            const constraints = {
+                audio: {
+            echoCancellation: { exact: hasEchoCancellation }
+            },
+                video: {
+            width: 1280, height: 720
+                }
+            };
+            console.log('Using media constraints:', constraints);
+            await init(constraints);
+        });
+
+        </script>
+        <script>
+            $("#start").click(function () {
+                $(".vider-record").show();
+                $(".video-start").hide();
+            });
+            $("#download").click(function () {
+                $(".loader").show();
+
+            });
+            $("#record").click(function () {
+                $(".videostart-time").show();
+
+            });
+            $("#play").click(function () {
+                $(".videostart-time").hide();
+                $(".videononeclasskycnewcss").hide();
+                $(".videononeclasskyc").show();
+
+            });
+
+
+
+
+
+
+        </script>
+        <script>
+            $(".kyc-headerclass ul a").on("click", function () {
+                $(this).addClass("active").siblings().removeClass("active");
+            });
+
+
+
+        </script>
+
+        <script>
+            $('document').ready(function () {
+                google.language.translate($('.kyc-headerclass ul li p span').html(), 'en', 'fr', function (result) {
+                    $('.kyc-headerclass ul li p span').html(result.translation);
+                });
+            });
+        </script>
+    }
+
+</body>
+
+<script src="script.js"></script>
+</html>

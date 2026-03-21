@@ -1,0 +1,473 @@
+﻿@using Microsoft.AspNet.Identity
+@using Vastwebmulti.Models;
+<!DOCTYPE html>
+<html>
+<head>
+    @{
+        VastwebmultiEntities DB1 = new VastwebmultiEntities();
+        string currenturl = HttpContext.Current.Request.Url.Authority;
+        currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+        currenturl = currenturl.ToUpper();
+        var whitelabelid = "";
+        if (currenturl.Contains("LOCALHOST"))
+        {
+            whitelabelid = DB1.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+        }
+        else
+        {
+            whitelabelid = DB1.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+        }
+        var comnyname = "";
+        var companyname = DB1.tblWhiteContactDatas.Where(p => p.UserId == whitelabelid).ToList();
+        if (companyname.Count > 0)
+        {
+            comnyname = companyname.SingleOrDefault().CompnayName;
+        }
+        else
+        {
+            comnyname = "";
+        }
+        var favimage = "";
+        var faviconlogo = DB1.tblfavicons.Where(p => p.UserId == whitelabelid).ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            favimage = faviconlogo.SingleOrDefault().faviconimage;
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var color = DB1.changecolors.Where(a => a.UserId == whitelabelid).ToList();
+        var col = color.Count == 0 ? "pink" : color.SingleOrDefault().adminandouterheadercolor;
+
+
+        <!--Current Login Time-->
+        var userid = User.Identity.GetUserId();
+        var emailid = DB1.Users.Where(a => a.UserId == userid).FirstOrDefault().Email;
+        <!--Remain Balance-->
+        var remainbalance = DB1.Whitelabel_Remain_dealer_balance.SingleOrDefault(a => a.DealerID == userid)?.Remainamount;
+        <!--Get Company Name-->
+
+        var image1 = "";
+        var logo = DB1.tblHeaderLogoes.Where(p => p.UserId == whitelabelid).ToList();
+        if (logo.Count > 0)
+        {
+            image1 = logo.SingleOrDefault().LogoImage;
+        }
+        else
+        {
+            image1 = "images/Default_Logo.png";
+        }
+        var ch = DB1.whitelabel_rem_purchage.Count(a => a.frm == emailid && a.sts == "Pending");
+        ViewBag.purchasereq = ch;
+
+        //Notification message
+        ViewBag.notificount = DB1.whitelabel_complaint_request.Count(a => a.userid == userid && a.sts == "Open");
+
+    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@comnyname</title>
+    <!-- Favicon-->
+
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Wait Me Css -->
+    <link href="~/AdminDesign/plugins/waitme/waitMe.css" rel="stylesheet" />
+    <!-- Bootstrap Core Css -->
+    <link href="~/AdminDesign/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <!-- Waves Effect Css -->
+    <link href="~/AdminDesign/plugins/node-waves/waves.css" rel="stylesheet" />
+    <!-- Animation Css -->
+    <link href="~/AdminDesign/plugins/animate-css/animate.css" rel="stylesheet" />
+    <!-- Morris Chart Css-->
+    <link href="~/AdminDesign/plugins/morrisjs/morris.css" rel="stylesheet" />
+    <!-- Custom Css -->
+    <link href="~/AdminDesign/css/style.css" rel="stylesheet">
+    <link href="~/fonts/icofont.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+    <link href="~/AdminDesign/css/themes/all-themes.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="~/AdminDesign/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datepicker3.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/ClanderCss/daterangepicker.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+    }
+    <style>
+        .sidebar .menu .list a span {
+            color: white;
+        }
+
+        .sidebar .menu .list a {color: white;}
+    </style>
+    <style>
+        .navbar .navbar-toggle:before {content: '\E8D5';font-family: 'Material Icons';font-size: 26px;}
+
+        .navbar .navbar-toggle:before {content: '\E8D5';font-family: 'Material Icons';font-size: 26px;}
+        .wdealer-navbar ul li a i {
+    font-size: 12px !important;width: 25px;height: 25px;line-height: normal;
+    text-align: center;border-radius: 4px;background: rgb(58 63 72);padding-top: 5px;
+}
+        .wdealer-navbar ul li a span {font-size: 14px !important;}
+        .wdealer-navbar ul li {margin: 4px 0 !important;}
+        .wdealer-navbar ul li a span {margin-left: 5px !important;}
+        .wdealer-navbar ul li a:hover i{color:@PageData["GlobalSecond"] !important;text-shadow:@PageData["GlobalSecond"] !important;}
+        .wdealer-navbar ul li a:hover i::before{display: inline-block;animation: swing ease-in-out 0.5s 1 alternate;}
+
+        @@media screen and (max-width:1366px){
+            #leftsidebar.wdealer-navbar {width: 164px !important;}
+        }
+        @@media screen and (max-width:1169px){
+            .wdealer-navbarclass a.wdealer-toggleafter{width:30px !important;height:30px !important;position:relative;top:10px;}
+            .wdealer-navbarclass a.wdealer-toggleafter::before ,.wdealer-navbarclass a.wdealer-toggleafter::after{left:0px;top:0;}
+            .wdealer-navbarclass a{float:left;}
+        }
+        @@media screen and (max-width:767px){
+            .wdealer-navbarclass a.wdealer-navbartoggle {float: right;}
+            .wdealer-navbarclass a.wdealer-logoclass {text-align: center;display: block;float: none;}
+            .container-fluid .wdealer-navbar-collapse {width: 100% !important;float: left;margin: 0 !important;background:transparent;}
+            .navbar.wdealer-navbarclass {height: auto !important;min-height: 70px !important;}
+            .container-fluid .wdealer-navbar-collapse .nav.navbar-nav.navbar-right {margin: 0 !important;}
+            .wdealer-navbar-collapse {padding: 0;}
+            .wdealer-navbar-collapse ul li a, .wdealer-navbar-collapse ul li p, .wdealer-navbar-collapse ul li {margin-top: 0 !important;margin-bottom: 0 !important;}
+        }
+        @@media screen and (max-width:480px){
+            #leftsidebar.wdealer-navbar {margin-top: -9px !important;}
+        }
+    </style>
+</head>
+<body class="theme-@col">
+
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <center><img src="~/images/serachimg.gif" class="img-responsive" style="height:200px;width:200px;" /></center>
+
+        </div>
+    </div>
+
+
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <div class="search-icon">
+            <i class="material-icons">search</i>
+        </div>
+        <input type="text" placeholder="START TYPING...">
+        <div class="close-search">
+            <i class="material-icons">close</i>
+        </div>
+    </div>
+    <!-- #END# Search Bar -->
+    <!-- Top Bar -->
+    <nav class="navbar wdealer-navbarclass" style="background-image: linear-gradient(to right , @PageData["Globalfirst"], @PageData["GlobalSecond"]) !important;z-index:999;height:70px;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="javascript:void(0);" class="navbar-toggle collapsed wdealer-navbartoggle" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                <a href="javascript:void(0);" class="bars wdealer-toggleafter"></a>
+                <a href="~/WDealer/Home/Dashboard" class="wdealer-logoclass">
+                    <center>
+                        <img src="@Url.Content("~/"+@image1)" class="img-responsive" style="width: 140px !important;height: 50px !important;max-width: 140px !important;" />
+                    </center>
+                </a>
+            </div>
+
+            <div class="collapse navbar-collapse wdealer-navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right" style="margin-left:-15px;">
+                    <li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                        <a href="javascript:void(0);" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" title="Wallet Balance" style="margin-right:6px;">
+                            <img src="~/images/reportimage/purse.svg" class="img-responsive" style="height:20px;margin-top:3px;margin-left:4px;" />
+                        </a>
+                        <center><p style="color:white;font-size:11px;">@remainbalance</p></center>
+
+
+                    </li>
+
+                    <li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                        <a href="@Url.Action("Complaint","Home")" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right" title="Complaint's Request Notification">
+                            @if (ViewBag.notificount != null)
+                            {
+                                <i class="" style="color:black;font-size:20px;left:-1px;top:3px; font-weight:500; font-style:normal;">@ViewBag.notificount</i>
+
+                            }
+                            else
+                            {
+                                <i class="" style="color:black;font-size:20px;left:-1px;top:3px; font-weight:500; font-style:normal;">0</i>
+
+                            }
+
+                        </a>
+                        <center><p style="color:white;font-size:11px;">Chat's</p></center>
+
+                    </li>
+
+                    <li class="list-group" style="margin-top:-11px;padding-left:14px; margin-bottom:-10px;">
+                        <a href="javascript:void(0);" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" title="Wallet Request's'">
+                            <i class="" style="color:black;font-size:20px;left:-1px;top:3px; font-weight:500; font-style:normal;">@ViewBag.purchasereq</i>
+                        </a>
+                        <center><p style="color:white;font-size:11px;">Fund-Q</p></center>
+                        <ul class="dropdown-menu" style="top:143%;margin:2px -131px 0px;">
+                            <li class="header">WALLET REQUEST'S DETAILS</li>
+                            <li class="body">
+                                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 57px;">
+                                    <ul class="menu" style="overflow: hidden; width: auto; height: 57px;">
+
+                                        <li>
+                                            <a href="@Url.Action("purcharge_request","Home")" class="waves-effect waves-block">
+                                                <div class="icon-circle bg-cyan">
+                                                    @{var item = ViewBag.purchasereq;
+                                                    }
+                                                    @if (item != null)
+                                                    {
+                                                        <i style="font-style:normal;">@ViewBag.purchasereq</i>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <i style="font-style:normal;">0</i>
+                                                    }
+
+
+                                                </div>
+                                                <div class="menu-info" style="top:6px;">
+                                                    <h4>Retailer Wallet Request</h4>
+                                                    <p>
+                                                        Go to Details
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </li>
+
+
+                    <li class="list-group" style="padding-top:6px;padding-left:14px; margin-bottom:-10px;">
+                        @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-default btn-circle waves-effect waves-circle waves-float pull-right" title="Logout">
+                                <i class="material-icons" style="color:red;font-size:22px;left:-3px;top:3px; font-weight:700;">power_settings_new</i>
+                            </button>
+                        }
+                        <p style="color:white;font-size:11px;">Logout</p>
+                    </li>
+
+
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+    <!-- #Top Bar -->
+    <section>
+        <!-- Left Sidebar -->
+        <aside id="leftsidebar" class="sidebar navbar wdealer-navbar" style="margin-top:-9px;background-image: linear-gradient(to right , @PageData["Globalfirst"], @PageData["GlobalSecond"]) !important;top:79px;">
+
+            <div class="menu">
+                <ul class="list">
+                    <li class="active">
+                        <a href="@Url.Action("Dashboard","Home")">
+                            <i class="fa fa-home" style="color:#fff;margin-top:6px;"></i>
+                            <span style="color:white;">Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/WDealer/Home/Index">
+                            <i class="fa fa-user" style="color:white;margin-top:5px;font-size:18px;"></i>
+                            <span>Create&nbsp;New&nbsp;Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Recharge_Report","Home")">
+                            <i class="fa fa-plug" style="color:white;margin-top:5px;font-size:18px;"></i>
+                            <span style="margin-left:5px;">Recharge &amp; Bill</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Money_Transfer_Report","Home")">
+                            <i class="fa fa-globe" style="color:white;margin-top:6px;font-size:20px;"></i>
+                            <span style="margin-left:5px;">Financial&nbsp;Services</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Gst_Invocing_Dealer_report","Home")">
+                            <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                            <span style="margin-left:7px;">GST&nbsp;Invoice&nbsp;Report</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                            <span style="margin-left:7px;">TDS&nbsp;Report</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("DealerLedger","Home")">
+                            <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                            <span style="margin-left:7px;">Ledger&nbsp;Report</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("m_Possreport","Home")">
+                            <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                            <span style="margin-left:7px;">M-Poss&nbsp;Report</span>
+                        </a>  
+                    </li>
+
+                    <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="fa fa-user-circle" style="color:#fff;margin-top:6px;padding-top: 5px;"></i>
+                            <span>Account</span>
+                        </a>
+                        <ul class="ml-menu">
+                            @*<li>
+            <a href="~/WDealer/Home/SendFund">Fund Transfer</a>
+        </li>
+        <li>
+            <a href="@Url.Action("ReceiveFund","Home")"> Fund Recieve</a>
+        </li>
+        <li>
+            <a href="@Url.Action("PurchaseOrder","Home")">Purchase&nbsp;Order</a>
+        </li>
+        <li>
+            <a href="@Url.Action("purcharge_request","Home")">Received Order</a>
+        </li>*@
+                            <li>
+                                <a href="@Url.Action("FundTransferDealer","Home")">Fund_Transfer</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("show_credit_Report","Home")">Creditors Report</a>
+                            </li>
+                            @*<li>
+                                <a href="@Url.Action("show_credit_Report","Home")">Creditors Report</a>
+                            </li>*@
+                            @*<li>
+                                <a href="@Url.Action("Show_Retailer_credit","Home")">Market&nbsp;Outstanding</a>
+                            </li>*@
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                            <span>Operators</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li>
+                                <a href="@Url.Action("All_Operator_Info","Home")">Operator Info</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("BlockOPT","Home")">Retailer Operator</a>
+                            </li>
+                            @*<li>
+                                    <a href="@Url.Action("Retailer_Slab","Home")">Retailer Slab</a>
+                                </li>*@
+
+                        </ul>
+                    </li>
+
+
+                    <li>
+                        <a href="@Url.Action("Bank_Details","Home")">
+                            <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                            <span>Bank Details</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("WebLogin","Home")">
+                            <i class="fa fa-file-text-o" style="color:white;margin-top:6px;font-size:17px;"></i>
+                            <span>Login Info</span>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </div>
+
+            <!-- #Menu -->
+            <!-- Footer -->
+            <div class="legal">
+                <div class="copyright" style="margin-top:-4px;">
+                    Copyright&nbsp;&nbsp;2019 - <span>@DateTime.Now.Year.ToString()</span>
+                </div>
+                <div class="copyright">
+                    <a href="javascript:void(0);">@comnyname</a>.
+                </div>
+                <div class="navbar" style="position:inherit;margin-top:52px; height:33px;">
+
+                </div>
+            </div>
+            <!-- #Footer -->
+        </aside>
+
+    </section>
+    @RenderBody()
+
+    <!-- Jquery Core Js -->
+    <script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+    <script src="~/Swalalert/datatablejquery.js"></script>
+    <!-- Bootstrap Core Js -->
+    <script src="~/AdminDesign/plugins/bootstrap/js/bootstrap.js"></script>
+    <!-- Autosize Plugin Js -->
+    <script src="~/AdminDesign/plugins/autosize/autosize.js"></script>
+    <!-- Select Plugin Js -->
+    <!-- Slimscroll Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <!-- Waves Effect Plugin Js -->
+    <script src="~/AdminDesign/plugins/node-waves/waves.js"></script>
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="~/AdminDesign/plugins/jquery-countto/jquery.countTo.js"></script>
+    <!-- Morris Plugin Js -->
+    <script src="~/AdminDesign/plugins/raphael/raphael.min.js"></script>
+    <script src="~/AdminDesign/plugins/morrisjs/morris.js"></script>
+    <!-- ChartJs -->
+    <!-- Flot Charts Plugin Js -->
+    <script src="~/AdminDesign/plugins/flot-charts/jquery.flot.js"></script>
+
+    <!-- Sparkline Chart Plugin Js -->
+    <!-- Custom Js -->
+    <script src="~/AdminDesign/js/admin.js"></script>
+    <script src="~/AdminDesign/js/pages/index.js"></script>
+    <!-- Demo Js -->
+    <script src="~/AdminDesign/js/demo.js"></script>
+    <script src="~/AdminDesign/plugins/moment.min.js"></script>
+    <script src="~/AdminDesign/plugins/daterangepicker.js"></script>
+    <!--data table -->
+    <script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+    <script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+    <script src="~/AdminDesign/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    <script src="~/AdminDesign/plugins/sweetalert/sweetalert.min.js"></script>
+    <link href="~/Swalalert/datatable.css" rel="stylesheet" />
+
+    <script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+    <script src="~/ClanderCss/bootstrap-datepicker.min.js"></script>
+    <script src="~/ClanderCss/bootstrap-datetimepicker.min.js"></script>
+</body>
+</html>

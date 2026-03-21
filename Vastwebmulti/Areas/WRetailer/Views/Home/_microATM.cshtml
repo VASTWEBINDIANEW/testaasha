@@ -1,0 +1,277 @@
+﻿
+<style>
+
+    .loader {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+</style>
+<div class="loader loaderpancard"></div>
+<div id="ATMReg" style="display:none;">
+    <div class="container-fluid aeps">
+        <div class="col-md-12 aeps-start mpos-contents">
+            <div class="col-md-10 aeps_id">
+                <div class="col-md-12 amount amount_strong"><strong class="etrtfdf" style="">MICRO ATM Device ID</strong><span id="Deviceidd"></span></div>
+            </div>
+
+        </div>
+        <button id="statuschk" class="btn btn-default fullbodydycolorbg" onclick="microATM_StatusCheck()" style="color: #fff;">Click To Check Status</button> <span id="alredyexist" class="container-fluid aeps" style="color: red;padding: 5px 15px;border: 1px solid;margin-top: 10px;font-weight: 500;"></span>
+    </div>
+</div>
+
+<div id="firstRegister" class="col-md-12 remitter_button" style="display:none;text-align: center;">
+    <img src="~/ashok-images/forbidden.svg" style="width: 90px;display: block;margin: 0px auto;" />
+    <span class="bodycolormy" style="margin-top: 20px;margin-bottom: 20px;font-size: 26px;">🙄 Un-Reggistered micro ATM Go to Active</span>
+    <p style="margin-bottom: 20px;text-align: justify;">Your service is currently down, if you want to keep the service running smoothly, you will have to pay the service fee, which you see below and you can purchase the service by clicking the button.</p>
+    <button class="btn btn-default fullbodydycolorbg" onclick="microATMActive()" style="color: #fff;">Click To Active</button>
+
+
+    <div>
+        <span id="errormposid2"></span>
+    </div>
+</div>
+
+<div id="SecondSerialNoSubmit" class=" remitter_button" style="display: none; margin-top: 20px; margin-bottom: 20px; font-size: 26px;">
+    <span style="padding:0px;background:#fff;height: 34px;border: 1px solid #dddddd;"><span  style="background:#f5f5f5; float:left;padding: 8px 10px;height:32px;font-size:12px;">Merchant id </span><span  name="MerchantId" id="merchantidd" readonly style="border:0px;height:32px;" /></span>
+    <span  style="padding:0px;background:#fff;height: 34px;border: 1px solid #dddddd;margin-top:10px;"><span  style="background:#f5f5f5; float:left;padding: 8px 10px;height:32px;font-size:12px;">Enter Your Device Serial No </span><input type="text" name="serialno" id="serialno" autocomplete="off" style="border:0px;height:32px;width:auto;"  /></span>
+    <button class="btn btn-default fullbodydycolorbg" onclick="microATMActiveSerialno()" style="color: #fff;font-size:13px !important;margin-top:10px;float:right;padding: 4px 15px !important;">Submit</button>
+
+    <div>
+        <span id="errormposid3" style="color:red;"></span>
+    </div>
+</div>
+
+
+<script>
+    function GotoATMActive() {
+        $('#errormposid3').text("");
+        $('#firstRegister').hide();
+
+        $('#ATMReg').hide();
+           $('#errormposid').text("");
+        $.ajax({
+            url: '@Url.Action("MicroATM", "Home")',
+            cache: false,
+            type: "GET",
+             beforeSend: function() {
+                  $('.loader').show();
+             },
+            success: function (data) {
+                $('.loader').hide();
+                var output = JSON.parse(data);
+
+                if (output.status == "StatusCheck") {
+                    //buttonDisable
+                    $('#alredyexist').text(output.msg);
+                    $('#merchantidd').text(output.MerchantId);
+                    $('#errormposid').text('');
+                    $('#ATMReg').show();
+                }
+                else if (output.status == "Device") {
+                    //buttonDisable
+                    //$('#alredyexist').text(output.msg);
+                    $('#Deviceidd').text("NOt Register");
+                    $('#merchantidd').text(output.MerchantId);
+                    $('#errormposid').text('');
+                    $('#statuschk').hide();
+                    $('#ATMReg').show();
+                    $('#SecondSerialNoSubmit').show();
+                }
+                else if (output.status == "Success") {
+                    //buttonDisable
+                    $('#Deviceidd').text(output.devicesr);
+
+                    $('#alredyexist').text(output.msg);
+                    $('#merchantidd').text(output.MerchantId);
+                    $('#errormposid').text('');
+                    $('#statuschk').hide();
+                    $('#ATMReg').show();
+                }
+                else if (output.status == "Failed") {
+                    //buttonEnable
+                    $('#errormposid').text(output.msg);
+                    $('#firstRegister').show();
+                }
+                else {
+                    //buttonEnable
+                    $('#errormposid').text(output.msg);
+                    $('#firstRegister').show();
+                }
+            },
+             complete: function () {
+
+                   $('.loader').hide();
+                    $.ajax({
+            url: '@Url.Action("MIcroAtmReportnew", "Home")',
+            cache: false,
+                 type: "GET",
+                 cache: false,
+               dataType:"html",
+            success: function (data) {
+                 $('#reportallinone').html(data);
+            }
+        })
+            }
+        })
+    }
+    // Merchant Status Check
+    function microATM_StatusCheck() {
+             $('#firstRegister').hide();
+
+        $('#ATMReg').hide();
+        $('#errormposid').text("");
+        $('#alredyexist').text("");
+        $.ajax({
+            url: '@Url.Action("StatusCheck", "Home")',
+            cache: false,
+            type: "GET",
+             beforeSend: function() {
+                  $('.loader').show();
+             },
+            success: function (data) {
+                $('.loader').hide();
+                var output = JSON.parse(data);
+
+                if (output.status == "Success") {
+                    //buttonDisable
+                    $('#alredyexist').text(output.msg);
+                    $('#merchantidd').text(output.MerchantId);
+                    $('#errormposid').text('');
+                    $('#statuschk').hide();
+                    $('#ATMReg').show();
+                    $('#SecondSerialNoSubmit').show();
+                }
+                else if (output.status == "Failed") {
+                    //buttonEnable
+                    $('#alredyexist').text(output.msg);
+                    $('#ATMReg').show();
+                    $('#firstRegister').hide();
+                }
+                else {
+                    //buttonEnable
+                    $('#errormposid').text(output.msg);
+                    $('#firstRegister').show();
+                }
+            }
+        })
+    }
+// Merchant Submit
+        function microATMActive() {
+            $('#SecondSerialNoSubmit').hide();
+
+            $('#ATMReg').hide();
+            $('#errormposid2').text('');
+        $.ajax({
+            url: '@Url.Action("Active_microATM", "Home")',
+            cache: false,
+            type: "POST",
+            beforeSend: function () {
+                $('.loader').show();
+            },
+            success: function (data) {
+                $('.loader').hide();
+                var output = JSON.parse(data);
+
+                if (output.status == "Success") {
+                    $('#MerchantId').val(output.MerchantId);
+
+                    $('#errormposid2').text('');
+                    $('#firstRegister').hide();
+                }
+                else if (output.status == "Failed") {
+                    //buttonEnable
+                    $('#errormposid2').text(output.msg);
+                    $('#firstRegister').show();
+                }
+                else {
+                    //buttonEnable
+                    $('#errormposid2').text(output.msg);
+                    $('#firstRegister').show();
+                }
+            }
+        })
+    }
+
+    // Device Serialno Active
+        function microATMActiveSerialno() {
+            $('#SecondSerialNoSubmit').hide();
+
+        $('#ATMReg').hide();
+        $('#errormposid3').text('');
+        $.ajax({
+            url: '@Url.Action("microATMSnNo", "Home")',
+            cache: false,
+            type: "POST",
+            data: { DeviceSnNo: $('#serialno').val() },
+            beforeSend: function () {
+                $('.loader').show();
+            },
+            success: function (data) {
+                $('.loader').hide();
+                var output = JSON.parse(data);
+
+                if (output.status == "Success") {
+                    //$('#MerchantId').val(output.MerchantId);
+                    $('#errormposid3').text('');
+                    $('#SecondSerialNoSubmit').hide();
+                    GotoATMActive();
+                }
+                else if (output.status == "Failed") {
+                    //buttonEnable
+                    $('#MerchantId').val('');
+                    $('#serialno').val('');
+                    $('#errormposid3').text(output.msg);
+                    $('#SecondSerialNoSubmit').show();
+                }
+                else {
+                    //buttonEnable
+                    $('#errormposid3').text(output.msg);
+                    $('#SecondSerialNoSubmit').show();
+                }
+            }
+        })
+    }
+</script>

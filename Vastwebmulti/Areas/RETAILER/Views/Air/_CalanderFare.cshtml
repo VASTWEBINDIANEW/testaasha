@@ -1,0 +1,165 @@
+﻿@model Vastwebmulti.Areas.RETAILER.ViewModels.CalanderFareVM
+@if (Model != null && Model.Content != null && Model.Content.Addinfo.SearchResults != null && Model.Content.Addinfo.SearchResults.Count > 0)
+{
+    <div style="width:100%; overflow: hidden;">
+        @{
+            var date = @Model.Content.Addinfo.SearchResults.Take(1).SingleOrDefault().DepartureDate;
+            var cumonth = date.Month;
+            var cuyear = date.Year;
+
+            int days = DateTime.DaysInMonth(date.Year, date.Month);
+        }
+
+
+    @for (var i = 1; i <= 7; i++)
+    {
+        var datemo = cuyear + "-" + cumonth + "-" + i;
+        var cudatee = Convert.ToDateTime(datemo);
+        <div class="calanderfareclass" style="width:14.28%; float: left;">
+            @cudatee.ToString("ddd")
+        </div>
+    }
+    @for (var i = 1; i <= days; i++)
+    {
+        <div class="calanderfareclasses" style="width:14.28%; float: left;">
+            @i
+            @foreach (var item in Model.Content.Addinfo.SearchResults)
+            {
+                if (Convert.ToInt32(item.DepartureDate.ToString("dd")) == i)
+                {
+                    @*<p>@item.DepartureDate.ToString("ddd")</p>
+                        <p>@item.DepartureDate.ToString("dd")</p>*@
+                    <p>₹&nbsp;@Math.Ceiling(item.Fare)</p>
+                }
+            }
+        </div>
+    }
+</div>
+
+   
+
+                            }
+  <script>
+    function next() {
+        var cuval = $('#currentmonth').val();
+        var split = cuval.split(" ");
+        var cumonth = split[0];
+        var cuyear = split[1];
+        var num = monthNameToNum(cumonth);
+        if (num == 0) {
+            num = 1;
+        }
+        var date = "01-" + num + "-" + cuyear;
+        var from = $('#filtervaluechange').val();
+        var to = $('#filtervaluechange1').val();
+        from = from.substring(from.lastIndexOf("(") + 1, from.lastIndexOf(")"));
+        to = to.substring(to.lastIndexOf("(") + 1, to.lastIndexOf(")"));
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("CalanderFare","Air")",
+            data: { txtSource: from, txtDestination: to, month: date,type:"next" },
+            cache: false,
+            dataType: 'html',
+            beforeSend: function () {
+               
+                $(".nextloaders").show();
+                $(".nextfontsize").css('font-size', '0px');
+                $(".nextfontsize").addClass("reewewe");
+                
+           
+                    },
+            success: function (result) {
+
+                    $('#calenderref').html(result);
+                    if (num == 12) {
+                        cuyear = parseInt(cuyear) + 1;
+                        num = 1;
+                    }
+                    else {
+                        num = num + 1;
+                    }
+
+                    var newname = monthNumToName(num);
+                    var newval = newname + " " + cuyear;
+                    $('#currentmonth').val(newval);
+
+            },
+            complete: function () {
+                $(".nextloaders").hide();
+                $(".nextfontsize").css('font-size', '14px');
+                $(".nextfontsize").removeClass("reewewe");
+                
+            }
+            })
+        }
+                            </script>
+ <script>
+    function pre() {
+        var cuval = $('#currentmonth').val();
+        var split = cuval.split(" ");
+        var cumonth = split[0];
+        var cuyear = split[1];
+        var num = monthNameToNum(cumonth);
+        if (num == 0) {
+            num = 1;
+        }
+        var date = "01-" + num + "-" + cuyear;
+        var from = $('#filtervaluechange').val();
+        var to = $('#filtervaluechange1').val();
+        from = from.substring(from.lastIndexOf("(") + 1, from.lastIndexOf(")"));
+        to = to.substring(to.lastIndexOf("(") + 1, to.lastIndexOf(")"));
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("CalanderFare","Air")",
+            data: { txtSource: from, txtDestination: to, month: date, type:"pre" },
+            cache: false,
+            dataType: 'html',
+            beforeSend: function () {
+                $(".nextloader").show();
+                $(".nextfontsizes").css('font-size', '0');
+                $(".nextfontsizes").addClass("reewewes");
+                    },
+            success: function (result) {
+                
+
+                    $('#calenderref').html(result);
+                    if (num == 1) {
+                        cuyear = parseInt(cuyear) - 1;
+                        num = 12;
+                    }
+                    else {
+                        num = num - 1;
+                    }
+
+                    var newname = monthNumToName(num);
+                    var newval = newname + " " + cuyear;
+                    $('#currentmonth').val(newval);
+
+            },
+            complete: function () {
+                $(".nextloader").hide();
+                $(".nextfontsizes").css('font-size', '14px');
+                $(".nextfontsizes").removeClass("reewewes");
+            }
+            
+
+            })
+        }
+      </script>
+  <script>
+                                var months = [
+                                    'January', 'February', 'March', 'April', 'May',
+                                    'June', 'July', 'August', 'September',
+                                    'October', 'November', 'December'
+                                ];
+
+                                function monthNumToName(monthnum) {
+                                    return months[monthnum - 1] || '';
+                                }
+                                function monthNameToNum(monthname) {
+                                    var month = months.indexOf(monthname);
+                                    return month ? month + 1 : 0;
+                                }
+                            </script>

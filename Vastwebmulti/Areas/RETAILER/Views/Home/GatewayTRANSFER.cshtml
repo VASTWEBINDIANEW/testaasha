@@ -1,0 +1,1183 @@
+﻿@model IEnumerable<Vastwebmulti.Models.gateway_report_Result>
+@{
+    ViewBag.Title = "GatewayTRANSFER";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+    var totalsuccess = ViewBag.totalsuccess ?? 0;
+    var totalfailamnt = ViewBag.totalfailedamount ?? 0;
+    var penamount = ViewBag.totalpendingamount ?? 0;
+    var totalcharges = ViewBag.totalchargesamount ?? 0;
+    var CheckActiveGetway = ViewBag.CREDITCARDSTATUS;
+    @functions {
+        public string MaskLastSixDigits(string input)
+        {
+            input = new string(input.Where(char.IsDigit).ToArray());
+            if (input.Length > 6)
+            {
+                string visiblePart = input.Substring(0, input.Length - 6);
+                return visiblePart + new string('*', 6);
+            }
+            return input;
+        }
+    }
+}
+<style>
+    /* new css  */
+    .loader {
+        transform: translate(-50%, -38%);
+        top: 50%;
+        left: 50%;
+    }
+
+    .Loader-set {
+        background: #00000054;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 99999999;
+    }
+
+    .layoutt-retailer section.content {
+        margin-top: 95px;
+        padding-top: 5px;
+    }
+
+    .bread-same-all-page li {
+        margin: 6px 0;
+    }
+
+    .bread-same-all-page {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .retailer-upitransfer .col-md-3 {
+        margin-top: -7px;
+    }
+
+    .dropdown-menu.datepicker-dropdown.datepicker {
+        margin-top: 96px !important;
+    }
+
+    span {
+        color: #fff !important;
+    }
+
+    section.content {
+        margin: 87px 0px 0 164px;
+    }
+
+    .datepicker table tr td span {
+        color: #555 !important;
+    }
+
+        .datepicker table tr td span.active {
+            color: #fff !important;
+        }
+
+    .tab-menur li a::before {
+        content: '';
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        border: 2px solid #bbb;
+        border-radius: 50%;
+        margin: 2px 6px 0px 0px;
+    }
+
+    .tab-menur li a.active-ar::before {
+        border-color: var(--main-bg-lcolor);
+        background: var(--main-bg-lcolor);
+    }
+
+    .tab-menur li a.active-ar {
+        color: var(--main-bg-lcolor);
+    }
+
+    .fund-t-dalear input {
+        border: 1px solid #bbb;
+        height: 32px;
+        padding: 0px 5px;
+        padding-top: 0px !important;
+        width: 100%;
+        padding-left: 40px;
+    }
+
+    .fund-t-dalear button {
+        height: 32px;
+        border: 1px solid #c7c2c2;
+        background: #fff;
+    }
+
+    .for-change-fund {
+        margin: 0px;
+        width: 100%;
+    }
+
+    .fund-fistory {
+        float: left;
+        margin-top: 0px;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+        .fund-fistory sub {
+            position: absolute;
+            bottom: 4px !important;
+            top: 24px;
+            line-height: 8px;
+            left: 11px;
+            font-size: 9px;
+        }
+
+    .nav-tabs li.active .for-change-fund .fa {
+        float: left;
+        font-size: 44px;
+        transform: rotate(-90deg);
+        margin-left: 5px;
+        color: var(--main-bg-lcolor) !important;
+        margin-top: -2px;
+        line-height: 36px;
+    }
+
+    .tab-menur ul {
+        margin: 0;
+        padding: 0;
+    }
+
+        .tab-menur ul li {
+            width: 50%;
+            text-align: center;
+        }
+
+        .tab-menur ul li {
+            float: left;
+        }
+
+    .fund-trasfer-right .nav-tabs + .tab-content {
+        padding: 5px !important;
+    }
+
+    .fund-trasfer-right .tab-content {
+        height: 74vh;
+    }
+
+    .fund-trasfer-right .table-bordered tbody tr td {
+        padding: 10px;
+    }
+
+    .retailer-upitransfer {
+        padding-right: 0;
+    }
+
+        .retailer-upitransfer .col-md-3 {
+            padding-right: 0;
+        }
+
+            .retailer-upitransfer .col-md-3 label {
+                font-size: 10px;
+                text-transform: uppercase;
+                margin-bottom: 0px !important;
+            }
+
+            .retailer-upitransfer .col-md-3 input {
+                height: auto !important;
+                min-height: 28px;
+            }
+
+        .retailer-upitransfer .col-md-3 {
+            padding-left: 5px;
+        }
+
+            .retailer-upitransfer .col-md-3 .btn.btn-success {
+                background: #eeebeb !important;
+                color: #555 !important;
+            }
+
+    .gatewaytransfer-retailer-date .trypurchasecewq-new input, .gatewaytransfer-retailer-date .trypurchasecewq-new .custom-date-icon {
+        border-color: #555 !important;
+    }
+
+    .gatewaytransfer-retailer-date .trypurchasecewq-new .custom-date-icon {
+        height: 29px !important;
+        top: 1px !important;
+    }
+
+    .gatewaytransfer-retailer-date .apiclass-satenew-responshive button {
+        border-color: #555 !important;
+    }
+
+    .gatewaytransfer-pdfexal .trypurchasecewq-new {
+        width: 30%;
+        padding-right: 5px;
+        text-align: center;
+    }
+
+    .gatewaytransfer-pdfexal .apiclass-satenew-responshive {
+        width: 15%;
+        float: left;
+    }
+
+    .gatewaytransfer-pdfexal .col-md-3.buttonPdf {
+        padding: 0px !important;
+    }
+
+        .gatewaytransfer-pdfexal .col-md-3.buttonPdf button {
+            background-color: #fff !important;
+            color: #555;
+            border: 1px solid #555 !important;
+        }
+
+    .col-md-3.buttonPdf button:last-child {
+        padding-left: 15px;
+    }
+
+    .gatewaytransfer-class .col-md-12 {
+        padding: 0px;
+        margin-bottom: 5px;
+    }
+
+        .gatewaytransfer-class .col-md-12 input {
+            width: 100%;
+        }
+
+        .gatewaytransfer-class .col-md-12 select {
+            text-align: left !important;
+            width: 70%;
+            float: left;
+        }
+
+        .gatewaytransfer-class .col-md-12 button {
+            float: right;
+        }
+
+    .fourthdesign-retailer-allnone .col-md-4 {
+        padding-left: 0;
+    }
+
+    .fourthdesign-retailer-allnone .col-md-8 {
+        padding-right: 0px;
+    }
+
+    @@media screen and (max-width: 991px) {
+        #YearInput {
+            margin-top: 10px;
+        }
+    }
+
+    @@media screen and (max-width:1366px) {
+        .retailer-upitransfer {
+            margin-top: 0;
+        }
+    }
+
+    @@media screen and (max-width:992px) {
+        .col-md-8, .col-md-4.servicepaidreport {
+            padding-left: 15px;
+        }
+
+        .gatewaytransfer-class .col-md-12 button {
+            margin-top: 5px;
+        }
+
+        .retailer-upitransfer .col-md-3 {
+            margin-top: -4px;
+        }
+
+        .retailer-upitransfer .col-md-3 {
+            width: 25%;
+            float: left;
+        }
+
+            .retailer-upitransfer .col-md-3 label, .retailer-upitransfer .col-md-3 input {
+                width: 100%;
+                float: left;
+            }
+
+        .col-md-12.retailer-upitransfer {
+            padding: 0;
+        }
+    }
+
+    @@media screen and (max-width:767px) {
+        .allpage-responshivenew {
+            padding: 0px 0;
+        }
+    }
+
+    @@media screen and (max-width:766px) {
+        .gatewaytransfer-pdfexal .col-md-3.buttonPdf {
+            display: block;
+        }
+
+        .gatewaytransfer-pdfexal .trypurchasecewq-new {
+            width: 50%;
+        }
+
+        .gatewaytransfer-pdfexal .apiclass-satenew-responshive {
+            width: auto;
+            float: left;
+        }
+
+            .gatewaytransfer-pdfexal .apiclass-satenew-responshive button {
+                padding: 0 8px !important;
+            }
+
+        .gatewaytransfer-pdfexal .trypurchasecewq-new {
+            width: 50%;
+            padding-right: 5px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .gatewaytransfer-retailer-date.gatewaytransfer-pdfexal {
+            padding-left: 5px !important;
+        }
+
+        .gatewaytransfer-pdfexal .col-md-5:nth-child(2) {
+            padding-right: 0;
+        }
+
+        .fourthdesign-retailer-allnone .col-md-4, .fourthdesign-retailer-allnone .col-md-8 {
+            padding: 0;
+        }
+    }
+
+    @@media screen and (max-width:600px) {
+        .bread-same-all-page {
+            display: block;
+        }
+
+        .allpage-responshivenew ul li {
+            margin-bottom: 6px;
+        }
+
+        .allpage-responshivenew ul {
+            width: 100% !important;
+            float: left;
+        }
+
+        .col-md-12.retailer-upitransfer {
+            width: 100% !important;
+        }
+    }
+
+    @@media screen and (max-width:480px) {
+        .retailer-upitransfer .col-md-3 {
+            margin-top: 0px;
+        }
+    }
+
+    @@media screen and (max-width:375px) {
+        .retailer-upitransfer .col-md-3 {
+            width: 50%;
+            float: left;
+        }
+    }
+</style>
+<section class="content content-margin-second content-fourdesign-page allpage-four-design-section">
+    <div class="container-fluid">
+        <div class="page-title-box-fourde">
+            <h3>Add By Gateway</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard", "Home")" style="color:var(--fullbodybg-four);background: transparent;margin: 0;padding: 0;">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);" style="background: transparent; margin: 0; padding: 0;">Add By Gateway</a></li>
+            </ul>
+        </div>
+        <div class="page-header-third">
+            <div class="bread-same-all-page allpage-responshivenew">
+                <ul style="width:auto;float:left;margin:0;">
+                    <li class="smli">
+                        <a href="@Url.Action("Dashboard","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                            Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width: 12px;margin-top: -2px;">
+                        </a>
+                    </li>
+                    <li class="fullbodydycolorbg tmw-total-color-one">
+                        Payment Gateway
+                    </li>
+                </ul>
+                <div class="col-md-12 retailer-upitransfer" style="float:right;width:auto;">
+                    <div class="col-md-3">
+                        <label>TOTAL SUCCESS</label> <input type="button" class="btn btn-success col-md-12" style="color:white;" value="@totalsuccess" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>TOTAL Pending</label> <input type="button" class="btn btn-warning  col-md-12" style="color:white;" value="@penamount" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>TOTAL Failed</label>  <input type="button" class="btn btn-success  col-md-12" style="color:white;" value="@totalfailamnt" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>TOTAL Charges</label> <input type="button" class="btn btn-success  col-md-12" style="color:white;" value="@totalcharges" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row clearfix four-design-table-design">
+            <div class="col-md-4">
+                <div class="page-header-third">
+                    <div class="fund-trasfer-left fund-user-left">
+                        <ul class="nav nav-tabs tabtypeschages" id="tabs">
+                            <li class="tab-link current active tabChangeType" style="width:100% !important;" data-tab="tab-1"><a data-toggle="tab" href="#home" aria-expanded="true" style="font-size: 18px !important;font-weight: 600;">+ Wallet By Payment Gateway</a></li>
+                        </ul>
+                        <div class="width100 float-left ">
+                            <div id="home" class="width100 float-left tab-pane fade active in min-heightresponsive-inhe changeback-four-design" style="background: var(--second-bg-color);min-height:590px;">
+                                @*@if (CheckActiveGetway == "CREDITCARD")
+                                {
+                                    using (Ajax.BeginForm("CreditCardFundTransfer", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "result", OnSuccess = "onSuccess", OnFailure = "onFailure" }, new { @id = "creditCardFundTransferForm" }))
+                                    {
+                                        @Html.Hidden("hideidno")
+                                        <div class="pay-mode" style="margin-top: 10px;">
+                                            <form class="credit-card">
+                                                <div class="col-md-12">
+                                                    <p id="VlidateionsMessage" style="color: red;"></p>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input id="RequestId" type="hidden" name="RequestId" value="" required />
+                                                    @Html.TextBox("Amount", "", new { @id = "AmountInput", @class = "form-control", @placeholder = "Enter Amount", @required = true, @oninput = "validateInput(this, 'amount')" })
+                                                </div>
+                                                <div class="col-md-12" style="margin-top: 10px;">
+                                                    @Html.TextBox("CardNumber", "", new { @id = "CardNumberInput", @class = "form-control", @placeholder = "Enter Card Number", @required = true, @oninput = "validateInput(this, 'cardNumber')" })
+                                                </div>
+                                                <div class="col-md-12" style="margin-top: 10px;">
+                                                    @Html.TextBox("Name", "", new { @id = "NameInput", @class = "form-control", @placeholder = "Name On The Credit Card", @required = true })
+                                                </div>
+                                                <div class="col-md-12" style="padding: 0px; margin-top: 10px;">
+                                                    <div class="col-md-6">
+                                                        @Html.TextBox("Month", "", new { @id = "MonthInput", @class = "form-control", @placeholder = "Month", @required = true, @oninput = "validateInput(this, 'month')" })
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.TextBox("Year", "", new { @id = "YearInput", @class = "form-control", @placeholder = "Year", @required = true, @oninput = "validateInput(this, 'year')" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12" style="padding: 0px; margin-top: 10px;">
+                                                    <div class="col-md-3">
+                                                        @Html.TextBox("CVV", "", new { @type = "Password", @id = "CVVInput", @class = "form-control", @placeholder = "CVV", @required = true, @oninput = "validateInput(this, 'cvv')" })
+                                                    </div>
+                                                    <div class="col-md-9" id="OtpBox" style="display: none;">
+                                                        @Html.TextBox("Otp", "", new { @id = "OtpInput", @class = "form-control", @placeholder = "Enter otp", @required = true, @oninput = "validateInput(this, 'otp')" })
+                                                    </div>
+                                                </div>
+                                                <div id="ButtonProceed" class="col-md-12" style="margin-top: 10px;">
+                                                    <button type="button" class="btn fullbodydycolorbg w-100" onclick="CreditCardProceed();" style="color: white;">Proceed</button>
+                                                </div>
+                                                <div id="ButtonSubmit" class="col-md-12" style="margin-top: 10px; display: none;">
+                                                    <button type="submit" class="btn fullbodydycolorbg w-100" style="color: white;">Submit</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    }
+                                }*@
+                                @*else
+                                {*@
+                                    <div class="d-flex justify-content-between">
+                                        <div class="row pay-mode-first">
+                                            <div class="col-md-6" onclick="HideShowGetWay('CreditCard')" style="padding-top:5px;">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="paymentMode" id="gatewayTransfer" checked>
+                                                    <label class="form-check-label">
+                                                        GATEWAY TRANSFER
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" onclick="HideShowGetWay('Gateway')" style="padding-top:5px;">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="paymentMode" id="creditCardPayment">
+                                                    <label class="form-check-label">
+                                                        CREDIT CARD PAYMENT
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="pay-mode" id="GetWayMode">
+                                        @using (Html.BeginForm("GatewayTransfer_new", "Home", FormMethod.Post))
+                                        {
+                                            <input type="hidden" id="latss" required name="latss" />
+                                            <input type="hidden" id="longloc" required name="longloc" />
+                                            <div class="pay-mode-first paymt-mode-second gatewaytransfer-class">
+                                                <div class="col-md-12">
+                                                    <label>Purchase Amount</label>
+                                                    @Html.TextBox("txtamt", "", new { @onkeypress = "return isNumberKey(event)", @placeholder = "Enter Purchase Amount", @required = true })
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <button type="button" class=" btn fullbodydycolorbg" style="width: 100%;" onclick="proceed()">
+                                                        Proceed
+                                                    </button>
+                                                    <button type="button" class="pay-mode-edit" style="color: #000;border: 1px solid var(--border-color);background: var(--second-bg-color);">
+                                                        Change
+                                                    </button>
+                                                </div>
+                                                <label id="txtmsgerror" style="color:red;width:100%;float:left;"></label>
+                                                <label style="color:red;position:relative;top:5px;">@ViewBag.msg</label>
+                                            </div>
+                                            <div id="showdata" style="display:none;" class="pay-mode-second pay-mode-second-res">
+                                                <div class="responsive-scroll-sate" style="width:100%;float:left;">
+                                                    <table class="table table-bordered table-striped table-hover" style="width:96%;margin: 0px 2%;">
+                                                        <tr>
+                                                            <th>Transaction Mode</th>
+                                                            <th>Charge&nbsp;(%)</th>
+                                                            <th>Total Charge</th>
+                                                            <th>Net Receiving</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Debit Card</td>
+                                                            <td> <label id="txtdebitcardcharge"></label>  %</td>
+                                                            <td> <label id="txtdebitcard_total"></label></td>
+                                                            <td><label id="txtdebitcard_total_pay"></label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>RuPay Card</td>
+                                                            <td> <label id="txtrupay"></label>  %</td>
+                                                            <td> <label id="txtrupay_total"></label></td>
+                                                            <td><label id="txtrupay_total_pay"></label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Credit Card</td>
+                                                            <td><label id="txtcc"></label>  %</td>
+                                                            <td><label id="txtcc_total"></label></td>
+                                                            <td><label id="txtcc_total_pay"></label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Amex Card</td>
+                                                            <td><label id="txtamex"></label>  %</td>
+                                                            <td><label id="txtamex_total"></label></td>
+                                                            <td><label id="txtamex_total_pay"></label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>International Card</td>
+                                                            <td><label id="txtic"></label>  %</td>
+                                                            <td><label id="txtic_total"></label></td>
+                                                            <td><label id="txtic_total_pay"></label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Net Banking</td>
+                                                            <td> <label id="txtnet"></label>  %</td>
+                                                            <td> <label id="txtnet_total"></label></td>
+                                                            <td><label id="txtnet_total_pay"></label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Wallet's</td>
+                                                            <td> <label id="txtwallet"></label>  %</td>
+                                                            <td> <label id="txtwallet_total"></label></td>
+                                                            <td><label id="txtwallet_total_pay"></label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>UPI</td>
+                                                            <td> <label id="txtupi"></label>  %</td>
+                                                            <td> <label id="txtupi_total"></label></td>
+                                                            <td><label id="txtupi_total_pay"></label></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="pay-mobe-pay col-md-12">
+                                                    <button type="submit" class=" btn w-100 fullbodydycolorbg">Proceed To Pay</button>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="pay-mode" id="CreditCardMode" style="display: none;">
+                                        <div class="form-group pay-mode-first" id="BillDropdown">
+                                            <select style=" border: 1px solid #bfbebe;" id="BillInfo" class="form-control" data-live-search="true" name="BillInfo" onchange="SelectAmount(this)">
+                                            </select>
+                                        </div>
+
+
+                                        <form class="credit-card" id="BillInputBox" style="display: none;">
+                                            <div class="col-md-12">
+                                                <p id="VlidateionsMessage" style="color: red;"></p>
+                                            </div>
+                                            @Html.Hidden("hideidno")
+                                            <div class="col-md-12">
+                                                <input id="RequestId" type="hidden" name="RequestId" value="" required />
+                                                @Html.TextBox("Amount", "", new { @id = "Amount", @class = "form-control", @readonly = "readonly", @style = "background-color: #fff;" })
+                                            </div>
+                                            <div class="col-md-12" style="margin-top: 10px;">
+                                                @Html.TextBox("CardNumber", "", new { @id = "CardNumberInput", @class = "form-control", @placeholder = "Enter Card Number", @required = true, @oninput = "validateInput(this, 'cardNumber')" })
+                                            </div>
+                                            <div class="col-md-12" style="margin-top: 10px;">
+                                                @Html.TextBox("Name", "", new { @id = "NameInput", @class = "form-control", @placeholder = "Name On The Credit Card", @required = true })
+                                            </div>
+                                            <div class="col-md-12" style="padding: 0px; margin-top: 10px;">
+                                                <div class="col-md-6">
+                                                    @Html.TextBox("Month", "", new { @id = "MonthInput", @class = "form-control", @placeholder = "Month", @required = true, @oninput = "validateInput(this, 'month')" })
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @Html.TextBox("Year", "", new { @id = "YearInput", @class = "form-control", @placeholder = "Year", @required = true, @oninput = "validateInput(this, 'year')" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12" style="padding: 0px; margin-top: 10px;">
+                                                <div class="col-md-3">
+                                                    @Html.TextBox("CVV", "", new { @type = "Password", @id = "CVVInput", @class = "form-control", @placeholder = "CVV", @required = true, @oninput = "validateInput(this, 'cvv')" })
+                                                </div>
+                                                <div class="col-md-9" id="OtpBox" style="display: none;">
+                                                    @Html.TextBox("Otp", "", new { @id = "OtpInput", @class = "form-control", @placeholder = "Enter otp", @required = true, @oninput = "validateInput(this, 'otp')" })
+                                                </div>
+                                            </div>
+                                            <div id="ButtonProceed" class="col-md-12" style="margin-top: 10px;">
+                                                <button type="button" class="btn fullbodydycolorbg w-100" onclick="CreditCardProceed();" style="color: white;">Proceed</button>
+                                            </div>
+                                            @*<div id="ButtonSubmit" class="col-md-12" style="margin-top: 10px; display: none;">
+                                                <button type="submit" class="btn fullbodydycolorbg w-100" style="color: white;">Submit</button>
+                                            </div>*@
+                                        </form>
+                                    </div>
+                            @*    }*@
+                                <div class="col-md-12">
+                                    <div class="pay-mode-third">
+                                        <ol>
+                                            <li>With the payment gateway you can purchase wallet balance and note that the gateway fee will apply.</li>
+                                            <li>Gateway fees and if there is any credit outstanding then the balance after deduction will be fixed in your wallet.</li>
+                                            <li>Please do not refresh and close this page on transaction processing.</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="page-header-third">
+                    <div class="fund-trasfer-right fund-user-right">
+                        <ul class="nav nav-tabs responsive-sateulce" id="tabs">
+                            <li class="tab-link current active firstclassactive" data-tab="tab-1" style="width:22%;">
+                                <a data-toggle="tab" aria-expanded="true" style="padding: 0px 10px;float:left;">
+                                    <label class="for-change-fund">
+                                        <span class="fund-fistory">History<sub class="tmw-total-color-one fullbodydycolorbg">buy gateway</sub></span>
+                                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                    </label>
+                                </a>
+                            </li>
+                            <li class="gatewaytransfer-retailer-date gatewaytransfer-pdfexal" style="width: 72%;float: right;margin-top: 4px;padding-right: 5px;">
+                                <div class="row fund-t-dalear" style="margin:0px;">
+                                    @using (Html.BeginForm("GatewayTRANSFER", "Home", FormMethod.Post))
+                                    {
+                                        <div class="input-daterange input-group">
+                                            <div class="col-md-5 date-sateclassee trypurchasecewq-new" style="padding-left: 0px;">
+                                                <div class="custom-date-icon" style="height: 32px;border-top:0;border-bottom:0;">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #fff; margin-top:1px;", autocomplete = "off" })
+                                            </div>
+                                            <div class="col-md-5 date-sateclassee trypurchasecewq-new" style="padding-left: 0px;">
+                                                <div class="custom-date-icon" style="height: 32px;border-top:0;border-bottom:0;">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #fff; margin-top:4px;margin-top:1px !important;", autocomplete = "off" })
+                                            </div>
+                                            <div class="col-md-2 apiclass-satenew apiclass-satenew-responshive" style="padding:0px;">
+                                                <button type="submit" id="btnchangetabbutton" name="btnDsearch" class="btnssl22" style="padding:0px 15px;float:left;height:31px;margin-top:0px;" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                                    <i class="fa fa-search" style="top:-1px;font-size:13px;color:black;"></i>Search
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 buttonPdf retailer-pdf-second" style="text-align:right;margin:0px;float:right;width:auto;padding-top: 3px;padding-left: 5px;">
+                                                <button id="btnPDF">PDF</button>
+                                                <button id="btnExport">Export</button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </li>
+                        </ul>
+                        <div id="tab-1" class="width100 float-left tab-content current changeback-four-design">
+                            <div class="table-responsive table-rsponsive-paddfont tablethirddesign-newnew" style="width:100%;">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead style="background-color:whitesmoke;">
+                                        <tr>
+                                            <th style="width:110px">Mode</th>
+                                            <th>Mode&nbsp;Type</th>
+                                            <th>Amount</th>
+                                            <th>Charges</th>
+                                            <th>Net&nbsp;Received</th>
+                                            <th>Card&nbsp;Number</th>
+                                            <th>Bank RRN</th>
+                                            <th>Transaction&nbsp;Time</th>
+                                            <th>Response&nbsp;Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            var sts = item.status;
+                                            var code = "";
+                                            var bankrrn = item.errormsg;
+                                            var color = "";
+                                            var margin = "";
+                                            var padding = "";
+                                            var width = "20px";
+                                            if (sts == "Success")
+                                            {
+                                                code = "../../ashok-images/correct.svg";
+                                                bankrrn = item.bankrrnno;
+                                                color = "green";
+                                            }
+                                            else if (sts == "Failed")
+                                            {
+                                                code = "../../ashok-images/closes.svg";
+                                                color = "red";
+                                            }
+                                            else
+                                            {
+                                                code = "../../ashok-images/clock.svg";
+                                                width = "21px;";
+                                                margin = "0";
+                                                padding = "0";
+                                            }
+                                            <tr>
+                                                <td><img src="@code" style="width:@width;margin-right:0px;float:left; background-color:@color;border-radius: 50%;padding: 3px;padding:@padding;margin:@margin;">&nbsp;@item.mode</td>
+                                                <td>@item.PG_TYPE</td>
+                                                <td>@item.amount</td>
+                                                <td>@item.charge</td>
+                                                <td>@item.totalpay</td>
+                                                <td>@MaskLastSixDigits(item.cardnumber)</td>
+                                                <td>@bankrrn</td>
+                                                <td>@item.f_date</td>
+                                                <td>@item.resptime</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="backtodashboardcall" data-request-url="@Url.Action("Dashboard", "Home")"></div>
+    <div class="Loader-set" style="display: none">
+        <div class="loader"></div>
+    </div>
+</section>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<link href="~/MainFrontDesign/css/Dashcustom.css" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+    function HideShowGetWay(CheckActive) {
+        if (CheckActive === 'Gateway') {
+            document.getElementById('GetWayMode').style.display = 'none';
+            document.getElementById('CreditCardMode').style.display = 'block';
+
+            document.getElementById('creditCardPayment').checked = true;
+            document.getElementById('gatewayTransfer').checked = false;
+
+            $.ajax({
+                url: '@Url.Action("GetDiscountedAmount", "Home")',
+                type: 'POST',
+                success: function (response) {
+                    if (response.Status) {
+                        var addinfoArray = JSON.parse(response.Addinfo);
+                        var IHTML = `<option value="">Select Amount</option>`;
+                        for (var i = 0; i < addinfoArray.length; i++) {
+                            var billInfo = addinfoArray[i];
+                            IHTML += `<option value="${billInfo.Idno}">${billInfo.Amount}</option>`;
+                        }
+                        document.getElementById('BillInfo').innerHTML = IHTML;
+                    } else {
+                        console.log(response.Message);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        } else {
+            document.getElementById('GetWayMode').style.display = 'block';
+            document.getElementById('CreditCardMode').style.display = 'none';
+            document.getElementById('creditCardPayment').checked = false;
+            document.getElementById('gatewayTransfer').checked = true;
+        }
+    }
+    function SelectAmount(dropdown) {
+        var selectedValue = dropdown.value;
+        $.ajax({
+            url: '@Url.Action("GetHoldAmount", "Home")',
+            type: 'POST',
+            data: { Id: selectedValue },
+            success: function (response) {
+                if (response.Status) {
+                    var addinfoArray = JSON.parse(response.Addinfo);
+                    document.getElementById("BillDropdown").style.display = 'none';
+                    document.getElementById("BillInputBox").style.display = 'block';
+                    document.getElementById("Amount").value = addinfoArray.Amount;
+                    document.getElementById("hideidno").value = selectedValue;
+
+                    console.log(response.Addinfo)
+                } else {
+                    console.log(response.Message);
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+    function validateInput(input, type) {
+        let value = input.value.replace(/\D/g, '');
+        let message = '';
+        switch (type) {
+            case 'amount':
+                input.value = value;
+                if (value < 100) {
+                    message = 'The Amount must be 100 or more';
+                }
+                break;
+            case 'cardNumber':
+                const minLength = 13;
+                const maxLength = 19;
+                if (value.length > maxLength) value = value.slice(0, maxLength);
+                input.value = value;
+                if (value.length < minLength || value.length > maxLength) {
+                    message = 'Please enter a valid credit card number with 13 to 19 digits.';
+                    input.setCustomValidity("Card number must be between 13 and 19 digits long.");
+                } else {
+                    input.setCustomValidity("");
+                }
+                break;
+            case 'month':
+                if (value.length > 2) value = value.slice(0, 2);
+                const month = parseInt(value, 10);
+                if (value.length === 2 && (month < 1 || month > 12)) {
+                    message = 'Select month between 1 to 12 only.';
+                }
+                if (value.length === 2) {
+                    const month = parseInt(value, 10);
+                    if (month < 1 || month > 12) {
+                        value = value.slice(0, 1);
+                    }
+                }
+                input.value = value;
+                break;
+            case 'year':
+                if (value.length > 2) value = value.slice(0, 2);
+                if (value.length < 2) {
+                    message = 'Please enter last 2-digit year (e.g., 24).';
+                }
+                input.value = value;
+                break;
+            case 'cvv':
+                if (value.length > 3) value = value.slice(0, 3);
+                input.value = value;
+                if (value.length !== 3) {
+                    message = 'Please enter a valid 3-digit CVV.';
+                }
+                break;
+            case 'otp':
+                input.value = value;
+                break;
+            default:
+                break;
+        }
+        document.getElementById("VlidateionsMessage").innerHTML = message;
+    }
+    function CreditCardProceed() {
+        let Amount = $('#Amount').val(); 
+        let Name = $('#NameInput').val();
+        let Cardnumber = $('#CardNumberInput').val(); 
+        let Month = $('#MonthInput').val(); 
+        let Year = $('#YearInput').val(); 
+        let CVV = $('#CVVInput').val(); 
+        let Otp = $('#OtpInput').val();
+        let Idno = $('#hideidno').val();
+        let reqid = $('#RequestId').val();
+        if (Idno != "") {
+            if (Amount >= 100) {
+                if (Cardnumber.length > 12 && Cardnumber.length < 20) {
+                    if (Month.length > 0 && Month.length < 3) {
+                        Month = Month.length === 1 ? 0 + Month : Month;
+                        if (Year.length > 0 && Year.length < 3) {
+                            if (CVV.length > 2 && CVV.length < 5) {
+                                let Exp = Month + "/" + Year;
+
+                                $.ajax({
+                                    url: '@Url.Action("CreditCardTransfer", "Home")',
+                                    type: 'POST',
+                                    data: { Amount, Cardnumber, Name, CVV, Exp, Otp, Idno, reqid },
+                                    beforeSend: function () {
+                                        document.getElementsByClassName('Loader-set')[0].style.display = 'block';
+                                    },
+                                    success: function (response) {
+                                        document.getElementsByClassName('Loader-set')[0].style.display = 'none';
+                                        if (response.Issendotp) {
+                                            document.getElementById('RequestId').value = response.RequestId
+                                            document.getElementById('OtpBox').style.display = 'block';
+                                           // document.getElementById('ButtonProceed').style.display = 'none';
+                                           // document.getElementById('ButtonSubmit').style.display = 'block';
+                                        }
+                                        else {
+                                            document.getElementById('VlidateionsMessage').innerHTML = response.Message;
+                                        }
+                                    },
+                                    error: function (error) {
+                                        document.getElementsByClassName('Loader-set')[0].style.display = 'none';
+                                    },
+                                    complete: function (xhr, status) {
+                                        document.getElementsByClassName('Loader-set')[0].style.display = 'none';
+                                    }
+                                });
+                            }
+                            else {
+                                document.getElementById('VlidateionsMessage').innerHTML = 'Please enter a valid 3 or 4-digit CVV.';
+                            }
+                        }
+                        else {
+                            document.getElementById('VlidateionsMessage').innerHTML = 'Please enter last 2-digit year (e.g., 24).'
+                        }
+                    }
+                    else {
+                        document.getElementById('VlidateionsMessage').innerHTML = 'Select month between 1 to 12 only.'
+                    }
+                }
+                else {
+                    document.getElementById("VlidateionsMessage").innerHTML = 'Please enter a valid credit card number with 13 to 19 digits.';
+                }
+            }
+            else {
+                document.getElementById("VlidateionsMessage").innerHTML = 'The Amount must be 100 or more';
+            }
+        }
+        else {
+            document.getElementById("VlidateionsMessage").innerHTML = 'ID is miss';
+        }
+    }
+
+    $(document).ready(function()
+    {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+        var current = location.pathname;
+        $('.report-list-change li a').each(function () {
+            var $this = $(this);
+            if ($this.attr('href').indexOf(current) !== -1) {
+                $this.addClass('active');
+            }
+        })
+
+        $(".date-sateclassee input").click(function () {
+            $(".datepicker").addClass('daqqqqkerrteyyecharge');
+        });
+    })
+
+    $('.pay-mode-process').click(function () {
+        $(this).hide();
+        $('.pay-mode-second').show();
+        $('.pay-mode-edit').show();
+        $('.pay-mode-first input').attr('readonly', 'readonly')
+
+    });
+    $('.pay-mode-edit').click(function () {
+        $(this).hide();
+        $('.pay-mode-second').hide();
+        $('.pay-mode-process').show();
+        $('.pay-mode-first input').removeAttr('readonly', 'readonly')
+    });
+    (function () {
+        $('.pay-mode-first input').keyup(function () {
+            var empty = false;
+            $('.pay-mode-first input').each(function () {
+                if ($(this).val() == '') {
+                    empty = true;
+                }
+            });
+            if (empty) {
+                $('.pay-mode-process').attr('disabled', 'disabled');
+            }
+            else {
+                $('.pay-mode-process').removeAttr('disabled');
+            }
+        });
+    })()
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+    function proceed() {
+        if ($('#txtamt').val() == "") {
+           $('#txtmsgerror').text("Amount Not Blank");
+        }
+        else if ($('#ddl_type').val() == "")
+        {
+            $('#txtmsgerror').text("Select Any Type");
+        }
+        else {
+        $('#txtmsgerror').text("");
+             $.ajax({
+                   url: '@Url.Action("calculatecharge_gateway", "Home")',
+                   type: 'GET',
+                   dataType: "json",
+                   data: { amount: $('#txtamt').val(), type: $('#ddl_type').val() },
+                 success: function (response) {
+                     if (response.status) {
+                         $('#showdata').show();
+                         $('#showdata').find('table').empty();
+                         document.getElementById('showdata').querySelector('table').appendChild(tableCreate($('#txtamt').val(), response.cols, response.values, $('#ddl_type').val()));
+                     }
+                     else {
+                         $('#showdata').hide();
+                         $('#txtmsgerror').text("Charge Not Set");
+                     }
+                 }
+             });
+        }
+    }
+    $("#btnExport").click(function (e) {
+        e.preventDefault()
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var url = '@Url.Action("Execel_Gateway_TRANSFER", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date;
+        location.href = url
+    });
+
+    $("#btnPDF").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var url = '@Url.Action("PDFGatewayTRANSFER", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date;
+        window.open(
+        url,
+           '_blank' // <- This is what makes it open in a new window.
+        );
+    });
+
+    function tableCreate(amount, columns, row, type = null) {
+        const body = document.body,
+        tbl = document.createElement('table');
+        tbl.style.width = '100%';
+        const tr = tbl.insertRow();
+        const tr1 = tbl.insertRow();
+        const tr2 = tbl.insertRow();
+
+        for (let i = 0; i < columns.length; i++) {
+            const td1 = tr.insertCell();
+
+            td1.style.border = '1px solid black';
+            td1.style.backgroundColor = '#dca167';
+            td1.style.textAlign = 'center';
+            var col_name = typeof columns[i] == 'string' ? columns[i] : columns[i].text;
+            td1.appendChild(document.createTextNode(col_name));
+
+            if (columns[i].cols) {
+                if (Array.isArray(columns[i].cols)) {
+                    td1.setAttribute('colSpan', columns[i].cols.length.toString());
+
+                    for (let j = 0; j < columns[i].cols.length; j++) {
+                        var td = tr1.insertCell();
+                        var tdr;
+
+                        if (typeof columns[i].cols[j] == 'string') {
+                            if (type == "DC" && col_name == 'RUPAY') {
+                                td.setAttribute('rowSpan', 2);
+                            }
+                            else if (type == "NB") {
+
+                            }
+                            else {
+                                tr2.insertCell();
+                            }
+                            td.appendChild(document.createTextNode(ucFirst(columns[i].cols[j])));
+                            td.style.border = '1px solid black';
+                            td.style.backgroundColor = '#dca167';
+                            td.style.textAlign = 'center';
+                            td.style.fontSize = '11px';
+                        }
+                        else {
+                            var cols3 = columns[i].cols[j].cols;
+
+                            td.setAttribute('colSpan', cols3.length.toString());
+                            td1.setAttribute('colSpan', (2 * cols3.length).toString());
+                            td.appendChild(document.createTextNode(ucFirst(columns[i].cols[j].text)));
+                            td.style.border = '1px solid black';
+                            td.style.backgroundColor = '#dca167';
+                            td.style.textAlign = 'center';
+                            td.style.fontSize = '11px';
+                            for (let k = 0; k < cols3.length; k++) {
+                                var td3 = tr2.insertCell();
+                                var text3 = cols3[k];
+                                td3.appendChild(document.createTextNode(ucFirst(text3)));
+                                td3.style.border = '1px solid black';
+                                td3.style.backgroundColor = '#dca167';
+                                td3.style.textAlign = 'center';
+                                td3.style.fontSize = '10px';
+                            }
+                        }
+                    }
+                }
+            } else {
+
+                if (type == "DC" && col_name == 'Status') {
+                    td1.setAttribute('rowSpan', 3);
+                }
+                else if (type == "NB" && col_name == 'Status') {
+                    td1.setAttribute('rowSpan', 2);
+                }
+                else {
+                    //tr1.insertCell();
+                    //tr2.insertCell();
+                }
+            }
+
+        }
+        var merged_array = [].concat.apply([], [].concat.apply([], row));
+        var tr_val = tbl.insertRow();
+        //console.log(merged_array, row)
+
+        for (let i = 0; i < merged_array.length; i++) {
+            var td = tr_val.insertCell();
+
+            if (i > 0) {
+                td.appendChild(document.createTextNode(parseFloat(merged_array[i]).toFixed(2)));
+                td.style.border = '1px solid black';
+                td.style.textAlign = 'center';
+                td.style.fontSize = '10px';
+            }
+            else {
+                var img = document.createElement('img');
+                img.src = merged_array[i] ? "../../ashok-images/correct.svg" : "../../ashok-images/closes.svg";
+                img.style.width = "12px";
+                img.style.borderRadius = "99px";
+                img.style.backgroundColor = merged_array[i] ? 'green' : 'red'
+                td.style.border = '1px solid black';
+                td.style.textAlign = 'center';
+                var span = document.createElement('small')
+                span.textContent = amount;
+                span.style.fontSize = '11px';
+                span.style.marginLeft = '3px';
+                td.appendChild(img);
+                td.appendChild(span);
+            }
+        }
+        tbl.style.margin = "30px 0";
+        return tbl;
+    }
+
+    function ucFirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+</script>

@@ -1,0 +1,91 @@
+﻿
+@model List<Vastwebmulti.Models.select_api_pur_order_Result>
+
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>OrderNo</th>
+            <th>Request To</th>
+            <th>Payment Mode</th>
+            <th>Discription</th>
+            <th>Total AMT</th>
+            <th>Charge</th>
+            <th>Net T/F</th>
+            <th>Req.Date</th>
+            <th>Resp.Date</th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @if (Model != null && Model != null)
+        {
+            foreach (var item in Model)
+            {
+                var color = "";
+                var stscolor = "";
+                var img = "";
+                if (item.type_ == "Cash")
+                {
+                    color = "green";
+                }
+                if (item.type_ == "Credit")
+                {
+                    color = "red";
+                }
+                if (item.sts == "Pending")
+                {
+                    stscolor = "#FF9800";
+                    img = "../../ashok-images/clkk.png";
+
+                }
+                if (item.sts == "APPROVED")
+                {
+                    stscolor = "green";
+                    img = "../../ashok-images/correct.svg";
+
+                }
+                if (item.sts == "REJECTED")
+                {
+                    stscolor = "red";
+                    img = "../../ashok-images/closes.svg";
+
+                }
+                DateTime reqdate = Convert.ToDateTime(item.reqdate);
+                DateTime responsedate = Convert.ToDateTime(item.responsedate);
+
+        <tr>
+            <td>
+                <p style="font-size:0px;text-align:center;">
+                    <span style="color:@stscolor;font-weight:600;">
+                        <img src="@img" style="background-color:@stscolor;width: 18px;
+margin-right: 5px;max-width: 100%;padding: 0;border-radius: 50%;padding: 3px;" />@item.sts.ToUpper()
+        </span>
+        </p>
+        </td>
+        <td><p style="font-size:12px;">@item.orderno&nbsp;<span style="color:@color;font-weight:600;"></span></p></td>
+        <td><span> Admin </span></td>
+        <td>@item.paymode.ToUpper()</td>
+        <td>@item.details</td>
+
+
+        <td><p style="font-size:12px;text-align:center;">@item.amount</p> </td>
+        <td><p style="font-size:12px;text-align:center;">@item.cashDepositCharge</p> </td>
+
+        <td><p style="font-size:12px;text-align:center;">@item.finalAmount</p></td>
+        <td>@reqdate.ToString("d-MMM-yyyy HH:mm:ss")</td>
+        @if (item.responsedate != null)
+        {
+            <td>@responsedate.ToString("d-MMM-yyyy HH:mm:ss")</td>
+        }
+        else
+        {
+            <td>@item.responsedate</td>
+        }
+        </tr>
+            }
+        }
+
+    </tbody>
+</table>

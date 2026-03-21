@@ -1,0 +1,137 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.upiChargeAndgateway
+
+@{ 
+    decimal? TOTALAMOUNT = 0M;
+    decimal? TOTALNET = 0M;
+    decimal? TOTALPAY = 0M;
+    int i = 0;
+}
+  
+
+<table class="table table-bordered table-striped table-hover third-design-table table-white-third">
+    <thead style="background-color:whitesmoke;">
+        <tr>
+            <th>S.No</th>
+            <th>Role</th>
+            <th>User</th>
+            <th>Mode</th>
+            <th>Mode</th>
+            <th>Remain&nbsp;Pre</th>
+            <th>Amount</th>
+            <th>Charges</th>
+            <th>Pay</th>
+            <th>Net&nbsp;Received</th>
+            <th>Remain&nbsp;Post</th>
+            <th>Bank&nbsp;RRN</th>
+            <th>PayU&nbsp;ID</th>
+            <th>Txn.&nbsp;Time</th>
+            <th>Settlement</th>
+            <th>Response&nbsp;Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.GATEWAYREPORT)
+        {
+            i++;
+            TOTALAMOUNT = item.amount + TOTALAMOUNT;
+            TOTALNET = item.finalpay + TOTALNET;
+            TOTALPAY = item.totalpay + TOTALPAY;
+            var sts = item.status;
+            var code = "";
+            var bankrrn = item.errormsg;
+            var color = "";
+            var width = "20px";
+            var height = "20px";
+            if (sts == "Success")
+            {
+                code = "../../ashok-images/correct.svg";
+                bankrrn = item.bankrrnno;
+                color = "green";
+            }
+            else if (sts == "Failed")
+            {
+                code = "../../ashok-images/closes.svg";
+                color = "red";
+            }
+            else
+            {
+                code = "../../ashok-images/clkk.png";
+                width = "20px;";
+                height = "20px";
+                color = "#ffc107";
+            }
+            <tr>
+                <td>@i</td>
+                <td>@item.roles</td>
+                <td>@item.Frm_Name</td>
+                <td><img src="@code" style="width:@width;margin-right:3px;float:left; background-color:@color;border-radius: 50%;padding: 3px;">&nbsp;@item.mode</td>
+                <td>@item.PG_TYPE</td>
+                <td>@item.remainpre</td>
+                <td>@item.amount</td>
+                <td>@item.charge</td>
+                <td>@item.finalpay</td>
+                <td>@item.totalpay</td>
+                <td>@item.remainpost</td>
+                <td>@bankrrn</td>
+                <td>@item.payuMoneyId</td>
+                <td>@item.f_date</td>
+                <td>
+                    @if (item.issettled == true)
+                    {
+                        <span style="color: green">Settled</span>
+                    }
+                    else
+                    {
+                        <span style="color: red">Not Settled</span>
+                    }
+                </td>
+                <td>
+                    @if (item.status.ToUpper() == "PENDING")
+                    {
+                        <button onclick="Statuschk('@item.txnid')" class="done-third" style="border: 1px solid var(--main-bg-rcolor); padding: 4px 5px; background: var(--main-bg-lcolor); color: #fff !important;">Status Check</button>
+                    }
+                    else
+                    {
+                        @item.resptime
+                    }
+                </td>
+            </tr>
+        }
+
+        <tr>
+            <td colspan="6">TOTAL</td>
+            <td>@TOTALAMOUNT</td>
+            <td></td>
+            <td>@TOTALNET</td>
+            <td>@TOTALPAY</td>
+            <td colspan="6"></td>
+
+        </tr>
+    </tbody>
+</table>
+
+
+<script>
+    function OnFailure(error) {
+        alert(error.responseText);
+    }
+</script>
+
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

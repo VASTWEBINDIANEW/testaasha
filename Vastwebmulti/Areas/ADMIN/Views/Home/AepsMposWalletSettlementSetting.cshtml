@@ -1,0 +1,163 @@
+﻿@model List<Vastwebmulti.Areas.ADMIN.Models.AepsMposSettlemtSettingModel>
+@{
+    ViewBag.Title = "Settlement Setting";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+     <style type="text/css">
+    .loadermoney {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 199999;
+         background: url('../../images/mmmm.svg') 50% 50% no-repeat rgba(249, 249, 249, 0.9);
+    }
+</style> 
+<div id="loadermoney" class="loadermoney" style="display:none;"></div>
+<section class="content">
+    <div class="container-fluid">
+        
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h2>AEPS Mpos Wallet Settlement Settings</h2>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="body table-responsive">
+                        <div id="divEditFormComm" class="table-responsive" style="position:inherit; margin-top:-20px;">
+                           
+                                <table class="table table-bordered">
+                                    <thead class="navbar" style="position:initial;color:white;">
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Is Direct Allowed</th>
+                                            <th>Settlement Hourse</th>
+                                            <th>#</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyshow">
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td><p>@item.Email</p></td>
+                                                <td id="@item.Idno" style="padding:0px;">
+                                                    @if (item.IsDirect == true)
+                                                    {
+                                                        <a  onclick="UpdateStatus('@item.Idno',event)" style="text-decoration:none;margin-left:62px;" href="javascript:void(0)"><i class="icofont icofont-toggle-on" style="color:green; font-size:40px;margin-left:-7px;" title="Setting Status"></i></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a   onclick="UpdateStatus('@item.Idno',event)" style="text-decoration:none;margin-left:62px;" href="javascript:void(0)"><i class="icofont icofont-toggle-off" style="color:red;font-size:40px;margin-left:-7px;" title="Setting Status"></i></a>
+                                                    }
+
+                                                </td>
+                                                <td>@item.settlemtHourse</td>
+                                                <td>
+                                                    <center>
+                                                        <button onclick="editHourse('@item.UserId','@item.settlemtHourse')" style="background-color:transparent;color:#03a9f4; border:none;" data-toggle="modal" data-target="#defaultModal1">
+                                                            <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Edit</p>
+                                                        </button>
+                                                    </center>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<div id="defaultModal1" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+                <!-- Modal content-->
+        <div class="modal-content">
+@using (Html.BeginForm("updateSettlemntHrs", "Home", FormMethod.Post))
+{
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="color:black;">Edit Settlement Hours</h4>
+            </div>
+            <div class="modal-body">
+               
+                    @Html.Hidden("userid")
+                
+                    <div class="row clearfix">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-5 form-control-label">
+                            <label for="shr">Settlemt Hourse</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="" style="border:1px solid #dddddd;">
+                                    <input type="text" id="shr" name="shr" class="form-control" placeholder="Enter settlement hours">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                   
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                    <span style="top:-2px;color:black;">Save Change</span>
+                </button>
+                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                    <span style="top:-2px;color:black;">Close</span>
+                </button>
+            </div>
+        
+}
+        </div>
+
+    </div>
+</div>
+<script>
+    function UpdateStatus(id, event) {
+        event.preventDefault();
+        //alert();
+        $("#div_Loader").show();
+       var url = '@Url.Action("_AepsMposWalletSettlementSetting", "Home")'+'?idno='+id;
+        $.post(url, function (html) {
+            $("#div_Loader").hide();
+
+            if (id == 1) {
+                location.reload();
+            } else {
+                $("#" + id + "").html(html);
+            }
+        });
+        $("#div_Loader").hide();
+
+    };
+    function editHourse(userid,shr)
+    {
+        $("#userid").val(userid);
+        $("#shr").val(shr);
+    }
+</script>
+<!--Window Load-->
+<script>
+    window.onload=function()
+    {
+        $("#Comm").removeClass("btn bg-blue-grey waves-effect").addClass("btn bg-grey waves-effect");
+    }
+</script>
+<script>
+    $(document).ready(function () {
+            $(document).ajaxStart(function () {
+                document.getElementById("loadermoney").style.display = "block";
+            });
+            $(document).ajaxComplete(function () {
+                document.getElementById("loadermoney").style.display = "none";
+            });
+});
+</script>
+

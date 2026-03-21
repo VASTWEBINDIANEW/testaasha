@@ -1,0 +1,783 @@
+﻿<style>
+    .loader {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+
+    .Physical-Token p img {
+        width: 15px;
+        float: left;
+        margin-right: 2px;
+    }
+
+    .my-trans.introoo .custome-none-class {
+        display: block !important;
+    }
+
+    .tabspage .tab-content input {
+        height: 27px;
+        /* padding: 6px 12px; */
+        /* padding-top: 6px; */
+        /* padding-bottom: 6px; */
+        /* padding-left: 12px; */
+        /* padding-left: 12px; */
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        width: 11%;
+        /* margin-right: 8px; */
+        box-shadow: none;
+    }
+</style>
+
+<div class="loader loaderpancard"></div>
+<div id="failedpancard" style="display:none;">
+    <div class="start-tab-3 responsiveclassfirst">
+        <div class="container-fluid aeps pancard-wr">
+            <div class="col-md-12 aeps-start">
+                <div class="col-md-10 aeps_id fgdfgdfg">
+                    <div class="col-md-12 amount amount_strong"><strong class="satedivwidth" style="">PSA ID</strong><span>Unregistered User (KYC DUE)</span></div>
+                </div>
+                <div class="col-md-2 aeps_button">
+                    <a href="http://www.psaonline.utiitsl.com/psaonline/" target="_blank">
+                        <button class="uti-img"><img src="~/ashok-images/uti-logo.png" /><span><strong>U T I</strong><span class="pn-log">Login</span></span></button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <span id="failedmessageshow" style="color:red"></span>
+
+</div>
+<div id="firstpur1" class="col-md-12 remitter_button" style="display:none;text-align: center;">
+    <img src="~/ashok-images/forbidden.svg" style="width: 90px;display: block;margin: 0px auto;" />
+    <span class="bodycolormy" style="margin-top: 20px;margin-bottom: 20px;font-size: 26px;">PANCARD Service Expired !</span>
+    <p style="margin-bottom: 20px;text-align: justify;">Your service is currently down, if you want to keep the service running smoothly, you will have to pay the service fee, which you see below and you can purchase the service by clicking the button.</p>
+    <button class="btn btn-default fullbodydycolorbg" onclick="PurchasePAN('PANCARD')" style="color: #fff;">Purchase Service</button>
+</div>
+<div id="secpur1" class="col-md-12 remitter_button remitter_buttonewq" style="display:none;text-align: center;">
+    <span style="margin-top:0;">Payment Details</span>
+    <div class="lavbrd">
+        <label>Mode</label>
+        <label class="rightlable" id="PaymentType1"></label>
+    </div>
+    <div class="lavbrd">
+        <label>Amount</label>
+        <label class="rightlable" id="Price1"></label>
+    </div>
+    <div class="coldebuttonnew">
+        <button class="bacbuttonrrt" onclick="PANCARD()">Back</button>
+        <button class="btn btn-default fullbodydycolorbg" onclick="FinalPurchasePAN('PANCARD')" style="color: #fff;">Pay Now</button>
+    </div>
+    <br />
+    <label id="errmsgpan" style="color:red;"></label>
+</div>
+
+<div id="notkyc" style="display:none;">
+    <div class="start-tab-3">
+        <div class="container-fluid aeps pancard-wr">
+            <div class="col-md-12 aeps-start">
+                <div class="col-md-10 aeps_id fdgfgfgfga">
+                    <div class="col-md-12 amount amount_strong"><strong style="">PSA ID</strong><span>Unregistered User (KYC DUE)</span></div>
+                </div>
+                <div class="col-md-2 aeps_button">
+                    <a href="http://www.psaonline.utiitsl.com/psaonline/" target="_blank">
+                        <button class="uti-img" style="display: flex; justify-content: center; align-content: center; align-items: stretch;">
+                            <img src="~/ashok-images/uti-logo.png" />&nbsp;
+                            <span><strong>U T I</strong>&nbsp;<span class="pn-log">Login</span></span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="avtar pancard-avtar-wr">
+        <img src="~/ashok-images/avatar.svg" />
+        <h2>KYC DUE !</h2>
+        <p>please firstly complete your profile details and wait for KYC approval.<br /> othewise call to customer care.</p>
+        <span id="kycerrormsg"></span>
+    </div>
+</div>
+
+<div class="start-tab-3">
+
+    <div class="container-fluid aeps pancard-wr">
+        <div class="col-md-12 aeps-start">
+            <div id="unregister" style="display:none;">
+
+                <div class="col-md-10 aeps_id fdgfgfgfga">
+                    <div class="col-md-12 amount amount_strong"><strong style="">PSA ID</strong><span>Unregistered User</span></div>
+                </div>
+                <div class="col-md-2 aeps_button">
+                    <a href="http://www.psaonline.utiitsl.com/psaonline/" target="_blank">
+                        <button class="uti-img">
+                            <img src="~/ashok-images/uti-logo.png" /><span>
+                                <strong>U T I</strong>
+                                <span class="pn-log">  Login</span>
+                            </span>
+                        </button>
+                    </a>
+                </div>
+                <div class="education-img pancard-avtar-wr">
+                    <img src="~/ashok-images/education.svg" />
+                    <p>You are Not Registered with Pancard Service.</p>
+                    <button class="fullbodydycolorbg" onclick="registeruti()">Click to Register at UTI</button>
+                </div>
+            </div>
+
+            <!--UTI FORM-->
+            <div id="resgisterform" class="uti-form resgisterform-wr" style="display:none;">
+                <p class="body-border-bottom">Registeration Form</p>
+                <form>
+                    <ul>
+                        <li>
+                            <span>name</span>
+                            <input id="txtpanname" name="txtpanname" readonly type="text" placeholder="enter your name" />
+                        </li>
+                        <li>
+                            <span>firm name</span>
+                            <input id="txtfirmnmpan" name="txtfirmnmpan" readonly type="text" placeholder="Firm Name" />
+                        </li>
+                        <li>
+                            <span>register email ID</span>
+                            <input id="txtemailpan" name="txtemailpan" readonly type="email" placeholder="enter your email" style="text-transform:inherit;" />
+                        </li>
+                        <li class="two-colam">
+                            <div class="span-input">
+                                <span>Mobile number</span>
+                                <input id="panphone" name="panphone" readonly type="text" placeholder="number" />
+                            </div>
+                        </li>
+                        <li>
+                            <div class="span-input">
+                                <span>date of birthday</span>
+                                <input id="dobpan" name="dobpan" readonly type="text" placeholder="Date of birthday" />
+                            </div>
+
+                        </li>
+                        <li class="two-colam">
+                            <div class="span-input">
+                                <span>pancard number</span>
+                                <input id="panpancard" name="panpancard" readonly type="text" placeholder="Enter Pancard Number" />
+                            </div>
+                        </li>
+                        <li>
+                            <div class="span-input">
+                                <span>aadharcard number</span>
+                                <input id="aadharpan" name="aadharpan" readonly type="text" placeholder="Enter Aadharcard Number" />
+                            </div>
+                        </li>
+
+                        @*<li class="two-colam">
+                                <div class="span-input">
+                                    <span>state</span>
+                                    <input id="statepan" readonly type="text" placeholder="Enter State"/>
+                                </div>
+                                <div class="span-input">
+                                    <span>distric</span>
+                                    <input id="ditrictpan" readonly type="text" placeholder="Enter distric" />
+                                </div>
+                            </li>*@
+                        <li>
+                            <span>address</span>
+                            <textarea id="txtaddresspan" name="txtaddresspan" readonly placeholder="Enter Address"></textarea>
+                        </li>
+
+                        <li class="pinCode">
+                            <span>pin code</span>
+                            <input id="pinpan" name="pinpan" readonly type="text" placeholder="Enter Pin Code" />
+                        </li>
+
+
+                    </ul>
+                    <div class="container-fluid transaction-button" style="width: 100%; display: flex; justify-content: space-between;">
+                        <button type="button" id="transaction-back" onclick="PANCARD()">Back</button>
+                        <button type="button" id="transaction-more" style="display:block;" onclick="Register()" class="fullbodydycolorbg">Register Form</button>
+                        <button type="button" id="Update-more" onclick="UpdatePSA()" style="display:none;" class="fullbodydycolorbg">UPDATE PSA</button>
+                    </div>
+                    <span id="registererror" style="color:red;"></span>
+                </form>
+            </div>
+
+            <!--register now page-->
+            <div id="pendingsts" class="register-page" style="display:none;">
+                <div class="container-fluid aeps pancard-wr pancard-wr-second">
+                    <div class="col-md-12 aeps-start">
+                        <div class="col-md-10 aeps_id fdgfgfgfga">
+                            <div class="col-md-12 amount amount_strong"><strong style="">PSA ID</strong><span>User Registration pending</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="avtar avtar-first pancard-avtar-wr">
+                    <img src="~/ashok-images/duration.svg" />
+                    <h2>Approval pending</h2>
+                    <p>Your PAN Card Service Registration pending for Approval</p>
+                </div>
+                <div class="container-fluid transaction-button pancard-buttonwretailer">
+                    @*<button id="transaction-back" onclick="PANCARD()">Back</button>*@
+                    <button class="fullbodydycolorbg" onclick="updatepsasts()">Update PSA</button>
+                    <button class="fullbodydycolorbg" onclick="checkstatus()">Check Live Status</button>
+                </div>
+                <div>
+                    <label id="pendingstserror" style="color:red;"></label>
+                </div>
+            </div>
+            <!--register now page-->
+            <!--Update Page-->
+            <div id="purchase" class="update-page" style="display:none;">
+                <div class="container-fluid aeps">
+                    <div class="col-md-12 aeps-start" style="display: flex; justify-content: space-around; width: 100%; align-content: space-around;">
+                        <div class="col-md-10 aeps_id fdgfgfgfga">
+                            <div class="col-md-12 amount amount_strong"><strong style="">PSA ID</strong><span id="psaidregister"></span></div>
+                        </div>
+                        @*<div class="col-md-12 right-right">
+                            <button>right</button>
+                        </div>*@
+                        <div class="col-md-2 aeps_button">
+                            <a href="http://www.psaonline.utiitsl.com/psaonline/" target="_blank">
+                                <button class="uti-img" style="display: inline-flex; justify-content: space-evenly; align-items: center;">
+                                    <img src="~/ashok-images/uti-logo.png" /><span><strong>U T I</strong><span class="pn-log">Login</span></span>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="Important-Step" style="text-align: center">
+                    <p>Your PSA Service is Active. Enjoy with PSA services.</p>
+                    <p>After buying tokens, visit the UTI website.</p>
+                    <p>PAN card application will be filled on UTI portal.</p>
+                </div>
+                <div class="container-fluid transaction-button" style="margin-bottom: 20px;    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;">
+                    <button class="fullbodydycolorbg update-page1">Buy Physical Token</button>
+                    <button class="fullbodydycolorbg update-page2">Digital Token</button>
+                </div>
+                <div class="custome-none-class1" style="margin-bottom: ">
+                    <div class="button-plush button-plush-top" style=" display: flex; width: 100%; justify-content: space-around; align-content: space-around; align-items: center;">
+                        @*<span>none</span>*@
+                        <div class="Physical-Token" style="width: 81%; text-align: center; display: flex; align-items: center; justify-content: center; align-content: center;"><p><img src="~/ashok-images/shopping-basket.svg" /> Physical Token</p></div>
+                        <div class="container button_plush1" style="width: 50%;">
+                            <div class="button-container button-container-custome" style="margin-left: 17px;">
+                                <button class="cart-qty-minus" type="button" value="-"><i class="fa fa-minus"></i></button>
+                                <input id="Physicaltokenvalue" type="text" name="qty" class="qty" maxlength="12" value="0" class="input-text qty" />
+                                <button class="cart-qty-plus" type="button" value="+"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="container-fluid transaction-button transaction-button-auto">
+                        <button style="background-color:#a39f9e">reset</button>
+                        <button class="fullbodydycolorbg" onclick="purchase()">Purchase Physical Token</button>
+
+
+
+                    </div>
+                </div>
+
+                <div class="custome-none-class" id="button-top-none" style="display:none;">
+                    <div class="button-plush button-plush-top button-plush-top-right">
+                        <span style="display: none">none</span>
+                        <div class="Physical-Token"><p><img src="~/ashok-images/shopping-basket.svg" /> Digital Token</p></div>
+
+
+
+                        <div class="container button_plush1">
+
+                            <div class="button-container button-container-custome">
+                                <button class="cart-qty-minus" type="button" value="-"><i class="fa fa-minus"></i></button>
+                                <input id="digitaltokenvalue" type="text" name="qty" class="qty" maxlength="12" value="0" class="input-text qty" />
+                                <button class="cart-qty-plus" type="button" value="+"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="container-fluid transaction-button transaction-button-auto">
+                        <button style="background-color:#a39f9e">reset</button>
+                        <button class="fullbodydycolorbg" onclick="purchase()">Purchase Digital Token</button>
+                    </div>
+
+                </div>
+                <div>
+                    <span id="buttokenerror" style="color:red;"></span>
+                </div>
+            </div>
+            <!--Update Page-->
+            <!--UTI FORM-->
+        </div>
+    </div>
+</div>
+
+<!---------------Final Payment-------------------------->
+<div class="col-md-12 Confirm-Payment" id="pan-Confirm-Payment" style="display:none;">
+    <div class="container-fluid">
+        <div class="col-md-6 successful">
+            <p>transaction successful</p>
+            <strong><img src="~/ashok-images/india(2).svg" /><span class="transform-re"> - 30000</span><i class="fa fa-check fullbodydycolorbg"></i></strong>
+            <span>RRN : 003419773790</span>
+        </div>
+        <div class="col-md-6 successful-logo"><a href="#">logo</a></div>
+    </div>
+    <div class="container-fluid transaction">
+        <p>AEPS transaction details</p>
+        <ul class="transaction-detail">
+            <li class="transaction-left"><span>retailer firm</span></li>
+            <li class="transaction-right"><span>instamoney</span></li>
+
+            <li class="transaction-left"><span>Aadhaar Number</span></li>
+            <li class="transaction-right"><span>852096374145698</span></li>
+
+            <li class="transaction-left"><span>Register Mobile</span></li>
+            <li class="transaction-right"><span>7665848573</span></li>
+
+
+
+            <li class="transaction-left"><span>AEPS mode</span></li>
+            <li class="transaction-right"><span>Cash</span></li>
+
+            <li class="transaction-left"><span>A/C Remain</span></li>
+            <li class="transaction-right"><span>2000</span></li>
+
+            <li class="transaction-left"><span>Withdraw Amount </span></li>
+            <li class="transaction-right"><span>10000</span></li>
+
+            <li class="transaction-left"><span>service Fee</span></li>
+            <li class="transaction-right"><span>10</span></li>
+
+            <li class="transaction-left"><span>tax</span></li>
+            <li class="transaction-right"><span>0</span></li>
+
+            <li class="transaction-left"><span>Paid amount</span></li>
+            <li class="transaction-right"><span>9990</span></li>
+
+
+
+
+        </ul>
+        <div class="container-fluid transaction-button">
+            <button>Close</button><button class="fullbodydycolorbg">more Withdraw</button>
+            <button id="transaction-print">print</button><button id="transaction-mail" class="fullbodydycolorbg">email</button>
+
+        </div>
+    </div>
+</div>
+<!---------------Final Payment-------------------------->
+<script>
+    function PurchasePAN(e) {
+        $.ajax({
+            url: '@Url.Action("ServiceCharge","Home")',
+            data: { Service: e },
+            cache: false,
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#PaymentType1').html(data.PaymentType);
+                $('#Price1').html(data.Price);
+                $('#firstpur1').hide();
+                $('#secpur1').show();
+            }
+        });
+    }
+    function FinalPurchasePAN(e) {
+         $.ajax({
+            url: '@Url.Action("ServicePurchase","Home")',
+            data: { Service: e },
+            cache: false,
+            type: "POST",
+             dataType: 'json',
+            beforeSend: function() {
+                      $('.loader').show();
+                     },
+             success: function (data) {
+                 $('.loader').hide();
+                 if (data.Status == "Success") {
+                     PANCARD();
+                 }
+                 else {
+                            $('#errmsgpan').text(data.Message);
+                 }
+
+            }
+        });
+    }
+</script>
+<script>
+    function PANCARD() {
+            $('#firstpur1').hide();
+            $('#secpur1').hide();
+            $('#buttokenerror').text("");
+            $('#transaction-more').show();
+            $('#Update-more').hide();
+            $('#failedpancard').hide();
+            $('#notkyc').hide();
+            $('#unregister').hide();
+            $('#resgisterform').hide();
+            $('#pendingsts').hide();
+            $('#purchase').hide();
+            $('#pan-Confirm-Payment').hide();
+            $.ajax({
+            url: '@Url.Action("Index","PANCARD")',
+            cache: false,
+                type: "GET",
+               beforeSend: function() {
+                  $('.loader').show();
+             },
+            success: function (data) {
+                var output = JSON.parse(data);
+                $('.loader').hide();
+                var status = output.status;
+                var message = output.msg;
+                if (status == "NOTRegistered") {
+                    $('#unregister').show();
+                }
+                else if (status == "PENDING") {
+                    $('#pendingsts').show();
+                }
+                else if (status == "NOTKYC") {
+                    $('#notkyc').show();
+                    $('#kycerrormsg').text(message);
+                }
+                else if (status=="Registered")
+                {
+                    $('#purchase').show();
+                    $('#psaidregister').text(message);
+                }
+                else {
+                    $('#failedpancard').show();
+
+                    if (message == "Firstlly Purchase this Service.") {
+                         $('#firstpur1').show();
+                    }
+                    else {
+                        $('#failedmessageshow').text(message);
+                    }
+                }
+            }
+            })
+
+             $.ajax({
+            url: '@Url.Action("PANCARDreportnew","Home")',
+            cache: false,
+                 type: "GET",
+                 cache: false,
+               dataType:"html",
+            success: function (data) {
+                 $('#reportallinone').html(data);
+            }
+        })
+    }
+</script>
+<script>
+    function registeruti() {
+          $.ajax({
+            url: '@Url.Action("Userinfo","PANCARD")',
+            cache: false,
+              type: "GET",
+                beforeSend: function() {
+                  $('.loader').show();
+             },
+              success: function (data) {
+                  $('.loader').hide();
+                  var output = JSON.parse(data);
+                  $('#txtpanname').val(output.Name);
+                  $('#txtfirmnmpan').val(output.firmName);
+                  $('#txtemailpan').val(output.Email);
+                  $('#panphone').val(output.Mobile);
+                  $('#dobpan').val(output.dob);
+                  $('#panpancard').val(output.PAN);
+                  $('#aadharpan').val(output.Aadhar);
+                  //$('#statepan').val(data[0].State);
+                  //$('#ditrictpan').val(data[0].District);
+                  $('#txtaddresspan').val(output.Address);
+                  $('#pinpan').val(output.PIN);
+
+                   $('#resgisterform').show();
+                   $('#unregister').hide();
+            }
+        })
+
+    }
+</script>
+<script>
+    function Register() {
+
+        var txtpanname = $("#txtpanname").val();
+        var txtfirmnmpan = $("#txtfirmnmpan").val();
+        var txtemailpan = $("#txtemailpan").val();
+        var panphone = $("#panphone").val();
+        var dobpan = $("#dobpan").val();
+       var panpancard = $("#panpancard").val();
+        var aadharpan = $("#aadharpan").val();
+        var txtaddresspan = $("#txtaddresspan").val();
+        var pinpan = $("#pinpan").val();
+        $.ajax({
+            url: '@Url.Action("RegisterPSA","PANCARD")',
+            cache: false,
+            data: {txtpanname:txtpanname,txtfirmnmpan:txtfirmnmpan,txtemailpan:txtemailpan,panphone:panphone,dobpan:dobpan,panpancard:panpancard,aadharpan:aadharpan,txtaddresspan:txtaddresspan,pinpan:pinpan},
+            type: "POST",
+              beforeSend: function() {
+                  $('.loader').show();
+             },
+            success: function (data) {
+                $('.loader').hide();
+                var output = JSON.parse(data);
+                if (output.Status == "Failed") {
+                    $('#registererror').text(output.Message);
+                }
+                else {
+                    PANCARD();
+                }
+            }
+        })
+    }
+</script>
+<script>
+    function checkstatus() {
+     $.ajax({
+            url: '@Url.Action("CheckStatus","PANCARD")',
+            cache: false,
+         type: "POST",
+              beforeSend: function() {
+                  $('.loader').show();
+             },
+         success: function (data) {
+             $('.loader').hide();
+                var output = JSON.parse(data);
+                if (output.Status == "Success") {
+                   PANCARD();
+                }
+                else {
+                    $('#pendingstserror').text(output.Message)
+                }
+            }
+        })
+    }
+</script>
+<script>
+    function updatepsasts() {
+
+         $.ajax({
+            url: '@Url.Action("Userinfo","PANCARD")',
+            cache: false,
+             type: "GET",
+                 beforeSend: function() {
+                  $('.loader').show();
+             },
+             success: function (data) {
+                   $('.loader').hide();
+                  $('#txtpanname').val(data[0].RetailerName);
+                  $('#txtpanname').attr("Readonly", false);
+                  $('#txtfirmnmpan').val(data[0].Frm_Name);
+                  $('#txtfirmnmpan').attr("Readonly", false);
+                  $('#txtemailpan').val(data[0].Email);
+                  $('#panphone').val(data[0].Mobile);
+                  $('#dobpan').val(data[0].dateofbirth);
+                  $('#panpancard').val(data[0].PanCard);
+                  $('#panpancard').attr("Readonly", false);
+                  $('#aadharpan').val(data[0].AadharCard);
+                  $('#aadharpan').attr("Readonly", false);
+                  //$('#statepan').val(data[0].State);
+                  //$('#ditrictpan').val(data[0].District);
+                  $('#txtaddresspan').val(data[0].Address);
+                  $('#txtaddresspan').attr("Readonly", false);
+                  $('#pinpan').val(data[0].Pincode);
+                  $('#pinpan').attr("Readonly", false);
+                  $("#transaction-more").hide();
+                  $('#Update-more').show();
+                  $('#resgisterform').show();
+                  $('#pendingstserror').text("");
+                  $('#pendingsts').hide();
+            }
+        })
+    }
+
+</script>
+<script>
+    function UpdatePSA() {
+        $('#registererror').text("");
+        var txtpanname = $("#txtpanname").val();
+        var txtfirmnmpan = $("#txtfirmnmpan").val();
+        var panpancard = $("#panpancard").val();
+        var aadharpan = $("#aadharpan").val();
+        var txtaddresspan = $("#txtaddresspan").val();
+        var pinpan = $("#pinpan").val();
+
+        if (txtpanname != "" && txtfirmnmpan != "" && panpancard != "" && aadharpan != "" && txtaddresspan != "" && pinpan != "") {
+            var validaadhar = validate(aadharpan);
+            if (validaadhar == true) {
+                var regex = /([A-Z]){5}([0-9]){4}([A-Z]){1}$/;
+                if (regex.test(panpancard.toUpperCase())) {
+                    var CheckZipCode = /(^\d{6}$)/;
+                    if (CheckZipCode.test(pinpan)) {
+                       $.ajax({
+                               url: '@Url.Action("UpdatePSA","PANCARD")',
+                               cache: false,
+                               data: {txtpanname:txtpanname,txtfirmnmpan:txtfirmnmpan,panpancard:panpancard,aadharpan:aadharpan,txtaddresspan:txtaddresspan,pinpan:pinpan},
+                           type: "POST",
+                                beforeSend: function() {
+                  $('.loader').show();
+             },
+                           success: function (data) {
+                               $('.loader').hide();
+                                       var output = JSON.parse(data);
+                                       if (output.Status == "Failed") {
+                                           $('#registererror').text(output.Message);
+                                       }
+                                       else {
+                                              PANCARD();
+                                       }
+                                   }
+                              })
+                    }
+                    else {
+                        $('#registererror').text("Enter Valid Pin Code");
+                    }
+                }
+                else {
+                      $('#registererror').text("Enter Valid Pan Card");
+                }
+            }
+            else {
+                 $('#registererror').text("Enter Valid aadhar");
+            }
+        }
+        else {
+            $('#registererror').text("All Filed Are Required");
+        }
+    }
+</script>
+
+<script>
+        // multiplication table
+        const d = [
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+            [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+            [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+            [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+            [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+            [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+            [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+            [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+            [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        ]
+
+        // permutation table
+        const p = [
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+            [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+            [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+            [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+            [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+            [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+            [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+        ]
+
+        // validates Aadhar number received as string
+        function validate(aadharNumber) {
+            let c = 0
+            let invertedArray = aadharNumber.split('').map(Number).reverse()
+
+            invertedArray.forEach((val, i) => {
+                c = d[c][p[(i % 8)][val]]
+            })
+
+            return (c === 0)
+        }
+</script>
+
+<script>
+    function purchase() {
+        var dig = $('#digitaltokenvalue').val();
+        var phy = $('#Physicaltokenvalue').val();
+        if (dig > 0 || phy > 0) {
+            $.ajax({
+                url: '@Url.Action("buyUTIToken","PANCARD")',
+                cache: false,
+                data: { digitalCount: dig, physicalCount: phy },
+                type: "POST",
+                  beforeSend: function() {
+                  $('.loader').show();
+             },
+                success: function (data) {
+
+                    var output = JSON.parse(data);
+                    alert(output.ADDINFO)
+                    if (output.RESULT == 0) {
+                        document.getElementById("buttokenerror").style.color = "green";
+                        $('#buttokenerror').text("Pan Card Purchase Successfully");
+                    }
+                    else {
+                        $('#buttokenerror').text(output.ADDINFO);
+                    }
+                },
+               complete: function () {
+
+                   $('.loader').hide();
+                    $.ajax({
+            url: '@Url.Action("PANCARDreportnew","Home")',
+            cache: false,
+                 type: "GET",
+                 cache: false,
+               dataType:"html",
+            success: function (data) {
+                 $('#reportallinone').html(data);
+            }
+        })
+            }
+            })
+
+        }
+        else {
+               $('#buttokenerror').text("Select Any digital token or Physical token");
+        }
+    }
+</script>
+

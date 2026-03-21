@@ -1,0 +1,120 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.upiChargeAndgateway
+@{
+    Layout = null;
+
+    decimal? TOTALAMOUNT = 0M;
+    decimal? TOTALNET = 0M;
+    decimal? TOTALCHARGE = 0M;
+    int i = 0;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF Security Report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        thead {
+            display: table-header-group
+        }
+
+        tfoot {
+            display: table-row-group
+        }
+
+        tr {
+            page-break-inside: avoid
+        }
+    </style>
+</head>
+<body>
+    <table cellspacing="0">
+        <thead style="background-color: whitesmoke; display:table-header-group;">
+            <tr>
+
+                <th>status</th>
+                <th>Role</th>
+                <th>User</th>
+                <th>Payer&nbsp;Name</th>
+                @*<th>Payer&nbsp;Mobile</th>*@
+                <th>Remain&nbsp;Pre</th>
+                <th>Amount</th>
+                <th>Charges</th>
+                <th>Net&nbsp;Pay</th>
+                <th>Remain&nbsp;Post</th>
+                <th>Bank RRN</th>
+                <th>Transaction&nbsp;Time</th>
+
+            </tr>
+
+
+            @*<th>Dealer&nbsp;Pre</th>
+                <th>Dealer&nbsp;Inc</th>
+                <th>Dealer&nbsp;Post</th>
+                <th>Master&nbsp;Pre</th>
+                <th>Master&nbsp;Inc</th>
+                <th>Master&nbsp;Post</th>
+                <th>Admin&nbsp;Pre</th>
+                <th>Admin&nbsp;Inc</th>
+                <th>Admin&nbsp;Post</th>*@
+
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.UPIREPORT)
+            {
+                var frmname = item.Frm_Name == null || item.Frm_Name == "" ? item.RetailerName : item.Frm_Name;
+                TOTALAMOUNT = item.amt + TOTALAMOUNT;
+                TOTALNET = item.finalpay + TOTALNET;
+                TOTALCHARGE = item.charge + TOTALCHARGE;
+
+                <tr>
+                    <td>@item.status</td>
+                    <td>@item.rolename</td>
+                    <td>@frmname</td>
+                    <td>@item.PayerName</td>
+                    <td>@item.remainpre</td>
+                    <td>@item.amt</td>
+                    <td>@item.charge</td>
+                    <td>@item.finalpay</td>
+                    <td>@item.remainpost</td>
+                    <td>@item.BankRRN</td>
+                    <td>@item.txndate</td>
+
+
+
+                    @*<td>@item.DlmPre</td>
+                        <td>@item.DlmInc</td>
+                        <td>@item.DlmPost</td>
+                        <td>@item.MdPre</td>
+                        <td>@item.MdInc</td>
+                        <td>@item.MdPost</td>
+                        <td>@item.AdminPre</td>
+                        <td>@item.AdminInc</td>
+                        <td>@item.AdminPost</td>*@
+
+                </tr>
+            }
+            <tr>
+                <td colspan="5">TOTAL</td>
+                <td>@TOTALAMOUNT</td>
+                <td>@TOTALCHARGE</td>
+                <td>@TOTALNET</td>
+                <td colspan="3"></td>
+
+            </tr>
+
+
+        </tbody>
+    </table>
+</body>
+</html>

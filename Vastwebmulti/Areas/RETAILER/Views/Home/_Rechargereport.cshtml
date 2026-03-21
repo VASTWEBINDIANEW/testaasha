@@ -1,0 +1,469 @@
+﻿@model List<Vastwebmulti.Models.Sp_Recharge_info_LazyLoad_Result>
+@using Vastwebmulti.Models;
+@{
+    Layout = null;
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        var sts = item.Rstaus;
+        var img = "";
+        var style = "";
+        var color = "";
+        var pendingColor = "";
+        var rchIcon = "";
+        string heavyrefreshbtn = "";
+
+        DateTime Rch_time = Convert.ToDateTime(item.Rch_time);
+        DateTime Resp_time = Convert.ToDateTime(item.Resp_time);
+
+        var duedate = item.BillDueDate;
+        var billdueinfo = "Due Date " + duedate;
+
+        var Circle = item.Circle;
+        var Circleinfo = "Circle " + Circle;
+        var amt = item.amount;
+        var amtde = item.income;
+        decimal? amtdec = 0;
+        if (sts.ToUpper().Contains("REFUND"))
+        {
+            amtdec = amt - amtde;
+            amtdec = +amtdec;
+        }
+        else
+        {
+            amtdec = amt - amtde;
+            amtdec = -amtdec;
+        }
+
+        if (item.Rstaus.ToUpper().Contains("REQ"))
+        {
+            sts = "Pending";
+            color = "#FF9800";
+            img = "../../ashok-images/clkk.png";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+            pendingColor = "#fff8d1";
+        }
+        if (item.Rstaus.ToUpper().Contains("SUCCESS") || item.Rstaus.StartsWith("Failed To Success"))
+        {
+
+            if (item.Operator_type == "DTH" && (item.Rstaus == "SUCCESS" || item.Rstaus.StartsWith("Failed To Success")))
+            {
+                var apinamesfound = DB1.api_name.Where(x => x.heavyRefresh != null && x.heavyRefresh == "mplan").FirstOrDefault();
+                if (apinamesfound != null)
+                {
+                    heavyrefreshbtn = "OKOK";
+                }
+
+            }
+
+            color = "green";
+            img = "../../ashok-images/correct.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+
+
+
+        }
+        if (item.Rstaus.ToUpper().Contains("RESEND"))
+        {
+            color = "#673AB7";
+            img = "../../ashok-images/undo.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.Rstaus.ToUpper().Contains("REFUND"))
+        {
+            color = "#673AB7";
+            img = "../../ashok-images/undo.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.Rstaus.ToUpper().Contains("FAILED") || item.Rstaus.StartsWith("Success To Failed"))
+        {
+            color = "red";
+            img = "../../ashok-images/closes.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;background-color:none;font-size:0px !important;";
+        }
+        if (item.rch_type.ToUpper().Contains("ONLINE"))
+        {
+            rchIcon = "../../ashok-images/seo-and-web.svg";
+        }
+        else if (item.rch_type.ToUpper().Contains("APP"))
+        {
+            rchIcon = "../../ashok-images/social-media(1).svg";
+        }
+
+        <tr style="background-color:@pendingColor">
+            <td>
+
+
+                @if (item.Rstaus.ToUpper().Contains("REFUND"))
+                {
+                    var stttt = "";
+                    string[] splitR = item.Rstaus.Split('(');
+                    var stss = splitR[0];
+
+                    var inputt = splitR[1].Replace(")", "");
+
+                    var resultID = System.Text.RegularExpressions.Regex.Match(splitR[1].Replace(")", ""), @"(.{3})\s*$");
+
+                    stttt = "**" + resultID + "Reff";
+
+
+                    <img style="@style background-color:@color;" src=@img /><span style="font-size:13px;">@stttt</span>
+                }
+                else
+                {
+                    <img style="@style background-color:@color;" src=@img /><span style="font-size:0px;">@sts</span>@item.Operator_type
+                }
+
+
+
+            </td>
+            <td>
+                @item.Mobile <br />
+                @if (!string.IsNullOrWhiteSpace(Circle))
+                {
+                    <span style="font-size:10px;">@Circleinfo</span>
+                }
+            </td>
+            <td>
+                <span class="app-web"><img src=@rchIcon /></span> @item.operator_Name <br />
+                @if (!string.IsNullOrWhiteSpace(duedate))
+                {
+                    <span style="font-size:10px;">@billdueinfo</span>
+                }
+
+            </td>
+
+
+
+            @*<td>@item.Operator_type</td>*@
+
+            <td>@item.amount</td>
+            <td>@amtdec</td>
+            <td>@item.income</td>
+            <td>@item.RemExtracomm</td>
+            <td>@item.user_remain_pre</td>
+            <td>@item.Remain</td>
+            @*<td>@item.rch_type</td>*@
+
+            @*<td>@item.OPt_id</td>*@
+            <td>@item.OPt_id</td>
+            <td>@Rch_time.ToString("d-MMM-yyyy HH:mm:ss")</td>
+            @if (item.Resp_time != null)
+            {
+                <td>@Resp_time.ToString("d-MMM-yyyy HH:mm:ss")</td>
+            }
+            else
+            {
+                <td>@item.Resp_time</td>
+            }
+        <td class="noExl noExlss noexel-newclass">
+
+            @if (heavyrefreshbtn == "OKOK")
+            {
+                <button type="button" value="HeavyRefresh" onclick="Heavyrefreshbtn('@item.operator_Name', '@item.Mobile')" style=" font-size: 11px;">DTH Refresh <li class="fa fa-refresh"> </li></button>
+            }
+
+            @if ((item.Rstaus.ToUpper() == "SUCCESS" || item.Rstaus.ToUpper() == "MANUAL SUCCESS") || item.Rstaus.ToUpper().Contains("FAILED TO SUCCESS") && item.sts == null)
+            {
+                <button class="Complaint_form" id="disp-@item.idno" type="button" style="background-color:transparent; border:none;" title="dispute" onclick="confirm('@item.idno')">
+                    <i class="material-icons">gavel</i>
+                </button>
+
+
+
+                <button id="confirm-@item.idno" class="sure-newadd" type="button" style="background-color:transparent; border:none;display:none" title="ARE YOU SURE" onclick="disputedata('@item.idno','@item.Mobile','@item.operator_Name','@item.amount')">
+                    <i class="material-icons" style="display:none;">check</i>Sure&nbsp;?
+                </button>
+
+                <div class="Complaint_box" style="">
+
+                    <style>
+
+                        .Complaint_box {
+                            position: fixed;
+                            width: 100%;
+                            top: 0;
+                            left: 0;
+                            z-index: 99999999;
+                            background: #00000069;
+                            height: 120vh;
+                            display: none;
+                            /*display: table;*/
+                        }
+
+                        .Complaint_container {
+                            width: 50%;
+                            background: white;
+                            padding: 30px;
+                            border-radius: 10px;
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                            display: table;
+                            margin: 100px auto;
+                        }
+
+                            .Complaint_container h2 {
+                                color: #e05d00;
+                                font-size: 20px;
+                                margin-bottom: 5px;
+                            }
+
+                        .subtext {
+                            font-size: 13px;
+                            color: #666;
+                            margin-bottom: 20px;
+                        }
+
+                        .highlight-box {
+                            background-color: #ffe5dc;
+                            border-left: 4px solid #e05d00;
+                            padding: 10px;
+                            margin-bottom: 20px;
+                            font-weight: bold;
+                            width: 100%;
+                            float: left;
+                        }
+
+                        .Complaint_container .form-group {
+                            display: flex;
+                            flex-wrap: wrap;
+                            margin-bottom: 15px;
+                        }
+
+                            .Complaint_container .form-group label {
+                                width: 100%;
+                                font-weight: bold;
+                                margin-bottom: 5px;
+                            }
+
+                            .Complaint_container .form-group input,
+                            .Complaint_container .form-group select,
+                            .Complaint_container .form-group textarea {
+                                width: 100%;
+                                padding: 10px;
+                                border: 1px solid #ccc;
+                                border-radius: 5px;
+                            }
+
+                            .Complaint_container .form-group select {
+                                width: 100% !important;
+                            }
+
+                        .Complaint_container .form-grid {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 20px;
+                        }
+
+                        .Complaint_container textarea {
+                            resize: vertical;
+                            height: 80px;
+                        }
+
+                        .Complaint_container .submit-btn {
+                            background-color: #e05d00;
+                            color: white;
+                            border: none;
+                            padding: 12px 30px;
+                            font-weight: bold;
+                            font-size: 14px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            margin-top: 20px;
+                            float: right;
+                        }
+
+                        @@media only screen and (max-width:767px) {
+                            .Complaint_container {
+                                width: 100%;
+                            }
+
+                                .Complaint_container .form-grid {
+                                    grid-template-columns: auto;
+                                }
+                        }
+                    </style>
+
+
+                    <div class="Complaint_container">
+                        <div>
+                            <div style=" float: left;">
+                                <h2>Bharat Connect – Raise Complaint</h2>
+                                <div class="subtext">Select service type of complaint</div>
+                            </div>
+
+                            <img style="width: 150px !important; float: right; height: 100% !important;" src="~/AdminDesign/BBPSlogo.png" />
+                        </div>
+
+                        <div class="highlight-box">Enter Details to Raise Complaint</div>
+
+                        <form id="Complaint_Form" style="float: left; width: 100%;">
+
+                            <input type="hidden" id="complaintId" name="id" value="@item.idno" />
+
+
+                            <div class="form-grid">
+
+                                <div class="form-group">
+                                    <label for="type">Category</label>
+                                    <input type="text" id="category" name="category" value="@item.Operator_type">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="mobile">Consumer / Circle	</label>
+                                    <input type="text" id="mobile" name="mobile" placeholder="Enter mobile number" value="@item.Mobile">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="type">Operator Name	</label>
+                                    <input type="text" id="operatorName" name="operatorName" value="@item.operator_Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="type">Net Amt	</label>
+                                    <input type="text" id="netAmount" name="netAmount" value="@item.amount">
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                @Html.TextArea("txtdescription", "", new { placeholder = "Enter detailed complaint..." })
+
+                            </div>
+
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px; ">
+                                <button style="float: left;" type="button" class="submit-btn complaint_CLOSE">CLOSE</button>
+                                <button type="submit" class="submit-btn">SUBMIT</button>
+                            </div>
+                        </form>
+                    </div>
+                    <script>
+                        $(".Complaint_form").click(function () {
+                            $(".Complaint_box").toggle();
+                        });
+                        $(".complaint_CLOSE").click(function () {
+                            $(".Complaint_box").toggle();
+                        });
+
+
+
+                    </script>
+
+                    <!-- ✅ jQuery & Toastr loaded first -->
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+                    <!-- ✅ Your code that uses jQuery -->
+
+
+
+
+
+
+                </div>
+
+
+
+                <button class="displaynoneadd" id="close-@item.idno" type="button" style="background-color:transparent;border:none;display:none" title="CANCEL" onclick="cancel('@item.idno')">
+                    <i class="material-icons">close</i>
+                </button>
+            }
+            else if (item.sts == "Pending")
+            {
+                <span class="resultclickafter"> @item.sts <img style="@style background-color:#FF9800;" src=@img /></span>
+            }
+            @if (item.Rstaus.ToUpper() == "SUCCESS" || item.Rstaus.ToUpper() == "MANUAL SUCCESS" || item.Rstaus.ToUpper().Contains("FAILED TO SUCCESS") || item.Rstaus.ToUpper().Contains("REQ"))
+            {
+                <center>
+                    <button id="but" onclick="GotoPDFRecharge('@item.idno')" href="#" style="border:none;background:none;" data-toggle="tooltip" data-placement="bottom" title="Click To Print Generate Invoice"><i class="material-icons">print</i></button>
+                </center>
+            }
+        </td>
+
+        </tr>
+    }
+}
+
+else
+{
+    <tr>
+        @if (@ViewBag.checkdata != null)
+        {
+            <td colspan="13"><h3 style="text-align:center;">No Data For Current Search</h3></td>
+        }
+        else
+        {
+            <td colspan="13"><h3 style="text-align:center;">Data Not Found</h3></td>
+        }
+    </tr>
+
+}
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="complaintSuccessModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style=" width: 25%; top: 35%;">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white" style="background: green; color: #fff;">
+                <h5 class="modal-title" id="successModalLabel" style="width: auto; float: left;">Success</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style=" color: #fff;" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div>
+                <div class="modal-body" style="color: #000; font-weight: 800; font-size: 28px;">
+                    Complaint submitted successfully!
+                </div>
+                <div class="modal-footer">
+                    <button style=" padding: 6px 20px;" type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #complaintSuccessModal {
+        
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    function Heavyrefreshbtn(optname,mobile) {
+        $.ajax({
+            url: '@Url.Action("HeavyRefreshurldth","Home")',
+            type: 'POST',
+            data: {optname: optname, mobileno: mobile},
+            success: function (response) {
+                if (response == "OK") {
+                    alert("Heavy Request Successfully Send")
+                }
+            }
+
+
+        })
+
+    }
+
+
+</script>

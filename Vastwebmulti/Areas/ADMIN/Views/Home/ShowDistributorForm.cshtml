@@ -1,0 +1,153 @@
+﻿@model IEnumerable<Vastwebmulti.Models.ShowDeclarationForm_Result>
+@{
+    ViewBag.Title = "ShowDistributorForm";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-6">
+                        <div style="margin-left:-13px;">
+                            @Html.Partial("Declarationform_partial")
+                        </div>
+                       
+                    </div>
+                    <div class="col-md-1">
+
+                    </div>
+                    @using (Html.BeginForm("ShowDistributorForm", "Home", FormMethod.Post))
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-bottom:0px;">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-exchange"></i>
+                                    </span>
+                                    @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <center>
+                                <button type="submit" class="btn btn-default waves-effect" style="margin-top: 4px; margin-left: -92px; height:34px;border:1px solid #dddddd;">
+                                    <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                    <span style="top:-2px;color:black;">Search</span>
+                                </button>
+                            </center>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:7px;">
+                <div class="card">
+                                       
+                    <div class="body" style="margin-top:-25px;padding:7px;">
+                        <div class="table-responsive " style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th style="text-align:center;">Sr.No</th>
+                                        <th style="text-align:center;">User&nbsp;ID</th>
+                                        <th style="text-align:center;">Status</th>
+                                        <th style="text-align:center;">Date</th>
+                                        <th style="text-align:center;">Accept</th>
+                                        <th style="text-align:center;">Reject</th>
+                                        <th style="text-align:center;">Download</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{int i = 1;}
+                                    @foreach (var item in Model)
+                                    {
+                                    <tr>
+                                        <td style="text-align:center;">@i</td>
+                                        <td style="text-align:center;">@item.Email</td>
+                                        <td style="text-align:center;">@item.Status</td>
+                                        <td style="text-align:center;">@item.Date</td>
+                                        <td style="text-align:center;padding:4px;">
+                                            @using (Html.BeginForm("ShowDistributorForm", "Home", FormMethod.Post))
+                                            {
+                                            @Html.Hidden("isaccepted", "Accepted")
+                                            @Html.Hidden("idno", item.idno)
+                                            <button type="submit" class="fa fa-check-square" style="border:none; background-color:transparent; font-size:22px; color:green;"></button>
+                                            }
+                                        </td>
+                                        <td style="text-align:center;padding:4px;">
+                                            @using (Html.BeginForm("ShowDistributorForm", "Home", FormMethod.Post))
+                                            {
+                                            @Html.Hidden("isaccepted", "Rejected")
+                                            @Html.Hidden("idno", item.idno)
+                                            <button type="submit" class="fa fa-window-close" style="border:none; background-color:transparent; font-size:22px; color:red;"></button>
+                                            }
+                                        </td>
+                                        <td style="text-align:center;padding:4px;">
+                                            <a href="#" onclick="Download_diclarationform(escape('@item.FilePath'))">
+                                                <i class="fa fa-download" style="text-decoration:none;font-size:22px; color:#009688;"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+    });
+ </script>
+<script>
+    function Download_diclarationform(path)
+    {
+        //alert(unescape(path));
+        var url = '@Url.Action("Download_Declaration_form", "Home")?path=' + path + '';
+       // alert(url);
+        window.open(url,'_blank');
+    }
+</script>
+
+

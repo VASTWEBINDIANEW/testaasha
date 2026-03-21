@@ -1,0 +1,173 @@
+﻿@using Vastwebmulti.Models
+@model IEnumerable<Vastwebmulti.Models.appimei>
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    ViewBag.Title = "appimei";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div>
+        @{
+            var chk = db.totalimeinoes.ToList();
+        }
+        <table class="table">
+            <tr>
+                <th>Limit of IMEI No.</th>
+                <th>#</th>
+            </tr>
+            <tr id="hiddem">
+
+                @if (chk.Count != 0)
+                {
+                    <td>
+                        @chk[0].Imeitotal
+                    </td>
+                    <td>
+                        <button onclick="hidsss()">Edit</button>
+                    </td>
+                }
+
+            </tr>
+            <script>
+                function hidsss() {
+                    document.getElementById('shown').style.display = 'contents';
+                    document.getElementById('hiddem').style.display = 'none';
+                }
+            </script>
+            <tr id="shown" style="display:none">
+
+                @if (chk.Count != 0)
+                {
+                    using (Html.BeginForm("saveimeinos", "Home"))
+                    {
+                    <td>
+                  <input type="text" name="imeilimit" value="@chk[0].Imeitotal"/>
+                    </td>
+                    <td>
+                     <input type="submit"  value="Save"/>
+                    </td>
+                   }
+                }
+
+            </tr>
+        </table>
+    </div>
+    <div>
+        @{
+            var chkd = db.Retailer_Details.ToList();
+        }
+        @using (Html.BeginForm())
+        {
+            <select name="ids">
+                <option value="">ALL</option>
+                @foreach (var i in chkd)
+                {
+                    <option value="@i.RetailerId">@i.Frm_Name</option>
+                }
+            </select>
+            <input type="submit" value="submit" />
+        }
+    </div>
+    <table class="table">
+        <tr>
+            <th>USER</th>
+            <th>Imei No</th>
+            <th>#</th>
+
+        </tr>
+        @{
+            var k = 0;
+        }
+        @foreach (var i in Model)
+        {
+            <tr>
+                <td>
+                    @{
+                        var chk11 = db.Retailer_Details.Where(s => s.RetailerId == i.Retailerid).SingleOrDefault();
+
+                    }
+                    @chk11.Frm_Name
+                </td>
+                <td class="websss">
+                   @i.IMEI
+                </td>
+                <td class="appsss">
+<button data-toggle="modal" data-target="#exampleModal" onclick="deleteomr('@i.Retailerid', @i.idno)">Delete</button>
+                </td>
+
+
+            </tr>
+            k++;
+        }
+
+    </table>
+
+   
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enter OTP</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="number" id="tops" placeholder="Enter OTP" />
+
+                </div>
+                <div style="color:red" id="tstsmessage">
+                    Otp Sent Successfully..........!
+                </div>
+                <div class="modal-footer" id="chkdss">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function deleteomr(id, ids) {
+
+       
+
+
+        $.ajax({
+            url: "@Url.Action("otpsentforstsimei", "Home")",
+         success: function (data) {
+
+            }
+        });
+        document.getElementById('chkdss').innerHTML = "";
+        document.getElementById('chkdss').innerHTML = '<button onclick="changesetting11(\'' + id + '\',' + ids+')" type="button" id="savebutton" class="btn btn-primary">Save changes</button>'
+    }
+
+    function changesetting11(id, ids) {
+        var chjs = document.getElementById('tops').value;
+
+        if (chjs.length == 4) {
+           
+                $.ajax({
+                    url: "@Url.Action("deleteimeis", "Home")",
+                    data: { userid: id, idno:ids , otp: chjs },
+                    success: function (data) {
+                        if (data.status1 == true) {
+                            location.reload();
+                        }
+                        else {
+                            document.getElementById('tstsmessage').innerHTML = 'OTP Not Matched....!'
+                        }
+                    }
+                });
+          
+        }
+        else {
+            document.getElementById('tstsmessage').innerHTML = 'otp is in 4 digit'
+        }
+}
+
+</script>

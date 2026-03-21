@@ -1,0 +1,94 @@
+﻿@{ 
+
+
+    var types = Convert.ToString(ViewData["chksertype"]);
+    var type = "";
+    var showclass = "text-align:center;display:block;";
+    var Notshowclass = "text-align:center;display:none;";
+
+}
+
+<div>
+    <div id="firstpur" class="col-md-12 remitter_button" @{type=types == "NOTDONE" ? showclass : Notshowclass;} style=@type>
+        <img src="~/ashok-images/forbidden.svg" style="width: 90px;display: block;margin: 0px auto;" />
+        <span class="bodycolormy" style="margin-top: 20px;margin-bottom: 20px;font-size: 26px;">DMT Service Expired !</span>
+        <p style="margin-bottom: 20px;">Your service is currently down, if you want to keep the service running smoothly, you will have to pay the service fee, which you see below and you can purchase the service by clicking the button.</p>
+        <button class="btn btn-default fullbodydycolorbg " onclick="PurchaseDMT('DMT')" style="color: #fff;">Purchase DMT</button>
+    </div>
+    <div id="firstpurALLservice" class="col-md-12 remitter_button" @{type=types == "ALLNOTDONE" ? showclass : Notshowclass;} style=@type>
+        <img src="~/ashok-images/forbidden.svg" style="width: 90px;display: block;margin: 0px auto;" />
+        <span class="bodycolormy" style="margin-top: 20px;margin-bottom: 20px;font-size: 26px;">DMT Service Expired !</span>
+        <p style="margin-bottom: 20px;">Your service is currently down, if you want to keep the service running smoothly, you will have to pay the service fee, which you see below and you can purchase the service by clicking the button.</p>
+        <button class="btn btn-default fullbodydycolorbg " onclick="PurchaseDMT('ALL')" style="color: #fff;">Purchase ALL</button>
+    </div>
+    <div id="firstpurBOTHservice" class="col-md-12 remitter_button" @{type=types == "BOTHNOTDONE" ? @showclass : Notshowclass;} style=@type>
+        <img src="~/ashok-images/forbidden.svg" style="width: 90px;display: block;margin: 0px auto;" />
+        <span class="bodycolormy" style="margin-top: 20px;margin-bottom: 20px;font-size: 26px;">DMT Service Expired !</span>
+        <p style="margin-bottom: 20px;">Your service is currently down, if you want to keep the service running smoothly, you will have to pay the service fee, which you see below and you can purchase the service by clicking the button.</p>
+        <button class="btn btn-default fullbodydycolorbg " onclick="PurchaseDMT('DMT')" style="color: #fff;">DMT Purchase</button>
+        <button class="btn btn-default fullbodydycolorbg " onclick="PurchaseDMT('ALL')" style="color: #fff;">ALL Purchase</button>
+    </div>
+  
+    <input type="hidden" id="HDServicesname" name="HDServicesname" value="" />
+    <div id="secpur" class="col-md-12 remitter_button remitter_buttonewq" style="display: none;text-align: center;">
+        <span style="font-size: 24px;border-bottom: 1px solid #ccc;margin-top: 15px;padding-bottom: 10px;margin-bottom: 10px;">Payment Details</span>
+        <div class="lavbrd">
+            <label>Mode</label>
+            <label class="rightlable" id="PaymentType"></label>
+        </div>
+        <div class="lavbrd">
+            <label>Amount</label>
+            <label class="rightlable" id="Price"></label>
+        </div>
+        <div class="coldebuttonnew">
+            <button class="bacbuttonrrt" onclick="DMT()">Back</button>
+            <button class="btn btn-default fullbodydycolorbg" onclick="FinalPurchaseDMT()" style="color: #fff;">Pay Now</button>
+        </div>
+        <label id="errmsg" style="color:red;"></label>
+    </div>
+
+</div>
+<div class="loader loaderpancard"></div>
+<script>
+    function PurchaseDMT(e) {
+        $('#HDServicesname').val('');
+        $.ajax({
+            url: '@Url.Action("ServiceCharge","Home")',
+            data: { Service: e },
+            cache: false,
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#PaymentType').html(data.PaymentType);
+                $('#Price').html(data.Price);
+                $('#firstpur').hide();
+                $('#firstpurALLservice').hide();
+                $('#firstpurBOTHservice').hide();
+                $('#secpur').show();
+                $('#HDServicesname').val(e);
+            }
+        });
+    }
+    function FinalPurchaseDMT() {
+         $.ajax({
+            url: '@Url.Action("ServicePurchase","Home")',
+             data: { Service: $('#HDServicesname').val()  },
+            cache: false,
+            type: "POST",
+             dataType: 'json',
+            beforeSend: function() {
+                      $('.loader').show();
+                     },
+             success: function (data) {
+                 $('.loader').hide();
+                 if (data.Status == "Success") {
+                   window.location = '@Url.Action("Money_transfer2", "Home")'
+                 }
+                 else {
+                            $('#errmsg').text(data.Message);
+                 }
+
+            }
+        });
+    }
+</script>

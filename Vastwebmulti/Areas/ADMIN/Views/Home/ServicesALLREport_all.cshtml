@@ -1,0 +1,71 @@
+﻿@model Vastwebmulti.Models.ServiceReport
+@using Vastwebmulti.Models;
+<div id="divEd">
+    <div style=" overflow-x: scroll; width: 100%; margin-top: 5px; float: left;">
+        <table class="table">
+            <tr>
+                @foreach (var i in Model.s11)
+                {
+                    <th>@i.header</th>
+                }
+
+            </tr>
+            <div id="relde">
+                @{
+
+                    VastwebmultiEntities db = new VastwebmultiEntities();
+                    var coo = Convert.ToInt32(Session["coo"]);
+                    var coo1 = Convert.ToInt32(Session["coo1"]);
+                    var coo2 = Convert.ToString(Session["coo2"]);
+                    var DATE = DateTime.Now.Date;
+
+
+                    var check = db.SERVICES_DATA_INFO.Where(s=>s.SERVICESNAME == coo2).ToList();
+                    var checks1 = db.SERVICECOLUMNs.Where(s=>s.SERVICESNAME == coo2).ToList();
+                    if (ViewBag.entry == null)
+                    {
+                        var dater = Convert.ToDateTime(DATE.ToString("yyyy-MM-dd"));
+                        check = db.SERVICES_DATA_INFO.Where(s => s.date >= dater).ToList();
+                    }
+
+                    else
+                    {
+                        check = ViewBag.entry;
+                    }       
+                           
+
+                }
+            </div>
+            @{int z = 0;}
+
+            @if (check.Count != 0)
+            {
+                while (z < coo1)
+                {
+                    <tr>
+                        @for (int j = 0; j < coo; j++)
+                        {
+                            if (check[z + j].header == checks1[j].header)
+                            {
+
+                                <td>@check[z + j].INFO</td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        }
+
+                    </tr>
+                    z += coo;
+
+                }
+            }
+                
+
+
+
+
+        </table>
+    </div>
+</div>

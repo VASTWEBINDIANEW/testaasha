@@ -1,0 +1,127 @@
+﻿@model List<Vastwebmulti.Models.proc_FlightReport_Result>
+@{
+    Layout = null;
+}
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        #region CssSettings
+        var color = "";
+        var fontweight = "";
+        var text = "";
+        var emailid = "";
+        var Retailername = "";
+        var framname = "";
+        var mobile = "";
+        var rolename = "";
+        var icon = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var sts = "";
+        var refundcolor = "";
+     
+
+        sts = ((Vastwebmulti.Areas.RETAILER.Enums.TicketStatus)Convert.ToInt32(item.TicketStatusCode)).ToString();
+
+        if (item.TicketStatusCode == 0 || item.TicketStatusCode == 3 || item.TicketStatusCode == 4 || item.TicketStatusCode == 6 || item.TicketStatusCode == 8 || item.TicketStatusCode == 9)
+        {
+            color = "red";
+            fontweight = "700";
+        }
+        if (item.TicketStatusCode == 5 || item.TicketStatusCode == 1)
+        {
+            color = "green";
+            fontweight = "700";
+        }
+        if (item.TicketStatusCode == 2)
+        {
+            color = "#ff9600";
+            fontweight = "700";
+        }
+        #endregion
+        if (item.TicketStatus.Contains("Pending"))
+        {
+            color = "#ff9600";
+            sts = "Pending";
+            icon = "../../ashok-images/clock.svg";
+        }
+        if (item.TicketStatus.Contains("Success"))
+        {
+            color = "green";
+            sts = "Success";
+            icon = "../../ashok-images/correct.svg";
+        }
+        if (item.TicketStatus.Contains("FAILED"))
+        {
+            color = "red";
+
+            icon = "../../ashok-images/closes.svg";
+        }
+        if (item.TicketStatus.Contains("Refund"))
+        {
+            color = "#9C27B0";
+            sts = "Refund";
+            icon = "../../ashok-images/closes.svg";
+
+        }
+    <tr style="color: black;font-size: 12px;text-transform: capitalize;">
+        <td>
+            <p>
+
+                <img style="height: 18px;width: 18px;margin:5px;max-width: 100%;padding: 0; border-radius:50%; background-color:@color" src="@icon" />
+                @item.Frm_Name
+            </p>
+        </td>
+        <td><p>@sts&nbsp;</p></td>
+
+
+
+        <td>
+            <p>&nbsp;@item.LeadPaxFirstName @item.LeadPaxLastName&nbsp;</p>
+        </td>
+        <td>@item.AirlineName</td>
+        <td>@item.BookingId</td>
+        <td>@item.PNR</td>
+        <td>
+
+            @{
+                int adult = 0;
+                int child = 0;
+                int infant = 0;
+                int total_pass = 0;
+
+                adult = Convert.ToInt32(item.totaladultticket);
+                child = Convert.ToInt32(item.Totalchildticket);
+                infant = Convert.ToInt32(item.TotalInfantticket);
+                total_pass = (adult + child + infant);
+
+
+            }
+          @total_pass
+
+        </td>
+
+        <td>@item.OfferedFare</td>
+        <td>@Math.Round(item.RemInc, 2)</td>
+        <td>@Math.Round(item.MdPre, 2)</td>
+        <td>@Math.Round(item.MdInc, 2)</td>
+        <td>@Math.Round(item.MdPost, 2)</td>
+        <td>@Math.Round(item.DlmInc, 2)</td>
+        <td><p>@String.Format("{0:dd-MMM HH:mm:ss}", item.TicketDate)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+
+
+    </tr>
+    }
+}
+
+
+
+<script>
+    $(document).ready(function () {
+        $('.second-design-master .example-second').DataTable({
+            paging: false
+        });
+    });
+
+</script>

@@ -1,0 +1,460 @@
+﻿@model List<Vastwebmulti.Models.money_transfer_report_paging_Result>
+@{
+    Layout = null;
+}
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        
+        var i = item.idno;
+        var idno = "subTbl";
+        idno = idno + i;
+
+        var idno1 = "subTbl1";
+        idno1 = idno1 + i;
+
+        var idshow = "subTblshow";
+        idshow = idshow + i;
+
+        var idhide = "subTblhide";
+        idhide = idhide + i;
+
+        var idshowEdit = "subTblshowEdit";
+        idshowEdit = idshowEdit + i;
+
+        var idhideEdit = "subTblhideEdit";
+        idhideEdit = idhideEdit + i;
+
+
+        var color = "";
+        var clr = "";
+        var fontweight = "";
+        var text = "";
+        var emailid = "";
+        var Retailername = "";
+        var framname = "";
+        var mobile = "";
+        var rolename = "";
+        var icon = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var sts = "";
+        var refundcolor = "";
+        var dmtytpe = "";
+        var pendingColor = "";
+
+        if (item.Roles == "Retailer")
+        {
+            emailid = item.email;
+            Retailername = item.retailername;
+            mobile = item.Mobile;
+            framname = item.frm_name;
+            rolename = "Retailer";
+
+        }
+        if (item.Roles == "Whitelabelretailer")
+        {
+            emailid = item.email;
+            Retailername = item.retailername;
+            framname = item.frm_name;
+            mobile = item.Mobile;
+            rolename = "Whitelabel";
+
+        }
+        if (item.Roles == "API")
+        {
+            emailid = item.email;
+            Retailername = item.retailername;
+            mobile = item.Mobile;
+            framname = item.frm_name;
+            rolename = "API USER";
+
+        }
+
+        if (item.status.Contains("Success To Failed"))
+        {
+            clr = "red";
+            sts = "Success To Failed";
+            fontweight = "700";
+            icon = "../../ashok-images/closes.svg";
+
+        }
+
+        if (item.status.Contains("Failed To Success"))
+        {
+            clr = "green";
+            sts = "Failed To Success";
+            item.status.Substring(17);
+            fontweight = "700";
+            icon = "../../ashok-images/correct.svg";
+
+        }
+        if (item.status.Contains("SUCCESS"))
+        {
+            clr = "green";
+            fontweight = "700";
+            sts = item.status;
+            icon = "../../ashok-images/correct.svg";
+
+        }
+        if (item.status.Contains("REFUND AGAINST"))
+        {
+            clr = "#070a1bde";
+            fontweight = "700";
+            sts = "REFUND";
+            refundcolor = "#070a1bde";
+            icon = "../../ashok-images/backresnd.svg";
+        }
+        if (item.status.Contains("Pending"))
+        {
+            double difftime = DateTime.Now.Subtract(item.trans_time.Value).TotalMinutes;
+            if (difftime < 2)
+            {
+                pendingColor = "#ffbf00";
+            }
+            else
+            {
+                pendingColor = "#fff8d1";
+            }
+            color = "#ff9600";
+            fontweight = "700";
+            sts = item.status;
+            //icon = "../../ashok-images/clock.svg";
+
+        }
+        if (item.status.Contains("FAILED"))
+        {
+            clr = "red";
+            fontweight = "700";
+            sts = item.status;
+            icon = "../../ashok-images/closes.svg";
+        }
+        if (item.status.Contains("Resend"))
+        {
+            clr = "#2196F3";
+            fontweight = "700";
+            sts = item.status;
+            icon = "../../ashok-images/clkk.png";
+        }
+        if (item.trans_from == "ONLINE")
+        {
+            rchtype = "WEB";
+            rchtypeicon = "fa fa-dribbble";
+        }
+        if (item.trans_from == "API")
+        {
+            rchtype = "WEB";
+            rchtypeicon = "fa fa-dribbble";
+        }
+        if (item.trans_from.StartsWith("App"))
+        {
+            rchtype = "APP";
+            rchtypeicon = "fa fa-android";
+        }
+        if (item.DmtType == "DMT1")
+        {
+            dmtytpe = "➊";
+        }
+        if (item.DmtType == "DMT2")
+        {
+            dmtytpe = "➋";
+        }
+        <tr style="background-color:@pendingColor">
+
+            <td>
+                <p>
+                    @if (sts.ToUpper() != "PENDING")
+                    {
+                        <img style="height: 20px;width: 18px;margin-right:5px;max-width: 100%;padding: 0; border-radius:50%; background-color:@clr" src="@icon" />
+                    }
+                    @if (sts.ToUpper() == "PENDING")
+                    {
+                        <i style="color:antiquewhite;">
+                            @if (item.DmtType == "DMT2" && item.status.ToUpper().Contains("PENDING") && (item.Trans_type == "IMPS" || item.Trans_type == "NEFT"))
+                            {
+
+                                <button id="but" class="view" onclick="GotoView('@item.idno')" href="#" style="margin-left: 8px; background: none;border: none;height: 18px;width: 18px;margin-right: 5px;max-width: 100%;padding: 0;border-radius: 50%;background-color: #ff96009e;" data-toggle="tooltip" data-placement="bottom" title="View Status">
+                                    <i class="fa fa-eye" style="color:white;"></i>
+                                </button>
+
+                            }
+                            else if (item.DmtType == "DMT1" && item.status.ToUpper().Contains("PENDING") && (item.Trans_type == "IMPS" || item.Trans_type == "NEFT"))
+                            {
+                                <button id="but" class="view" onclick="GotoViewDMT1('@item.idno')" href="#" style="margin-left: 8px; background: none;border: none;height: 18px;width: 18px;margin-right: 5px;max-width: 100%;padding: 0;border-radius: 50%;background-color: #ff96009e;" data-toggle="tooltip" data-placement="bottom" title="View Status">
+                                    <i class="fa fa-eye" style="color:white;"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="view" href="#" style="margin-left: 8px; background: none;border: none;height: 18px;width: 18px;margin-right: 5px;max-width: 100%;padding: 0;border-radius: 50%;background-color: #ff96009e;" data-toggle="tooltip" data-placement="bottom" title="View Status">
+                                    <i class="fa fa-eye" style="color:white;"></i>
+                                </button>
+                            }
+                        </i>
+                    }
+                    <span>@rolename&nbsp;>&nbsp;@framname</span>
+                </p>
+            </td>
+            <td>@item.api_name </td>
+          
+            <td style="width:8%">
+                <p>
+                <p>
+                    <i class="@rchtypeicon" style=" margin-right:6px;"></i>
+                </p>
+                <p>
+                    @if (item.Trans_type == "IMPS")
+                    {
+                        if (item.status == "Pending" || item.status == "FAILED" || item.status == "SUCCESS" || item.response_output == "Manual SUCCESS")
+                        {
+                        <p>IMPS/</p>
+                    }
+                }
+                else if (item.Trans_type == "NEFT")
+                {
+                    if (item.status == "Pending" || item.status == "FAILED" || item.status == "SUCCESS" || item.response_output == "Manual SUCCESS")
+                    {
+                        <p>NEFT/</p>
+                    }
+                }
+                else if (item.Trans_type == "WALLET")
+                {
+                    if (item.status == "Pending" || item.status == "FAILED" || item.status == "SUCCESS" || item.response_output == "Manual SUCCESS")
+                    {
+                        <p>WALLET/</p>
+                    }
+                }
+                else if (item.Trans_type == "UPI")
+                {
+                    if (item.status == "Pending" || item.status == "FAILED" || item.status == "SUCCESS" || item.response_output == "Manual SUCCESS")
+                    {
+                        <p>UPI</p>
+                    }
+                }
+                else if (item.Trans_type == "Credit Card")
+                {
+                    if (item.status == "Pending" || item.status == "FAILED" || item.status == "SUCCESS" || item.response_output == "Manual SUCCESS")
+                    {
+                        <p>Credit Card</p>
+                    }
+
+                }
+                else
+                {
+                    if (item.status == "Pending" || item.status == "FAILED" || item.status == "SUCCESS" || item.response_output == "Manual SUCCESS")
+                    {
+                        <p>Verify/</p>
+                    }
+                }
+                    @if (item.DmtType == "DMT2" && item.Trans_type == "EKYC CHARGE")
+                    {
+                        <p>PAYOUT E-KYC</p>
+                    }
+                    else if (item.DmtType == "DMTN" && item.Trans_type == "EKYC CHARGE")
+                    {
+                        <p>DMT E-KYC</p>
+                    }
+                    else if (item.DmtType == "DMT2" && item.Trans_type == "EKYC PPI CHARGE")
+                    {
+                        <p>PPI E-KYC</p>
+                    }
+                    else if (item.DmtType == "DMTN")
+                    {
+                        <p>DMT</p>
+                    }
+                    else if ((item.DmtType == "DMT2" && (item.Trans_type.ToUpper() == "IMPS" || item.Trans_type.ToUpper() == "NEFT")) || (item.Trans_type == "VASTWEB"))
+                    {
+                        <p>PAYOUT</p>
+                    }
+                    else if (item.DmtType == "DMTPPI")
+                    {
+                        <p>PPI</p>
+                    }
+                    <input type="text" value="@item.trans_id" readonly style="border-color:transparent;background-color:transparent;" />
+
+                </td>
+                <td>
+                    <p>&nbsp;@item.senderno&nbsp;</p>
+                </td>
+                <td>
+                    <p>@item.accountno</p>
+                </td>
+                <td>
+                    <p>@item.amount</p>
+                </td>
+                @{
+                    decimal debit1 = 0;
+                    decimal amount1 = 0;
+                    decimal usercomm = 0;
+                    if (item.Roles == "Retailer")
+                    {
+                        if (item.Trans_type.Contains("IMPS_VERIFY"))
+                        {
+                            debit1 = Convert.ToDecimal(item.rem_comm);
+                        }
+                        else
+                        {
+                            amount1 = Convert.ToDecimal(item.amount);
+                            usercomm = Convert.ToDecimal(item.rem_comm);
+                            debit1 = amount1 + usercomm;
+                        }
+                    }
+                    if (item.Roles == "API")
+                    {
+                        if (item.Trans_type.Contains("IMPS_VERIFY"))
+                        {
+                            debit1 = Convert.ToDecimal(item.rem_comm);
+                        }
+                        else
+                        {
+                            amount1 = Convert.ToDecimal(item.amount);
+                            usercomm = Convert.ToDecimal(item.rem_comm);
+                            debit1 = amount1 + usercomm;
+                        }
+                    }
+                    if (item.Roles == "Whitelabelretailer")
+                    {
+                        if (item.Trans_type.Contains("IMPS_VERIFY"))
+                        {
+                            debit1 = Convert.ToDecimal(item.whitelabel_comm);
+                        }
+                        else
+                        {
+                            amount1 = Convert.ToDecimal(item.amount);
+                            usercomm = Convert.ToDecimal(item.whitelabel_comm);
+                            debit1 = amount1 + usercomm;
+                        }
+                    }
+                }
+                <td><p>@item.user_remain_pre</p></td>
+                <td> <p>@debit1</p></td>
+                <td><p>@item.user_remain</p></td>
+                <td><p>@item.Api_remain_post</p></td>
+                <td><p>@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)&nbsp;&nbsp;<span></span></p></td>
+                <td>
+                    @if (item.status.ToUpper().Contains("REFUND AGAINST") == false || item.status.ToUpper().Contains("RESEND"))
+                    {
+                        <p id="@idshowEdit">@item.bank_trans_id</p>
+                        <span class="pen">
+                            <button class="edit" id="@idno" onclick="Edit_OPT(@i)" style="float:right; background:transparent;border:none;" title="Edit">
+                                <i class="fa fa-pencil" style="font-size:15px;" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                        <div style="display:none; font-size:10px;" id="@idhideEdit" class="input-container mmks">
+
+                            <input type="text" id="@idno1" name="optid" class="input-field" required value="@item.bank_trans_id">
+                            <button class="input-button fullbodydycolorbg" id="btnidno" onclick="UpdateOptId(@item.idno)" value="@item.idno"><span class="fa fa-check" style="color:#c7c2c2;"></span></button>
+                        </div>
+                    }
+                </td>
+                @{
+                    var idncr = "nrch";
+                    var idncr1 = item.idno;
+                    var chkkkk = idncr + idncr1;
+                }
+                <td>
+                    <div class="nrch" id="@chkkkk">
+                        @if (item.status.ToUpper() == "PENDING")
+                        {
+                            <div class="ctti" style="margin-bottom:0px;">
+                                @*<button id="@idshow" class="ss" data-toggle="tooltip" onclick="btn_showhide(@i)" style="display:block;border:none;color:black; background:transparent;" title="Success"><i class="fa fa-check" style="top:1px;border: 1px solid #c7c2c2;padding: 3px;font-size: 10px;"></i></button>
+                                <button id="@idhide" class="ss" data-toggle="tooltip" onclick="success('@item.trans_id','@item.bank_trans_id','@item.recivername','@item.status')" style="display:none; border:none;color:black; background:transparent;" title="Are you sure ?"><i class="fa fa-question-circle-o" style="top:1px;border: 1px solid #c7c2c2;padding: 3px;font-size: 10px;"></i></button>
+                                *@
+                                <button class="ss"
+                                        style="border:none;color:black;background:transparent;"
+                                        title="Success"
+                                        onclick="openSuccessModal('@item.trans_id',
+                                      '@item.bank_trans_id',
+                                      '@item.recivername',
+                                      '@item.status')">
+                                    <i class="fa fa-check" style="border:1px solid #c7c2c2;padding:3px;font-size:10px;"></i>
+                                </button>
+                            
+                            </div>
+                            <div class="ctti" style="margin-bottom:0px;">
+
+                                <button id="fff" type="button" class="fftr" style="background-color:transparent; color:black;border:none;margin-top:0px;" data-toggle="modal" title="Refund" data-toggle="modal" data-target="#defaultModal1" onclick="refundshow('@item.idno','@item.trans_id','@item.bank_trans_id','@item.recivername','@item.status')">
+                                    <i class="fa fa-times" style="top:1px;border: 1px solid #c7c2c2;padding: 3px 4px;font-size: 10px;"></i>
+                                </button>
+                            </div>
+                            if (item.DmtType == "DMT2")
+                            {
+                                <div class="ctti" style="margin-bottom:0px;">
+                                    @{
+                                        var jj = "rrr";
+                                        var kk = item.idno;
+                                        var mkmk = jj + kk;
+                                        if ((item.Trans_type == "IMPS" && item.DmtType == "DMT2") || (item.Trans_type == "NEFT" && item.DmtType == "DMT2"))
+                                        {
+                                            <button id="@mkmk" type="button" class="ff" style="background-color:transparent; color:@color;border:none;margin-top:0px;" data-toggle="modal" title="Resend" onclick="resendchk11(@item.idno)">
+                                                <i class="fa fa-registered" style="top:1px;border: 1px solid #c7c2c2;padding: 3px 4px;font-size: 10px;"></i>
+                                            </button>
+                                        }
+                                    }
+
+                                </div>
+                            }
+                            <span class="fftt" data-toggle="modal" data-target="#defaultModal222" onclick="mdActionBtn('@item.idno')"> <img src="~/ashok-images/rightaeps.svg" style="border: 1px solid #c7c2c2;padding: 3px 5px;font-size: 10px;"> </span>
+
+                        }
+                        @if (item.status.ToUpper() == "SUCCESS" && (item.uniqueid == null || !item.uniqueid.StartsWith("MANUAL")))
+                        {
+                            <div class="ctti" style="margin-bottom:0px;">
+
+                                <button disabled class="ss" data-toggle="tooltip" onclick="success('@item.trans_id','@item.bank_trans_id','@item.recivername','@item.status')" style="border:none;color:black; background:transparent; " title="Success"><i class="fa fa-check" style="top:1px;border: 1px solid #c7c2c2;padding: 3px;font-size: 10px;"></i></button>
+
+                            </div>
+                            <div class="ctti" style="margin-bottom:0px;">
+
+                                <button type="button" class="fftr" style="background-color:transparent; color:black;border:none;margin-top:0px;" data-toggle="modal" title="Refund" data-toggle="modal" data-target="#defaultModal1" onclick="refundshow('@item.idno','@item.trans_id','@item.bank_trans_id','@item.recivername','@item.status')">
+                                    <i class="fa fa-times" style="top:1px;border: 1px solid #c7c2c2;padding: 3px 4px;font-size: 10px;"></i>
+                                </button>
+                            </div>
+                            <span class="fftt" data-toggle="modal" data-target="#defaultModal222" onclick="mdActionBtn('@item.idno')"> <img src="~/ashok-images/rightaeps.svg" style="border: 1px solid #c7c2c2;padding: 3px 5px;font-size: 10px;"> </span>
+
+                        }
+                        @if (item.status.ToUpper() == "FAILED" && (item.uniqueid == null || !item.uniqueid.StartsWith("MANUAL")))
+                        {
+                            <div class="ctti" style="margin-bottom:0px;">
+                                <button id="@idshow" class="ss" data-toggle="tooltip" onclick="btn_showhide(@i)" style="border:none;color:black; background:transparent; " title="Success"><i class="fa fa-check" style="top:1px;border: 1px solid #c7c2c2;padding: 3px;font-size: 10px;"></i></button>
+                                <button id="@idhide" class="ss" data-toggle="tooltip" onclick="success('@item.trans_id','@item.bank_trans_id','@item.recivername','@item.status')" style="display:none; font-size:31px;border:none;color:black; background:transparent; margin-top:-18px;" title="Are you sure ?"><i class="fa fa-question-circle-o" style="top:1px;border: 1px solid #c7c2c2;padding: 3px;font-size: 10px;"></i></button>
+                            </div>
+                            <div class="ctti" style="margin-bottom:0px;">
+
+
+                                <button id="fff" disabled type="button" class="fftr" style="background-color:transparent; color:black;border:none;" data-toggle="modal" title="Refund" data-toggle="modal" data-target="#defaultModal1" onclick="refundshow('@item.idno','@item.trans_id','@item.bank_trans_id','@item.recivername','@item.status')">
+                                    <i class="fa fa-times" style="top:1px;border: 1px solid #c7c2c2;padding: 3px 4px;font-size: 10px;"></i>
+                                </button>
+                            </div>
+                            <span class="fftt" data-toggle="modal" data-target="#defaultModal222" onclick="mdActionBtn('@item.idno')"> <img src="~/ashok-images/rightaeps.svg" style="border: 1px solid #c7c2c2;padding: 3px 5px;font-size: 10px;"> </span>
+                        }
+                    </div>
+                    @{
+                        var idncr111 = "nrchsuccess";
+                        var idncr11 = item.idno;
+                        var chkkkk1 = idncr111 + idncr11;
+                    }
+                    <p class="nrchsuccess" id="@chkkkk1" style="display:none;text-align:center;background: green;width: 100%;padding: 5px;">
+                        <button onclick="resend('@item.idno')" style="color: white; font-weight: 800;font-size: 11px; background-color:transparent;border:0px;">
+                            I'M SURE > Resend
+                        </button>
+                    </p>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            @if (@ViewBag.checkdata != null)
+            {
+                <td colspan="13"><h3 style="text-align:center;">No Data For Current Search</h3></td>
+            }
+            else
+            {
+                <td colspan="13"><h3 style="text-align:center;">Data Not Found</h3></td>
+            }
+        </tr>
+
+    }

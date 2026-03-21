@@ -1,0 +1,783 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Models.RegisterViewModel
+@{
+    Layout = null;
+}
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var ccc = db.tblContects.ToList();
+    var companyname = ccc.Count == 0 ? "" : ccc.SingleOrDefault().CompnayName;
+    var loginimage = db.tblLoginContents.ToList();
+    if (loginimage.Count > 0)
+    {
+        ViewBag.loginimage = loginimage.FirstOrDefault().Image;
+    }
+    else
+    {
+        ViewBag.loginimage = "Login_Images/login22.png";
+    }
+
+    var image1 = "";
+    var fullpath = "";
+    var size = "";
+    var repeat = "";
+    var height = "";
+    var backgroundImage = "";
+    var image = db.tblWhiteLabelLoginBackImages.Where(p => p.Role == "ADMIN").ToList();
+    if (image.Count > 0)
+    {
+        //if (image.SingleOrDefault(a=>a.UsedFor=="Repeat" && a.StatusCheck == "Y").otherimage == null)
+        if (image.Where(a => a.UsedFor == "Repeat" && a.StatusCheck == "Y").SingleOrDefault() != null)
+        {
+            //image1 = image.SingleOrDefault().ImageUrl;
+            //fullpath = "../FooterImages/" + image1;
+            image1 = image.SingleOrDefault(a => a.UsedFor == "Repeat").otherimage;
+            var ddd = image1.Replace(@"\", "/");
+            fullpath = ".." + ddd;
+
+        }
+        else if (image.Where(a => a.UsedFor == "Single" && a.StatusCheck == "Y").SingleOrDefault() != null)
+        {
+            image1 = image.SingleOrDefault(a => a.UsedFor == "Single").otherimage;
+            var ddd = image1.Replace(@"\", "/");
+            fullpath = ".." + ddd;
+
+            size = "cover";
+            repeat = "no-repeat";
+            height = "100vh";
+        }
+        else
+        {
+            backgroundImage = "linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important";
+        }
+    }
+    else
+    {
+        image1 = "img32.png";
+        fullpath = "../FooterImages/" + image1;
+        backgroundImage = "linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important";
+    }
+    var admindetail = db.Admin_details.ToList();
+    var mailid = admindetail.SingleOrDefault().email;
+    var mobile = admindetail.SingleOrDefault().mobile;
+    var background = fullpath;
+    var Firm_Name = admindetail.SingleOrDefault().Companyname;
+    //ViewBag.image = image.Count == 0 ? "" : image.SingleOrDefault().ImageUrl;
+
+    //string RDate = admindetail.FirstOrDefault().Date.ToString();
+    //string[] gg = RDate.Split('-');
+    //var RYear = gg[2].Split(' ')[0].ToString();
+    /*************************************************************/
+
+    var col = db.changecolors.ToList();
+    var color = "";
+    if (col.Count > 0)
+    {
+        color = col.SingleOrDefault(p => p.Role == "ADMIN").adminandouterheadercolor;
+    }
+    else
+    {
+        color = "Gray";
+    }
+    //var color = col.Count == 0 ? "" : col.SingleOrDefault(p => p.Role == "ADMIN").adminandouterheadercolor;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@companyname</title>
+    <!-- Meta tag Keywords -->
+    @{
+        var favimage = "";
+        VastwebmultiEntities db2 = new VastwebmultiEntities();
+        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+
+            }
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+    }
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Classic Forms Responsive Widget,Login form widgets, Sign up Web forms , Login signup Responsive web form,Flat Pricing table,Flat Drop downs,Registration Forms,News letter Forms,Elements" />
+    <script type="application/x-javascript">
+         addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+        function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- Meta tag Keywords -->
+    <!-- css files -->
+    <link href="~/NewLoginDesign/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/NewLoginDesign/css/style.css" rel="stylesheet" />
+    @*<link href="~/CSS/aaaaa.css" rel="stylesheet" />*@
+    <link href="~/NewLoginDesign/css/bootstrap-responsive.min.css" rel="stylesheet" />
+
+    <!-- Font-Awesome-Icons-CSS -->
+    <!-- //css files -->
+    <!-- Web-Fonts -->
+    <link href="~/NewLoginDesign/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="//fonts.googleapis.com/css?family=Josefin+Sans:100,100i,300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto:100,400,400i,500,500i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link href="~/MainFrontDesign/css/Custom-style.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <script src="~/Scripts/owl.carousel.min.js"></script>
+    <script defer src="~/Scripts/owl.carousel.js"></script>
+    <style>
+
+        .tabdiv{
+
+    font-size: 1.5em;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0;
+    outline: none;
+    transition: all 0.3s ease-out;
+    width: 50%;
+    float: left;
+    padding: 15px 0;
+        }
+        .colorop
+        {
+        background:@color;
+        filter:alpha(opacity=60); /* IE */
+        -moz-opacity:0.6; /* Mozilla */
+        opacity: 0.6; /* CSS3 */
+        position: absolute; top: 0; left: 0; height: 100%;
+        width:100%;
+        }
+        pp.
+        {
+        }
+        .pp:hover
+        {
+     opacity: 0;
+   -webkit-transform-origin: center;
+-webkit-transform: scale(1.10) rotate(720deg) translate3d(50.5%, 0.5%, 0);
+-webkit-transition: all 20s ease-in;
+        }
+        span#login-error{font-size: 14px;
+    color: red;
+    font-weight: 600;text-align: center;
+width: 100%;
+float: left;
+margin-top: 10px;}
+    </style>
+
+</head>
+
+<body class="body Login_body" style="background: url(@background);background-size: @size; background-repeat:@repeat; height:@height; background-image : @backgroundImage;display: flex;align-items: center;justify-content: center;">
+    @*<h1>Login with @companyname</h1>*@
+    <div class="main custome-loginpage" style="width: 100%;float: left;    margin-top: 5%;">
+        <div id="horizontalTab">
+
+            @*<p style="color:white;">@TempData["email"]</p>*@
+
+            <div class="container-fluid">
+                <div class="container">
+                    <div class="row gg" style="padding-top:0 !important;">
+
+                        <div class="col-md-6 border-md gg-item">
+
+                            @if (ViewBag.Loginsilder != null)
+                            {
+                                try
+                                {
+                                    <div id="carousel" class="owl-carousel">
+                                        @foreach (var item in ViewBag.Loginsilder)
+                                        {
+                                            if (item.Status == "Y")
+                                            {
+
+                                                <div class="item">
+                                                    <img src="@Url.Content("~/" + item.ImagePath)" />
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                <div class="item">
+                                                    <img src="~/images/Default_Login.jpg" />
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                }
+
+                                catch
+                                {
+
+                                }
+
+                            }
+                            else if (ViewBag.Logo != null)
+                            {
+                                <div class="item">
+
+
+                                    <img src="@Url.Content("~/" + ViewBag.Logo)" style="position: absolute;width: 80%;top: 50%;left: 50%;transform: translate(-50%,-50%);" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="item">
+                                    <img src="~/Default_Img_Logo/Default_Login_Logo.svg" style="position: absolute;width: 80%;top: 50%;left: 50%;transform: translate(-50%,-50%);" />
+                                </div>
+                            }
+                        </div>
+
+                        <div class="col-md-6 border-md gg-item">
+                            <div class="span5">
+
+                                <div class="resp-tabs-list">
+                                    <button class="resp-tab-item " id="singin" value="singin" onclick="show(this.id)">Sign In</button>
+                                    <button class="resp-tab-item " id="singup" value="singup" onclick="show(this.id)">Sign Up</button>
+                                </div>
+
+                                <div class="resp-tabs-container">
+                                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("latloc")
+                                        @Html.Hidden("longloc")
+                                        <div class="tab-1 resp-tab-content" id="signinform">
+                                            <div class="login-iamge fullbodydycolorbg">
+                                                <img src="~/AdminDesign/images/password.svg" />
+                                            </div>
+                                            <div class="login-top">
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control email", @placeholder = "Enter Registered Email Id / Mobile No", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                                            @Html.PasswordFor(m => m.Password, new { @class = "form-control password", @placeholder = "Enter Password", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="login-bottom">
+                                                    <ul>
+                                                        <li>
+                                                            <label>@Html.CheckBoxFor(m => m.RememberMe)&nbsp;Remember Me&nbsp;?</label>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" onclick="show(this.id)" id="forgetpass">Forgot password&nbsp;?</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                                <input id="login" type="submit" value="LOGIN" class="fullbodydycolorbg">
+                                                <span id="login-error"></span>
+                                                <span id="login-error1"></span>
+                                            </div>
+                                        </div>
+
+
+                                    }
+
+                                    @using (Html.BeginForm("Insert_retailer", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        <div class="tab-1 resp-tab-content" id="signupform">
+                                            <div class="login-top sign-top">
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control name", @placeholder = "Enter Customer Name", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control email", @placeholder = "Enter Email-ID", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control phone", onkeypress = "return isNumber(event)", maxlength = "10", @placeholder = "Enter Mobile No", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Password, new { @class = "form-control phone", maxlength = "10", @placeholder = "Enter Password", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Pin, "", new { @class = "text-danger " })
+                                                            @Html.TextBoxFor(m => m.Pin, new { @class = "form-control phone", maxlength = "4", minlength = "4", @placeholder = "Enter Pin", @required = "", onkeypress = "return isNumber(event)" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="for-border-effect custom-district">
+                                                            @Html.ValidationMessageFor(m => m.state, "", new { @class = "text-danger" })
+                                                            @Html.DropDownListFor(model => model.state, (IEnumerable<SelectListItem>)ViewBag.Sate, "Select State", new { @class = "form-control", @onchange = "FillDistict()", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="for-border-effect custom-district">
+                                                            @Html.ValidationMessageFor(m => m.distict, "", new { @class = "text-danger" })
+                                                            @Html.DropDownListFor(model => model.distict, new SelectList("Value", "Text"), "Select District", new { @class = "form-control", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="login-bottom">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <ul>
+                                                                <li>
+                                                                    <label>@Html.CheckBoxFor(m => m.RememberMe)&nbsp;Remember Me&nbsp;?</label>
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-6" style="margin-top:5px;">
+                                                            <input type="checkbox" id="referrral" onclick="myFunction()" style="float:left;"><span id="referrral1" style="float: left;font-size: 15px;margin-top: -5px;margin-left:3px;color:#999;">Have a referral code</span>
+                                                            <div class="for-border-effect" style="position: absolute;top: -11px;right: 14px;width: 78%;">
+                                                                @Html.TextBoxFor(m => m.referralcode, new { @class = "form-control", @placeholder = "Referral Code", @style = "height:32px; display:none;width:100%;margin-top:0px;margin-bottom:0px;", @maxlength = "10" })
+                                                                <div class="focus-border"><i></i></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <input type="submit" value="Sign Up Now" class="fullbodydycolorbg">
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                    <div class="tab-1 resp-tab-content" id="forget" style="display:none;">
+                                        <h2 style="font-size: 22px;text-align: center;margin-bottom: 10px;margin-top:15px;">Registered Email Id</h2>
+                                        @using (Html.BeginForm("ForgotPasswordAdmin", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <div class="login-top sign-top">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control email", @placeholder = "Enter Email ID", required = "" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="login-bottom">
+
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <input class="fullbodydycolorbg" type="submit" value="Forgot" style="margin-top:30px;">
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div><!--.row-->
+                </div><!--.container-->
+            </div>
+
+        </div><!--#horizontalTab-->
+
+
+
+        <div class="footer">
+            <center> <p> &copy; 2019 - @DateTime.Now.Year All Rights Reserved | @Firm_Name </p></center>
+        </div>
+
+    </div><!--.main-->
+    @{
+        <input type="button" value="sleep" id="btnsleep" data-toggle="modal" data-target="#sleep-modal" style="display:none;">
+        <div class="modal fade" id="sleep-modal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img src="@Url.Content("~/Deskrop Sleep Mode.png")" id="mImage" />
+
+                    </div>
+                    <div>
+                        <span style="font-size:15px; margin-left:15px;">Mail-id :-<b style="color:red;"> @mailid</b> </span>
+                        <br />
+                        <span style="font-size:15px; margin-left:15px;">Mobile No :-<b style="color:red;"> @mobile</b></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    @*<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>*@
+    <script src="~/NewLoginDesign/js/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    @*<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>*@
+    <script src="~/NewLoginDesign/js/easyResponsiveTabs.js"></script>
+    <script src="~/Swalalert/sweetalert-dev.js"></script>
+    <link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#horizontalTab').easyResponsiveTabs({
+                type: 'default',
+                width: 'auto',
+                fit: true
+            });
+        });
+    </script>
+    <script>
+        function show(clicked_id) {
+            if (clicked_id == "singin") {
+                $('#fristimage').show();
+                $('#thirdimage').hide();
+                $('#secondimage').hide();
+                $('#signinform').show();
+                $('#signupform').hide();
+                $('#forget').hide();
+            }
+            else if (clicked_id == "singup") {
+                $('#fristimage').hide();
+                $('#thirdimage').hide();
+                $('#secondimage').show();
+                $('#signinform').hide();
+                $('#signupform').show();
+                $('#forget').hide();
+            }
+            else {
+                $('#fristimage').hide();
+                $('#thirdimage').show();
+                $('#secondimage').hide();
+                $('#signinform').hide();
+                $('#signupform').hide();
+                $('#forget').show();
+            }
+        }
+
+    </script>
+    <script>
+        $('button').click(function () {
+            if (this.id == 'viewmore') {
+                $('#allcard').show();
+                $('#silderid').hide();
+                $('#viewless').show();
+                $('#viewmore').hide();
+            }
+            else {
+                $('#allcard').hide();
+                $('#silderid').show();
+                $('#viewless').hide();
+                $('#viewmore').show();
+            }
+        })
+    </script>
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyALrSTy6NpqdhIOUs3IQMfvjh71td2suzY&ver=3.exp"></script>
+    <script type="text/javascript">
+        navigator.geolocation.getCurrentPosition(
+            function (position) { // success cb
+                console.log(position);
+                alert('')
+            },
+            function () { // fail cb
+            }
+        );
+        //jQuery(document).ready(function ($) {
+
+        //    $("#get-mylocation").click(function (e) {
+        //        e.preventDefault();
+        //        navigator.geolocation.getCurrentPosition(
+        //            function (position) { // success cb
+        //                console.log(position);
+        //            },
+        //            function () { // fail cb
+        //            }
+        //        );
+        //    });
+
+        //});
+        $(document).ready(function () {
+            alert('')
+            /* Chrome need SSL! */
+            //var is_chrome = /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+            //var is_ssl = 'https:' == document.location.protocol;
+            //if (is_chrome && !is_ssl) {
+            //    return false;
+            //}
+            var allowSubmit = false;
+            /* HTML5 Geolocation */
+            navigator.geolocation.getCurrentPosition(
+                function (position) { // success cb
+
+                    /* Current Coordinate */
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    $('#latloc').val(lat);
+                    $('#longloc').val(lng);
+
+                    var google_map_pos = new google.maps.LatLng(lat, lng);
+
+                    /* Use Geocoder to get address */
+                    var google_maps_geocoder = new google.maps.Geocoder();
+
+                    google_maps_geocoder.geocode(
+                        { 'latLng': google_map_pos },
+                        function (results, status) {
+                            if (status == google.maps.GeocoderStatus.OK && results[0]) {
+                                console.log(results[0].formatted_address);
+                                alert(results[0].formatted_address)
+                            }
+                        }
+                    );
+                },
+                function () { // fail cb
+                }
+            );
+        });
+    </script>
+</body>
+</html>
+
+<script>
+    $(function () {
+          var message = '@ViewBag.messagechkk'
+       if (message != null && message != "") {
+           //swal("Message !", message, "success");
+            $('#login-error').text(message)
+        }
+        var status = '@TempData["defaultstatus"]';
+        if (status != null && status != "") {
+            //swal("Oops!", status, "error");
+            $('#login-error').text(status)
+        }
+
+        var reg = '@ViewData["success"]';
+        if (reg != null && reg != "") {
+            var vv = reg.replace(".", "\n");
+            //swal("You got registered !!", vv, "success");
+            $('#login-error1').text(reg)
+        }
+        var slaberror = '@ViewData["slaberror"]';
+        if (slaberror != null && slaberror != "") {
+            //swal("Oops!", slaberror, "error");
+             $('#login-error').text(slaberror)
+        }
+        var email = '@ViewData["email"]'
+        if (email != null && email != "") {
+            //swal({
+            //    html: true,
+            //    title: 'Oops!',
+            //    text: email,
+            //    type: 'error'
+            //});
+            $('#login-error').text(email)
+         }
+        var mobilbe = '@ViewData["mobilecon"]'
+        if (mobile != null && mobile != "") {
+            //swal("Oops!", mobile, "error");
+            $('#login-error').text(mobile)
+        }
+        var message = '@ViewData["wrongpass"]'
+        if (message != "") {
+            if (message == "Failure") {
+                //swal("Oops...", "User ID Or Password Wrong.", "error");
+                $('#login-error').text('User ID Or Password Wrong')
+            }
+        }
+        var userMsg = '@ViewData["userblock"]'
+        if (userMsg != "") {
+            //swal("Oops...", userMsg, "error");
+            $('#login-error').text(userMsg)
+        }
+        var existuser = '@ViewData["existuser"]'
+        if (existuser != "" && existuser != null) {
+            //swal("Oops...", existuser, "error");
+            $('#login-error').text(existuser)
+        }
+
+        var ch2 = '@ViewData["confrim"]';
+        if (ch2 != "" && ch2 != null) {
+            if (ch2 == "Confrimed") {
+
+                 $('#login-error').text('Your Email verification is pending. Please verify the Email first')
+
+            }
+        }
+        var block = '@ViewData["msg"]';
+        if (block == "websiteblock") {
+            $('#btnsleep').click();
+            $("#sleep-modal").modal('show');
+        }
+        $(".sweet-alert").css('background', '@PageData["globalOuter"]');
+    });
+</script>
+<script>
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<!--fill district javascript-->
+<script>
+    function FillDistict() {
+        var State_id = $('#state').val();
+        var dist = $('#distict').val();
+        if (dist == "") {
+              $("#divdistributor").css("display", "none");
+        }
+    $.ajax({
+       // url: '/Home/FillCity',
+        url: '@Url.Action("FillDistict", "Home")',
+        type: "GET",
+        dataType: "JSON",
+
+        data: { State: State_id },
+        success: function (data) {
+            var markup = "<option value=''> -- Select District --</option>";
+            for (var x = 0; x < data.length; x++) {
+                markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                //alert(markup)
+            }
+            $("#distict").html(markup).show();
+        },
+        error: function (reponse) {
+            alert("error : " + reponse);
+        }
+    });
+  }
+</script>
+<!--fill dealer according to district id-->
+<script>
+    function FillDealer() {
+        var district_id = $('#distict').val();
+
+        $.ajax({
+             url: '@Url.Action("FillDealerList", "Home")',
+            type: "GET",
+            dataType: "JSON",
+
+            data: { District: district_id },
+            success: function (show) {
+                $("#Distributorid").html("");
+                var procemessage = "<option value=''>Select your Nearest & Known Distributor Point</option>";
+                $("#Distributorid").html(procemessage).show();
+                $("#divdistributor").css("display", "block");
+                for (var x = 0; x < show.length; x++) {
+
+                    $("#Distributorid").append($('<option></option>').val(show[x].Value).html(show[x].Text));
+                }
+                },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>
+<!--referral code javascropt-->
+<script>
+    function myFunction() {
+        var checkBox = document.getElementById("referrral");
+        if (checkBox.checked == true) {
+            document.getElementById("referralcode").style.display = "block";
+
+        } else {
+            document.getElementById("referrral").style.display = "block";
+            document.getElementById("referrral1").style.display = "block";
+            document.getElementById("referralcode").style.display = "none";
+
+        }
+    }
+</script>
+<script>
+    jQuery(function ($) {
+
+        jQuery(".owl-carousel").owlCarousel({
+            autoplay: true,
+            lazyLoad: true,
+            loop: true,
+
+            responsiveClass: true,
+            autoHeight: true,
+            autoplayTimeout: 7000,
+            smartSpeed: 800,
+            nav: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+
+                600: {
+                    items: 1
+                },
+
+                1024: {
+                    items: 1
+                },
+
+                1366: {
+                    items: 1
+                }
+            }
+        });
+    });
+</script>
+@if (!HttpContext.Current.Request.IsLocal)
+{
+    <!-- To Disable Inspect Element -->
+    <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+}

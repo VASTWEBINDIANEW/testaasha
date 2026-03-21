@@ -1,0 +1,1662 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Models.RegisterViewModel
+@{
+    Layout = null;
+}
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var ccc = db.tblContects.ToList();
+    var companyname = ccc.Count == 0 ? "" : ccc.SingleOrDefault().CompnayName;
+    var loginimage = db.tblLoginContents.ToList();
+    if (loginimage.Count > 0)
+    {
+        ViewBag.loginimage = loginimage.FirstOrDefault().Image;
+    }
+    else
+    {
+        ViewBag.loginimage = "Login_Images/login22.png";
+    }
+
+    var image1 = "";
+    var fullpath = "";
+    var size = "";
+    var repeat = "";
+    var height = "";
+    var backgroundImage = "";
+    var image = db.tblWhiteLabelLoginBackImages.Where(p => p.Role == "ADMIN").ToList();
+    if (image.Count > 0)
+    {
+        //if (image.SingleOrDefault(a=>a.UsedFor=="Repeat" && a.StatusCheck == "Y").otherimage == null)
+        if (image.Where(a => a.UsedFor == "Repeat" && a.StatusCheck == "Y").SingleOrDefault() != null)
+        {
+            //image1 = image.SingleOrDefault().ImageUrl;
+            //fullpath = "../FooterImages/" + image1;
+            image1 = image.SingleOrDefault(a => a.UsedFor == "Repeat").otherimage;
+            var ddd = image1.Replace(@"\", "/");
+            fullpath = "../.." + ddd;
+
+        }
+        else if (image.Where(a => a.UsedFor == "Single" && a.StatusCheck == "Y").SingleOrDefault() != null)
+        {
+            image1 = image.SingleOrDefault(a => a.UsedFor == "Single").otherimage;
+            var ddd = image1.Replace(@"\", "/");
+            fullpath = "../.." + ddd;
+
+            size = "cover";
+            repeat = "no-repeat";
+            height = "100vh";
+        }
+        else
+        {
+            backgroundImage = "linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important";
+        }
+    }
+    else
+    {
+        image1 = "img32.png";
+        fullpath = "../FooterImages/" + image1;
+        backgroundImage = "linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important";
+    }
+    var admindetail = db.Admin_details.ToList();
+    var mailid = admindetail.SingleOrDefault().email;
+    var mobile = admindetail.SingleOrDefault().mobile;
+    var background = fullpath;
+    var Firm_Name = admindetail.SingleOrDefault().Companyname;
+    //ViewBag.image = image.Count == 0 ? "" : image.SingleOrDefault().ImageUrl;
+
+    //string RDate = admindetail.FirstOrDefault().Date.ToString();
+    //string[] gg = RDate.Split('-');
+    //var RYear = gg[2].Split(' ')[0].ToString();
+    /*************************************************************/
+
+    var col = db.changecolors.ToList();
+    var color = "";
+    if (col.Count > 0)
+    {
+        color = col.SingleOrDefault(p => p.Role == "ADMIN").adminandouterheadercolor;
+    }
+    else
+    {
+        color = "Gray";
+    }
+    //var color = col.Count == 0 ? "" : col.SingleOrDefault(p => p.Role == "ADMIN").adminandouterheadercolor;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@companyname</title>
+    <!-- Meta tag Keywords -->
+    @{
+        var favimage = "";
+        VastwebmultiEntities db2 = new VastwebmultiEntities();
+        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+
+            }
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+    }
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Classic Forms Responsive Widget,Login form widgets, Sign up Web forms , Login signup Responsive web form,Flat Pricing table,Flat Drop downs,Registration Forms,News letter Forms,Elements" />
+    <script type="application/x-javascript">
+         addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+        function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- Meta tag Keywords -->
+    <!-- css files -->
+    <link href="~/NewLoginDesign/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/NewLoginDesign/css/style.css" rel="stylesheet" />
+    @*<link href="~/CSS/aaaaa.css" rel="stylesheet" />*@
+    <link href="~/NewLoginDesign/css/bootstrap-responsive.min.css" rel="stylesheet" />
+
+    <!-- Font-Awesome-Icons-CSS -->
+    <!-- //css files -->
+    <!-- Web-Fonts -->
+    <link href="~/NewLoginDesign/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="//fonts.googleapis.com/css?family=Josefin+Sans:100,100i,300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto:100,400,400i,500,500i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link href="~/MainFrontDesign/css/Custom-style.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <script src="~/Scripts/owl.carousel.min.js"></script>
+    <script defer src="~/Scripts/owl.carousel.js"></script>
+
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .spinner-border {
+            border: 2px solid gray;
+            border-radius: 99px;
+            animation: spinner;
+        }
+
+        input[type=number] {
+            height: 25px;
+            width: 32px;
+            font-size: 22px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+            input[type=number]:focus-visible {
+                outline: solid 0px !important;
+            }
+
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+        div#otp_continer_inputs_email {
+            border: 1px solid #ccc;
+            width: 100%;
+            height: 35px;
+            padding-top: 4px;
+            padding-left: 4px;
+            margin-top: 0px !important;
+        }
+
+
+        small#mobile_err {
+            position: absolute;
+            top: 34px;
+            font-size: 11px;
+            left: 8px;
+        }
+
+        small#email_err {
+            position: absolute;
+            top: 34px;
+            left: 10px;
+            font-size: 11px;
+        }
+
+        p.opt_pra {
+            font-size: 10px !important;
+            text-align: start;
+            top: -15px;
+            left: 6px !important;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        p.opt_pra_1 {
+            font-size: 10px !important;
+            text-align: start;
+            top: -15px;
+            left: 6px !important;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .otp_set_1 {
+            width: auto;
+            float: right;
+            margin-top: -28px;
+            margin-right: 5px;
+        }
+
+        .otp_block {
+            background-color: #ddd !important;
+            width: 148px;
+            height: 31px;
+            margin-left: -3px;
+            border-radius: 0px 25px 25px 0px;
+            margin-top: -4px;
+        }
+
+        .otp_set {
+            margin-top: -28px;
+        }
+
+
+        div#otp_continer_inputs {
+            border: 1px solid #ccc;
+            padding: 5px;
+            width: 100%;
+            height: 35px;
+            font-size: 1rem;
+            text-align: right;
+        }
+
+        .otp_block_1 {
+            background-color: #ddd !important;
+            width: 148px;
+            height: 31px;
+            margin-left: -3px;
+            border-radius: 0px 25px 25px 0px;
+            margin-top: -3px;
+        }
+
+
+
+
+        #resend_btn_otp {
+            width: auto;
+            position: absolute;
+            top: 0px;
+            left: 19rem;
+            background: border-box;
+            color: #000;
+            font-size: 14px;
+            height: 26px;
+        }
+
+        #resend_btn_otp-1 {
+            width: auto;
+            position: absolute;
+            top: 0px;
+            left: 19rem;
+            background: border-box;
+            color: #000;
+            font-size: 14px;
+            height: 26px;
+        }
+
+            #resend_btn_otp-1:hover {
+                background-color: #fff !important;
+            }
+
+        #resend_btn_otp:hover {
+            background-color: #fff !important;
+        }
+
+        input#resend_btn_otp_email {
+            width: fit-content;
+            background: none !important;
+            color: black;
+            float: right;
+        }
+
+        }
+
+        input#Mobile {
+            width: 100%;
+            top: -10px !important;
+            position: absolute;
+        }
+
+        input#btnsendOTP_Email {
+            position: absolute;
+            top: 5px;
+            right: 3px;
+            background: none !important;
+            border-style: none;
+        }
+
+        .otp_m {
+            margin-bottom: 0px;
+        }
+
+        div#margin-bottom {
+            margin: auto;
+        }
+
+        .form-control ~ .focus-border:before, .form-control ~ .focus-border:after {
+            height: 0;
+        }
+    </style>
+
+
+    <style>
+
+        .tabdiv{
+
+    font-size: 1.5em;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0;
+    outline: none;
+    transition: all 0.3s ease-out;
+    width: 50%;
+    float: left;
+    padding: 15px 0;
+        }
+        .colorop
+        {
+        background:@color;
+        filter:alpha(opacity=60); /* IE */
+        -moz-opacity:0.6; /* Mozilla */
+        opacity: 0.6; /* CSS3 */
+        position: absolute; top: 0; left: 0; height: 100%;
+        width:100%;
+        }
+
+        .pp:hover
+        {
+     opacity: 0;
+   -webkit-transform-origin: center;
+-webkit-transform: scale(1.10) rotate(720deg) translate3d(50.5%, 0.5%, 0);
+-webkit-transition: all 20s ease-in;
+        }
+        span#login-error{font-size: 14px;
+    color: red;
+    font-weight: 600;text-align: center;
+width: 100%;
+float: left;
+margin-top: 10px;}
+    </style>
+
+
+    <style type="text/css">
+
+
+        .loadingio-spinner-gear-94vo528ab8 {
+            width: 100%;
+            height: 34px;
+            overflow: hidden;
+            float: right;
+            border: 3px solid var(--main-bg-lcolor);
+            text-align: center;
+            position: relative;
+        }
+
+
+
+        .loader {
+            color: grey;
+            font-family: sans-serif;
+            height: 24px;
+            overflow-x: hidden;
+            position: absolute;
+            text-align: center;
+            width: 98%;
+            margin: 2px 1%;
+        }
+
+            .loader:before {
+                animation: left-to-right 3s alternate infinite linear;
+                background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor));
+                content: "";
+                height: 100%;
+                left: 0;
+                overflow: hidden;
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+
+
+        @@keyframes left-to-right {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+
+        /*third design*/
+        .resp-tabs-list #singin, .resp-tabs-list #singup {
+            margin-right: 0%;
+        }
+
+        .resp-tab-item {
+            width: 33.33%;
+            background: transparent;
+        }
+
+        .Login_body button {
+            font-size: 13px;
+            height: auto;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .Login_body .resp-tab-active {
+            border-bottom: 0px;
+            color: #fff;
+            outline: 0px;
+            background: #000;
+            border-radius: 20px;
+            transition: .4s linear;
+        }
+
+        .Login_body .resp-tabs-list {
+            height: auto;
+            background: rgba(0,0,0,.4);
+        }
+
+        .Login_body .row.gg .gg-item {
+            background: rgba(0,0,0,.7);
+            border: 18px solid rgba(255,255,255,.4);
+        }
+
+            .Login_body .row.gg .gg-item .owl-dots {
+                display: none;
+            }
+
+        .login-top input[type="text"], .login-top input[type="email"], .login-top input[type="password"] {
+            color: #fff;
+            border: 1px solid #fff;
+            background: transparent;
+        }
+
+            .login-top input[type="text"]::placeholder, .login-top input[type="email"]::placeholder, .login-top input[type="password"]::placeholder {
+                color: #fff;
+            }
+
+        .Login_body .gg {
+            background: url(../../AdminDesign/images/four-lg-bg.png)no-repeat top left;
+            background-size: cover;
+            padding: 0px;
+            height: auto;
+        }
+
+        .Login_body select.form-control:not([size]):not([multiple]) {
+            background: transparent;
+            color: #fff;
+            -webkit-appearance: none;
+        }
+
+        .Login_body select option {
+            background: rgba(0,0,0,.9);
+        }
+
+        .for-border-effect.custom-district::before {
+            border-color: #fff;
+        }
+
+        .login-top input[type="submit"] {
+            background-color: #fff;
+            color: #000;
+            font-size: 18px;
+        }
+
+        .Login_body .login-top input[type="submit"]:hover {
+            color: #fff;
+        }
+
+        .Login_body .login-top input[type="submit"] {
+            padding-bottom: 8px;
+        }
+
+        @@media (max-width:450px) {
+            .Login_body .container {
+                margin-left: -15px;
+            }
+
+            .login-top input[type="text"], .login-top input[type="email"], .login-top input[type="password"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="body Login_body" style="background: url(@background);background-size: @size; background-repeat:@repeat; height:@height; background-image : @backgroundImage;display: flex;align-items: center;justify-content: center;">
+    @*<h1>Login with @companyname</h1>*@
+    <div class="main custome-loginpage" style="width: 100%;float: left;    margin-top: 5%;">
+        <div id="horizontalTab">
+
+            @*<p style="color:white;">@TempData["email"]</p>*@
+
+            <div class="container-fluid">
+                <div class="container">
+                    <div class="row gg" style="padding-top:0 !important;">
+
+                        <div class="col-md-6 border-md gg-item">
+
+                            @if (ViewBag.Loginsilder != null)
+                            {
+                                try
+                                {
+                                    <div id="carousel" class="owl-carousel">
+                                        @foreach (var item in ViewBag.Loginsilder)
+                                        {
+                                            if (item.Status == "Y")
+                                            {
+
+                                                <div class="item">
+                                                    <img src="@Url.Content("~/" + item.ImagePath)" />
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                <div class="item">
+                                                    <img src="~/images/Default_Login.jpg" />
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                }
+
+                                catch
+                                {
+
+                                }
+
+                            }
+                            else if (ViewBag.Logo != null)
+                            {
+                                <div class="item">
+
+
+                                    <img src="@Url.Content("~/" + ViewBag.Logo)" style="position: absolute;width: 80%;top: 50%;left: 50%;transform: translate(-50%,-50%);" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="item">
+                                    <img src="~/Default_Img_Logo/Default_Login_Logo.svg" style="position: absolute;width: 80%;top: 50%;left: 50%;transform: translate(-50%,-50%);" />
+                                </div>
+                            }
+                        </div>
+
+                        <div class="col-md-6 border-md gg-item">
+                            <div class="span5">
+
+                                <div class="resp-tabs-list">
+                                    @if (ViewBag.signin_signup == "singin")
+                                    {
+                                        <script>
+                                            $(function () {
+                                                $('#signinform').css('display', 'block');
+                                                $('#signupform').css('display', 'none');
+                                                $('#forget').css('display', 'none');
+
+                                                $('#singin').addClass('resp-tab-active');
+                                                $('#singup').removeClass('resp-tab-active');
+                                            });
+                                        </script>
+                                    }
+                                    else if (ViewBag.signin_signup == "singup")
+                                    {
+                                        <script>
+                                            $(function () {
+                                                $('#signinform').css('display', 'none');
+                                                $('#signupform').css('display', 'block');
+                                                $('#singup').addClass('resp-tab-active');
+                                                $('#singin').removeClass('resp-tab-active');
+                                                $('#forget').css('display', 'none');
+                                            });
+                                        </script>
+                                    }
+                                    <button class="resp-tab-item" id="singin" value="singin">Sign In</button>
+                                    <button class="resp-tab-item" id="singup" value="singup">Sign Up</button>
+                                    <button class="resp-tab-item" id="forgetpass" value="forgetpass">Forgot password</button>
+
+
+                                </div>
+
+                                <div class="resp-tabs-container">
+                                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "UpdateForm" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("latloc")
+                                        @Html.Hidden("longloc")
+                                        <div class="tab-1 resp-tab-content" id="signinform">
+                                            <div class="login-iamge fullbodydycolorbg">
+                                                <img src="~/AdminDesign/images/password.svg" />
+                                            </div>
+                                            <div class="login-top">
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Enter Registered Email Id / Mobile No", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Enter Password", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="login-bottom">
+                                                    <ul>
+                                                        <li>
+                                                            <label>@Html.CheckBoxFor(m => m.RememberMe)&nbsp;Remember Me&nbsp;?</label>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" onclick="show(this.id)" id="forgetpass">Forgot password&nbsp;?</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="submit" style="float:none;">
+                                                    <div class="loadingio-spinner-gear-94vo528ab8 first-login" style="display:none;">
+                                                        <div class="loader"></div>
+                                                    </div>
+
+                                                    <input id="login" type="submit" value="LOGIN" />
+                                                    <span id="login-error"></span>
+                                                    <span id="login-error1"></span>
+                                                </div>
+
+                                                @*<input id="login" type="submit" value="LOGIN" class="fullbodydycolorbg">*@
+
+                                            </div>
+                                        </div>
+
+
+                                    }
+
+                                    @using (Html.BeginForm("Insert_retailer", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "frmsignup" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        @Html.Hidden("Email_Id")
+                                        @Html.Hidden("Mobile_Id")
+
+                                        <div class="tab-1 resp-tab-content" id="signupform">
+                                            <div class="login-top sign-top">
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect" style="position:relative;">
+                                                            @Html.ValidationMessageFor(m => m.Mobile, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control phone", onkeypress = "return isNumber(event)", maxlength = "10", @placeholder = "Enter Mobile No", @required = "", @field = "mobile" })
+                                                            <small style="color: red;" id="mobile_err"></small>
+                                                            <div class="spinner-border hidden" id="Mobileno_spinner" style="font-size: 8px;position: absolute;right: 10px;top: 8px;height: 20px;width: 20px;">
+                                                            </div>
+                                                            <img class="hidden" id="success_mobile_img" src="~/images/check_img_input.jpg" style="width:25px; position:absolute; right:7px; top:5px; background-color:none;" />
+                                                            <div class="otp_m">
+                                                                <div class="form_otp" id="otp_continer_inputs">
+                                                                    <div class="otp_block">
+                                                                        <p class="opt_pra_1"> OTP sent successfully to <br />entered mobile number</p>
+                                                                    </div>
+                                                                    <div class="otp_set">
+                                                                        <input id="codeBox1" type="number" maxlength="1" onkeyup="onKeyUpEvent(1, event)" onfocus="onFocusEvent(1)" />
+                                                                        <input id="codeBox2" type="number" maxlength="1" onkeyup="onKeyUpEvent(2, event)" onfocus="onFocusEvent(2)" />
+                                                                        <input id="codeBox3" type="number" maxlength="1" onkeyup="onKeyUpEvent(3, event)" onfocus="onFocusEvent(3)" />
+                                                                        <input id="codeBox4" type="number" maxlength="1" onkeyup="onKeyUpEvent(4, event)" onfocus="onFocusEvent(4)" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect" style="position: relative;}">
+                                                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control email", @type = "email", @placeholder = "Enter Email-ID", @required = "", @field = "email" })
+                                                            <small style="color: red;" id="email_err"></small>
+                                                            <input type="button" name="button" value="Send OTP" id="btnsendOTP_Email" style="cursor: pointer;">
+                                                            <div class="spinner-border hidden" id="Email_spinner" style="font-size: 8px;position: absolute;right: 10px;top: 8px;height: 20px;width: 20px;"></div>
+                                                            <img class="hidden" id="success_email_img" src="~/images/check_img_input.jpg" style="width:25px; position:absolute; right:7px; top:5px; background-color:none;" />
+                                                            <div class="form_otp" id="otp_continer_inputs_email" style="margin-top:-20px;">
+                                                                <div class="otp_block_1">
+                                                                    <p class="opt_pra"> OTP sent successfully to <br />entered mobile number</p>
+                                                                </div>
+                                                                <div class="otp_set_1">
+                                                                    <input id="codeBox5" type="number" maxlength="1" onkeyup="onKeyUpEvent_Email(5, event)" onfocus="onFocusEvent(5)" />
+                                                                    <input id="codeBox6" type="number" maxlength="1" onkeyup="onKeyUpEvent_Email(6, event)" onfocus="onFocusEvent(6)" />
+                                                                    <input id="codeBox7" type="number" maxlength="1" onkeyup="onKeyUpEvent_Email(7, event)" onfocus="onFocusEvent(7)" />
+                                                                    <input id="codeBox8" type="number" maxlength="1" onkeyup="onKeyUpEvent_Email(8, event)" onfocus="onFocusEvent(8)" />
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control name", @placeholder = "Enter Customer Name", @required = "" }) 
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="for-border-effect">
+                                                            @Html.TextBoxFor(m => m.Companyname, new { @class = "form-control phone", maxlength = "40", @placeholder = "Enter Business Name(Optional)" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                                            @Html.TextBoxFor(m => m.Password, new { @class = "form-control phone", maxlength = "10", @placeholder = "Enter Password", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="for-border-effect">
+                                                            @Html.ValidationMessageFor(m => m.Pin, "", new { @class = "text-danger " })
+                                                            @Html.TextBoxFor(m => m.Pin, new { @class = "form-control phone", maxlength = "4", minlength = "4", @placeholder = "Enter Pin", @required = "", onkeypress = "return isNumber(event)" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="for-border-effect custom-district">
+                                                            @Html.ValidationMessageFor(m => m.state, "", new { @class = "text-danger" })
+                                                            @Html.DropDownListFor(model => model.state, (IEnumerable<SelectListItem>)ViewBag.Sate, "Select State", new { @class = "form-control", @onchange = "FillDistict()", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="for-border-effect custom-district">
+                                                            @Html.ValidationMessageFor(m => m.distict, "", new { @class = "text-danger" })
+                                                            @Html.DropDownListFor(model => model.distict, new SelectList("Value", "Text"), "Select District", new { @class = "form-control", @required = "" })
+                                                            <div class="focus-border"><i></i></div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="login-bottom">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <ul>
+                                                                <li>
+                                                                    <label>@Html.CheckBoxFor(m => m.RememberMe)&nbsp;Remember Me&nbsp;?</label>
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-6" style="margin-top:5px;">
+
+                                                            <div class="for-border-effect" style="position: absolute;top: -11px;right: 14px;width: 78%;">
+                                                                @Html.TextBoxFor(m => m.referralcode, new { @class = "form-control", @placeholder = "Referral Code", @style = "height:32px;width:100%;margin-top:0px;margin-bottom:0px;", @maxlength = "10" })
+                                                                <div class="focus-border"><i></i></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="submit" style="float:none;">
+                                                    <div class="loadingio-spinner-gear-94vo528ab8 second-login" style="display:none;">
+                                                        <div class="loader"></div>
+                                                    </div>
+                                                    <input id="SignUp" type="submit" disabled="disabled" value="Sign Up Now" class="fullbodydycolorbg" />
+                                                </div>
+
+                                                @* <input type="submit" id="SignUp" data-loading-text="<i class='fa fa-spinner fa-spin'></i>" value="Sign Up Now" class="fullbodydycolorbg">*@
+                                                @*<button type="submit" onclick="sendLove(this);"   class="fullbodydycolorbg SignUp">Sign Up Now</button>*@
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                    <div class="tab-1 resp-tab-content" id="forget" style="display:none;">
+                                        <h2 style="font-size: 22px;text-align: center;margin-bottom: 10px;margin-top:15px;color:#fff;">Registered Email Id</h2>
+                                        @using (Html.BeginForm("ForgotPasswordAdmin", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "ForgtFrm" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <div class="login-top sign-top">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Enter Email ID", required = "" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="login-bottom">
+
+                                                    <div class="clear"></div>
+                                                </div>
+
+                                                <div class="submit">
+                                                    <div class="loadingio-spinner-gear-94vo528ab8 third-login" style="display:none;margin-top:30px;">
+                                                        <div class="loader"></div>
+                                                    </div>
+                                                    <input id="btnforget" type="submit" value="SUBMIT" style="margin-top:30px;" />
+                                                </div>
+
+                                                @*<input class="fullbodydycolorbg" type="submit" value="Forgot" style="margin-top:30px;">*@
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div><!--.row-->
+                </div><!--.container-->
+            </div>
+
+        </div><!--#horizontalTab-->
+
+
+
+        <div class="footer">
+            <center> <p> &copy; 2019 - @DateTime.Now.Year All Rights Reserved | @Firm_Name </p></center>
+        </div>
+
+    </div><!--.main-->
+    @{
+        <input type="button" value="sleep" id="btnsleep" data-toggle="modal" data-target="#sleep-modal" style="display:none;">
+        <div class="modal fade" id="sleep-modal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img src="@Url.Content("~/Deskrop Sleep Mode.png")" id="mImage" />
+
+                    </div>
+                    <div>
+                        <span style="font-size:15px; margin-left:15px;">Mail-id :-<b style="color:red;"> @mailid</b> </span>
+                        <br />
+                        <span style="font-size:15px; margin-left:15px;">Mobile No :-<b style="color:red;"> @mobile</b></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    <script src="~/NewLoginDesign/js/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/NewLoginDesign/js/easyResponsiveTabs.js"></script>
+    <script src="~/Swalalert/sweetalert-dev.js"></script>
+    <link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+    <script>
+        $("#UpdateForm").submit(function (e) {
+
+            if ($("#UpdateForm").valid()) {
+                // ajax call
+                if (document.readyState !== "complete") {
+                    $('#login').show();
+                    $('.loadingio-spinner-gear-94vo528ab8.first-login').hide()
+                } else {
+                    $('#login').hide();
+                    $('.loadingio-spinner-gear-94vo528ab8.first-login').show()
+
+                }
+            }
+            else {
+                e.preventDefault();
+                return false;
+            }
+
+            //$('#btnnewlogin').hide();
+            //$('.loadingio-spinner-gear-94vo528ab8.first-login').show()
+        })
+        $("#frmsignup").submit(function (e) {
+
+            if ($("#frmsignup").valid()) {
+                // ajax call
+                if (document.readyState !== "complete") {
+                    $('#SignUp').show();
+                    $('.loadingio-spinner-gear-94vo528ab8.second-login').hide()
+                } else {
+                    $('#SignUp').hide();
+                    $('.loadingio-spinner-gear-94vo528ab8.second-login').show()
+
+                }
+            }
+            else {
+                e.preventDefault();
+                return false;
+            }
+
+
+            //  $('#btnsignup').hide();
+            //  $('.loadingio-spinner-gear-94vo528ab8').show()
+
+        })
+
+
+        $("#ForgtFrm").submit(function (e) {
+
+            //  $('#btnsignup').hide();
+            //  $('.loadingio-spinner-gear-94vo528ab8').show()
+
+            if ($("#ForgtFrm").valid()) {
+                // ajax call
+                if (document.readyState !== "complete") {
+                    $('#btnforget').show();
+                    $('.loadingio-spinner-gear-94vo528ab8.third-login').hide()
+                } else {
+                    $('#btnforget').hide();
+                    $('.loadingio-spinner-gear-94vo528ab8.third-login').show()
+
+                }
+            }
+            else {
+                e.preventDefault();
+                return false;
+            }
+
+
+
+        })
+    </script>
+    <script>
+        document.onreadystatechange = function () {
+            if (document.readyState !== "complete") {
+                document.querySelector(
+                    "#login").style.visibility = "visible";
+                document.querySelector(
+                    ".loadingio-spinner-gear-94vo528ab8.first-login").style.display = "none";
+                $('#btnforget').show();
+                $('.loadingio-spinner-gear-94vo528ab8.third-login').hide()
+            } else {
+                document.querySelector(
+                    "#login").style.display = "block";
+                document.querySelector(
+                    ".loadingio-spinner-gear-94vo528ab8.first-login").style.display = "none";
+
+
+            }
+        };
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#horizontalTab').easyResponsiveTabs({
+                type: 'default',
+                width: 'auto',
+                fit: true
+            });
+        });
+    </script>
+    <script>
+        function show(clicked_id) {
+            if (clicked_id == "singin") {
+                $('#fristimage').show();
+                $('#thirdimage').hide();
+                $('#secondimage').hide();
+                $('#signinform').show();
+                $('#signupform').hide();
+                $('#forget').hide();
+            }
+            else if (clicked_id == "singup") {
+                $('#fristimage').hide();
+                $('#thirdimage').hide();
+                $('#secondimage').show();
+                $('#signinform').hide();
+                $('#signupform').show();
+                $('#forget').hide();
+            }
+            else {
+                $('#fristimage').hide();
+                $('#thirdimage').show();
+                $('#secondimage').hide();
+                $('#signinform').hide();
+                $('#signupform').hide();
+                $('#forget').show();
+            }
+        }
+
+    </script>
+    <script>
+        $('button').click(function () {
+            if (this.id == 'viewmore') {
+                $('#allcard').show();
+                $('#silderid').hide();
+                $('#viewless').show();
+                $('#viewmore').hide();
+            }
+            else {
+                $('#allcard').hide();
+                $('#silderid').show();
+                $('#viewless').hide();
+                $('#viewmore').show();
+            }
+        })
+    </script>
+
+
+
+</body>
+</html>
+<script>
+    async function reverseGeocode(latitude, longitude) {
+        //let apikey = "60baa3a9b6154ef3a3ab635c8bd06767";
+        try {
+            var url = '@Url.Action("fetchlatlong", "Home")';
+            url = url + '?lat=' + latitude + '&lon=' + longitude + '';
+            const chk = await fetch(url).then((response) => response.json());
+            let apikey = chk.key;
+            if (chk.sts == true) {
+                $('#hdaddress').val(chk.resp);
+            } else {
+                const resp = await fetch('https://api.opencagedata.com/geocode/v1/json'
+                    + '?'
+                    + 'key=' + apikey
+                    + '&q=' + encodeURIComponent(latitude + ',' + longitude)
+                    + '&pretty=1'
+                    + '&no_annotations=1')
+                    .then((response) => response.json());
+
+                if (resp.status.code == 200) {
+                    $('#hdaddress').val(JSON.stringify(resp.results[0].components));
+                }
+                else {
+                    $('#hdaddress').val("Location Not Fetch");
+                }
+            }
+        }
+        catch {
+            $('#hdaddress').val("Location Not Fetch");
+        }
+    }
+
+    function success(data) {
+        let latitude = data.coords.latitude;
+        let longitude = data.coords.longitude;
+        $('#latloc').val(latitude);
+        $('#longloc').val(longitude);
+
+        reverseGeocode(latitude, longitude);
+    }
+
+    if (navigator.geolocation) {
+        window.navigator.geolocation
+            .getCurrentPosition(success, showError);
+    }
+
+    function showError(error) {
+        $('#lblerrormsg').text('')
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                // alert("User denied the request for Geolocation.")
+                $('#login-error2').html("<i class='material-icons'>add_location</i> User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                //  alert("Location information is unavailable.")
+                $('#login-error2').html("<i class='material-icons'>add_location</i> Location information is unavailable.")
+                break;
+            case error.TIMEOUT:
+                // alert("The request to get user location timed out.")
+                $('#login-error2').html("<i class='material-icons'>add_location</i> The request to get user location timed out.")
+                break;
+            case error.UNKNOWN_ERROR:
+                $('#login-error2').text("An unknown error occurred.")
+                // alert("An unknown error occurred.")
+                break;
+        }
+    }
+
+
+    $('#UpdateForm').submit(function (e) {
+        if (location.protocol == 'https:' || location.href.includes("http://localhost/")) {
+            if ($('#latloc').val() == "" || $('#longloc').val() == "" || $('#hdaddress').val() == "") {
+                e.preventDefault();
+                if ($('#login-error2').text() == "") {
+                    $('#login-error2').html("<i class='material-icons'>add_location</i> Please allow the Location access");
+                }
+                $('#login-error').html($('#login-error2').html())
+                $('.loadingio-spinner-gear-94vo528ab8.first-login').hide();
+
+    //            $('#login').show();
+
+                navigator.permissions && navigator.permissions.query({ name: 'geolocation' })
+                    .then(function (PermissionStatus) {
+                        if (PermissionStatus.state == 'granted') {
+                        //    alert("allowed")
+                             return true;
+                            //allowed
+                        } else if (PermissionStatus.state == 'prompt') {
+                           // alert("prompt - not yet grated or denied")
+                            return false;
+                            // prompt - not yet grated or denied
+                        } else {
+                           // alert("denied");
+                            return false;
+                            //denied
+                        }
+                    })
+
+
+            }
+        }
+    })
+
+
+</script>
+
+
+<script>
+    $(function () {
+          var message = '@ViewBag.messagechkk'
+       if (message != null && message != "") {
+           $('#login-error').text(message)
+        }
+        var status = '@TempData["defaultstatus"]';
+        if (status != null && status != "") {
+            $('#login-error').text(status)
+        }
+
+        var reg = '@ViewData["success"]';
+        if (reg != null && reg != "") {
+            var vv = reg.replace(".", "\n");
+            $('#login-error1').html('&#9989;'+reg)
+        }
+
+        var slaberror = '@ViewData["slaberror"]';
+        if (slaberror != null && slaberror != "") {
+            $('#login-error').text(slaberror)
+        }
+        var email = '@ViewData["email"]'
+        if (email != null && email != "") {
+            $('#login-error').text(email)
+         }
+        var mobile = '@ViewData["mobilecon"]'
+        if (mobile != null && mobile != "") {
+            $('#login-error').text(mobile)
+        }
+        var message = '@ViewData["wrongpass"]'
+        if (message != "") {
+            if (message == "Failure") {
+                $('#login-error').text('User ID Or Password Wrong')
+            }
+        }
+        var userMsg = '@ViewData["userblock"]'
+        if (userMsg != "") {
+            $('#login-error').text(userMsg)
+        }
+        var existuser = '@ViewData["existuser"]'
+        if (existuser != "" && existuser != null) {
+            $('#login-error').text(existuser)
+        }
+
+        var ch2 = '@ViewData["confrim"]';
+        if (ch2 != "" && ch2 != null) {
+            if (ch2 == "Confrimed") {
+                $('#login-error').text('Your Email verification is pending. Please verify the Email first')
+
+            }
+        }
+        var block = '@ViewData["msg"]';
+        if (block == "websiteblock") {
+            $('#btnsleep').click();
+            $("#sleep-modal").modal('show');
+        }
+        $(".sweet-alert").css('background', '@PageData["globalOuter"]');
+    });
+</script>
+<script>
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<!--fill district javascript-->
+<script>
+    function FillDistict() {
+        var State_id = $('#state').val();
+        var dist = $('#distict').val();
+        if (dist == "") {
+              $("#divdistributor").css("display", "none");
+        }
+    $.ajax({
+       // url: '/Home/FillCity',
+        url: '@Url.Action("FillDistict", "Home")',
+        type: "GET",
+        dataType: "JSON",
+
+        data: { State: State_id },
+        success: function (data) {
+            var markup = "<option value=''> -- Select District --</option>";
+            for (var x = 0; x < data.length; x++) {
+                markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                //alert(markup)
+            }
+            $("#distict").html(markup).show();
+        },
+        error: function (reponse) {
+            alert("error : " + reponse);
+        }
+    });
+  }
+</script>
+<!--fill dealer according to district id-->
+<script>
+    function FillDealer() {
+        var district_id = $('#distict').val();
+
+        $.ajax({
+             url: '@Url.Action("FillDealerList", "Home")',
+            type: "GET",
+            dataType: "JSON",
+
+            data: { District: district_id },
+            success: function (show) {
+                $("#Distributorid").html("");
+                var procemessage = "<option value=''>Select your Nearest & Known Distributor Point</option>";
+                $("#Distributorid").html(procemessage).show();
+                $("#divdistributor").css("display", "block");
+                for (var x = 0; x < show.length; x++) {
+
+                    $("#Distributorid").append($('<option></option>').val(show[x].Value).html(show[x].Text));
+                }
+                },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>
+<!--referral code javascropt-->
+<script>
+    function myFunction() {
+        var checkBox = document.getElementById("referrral");
+        if (checkBox.checked == true) {
+            document.getElementById("referralcode").style.display = "block";
+
+        } else {
+            document.getElementById("referrral").style.display = "block";
+            document.getElementById("referrral1").style.display = "block";
+            document.getElementById("referralcode").style.display = "none";
+
+        }
+    }
+</script>
+<script>
+    jQuery(function ($) {
+
+        jQuery(".owl-carousel").owlCarousel({
+            autoplay: true,
+            lazyLoad: true,
+            loop: true,
+
+            responsiveClass: true,
+            autoHeight: true,
+            autoplayTimeout: 7000,
+            smartSpeed: 800,
+            nav: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+
+                600: {
+                    items: 1
+                },
+
+                1024: {
+                    items: 1
+                },
+
+                1366: {
+                    items: 1
+                }
+            }
+        });
+    });
+</script>
+<script>
+    /*************Agent Login / SignUp*************/
+    $(document).ready(function () {
+        $('#singin').click(function () {
+            $('#signupform').hide();
+        })
+    });
+</script>
+
+
+
+
+<script>
+    var mobile_loading = false;
+    var email_loading = false;
+    var mobile_clientId = null;
+    var email_clientId = null;
+    var mobile_verify = false;
+    var email_verify = false;
+    window.addEventListener('load', () => {
+        var sendBtnOtp = document.getElementById('btnsendOTP');
+        var txtmobileno = document.getElementById('txtmobileno');
+        var resend_btn_otp = document.getElementById('resend_btn_otp');
+        var otp_continer_inputs = document.getElementById('otp_continer_inputs');
+        otp_continer_inputs.classList.add('hidden');
+
+
+        $('input[name="Mobile"]').keyup(e => {
+            $('#mobile_err').text('');
+            if (mobile_loading) return;
+            var mobileno = e.target.value;
+
+            if (mobileno.length == 10) {
+                mobile_loading = true;
+
+                $('#Mobileno_spinner').show();
+
+                fetch('@Url.Action("IsMobileEmailExist")?entry=' + mobileno + '&type=mobile')
+                    .then(res => res.json())
+                    .then(data => {
+                        $('#Mobileno_spinner').hide();
+                        mobile_loading = false;
+
+                        if (data.status == true) {
+                            $('#otp_continer_inputs').show();
+                            mobile_clientId = data.client_id;
+                            $('#codeBox1').focus();
+                            $('input[name="Mobile"]').hide();
+                        }
+                        else if (data.status == false) {
+                            mobile_clientId = null;
+                            var message = data.message;
+                            $('#mobile_err').text(message);
+                            $('#otp_continer_inputs').hide();
+                            $('#singup').focus();
+                        }
+                    })
+                    .catch(err => {
+                        mobile_loading = false;
+                        mobile_clientId = null;
+                        $('#Mobileno_spinner').hide();
+                    })
+
+            }
+            else {
+                $('#txtmobileno_spinner').hide();
+            }
+
+        })
+
+
+        $('#btnsendOTP_Email').click(() => {
+            $('#email_err').text('');
+            if (email_loading) return;
+            var emaild = $('input[type="email"]').val();
+
+            if (!emaild) {
+                return $('#email_err').text('Please Enter Email');
+            }
+            $('#btnsendOTP_Email').hide();
+
+            email_loading = true;
+
+            $('#Email_spinner').show();
+
+            fetch('@Url.Action("IsMobileEmailExist")?entry=' + emaild + '&type=email')
+                    .then(res => res.json())
+                    .then(data => {
+                        $('#Email_spinner').hide();
+                        email_loading = false;
+
+                        if (data.status == true) {
+                            $('#otp_continer_inputs_email').show();
+                            $('#btnsendOTP_Email').hide();
+                            $('input[type="email"]').hide();
+                            email_clientId = data.client_id;
+                            $('#codeBox5').focus();
+                        }
+                        else if (data.status == false) {
+                            email_clientId = null;
+                            $('#singup').focus();
+                            var message = data.message;
+                            $('#email_err').text(message);
+                            $('#btnsendOTP_Email').show();
+                        }
+                    })
+                    .catch(err => {
+                        email_loading = false;
+                        mobile_clientId = null;
+                        $('#Email_spinner').hide();
+                    })
+
+
+        })
+
+    })
+    function getCodeBoxElement(index) {
+        return document.getElementById('codeBox' + index);
+    }
+
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+
+ function onKeyUpEvent(index, event) {
+        $('#mobile_err').text('');
+        const eventCode = event.which || event.keyCode;
+        if (getCodeBoxElement(index).value.length === 1) {
+            if (index !== 4) {
+                getCodeBoxElement(index + 1).focus();
+            } else {
+                getCodeBoxElement(index).blur();
+                // Submit code
+                $('#Mobileno_spinner').show();
+                var otp = $('#codeBox1').val() + $('#codeBox2').val() + $('#codeBox3').val() + $('#codeBox4').val();
+                fetch('@Url.Action("OtpVerify")?type=mobile&clientId=' + mobile_clientId + '&otp=' + otp)
+                    .then(res => res.json())
+                    .then(data => {
+                        $('#Mobileno_spinner').hide();
+                        if (data.status) {
+                            $('#otp_continer_inputs').hide();
+                            $('input[name="Mobile"]').show();
+                            document.querySelector('input[name="Mobile"]').setAttribute('disabled', 'disabled');
+                            mobile_clientId = null;
+                            $('#success_mobile_img').show();
+                            document.querySelector('input[type="email"]').removeAttribute('disabled');
+                            $('#btnsendOTP_Email').show();
+                            mobile_verify = true;
+
+                            fetch('@Url.Action("fetchEmail_Mobile_sts_Data")')
+                                .then(res => res.json())
+                                .then(data1 => {
+                                    if (data1.type == 'OFF') {
+                                        email_verify = true;
+                                        $('#btnsendOTP_Email').hide()
+                                    }
+                                    else {
+                                        $('#btnsendOTP_Email').show()
+                                    }
+                                    if (email_verify && mobile_verify) {
+                                        block_inputs();
+                                        document.getElementById('SignUp').removeAttribute('disabled');
+                                    }
+
+                                    $('#Mobile_Id').val(data.id);
+                                })
+                        }
+                        else {
+                            $('#mobile_err').text(data.message);
+                        }
+                    })
+                    .catch(err => {
+                        mobile_clientId = null;
+                    })
+            }
+        }
+        if (eventCode === 8 && index !== 1) {
+            getCodeBoxElement(index - 1).focus();
+        }
+    }
+
+    function onKeyUpEvent_Email(index, event) {
+        $('#email_err').text('');
+        const eventCode = event.which || event.keyCode;
+        if (getCodeBoxElement(index).value.length === 1) {
+            if (index !== 8) {
+                getCodeBoxElement(index + 1).focus();
+            } else {
+                getCodeBoxElement(index).blur();
+                // Submit code
+                $('#Email_spinner').show();
+                var otp = $('#codeBox5').val() + $('#codeBox6').val() + $('#codeBox7').val() + $('#codeBox8').val();
+                fetch('@Url.Action("OtpVerify")?type=email&clientId=' + email_clientId + '&otp=' + otp)
+                    .then(res => res.json())
+                    .then(data => {
+                        $('#Email_spinner').hide();
+                        if (data.status) {
+                            $('#otp_continer_inputs_email').hide();
+                            $('input[type="email"]').show();
+                            document.querySelector('input[type="email"]').setAttribute('disabled', 'disabled');
+                            email_clientId = null;
+                            $('#success_email_img').show();
+                            email_verify = true;
+                            if (email_verify && mobile_verify) {
+                                block_inputs(true);
+                                document.getElementById('SignUp').removeAttribute('disabled');
+                            }
+                            $('#Email_Id').val(data.id);
+                        }
+                        else {
+                            $('#email_err').text(data.message);
+                        }
+                    })
+                    .catch(err => {
+                        mobile_clientId = null;
+                    })
+            }
+        }
+        if (eventCode === 8 && index !== 1) {
+            getCodeBoxElement(index - 1).focus();
+        }
+    }
+
+    function onFocusEvent(index) {
+        for (item = 1; item < index; item++) {
+            const currentElement = getCodeBoxElement(item);
+            if (!currentElement.value) {
+                currentElement.focus();
+                break;
+            }
+        }
+    }
+</script>
+
+
+
+<script>
+    window.addEventListener('load', () => {
+        //var sendBtnOtp_email = document.getElementById('btnsendOTP_Email');
+        var txtemail = document.getElementById('txtemail');
+        var resend_btn_otp_email = document.getElementById('resend_btn_otp_email');
+
+        $('#otp_continer_inputs_email').hide();
+        //var otp_continer_inputs_email = document.getElementById('otp_continer_inputs_email');
+        //otp_continer_inputs_email.classList.add('hidden');
+
+        //sendBtnOtp_email.addEventListener('click', () => {
+        //    otp_continer_inputs_email.classList.remove('hidden');
+        //    sendBtnOtp_email.classList.add('hidden');
+        //    txtemail.classList.add('hidden');
+        //})
+    })
+    function getCodeBoxElement(index) {
+        return document.getElementById('codeBox' + index);
+    }
+    //function onKeyUpEvent(index, event) {
+    //    const eventCode = event.which || event.keyCode;
+    //    if (getCodeBoxElement(index).value.length === 1) {
+    //        if (index !== 4) {
+    //            getCodeBoxElement(index + 1).focus();
+    //        } else {
+    //            getCodeBoxElement(index).blur();
+    //            // Submit code
+    //            console.log('submit code ');
+    //        }
+    //    }
+    //    if (eventCode === 8 && index !== 1) {
+    //        getCodeBoxElement(index - 1).focus();
+    //    }
+    //}
+    function onFocusEvent(index) {
+        for (item = 1; item < index; item++) {
+            const currentElement = getCodeBoxElement(item);
+            if (!currentElement.value) {
+                currentElement.focus();
+                break;
+            }
+        }
+    }
+</script>
+
+
+<script>
+    var inputs = document.getElementById('frmsignup').querySelectorAll('input[type="text"], input[type="password"], input[type="email"], select');
+    var mobile_ref = document.getElementsByName('Mobile')[0];
+    var email_ref = document.querySelector('input[type="email"]');
+
+    $('#btnsendOTP_Email').hide();
+    disable_inputs();
+
+    //mobile_ref.addEventListener('keyup', (e) => {
+    //    if (email_ref && email_ref.value && e.target.value.length == 10) {
+    //        block_inputs();
+    //    }
+    //    else {
+    //        disable_inputs();
+    //    }
+    //})
+
+    //email_ref.addEventListener('keyup', (e) => {
+    //    if (mobile_ref && mobile_ref.value.length == 10 && e.target.value) {
+    //        block_inputs();
+    //    }
+    //    else {
+    //        disable_inputs();
+    //    }
+    //})
+
+
+
+
+    function disable_inputs() {
+        for (i = 0; i < inputs.length; i++) {
+            if (!['Mobile'].includes(inputs[i].getAttribute('id'))) {
+                inputs[i].setAttribute('disabled', true);
+                inputs[i].value = '';
+            }
+        }
+    }
+
+    function block_inputs(email_verify = false) {
+        var omit_field = ['Mobile'];
+        if (email_verify) {
+            omit_field.push('Email');
+        }
+        for (i = 0; i < inputs.length; i++) {
+            if (!omit_field.includes(inputs[i].getAttribute('id'))) {
+                inputs[i].removeAttribute('disabled');
+                inputs[i].value = '';
+            }
+        }
+    }
+</script>
+

@@ -1,0 +1,582 @@
+﻿@using Vastwebmulti.Models;
+@model RegisterViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset=utf-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.companyname</title>
+    <!-- Load Roboto font -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <!-- Load css styles -->
+    <link rel="stylesheet" href="~/MainFrontDesign/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/FrontapplicationDesign/css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="~/FrontapplicationDesign/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="~/FrontapplicationDesign/css/pluton.css" />
+    <link rel="stylesheet" type="text/css" href="~/FrontapplicationDesign/css/jquery.cslider.css" />
+    <link rel="stylesheet" type="text/css" href="~/FrontapplicationDesign/css/jquery.bxslider.css" />
+    <link rel="stylesheet" type="text/css" href="~/FrontapplicationDesign/css/animate.css" />
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="~/FrontapplicationDesign/images/ico/apple-touch-icon-144.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="~/FrontapplicationDesign/images/ico/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="~/FrontapplicationDesign/images/apple-touch-icon-72.png">
+    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57.png">
+
+    <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+
+    @{
+        var favimage = "";
+        VastwebmultiEntities db2 = new VastwebmultiEntities();
+        string currenturl = HttpContext.Current.Request.Url.Authority;
+        currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+        currenturl = currenturl.ToUpper();
+        var whitelabelid = "";
+        try
+        {
+            if (currenturl.Contains("LOCALHOST"))
+            {
+                whitelabelid = db2.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+            }
+            else
+            {
+                whitelabelid = db2.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+            }
+        }
+        catch { }
+        var faviconlogo = db2.tblfavicons.Where(p => p.UserId == whitelabelid).ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            //if (faviconlogo.SingleOrDefault().Role == "WHITELABEL")
+            //{
+            favimage = faviconlogo.SingleOrDefault().faviconimage;
+            //}
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var image = db2.tblfooterImages.Where(p => p.UserId == whitelabelid).ToList();
+        if (image.Count > 0)
+        {
+            ViewBag.image = image.SingleOrDefault().ImageUrl;
+        }
+        else
+        {
+            ViewBag.image = "img42.png";
+        }
+
+        ViewBag.Sate = db2.State_Desc.Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
+    }
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <style>
+        .headerwl.navbar {
+            position: absolute;
+            z-index: 1;
+            right: 0px;
+            left: 0px;
+            background: transparent;
+        }
+
+        .headerwl .navbar-inner {
+            background: transparent;
+        }
+
+
+
+
+
+        #top-navigation > li {
+            display: inline-block;
+        }
+
+
+
+        .outer-log > a {
+            color: #fff !important;
+            transition: .5s linear !important;
+            padding: 5px 15px !important;
+            background: rgba(0,0,0,.7);
+        }
+
+        .navbar .white-nav .nav .outer-log > a:hover {
+            background: #000 !important;
+            color: #fff !important;
+        }
+
+        .footer-wl-one {
+            display: -webkit-box;
+        }
+
+        #top-navigation li span {
+            background: rgba(0,0,0,.7);
+            padding: 5px 10px;
+            margin: 0pc 10px;
+        }
+
+        .footer-wl-one > li {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-wl-one li .fa {
+            display: block;
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .footer-wl-one li .social li {
+            padding: 0 0px;
+            width: 17%;
+        }
+
+        .footer {
+            text-align: left;
+        }
+
+        .footer {
+            background: url(../../AdminDesign/images/footer-third-wl.jpg)no-repeat top center;
+            background-size: cover;
+        }
+        .headerwl.fixed {
+    position: fixed;
+    background: #fff;
+    box-shadow: 0px 3px 12px -5px #000;
+    animation-fill-mode: both;
+    animation-duration: 1s;
+    animation-name: fadeInDown;
+}
+    </style>
+</head>
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var col = "";
+
+    //var color = db.changecolors.Where(p => p.UserId == whitelabelid).ToList();
+    List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.ColorSetting> people = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.ColorSetting>();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.ColorSetting>>(readWrite.Read("ColorSetting.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
+
+    var color = people.Where(p => p.UserId == whitelabelid).ToList();
+    if (color.Count > 0)
+    {
+        //if (color.SingleOrDefault().Role == "WHITELABEL")
+        //{
+        col = color.SingleOrDefault().multipaloutercolor;
+        //}
+    }
+    else
+    {
+        col = "";
+    }
+    var image1 = "";
+    var logo = db.tblOutsideLogoes.Where(p => p.UserId == whitelabelid).ToList();
+    if (logo.Count > 0)
+    {
+        image1 = logo.SingleOrDefault().LogoImage;
+    }
+    var vv = from tbl in db.tblMenus
+             where tbl.Status == "Y" && tbl.UserId == whitelabelid
+             select new
+             {
+                 tbl.MenuName
+             };
+    ViewBag.menuname = vv;
+    var admindetail = db.Admin_details.ToList();
+    var mailid = admindetail.SingleOrDefault().email;
+    var mobile = admindetail.SingleOrDefault().mobile;
+
+    string RDate = admindetail.FirstOrDefault().Date.ToString();
+    //string[] gg = RDate.Split('-');
+    //var RYear = gg[2].Split(' ')[0].ToString();
+
+    var whitelabelDetails = db.WhiteLabel_userList.Where(p => p.WhiteLabelID == whitelabelid).ToList();
+    //List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData> whitelabelDetails = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>();
+    //whitelabelDetails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>>(readWrite.Read("WhiteContactData.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
+    //var companyname = whitelabelDetails.Where(p => p.UserId == whitelabelid).ToList();
+
+
+    var company_Name = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().websitename;
+    var phone = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().Support_Mobile;
+    var WMobile = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().Mobile;
+    var address = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().Address;
+    var email = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().Support_Email;
+    var Wemail = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().EmailId;
+
+
+
+
+
+    //********************** Start Whitelabel Badges Media **************************
+    var Appfutura = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Appfutura" && p.Userid == whitelabelid).ToList();
+    var Appfutur = Appfutura.Count == 0 ? "" : Appfutura.SingleOrDefault().Url_Link;
+    var Applancher = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Applancher" && p.Userid == whitelabelid).ToList();
+    var Applanche = Applancher.Count == 0 ? "" : Applancher.SingleOrDefault().Url_Link;
+    var Badush = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Badush" && p.Userid == whitelabelid).ToList();
+    var Badus = Badush.Count == 0 ? "" : Badush.SingleOrDefault().Url_Link;
+    var Extract = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Extract" && p.Userid == whitelabelid).ToList();
+    var Extrac = Extract.Count == 0 ? "" : Extract.SingleOrDefault().Url_Link;
+    var Goodfirms = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Good-firms" && p.Userid == whitelabelid).ToList();
+    var Goodfirm = Goodfirms.Count == 0 ? "" : Goodfirms.SingleOrDefault().Url_Link;
+    var Mobileapp = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Mobile-app" && p.Userid == whitelabelid).ToList();
+    var Mobileap = Mobileapp.Count == 0 ? "" : Mobileapp.SingleOrDefault().Url_Link;
+    var Trustpilot = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Trustpilot" && p.Userid == whitelabelid).ToList();
+    var Trustpilo = Trustpilot.Count == 0 ? "" : Trustpilot.SingleOrDefault().Url_Link;
+    //********************** End Whitelabel Badges Media **************************
+
+}
+
+<body>
+    <div class="navbar headerwl">
+        <div class="navbar-inner">
+            <div class="container">
+                <a href="#" class="">
+                    <img src="@Url.Content("~/"+@image1)" alt="Logo" style="margin-top:6px;margin-bottom:6px;" />
+                    <!-- This is website logo -->
+                </a>
+
+                <!-- Main navigation -->
+                <div class="nav-collapse pull-right white-nav">
+                    <ul class="nav" id="top-navigation">
+                        <li>
+                            <span><i class="fa fa-phone" aria-hidden="true" style="margin-right:8px;"></i>@phone</span>
+                        </li>
+                        <li>
+                            <span><i class="fa fa-envelope-o" aria-hidden="true" style="margin-right:8px;"></i>@email</span>
+                        </li>
+                        <li class="outer-log"><a href='@Url.Action("NewLogin","Home")'>Login</a></li>
+                        @*<li class="outer-log"><a style="font-weight:bold;" href='javascript:void(0);'>Login</a></li>*@
+
+                    </ul>
+
+                </div>
+                <!-- End main navigation -->
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    @RenderBody()
+
+    <div class="footer" style="border-top:5px solid white; background-color:#64798a;padding: 50px 0px;">
+        <div class="container">
+            <div class="row-fluid" style="margin-top:10px;">
+               
+                <div class="col-md-6">
+                 
+                    <ul>
+                        <li style="margin-bottom:15px;">
+                            <span style="font-size:28px; margin-top:5px;"><i class="fa fa-building-o" aria-hidden="true" style="margin-right:12px;"></i>@company_Name</span>
+                        </li>
+                        <li style="margin-bottom:10px;">
+                            <span style="font-size:16px; margin-top:5px;"><i class="fa fa-phone" aria-hidden="true" style="margin-right:12px;"></i>@WMobile</span>
+                        </li>
+
+                        <li style="margin-bottom:10px;">
+                            <span style="font-size:16px; margin-top:5px;"><i class="fa fa-envelope-o" aria-hidden="true" style="margin-right:12px;"></i>@Wemail</span>
+                        </li>
+                        <li>
+                            <span style="font-size:16px; margin-top:5px;"><i class="fa fa-map-marker" aria-hidden="true" style="margin-right:12px;"></i>@address</span>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="col-md-6">
+                    <ul class="footer-wl-one">
+                        <li>
+                            <div class="footer-wl-in">
+                                <div class="row-fluid centered">
+                                    <ul class="social">
+                                        @if (Appfutur != "")
+                                        {
+                                            <li>
+
+                                                <a href="@Appfutur" target="_blank">
+
+                                                    <img src="~/AdminDesign/images/Appfutura.png" />
+                                                </a>
+
+                                            </li>
+                                        }
+                                        @if (Applanche != "")
+                                        {
+                                            <li>
+
+                                                <a href="@Applanche" target="_blank">
+                                                    <img src="~/AdminDesign/images/applancher.png" />
+                                                </a>
+
+                                            </li>
+                                        } @if (Badus != "")
+                                        {
+                                            <li>
+
+                                                <a href="@Badus" target="_blank">
+                                                    <img src="~/AdminDesign/images/badush1.png" />
+                                                </a>
+
+                                            </li>
+                                        }
+                                        @if (Extrac != "")
+                                        {
+                                            <li>
+
+                                                <a href="@Extrac" target="_blank">
+                                                    <img src="~/AdminDesign/images/extract-badge-black.png" />
+                                                </a>
+
+                                            </li>
+                                        }
+                                        @if (Goodfirm != "")
+                                        {
+                                            <li>
+
+                                                <a href="@Goodfirm" target="_blank">
+                                                    <img src="~/AdminDesign/images/good-firms.png" />
+                                                </a>
+
+                                            </li>
+                                        }
+                                        @if (Mobileap != "")
+                                        {
+                                            <li>
+
+                                                <a href="@Mobileap" target="_blank">
+
+                                                    <img src="~/AdminDesign/images/mobile-app.png" />
+                                                </a>
+
+                                            </li>
+                                        }
+                                        @if (Trustpilo != "")
+                                        {
+                                            <li>
+
+                                                <a href="@Trustpilo" target="_blank">
+                                                    <img src="~/AdminDesign/images/trustpilot-posst-80-1a.png" />
+                                                </a>
+
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                                <span style="font-size:16px; margin-top:5px;">
+                                    © 2019 - @DateTime.Now.Year All Rights Reserved | @company_Name&nbsp;<a href="@Url.Action("WhitelabelDownloadAPK", "Home")" title="Click to Download Android Application"><img src="~/AdminDesign/images/google-play-wl.jpg" style="width:140px; display:inline-block;" /></a>
+                                </span>
+
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+    <div class="scrollup">
+        <a href="#">
+            <i class="icon-up-open"></i>
+        </a>
+    </div>
+    @*@{
+            <input type="button" value="sleep" id="btnsleep" data-toggle="modal" data-target="#sleep-modal" style="display:none;">
+            <div class="modal fade" id="sleep-modal" style="top:17%;">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="background-color:white;">
+                        <div class="modal-body">
+                            <img src="@Url.Content("~/Deskrop Sleep Mode.png")" id="mImage" class="img-responsive" />
+                        </div>
+                        <div>
+                            <span style="font-size:15px; margin-left:15px; color:black;">Mail-id :-<b style="color:red;"> @mailid</b> </span>
+                            <br />
+                            <span style="font-size:15px; margin-left:15px; color:black;">Mobile No :-<b style="color:red;"> @mobile</b></span>
+                        </div>
+                        <div class="modal-footer" style="background-color:white;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="font-size:16px;">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }*@
+
+
+    <script src="~/FrontapplicationDesign/js/jquery.js"></script>
+    <script type="text/javascript" src="~/FrontapplicationDesign/js/jquery.mixitup.js"></script>
+    <script type="text/javascript" src="~/FrontapplicationDesign/js/bootstrap.js"></script>
+    <script type="text/javascript" src="~/FrontapplicationDesign/js/modernizr.custom.js"></script>
+    <script type="text/javascript" src="~/FrontapplicationDesign/js/jquery.bxslider.js"></script>
+    <script type="text/javascript" src="~/FrontapplicationDesign/js/jquery.cslider.js"></script>
+    <script type="text/javascript" src="~/FrontapplicationDesign/js/jquery.placeholder.js"></script>
+    <script type="text/javascript" src="~/FrontapplicationDesign/js/jquery.inview.js"></script>
+    <script type="text/javascript" src="~/FrontapplicationDesign/js/app.js"></script>
+
+    <script type="text/javascript">
+        var val1 = "";
+        function animation(type) {
+
+            var url = '@Url.Action("pagefootercontent", "Home")'
+            $.ajax({
+                url: url,
+                data: { type: type },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    if (data != "") {
+                        document.getElementById("shoppingBasket").innerHTML = data;
+                        $('#defaultModal').modal('show');
+                    }
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+    </script>
+    <script>
+        window.onload=function()
+        {
+            var block = '@ViewData["msg"]';
+            if (block == "websiteblock") {
+                $('#btnsleep').click();
+                $("#sleep-modal").modal('show');
+            }
+        }
+    </script>
+    @*<script>
+
+            $('.outer-log').click(function () {
+                $('.for-outer').fadeIn('slow');
+            })
+            $('.for-outer-close').click(function () {
+                $('.for-outer').fadeOut('slow');
+            })
+            $('.for-create').click(function () {
+                $('.login-form').fadeOut('slow');
+                $('.create-form').fadeIn('slow');
+            })
+            $('.for-login').click(function () {
+                $('.login-form').fadeIn('slow');
+                $('.create-form').fadeOut('slow');
+            })
+            $('.for-forget').click(function () {
+                $('.login-form').fadeOut('slow');
+                $('.forget-form').fadeIn('slow');
+            })
+            $('.for-forget-login').click(function () {
+                $('.login-form').fadeIn('slow');
+                $('.forget-form').fadeOut('slow');
+            })
+
+
+
+        </script>*@
+</body>
+</html>
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog" style="background:white;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-footer" id="silder1">
+                <button type="button" style="background:none; color:red; border:none;" data-dismiss="modal">CLOSE</button>
+            </div>
+            <div class="modal-body" style="margin-top:-26px; max-height:500px;">
+                <div class="body">
+                    <form>
+                        <div id="shoppingBasket" style="font-size: 13px; text-align: justify; color: black;">
+                            <p>Page Content</p>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function FillDistict() {
+        var State_id = $('#state').val();
+        var dist = $('#distict').val();
+
+    $.ajax({
+        url: '@Url.Action("FillDistict", "Home")',
+        type: "GET",
+        dataType: "JSON",
+        data: { State: State_id },
+        success: function (data) {
+            var markup = "<option value=''> -- Select District --</option>";
+            for (var x = 0; x < data.length; x++) {
+                markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+            }
+            $("#distict").html(markup).show();
+        },
+        error: function (reponse) {
+            alert("error : " + reponse);
+        }
+    });
+  }
+</script>
+<script>
+    $("#digit-1, #digit-2, #digit-3, #digit-4, #digit-5, #digit-6").on("keyup", function () {
+        debugger
+        var OtpDigit = $("#digit-1").val() + $("#digit-2").val() + $("#digit-3").val() + $("#digit-4").val() + $("#digit-5").val() + $("#digit-6").val();
+
+
+        if (OtpDigit.length == 6) {
+            $('#Code').val(OtpDigit);
+
+            $('#subHere').click();
+        }
+    });
+</script>
+
+<script>
+    $('.digit-group').find('input').each(function () {
+        debugger;
+        $(this).attr('maxlength', 1);
+        $(this).on('keyup', function (e) {
+            var parent = $($(this).parent());
+
+            if (e.keyCode === 8 || e.keyCode === 37) {
+                var prev = parent.find('input#' + $(this).data('previous'));
+
+                if (prev.length) {
+                    $(prev).select();
+                }
+            } else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                var next = parent.find('input#' + $(this).data('next'));
+
+                if (next.length) {
+                    $(next).select();
+                } else {
+                    if (parent.data('autosubmit')) {
+                        parent.submit();
+                    }
+                }
+            }
+        });
+    });
+</script>
+<script>
+    $(window).scroll(function () {
+        var sticky = $('.headerwl'),
+            scroll = $(window).scrollTop();
+
+        if (scroll >= 80) {
+            sticky.addClass('fixed');
+        }
+        else {
+            sticky.removeClass('fixed');
+
+        }
+    });
+</script>

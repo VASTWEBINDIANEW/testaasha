@@ -1,0 +1,346 @@
+﻿@model IEnumerable<Vastwebmulti.Models.User_wise_comm_report_Result>
+@{
+    ViewBag.Title = "User_wise_operator_comm";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+
+    #successtotal p:last-child, #Failedtotal p:last-child, #Pendingtotal p:last-child {
+        position: static;
+        margin: 0px;
+        line-height: 15px;
+    }
+
+    #Failedtotal p:first-child, #successtotal p:first-child, #Pendingtotal p:first-child {
+        position: static;
+    }
+
+    #pdfblock .pdfblocks {
+        position: static;
+        border: none;
+        padding: 0px 7px;
+    }
+
+    .form-iconmy {
+        top: 0px;
+        padding: 5px 7px;
+    }
+
+    .rechargepdfexal {
+        width: 75%;
+    }
+
+    @@media screen and (max-width:1366px) and (min-width:766px) {
+        .input-daterange.input-group input {
+            text-align: right;
+        }
+    }
+
+    @@media screen and (max-width:991px){
+        .usrwise-pageheader {width:100% !important;float:left;}
+        .col-md-1, .rechargepdfexal {
+            margin-top: 0px !important;
+        }
+    }
+
+
+    @@media only screen and (max-width:766px) {
+        .ls-closed section.content {
+            margin-left: 0px;
+            padding: 0px 10px;
+        }
+
+            .ls-closed section.content > .container-fluid {
+                padding-right: 0px;
+                padding-left: 0px;
+            }
+
+        .user-wise-api {
+            margin: 0px;
+        }
+
+            .user-wise-api .col-md-4 {
+                padding: 0px;
+            }
+
+            .user-wise-api .col-md-3 {
+                padding: 0px;
+            }
+
+                .user-wise-api .col-md-3 .form-group {
+                    margin-bottom: 5px;
+                }
+
+            
+
+        .rechargepdfexal {
+            width: 100%;
+            margin: 5px 0px;
+        }
+
+        .user-wise-api form ~ .col-md-4 {
+            width: auto !important;
+            float: right;
+            position: absolute;
+            bottom: 2px;
+            right: 0;
+        }
+        .col-md-1 {width:auto;float:left !important;padding-left:0px !important;}
+        .bread-same-all-page.breadsameall-second ul {
+            margin-bottom: 0;
+        }
+        .col-md-3 {width:100%;float:left;}
+    }
+
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Operator Wise Commission Report</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                @*<li><a href="javascript:void(0);">Basic Setting&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>*@
+                <li><a href="javascript:void(0);">Operator Comm</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card" style="margin-bottom:0px;">
+                    <div class="row user-wise-api">
+                        <div class="col-md-4 usrwise-pageheader" style="width:auto;float:left;">
+                            <div class="bread-same-all-page breadsameall-second" style="width:100%;float:left;">
+                                <ul class="">
+                                    <li class="smli">
+                                        <a href="@Url.Action("Dashboard","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                            Dashboard&nbsp;<img src="../../ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;">
+                                        </a>
+                                    </li>
+                                    <li class="fullbodydycolorbg tmw-total-color-one">
+                                        Operator Wise Commission Report
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4" style="width:auto;float:right;width:auto;">
+
+
+                            <div class="rechargepdfexal" style="float:right;width:auto;">
+                                <span><img src="~/ashok-images/pdf.png"><input type="button" id="btnPDF" value="PDF" style="border:0px;background:transparent"></span>
+                                <span>
+                                    <img src="~/ashok-images/xls.png"><input type="button" id="btnExport" value="Export" style="border:0px;background:transparent;">
+                                </span>
+
+                                <button onclick="findtotal()" class="btn" id="pdfblock" style=" margin-left:2px; height:32px;border:1px solid #c7c2c2;background:#dedddd;">
+                                    <span class="displaypdf" style="top:-1px;color:black;">TOTAL</span>
+                                    <strong class="pdfblocks" style="display:none;float:right; width:80% !important">
+                                        <span id="successtotal" style="background-color:green !important;height: 25px !important;font-size: 18px !important"></span>
+                                        <span id="Failedtotal" style="background-color:red !important;height: 25px !important;font-size: 18px !important"></span>
+                                        <span id="Pendingtotal" style="background-color:orange !important;height: 25px !important;font-size: 18px !important"></span>
+                                    </strong>
+                                </button>
+                            </div>
+
+                        </div>
+
+                        @using (Html.BeginForm("User_wise_operator_comm", "Home", FormMethod.Post))
+                        {
+
+
+                            <div class="col-md-1" style="padding:0px 5px;float:right;">
+
+                                <button type="submit" class="btn" style=" height:32px;border:1px solid #ddd;background:transparent;width:100%;">
+                                    <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                    <span style="top:-2px;color:black;">Search</span>
+                                </button>
+
+                            </div>
+
+                            <div class="col-md-3" style="padding-right:0px;float:right;">
+                                <div class="form-group">
+                                    <div class="input-daterange input-group">
+                                        <div class="form-iconmy"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i></div>
+                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; height:32px;", autocomplete = "off" })
+                                        <span class="input-group-addon" style="padding:0px;min-width:5px;">
+
+                                        </span>
+                                        <div style="position:relative;width:100%;float:left;">
+                                            <div class="form-iconmy"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i></div>
+                                            @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; height:32px;", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+
+
+
+                        }
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+
+
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                <div class="table-responsive tableseconddes-master" style="position:inherit;">
+                    <table class="table table-bordered" style="width:100%;font-size:12px;">
+                        <thead style="background-color:whitesmoke;">
+                            <tr>
+                                <th>Email-ID</th>
+                                <th>Name</th>
+                                <th>Frim&nbsp;Name</th>
+                                <th>Operator&nbsp;Name</th>
+                                <th>Income</th>
+                                <th>Total Success</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <td><p style="font-size:13px;">@item.Email</p></td>
+                                    <td><p style="font-size:13px;">@item.RetailerName</p></td>
+                                    <td><p style="font-size:13px;">@item.Frm_Name</p></td>
+                                    <td><p style="font-size:13px;">@item.optnm</p></td>
+                                    <td><p style="font-size:13px;">@item.remincome</p></td>
+                                    <td><p style="font-size:13px;">@item.total</p></td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+
+</section>
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<script>
+    $(document).ready(function () {
+       $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "bottom auto",
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+
+    });
+</script>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print'
+            ]
+        });
+    });
+</script>
+
+
+<script>
+    $("#btnExport").click(function(){
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+       
+        var url = '@Url.Action("ExcelUser_wise_operator_comm", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date;
+            
+        location.href = url;
+});
+</script>
+
+
+<script>
+    $("#btnPDF").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+
+        var url = '@Url.Action("PDFUser_wise_operator_comm", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date;
+        window.open(
+url,
+  '_blank' // <- This is what makes it open in a new window.
+);
+    });
+</script>
+
+
+
+

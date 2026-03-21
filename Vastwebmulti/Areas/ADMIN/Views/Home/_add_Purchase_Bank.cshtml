@@ -1,0 +1,119 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.Purchase_Account
+<div class="purchase-history">
+    <div class="table-responsive">
+        <table class="table  table-striped table-bordered table-hover third-design-table">
+            <thead>
+                <tr>
+                    <th>API Name</th>
+                    <th>Payee Name</th>
+                    <th>Bank Name</th>
+                    <th>Account Number</th>
+                    <th>Ifsc Code</th>
+                    <th>Comment</th>
+                    <th>Status</th>
+                    <th>Del</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.infoaccount)
+                {
+                    <tr>
+                        <td>@item.APINAME</td>
+                        <td>@item.Payeename</td>
+                        <td>@item.bankname</td>
+                        <td>@item.AccountNo</td>
+                        <td>@item.Ifsccode</td>
+                        <td>@item.Comment</td>
+                        <td>
+                            @if (item.Status == "Y")
+                            {
+                                <button onclick="statusupdate('@item.APINAME')" style="border-color:transparent;background-color:transparent;">
+                                    <i class="fa fa-toggle-on fa-2x" style="color:green;"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button onclick="statusupdate('@item.APINAME')" style="border-color:transparent;background-color:transparent;">
+                                    <i class="fa fa-toggle-off fa-2x" style="color:red;"></i>
+                                </button>
+                            }
+                        </td>
+                        <td>
+                            <button onclick="del('@item.APINAME')" style="border-color:transparent;background-color:transparent;">
+                                <i style="font-size:24px;color:red;" class="fa">&#xf014;</i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function statusupdate(apinm) {
+        $.ajax({
+            url: '@Url.Action("UpdateBankSts", "Home")',
+            type: "POST",
+            data: { Apinm: apinm },
+            cache: false,
+            success: function (data2) {
+                $('#tab-8').html(data2);
+            }
+        });
+    }
+    function del(apinm) {
+        $.ajax({
+            url: '@Url.Action("delbankinfo", "Home")',
+            type: "POST",
+            data: { Apinm: apinm },
+            cache: false,
+            success: function (data2) {
+                $('#tab-8').html(data2);
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function success() {
+        var name = '@Model.msg';
+
+        if (name == "OtpMissMatch") {
+            $('#addmsgshow').text("OTP MissMatch");
+        }
+        else if (name == "notAllow") {
+            $('#msgidno').text("Same Party Bank Already ADD");
+            $('#post1').show();
+            $('#post2').hide();
+            $('#b_Banknm').val("");
+            $('#b_payeenm').val("");
+            $('#b_accountnm').val("");
+            $('#b_ifsccode').val("");
+            $('#b_comment').val("");
+        }
+    }
+    function fail() {
+        alert("err");
+    }
+</script>
+
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

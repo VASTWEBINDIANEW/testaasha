@@ -1,0 +1,647 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.MicroAtmSlabModel
+@using (Ajax.BeginForm("_UserMicroatmSlab", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess1", OnFailure = "onfailed", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+{
+    <input id="btnsubmituser" type="submit" value="Update For Existing Users" class="btn  waves-effect" style="display:none;" />
+    <input id="btnsubmitusercommon" type="submit" name="Button" value="Update Existing & New Users" class="btn  waves-effect" style="display:none;" />
+    <input id="btnsubmitusercommondlmrem" type="submit" name="Button" value="Update Existing & New Users" class="btn  waves-effect" style="display:none;" />
+    @Html.HiddenFor(m => m.role)
+    <div class="row clearfix" style="margin-right:0px;">
+        <div class="col-md-12">
+            <div class="slab-master-block">
+                <div class="slab-master-block-left">
+                    <div id="allshow" class="row">
+                        <div class="col-md-12" style="padding-right:20px;">
+                            <div class="custom-district-img">
+                                <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                            </div>
+                            @Html.DropDownList("ddlUserId", Model.UserId, "All Users", new { @class = "form-control for-select2", @onchange = "ddlUserIdChange()" })
+                        </div>
+                    </div>
+                    <div id="retailerdrop" class="row" style="display:none;">
+                        <div class="col-md-6" style="padding-right:0px;">
+                            <div>
+                                <div class="custom-district-img">
+                                    <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                                </div>
+                                @Html.DropDownList("ddldealer", Model.UserId, "All Distributor", new { @class = "form-control for-select2", @onchange = "ddlretailerid()" })
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="padding-left:5px;padding-right:20px;">
+                            <div>
+                                <div class="custom-district-img">
+                                    <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                                </div>
+                                @Html.DropDownList("ddlUserIdrem", Model.Retailerid, "All Retailer", new { @class = "form-control for-select2", @onchange = "ddlUserIdChangerem()" })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slab-master-block-right">
+                    <div id="slab-master-message" class="slab-master-message slab-master-message-show" style="display: none;">
+                        <p>  If you edit the slabs of all the master distributors, you are given a data view of the common slabs.</p>
+                    </div>
+                    <div id="slab-master-detail" class="slab-master-detail slab-master-detail-hide" style="display: block;">
+                        <div class="row clearfix">
+
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon">
+                                    <img src="~/AdminDesign/images/user.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Name" value="@Model.Name">
+
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon" style="border-left: 1px solid #bbb;">
+                                    <img src="~/AdminDesign/images/number.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Registered Number" value="@Model.Phone">
+
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4 col-4">
+                                <span class="master-slab-right-icon" style="border-left: 1px solid #bbb;">
+                                    <img src="~/AdminDesign/images/email.svg">
+                                </span>
+                                <input class="form-control" type="text" placeholder="User Registered Mail" value="@Model.Email">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slab-table">
+        <table class="table table-bordered third-design-table">
+            <thead class="navbar" style="position:initial;">
+                <tr>
+                    <th>Email</th>
+                    <th>Card&nbsp;Type</th>
+                    <th>Card&nbsp;Category&nbsp;Type</th>
+                    <th>Card&nbsp;Name</th>
+                    <th>Minium&nbsp;Value</th>
+                    <th>Maximum&nbsp;Value</th>
+                    <th>Charge</th>
+                    <th>Charge&nbsp;Type</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyshow">
+                <!--master-->
+                @if (Model.MasterMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.MasterMicroatmUser.Count; i++)
+                    {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].cardtype)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].cardcategorytype)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].cardname)
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].minvalue)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].maxvalue)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].charge)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].chargetype)
+                    </td>
+                </tr>
+
+                    }
+                }
+                <!--Dealer-->
+                @if (Model.DealerMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.DealerMicroatmUser.Count; i++)
+                    {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].cardname)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].minvalue)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].maxvalue)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].chargetype)
+                </td>
+            </tr>
+
+                    }
+                }
+
+                <!--Retailer-->
+                @if (Model.RetailerMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.RetailerMicroatmUser.Count; i++)
+                    {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].cardname)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].minvalue)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].maxvalue)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].chargetype)
+                </td>
+            </tr>
+
+                    }
+                }
+
+                <!--Whitelabel-->
+                @if (Model.WhitelabelMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.WhitelabelMicroatmUser.Count; i++)
+                    {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].cardname)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].minvalue)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].maxvalue)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].chargetype)
+                </td>
+            </tr>
+
+                    }
+                }
+            </tbody>
+            <tbody id="tbodyedit" style="display:none;">
+                <!--master-->
+                @if (Model.MasterMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.MasterMicroatmUser.Count; i++)
+                    {
+                       // var value = Model.MasterMposUser[i].credite_type;
+                <tr>
+                    @Html.HiddenFor(a => a.MasterMicroatmUser[i].usertype)
+                    @Html.HiddenFor(a => a.MasterMicroatmUser[i].idno)
+                    <td>
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].Email)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(a => a.MasterMicroatmUser[i].cardtype)
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].cardtype)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(a => a.MasterMicroatmUser[i].cardcategorytype)
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].cardcategorytype)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(a => a.MasterMicroatmUser[i].cardname)
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].cardname)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(a => a.MasterMicroatmUser[i].minvalue)
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].minvalue)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(a => a.MasterMicroatmUser[i].maxvalue)
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].maxvalue)
+                    </td>
+                    <td>
+                        @Html.EditorFor(a => a.MasterMicroatmUser[i].charge, new { htmlAttributes = new { @style = "width:100%" } })
+                        @Html.ValidationMessageFor(a => a.MasterMicroatmUser[i].charge)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(a => a.MasterMicroatmUser[i].chargetype)
+                        @Html.DisplayFor(a => a.MasterMicroatmUser[i].chargetype)
+                    </td>
+                </tr>
+                    }
+                }
+
+                <!--Dealer-->
+                @if (Model.DealerMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.DealerMicroatmUser.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.DealerMicroatmUser[i].usertype)
+                @Html.HiddenFor(a => a.DealerMicroatmUser[i].idno)
+                <td>
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].Email)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.DealerMicroatmUser[i].cardtype)
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.DealerMicroatmUser[i].cardcategorytype)
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.DealerMicroatmUser[i].cardname)
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].cardname)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.DealerMicroatmUser[i].minvalue)
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].minvalue)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.DealerMicroatmUser[i].maxvalue)
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].maxvalue)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.DealerMicroatmUser[i].charge, new { htmlAttributes = new { @style = "width:100%" } })
+                    @Html.ValidationMessageFor(a => a.DealerMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.DealerMicroatmUser[i].chargetype)
+                    @Html.DisplayFor(a => a.DealerMicroatmUser[i].chargetype)
+                </td>
+            </tr>      
+                    }
+                }
+
+                <!--Reatiler-->
+                @if (Model.RetailerMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.RetailerMicroatmUser.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.RetailerMicroatmUser[i].usertype)
+                @Html.HiddenFor(a => a.RetailerMicroatmUser[i].idno)
+                <td>
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].Email)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.RetailerMicroatmUser[i].cardtype)
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.RetailerMicroatmUser[i].cardcategorytype)
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.RetailerMicroatmUser[i].cardname)
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].cardname)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.RetailerMicroatmUser[i].minvalue)
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].minvalue)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.RetailerMicroatmUser[i].maxvalue)
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].maxvalue)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.RetailerMicroatmUser[i].charge, new { htmlAttributes = new { @style = "width:100%" } })
+                    @Html.ValidationMessageFor(a => a.RetailerMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.RetailerMicroatmUser[i].chargetype)
+                    @Html.DisplayFor(a => a.RetailerMicroatmUser[i].chargetype)
+                </td>
+            </tr>
+                    }
+                }
+
+                <!--Whitelabel-->
+                @if (Model.WhitelabelMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.WhitelabelMicroatmUser.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.WhitelabelMicroatmUser[i].usertype)
+                @Html.HiddenFor(a => a.WhitelabelMicroatmUser[i].idno)
+                <td>
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].Email)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.WhitelabelMicroatmUser[i].cardtype)
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.WhitelabelMicroatmUser[i].cardcategorytype)
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.WhitelabelMicroatmUser[i].cardname)
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].cardname)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.WhitelabelMicroatmUser[i].minvalue)
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].minvalue)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.WhitelabelMicroatmUser[i].maxvalue)
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].maxvalue)
+                </td>
+                <td>
+                    @Html.EditorFor(a => a.WhitelabelMicroatmUser[i].charge, new { htmlAttributes = new { @style = "width:100%" } })
+                    @Html.ValidationMessageFor(a => a.WhitelabelMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.WhitelabelMicroatmUser[i].chargetype)
+                    @Html.DisplayFor(a => a.WhitelabelMicroatmUser[i].chargetype)
+                </td>
+            </tr>
+                    }
+                }
+
+            </tbody>
+            <tbody id="tbodyeditAll" style="display:none;">
+                <!--master-->
+                @if (Model.MasterMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.UpdateMicroatmUser.Count; i++)
+                    {
+                        <tr>
+                            @Html.HiddenFor(a => a.UpdateMicroatmUser[i].idno)
+                            @Html.HiddenFor(a => a.UpdateMicroatmUser[i].usertype)
+
+                            <td>
+                                <p>All</p>
+                            </td>
+                            <td>
+                                @Html.HiddenFor(a=> a.UpdateMicroatmUser[i].cardtype)
+                                @Html.DisplayFor(a => a.UpdateMicroatmUser[i].cardtype)
+                            </td>
+                            <td>
+                                @Html.HiddenFor(a => a.UpdateMicroatmUser[i].cardcategorytype)
+                                @Html.DisplayFor(a => a.UpdateMicroatmUser[i].cardcategorytype)
+                            </td>
+                            <td>
+                                @Html.HiddenFor(a => a.UpdateMicroatmUser[i].cardname)
+                                @Html.DisplayFor(a => a.UpdateMicroatmUser[i].cardname)
+                            </td>
+                            <td>
+                                @Html.HiddenFor(a => a.UpdateMicroatmUser[i].minvalue)
+                                @Html.DisplayFor(a => a.UpdateMicroatmUser[i].minvalue)
+                            </td>
+                            <td>
+                                @Html.HiddenFor(a => a.UpdateMicroatmUser[i].maxvalue)
+                                @Html.DisplayFor(a => a.UpdateMicroatmUser[i].maxvalue)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(a => a.UpdateMicroatmUser[i].charge, new { @style = "width:100%" })
+                                @Html.ValidationMessageFor(a => a.UpdateMicroatmUser[i].charge)
+                            </td>
+                            <td>
+                                @Html.HiddenFor(a => a.UpdateMicroatmUser[i].chargetype)
+                                @Html.DisplayFor(a => a.UpdateMicroatmUser[i].chargetype)
+                            </td>
+                        </tr>
+                    }
+                }
+
+                <!--Dealer-->
+                @if (Model.DealerMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.UpdateDealerMicroatmUser.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.UpdateDealerMicroatmUser[i].idno)
+                @Html.HiddenFor(a => a.UpdateDealerMicroatmUser[i].usertype)
+
+                <td>
+                    <p>All</p>
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateDealerMicroatmUser[i].cardtype)
+                    @Html.DisplayFor(a => a.UpdateDealerMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateDealerMicroatmUser[i].cardcategorytype)
+                    @Html.DisplayFor(a => a.UpdateDealerMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateDealerMicroatmUser[i].cardname)
+                    @Html.DisplayFor(a => a.UpdateDealerMicroatmUser[i].cardname)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateDealerMicroatmUser[i].minvalue)
+                    @Html.DisplayFor(a => a.UpdateDealerMicroatmUser[i].minvalue)
+
+
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateDealerMicroatmUser[i].maxvalue)
+                    @Html.DisplayFor(a => a.UpdateDealerMicroatmUser[i].maxvalue)
+
+
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.UpdateDealerMicroatmUser[i].charge, new { @style = "width:100%" })
+                    @Html.ValidationMessageFor(a => a.UpdateDealerMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateDealerMicroatmUser[i].chargetype)
+                    @Html.DisplayFor(a => a.UpdateDealerMicroatmUser[i].chargetype)
+                </td>
+            </tr>
+                    }
+                }
+
+                <!--Reatiler-->
+                @if (Model.RetailerMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.UpdateRetailerMicroatmUser.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.UpdateRetailerMicroatmUser[i].idno)
+                @Html.HiddenFor(a => a.UpdateRetailerMicroatmUser[i].usertype)
+
+                <td>
+                    <p>All</p>
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateRetailerMicroatmUser[i].cardtype)
+                    @Html.DisplayFor(a => a.UpdateRetailerMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateRetailerMicroatmUser[i].cardcategorytype)
+                    @Html.DisplayFor(a => a.UpdateRetailerMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateRetailerMicroatmUser[i].cardname)
+                    @Html.DisplayFor(a => a.UpdateRetailerMicroatmUser[i].cardname)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateRetailerMicroatmUser[i].minvalue)
+                    @Html.DisplayFor(a => a.UpdateRetailerMicroatmUser[i].minvalue)
+
+
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateRetailerMicroatmUser[i].maxvalue)
+                    @Html.DisplayFor(a => a.UpdateRetailerMicroatmUser[i].maxvalue)
+
+
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.UpdateRetailerMicroatmUser[i].charge, new { @style = "width:100%" })
+                    @Html.ValidationMessageFor(a => a.UpdateRetailerMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateRetailerMicroatmUser[i].chargetype)
+                    @Html.DisplayFor(a => a.UpdateRetailerMicroatmUser[i].chargetype)
+                </td>
+            </tr>
+                    }
+                }
+                <!--whitelabel-->
+                @if (Model.WhitelabelMicroatmUser != null)
+                {
+                    for (int i = 0; i < Model.UpdateWhitelabelMicroatmUser.Count; i++)
+                    {
+            <tr>
+                @Html.HiddenFor(a => a.UpdateWhitelabelMicroatmUser[i].idno)
+                @Html.HiddenFor(a => a.UpdateWhitelabelMicroatmUser[i].usertype)
+
+                <td>
+                    <p>All</p>
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateWhitelabelMicroatmUser[i].cardtype)
+                    @Html.DisplayFor(a => a.UpdateWhitelabelMicroatmUser[i].cardtype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateWhitelabelMicroatmUser[i].cardcategorytype)
+                    @Html.DisplayFor(a => a.UpdateWhitelabelMicroatmUser[i].cardcategorytype)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateWhitelabelMicroatmUser[i].cardname)
+                    @Html.DisplayFor(a => a.UpdateWhitelabelMicroatmUser[i].cardname)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateWhitelabelMicroatmUser[i].minvalue)
+                    @Html.DisplayFor(a => a.UpdateWhitelabelMicroatmUser[i].minvalue)
+
+
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateWhitelabelMicroatmUser[i].maxvalue)
+                    @Html.DisplayFor(a => a.UpdateWhitelabelMicroatmUser[i].maxvalue)
+
+
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.UpdateWhitelabelMicroatmUser[i].charge, new { @style = "width:100%" })
+                    @Html.ValidationMessageFor(a => a.UpdateWhitelabelMicroatmUser[i].charge)
+                </td>
+                <td>
+                    @Html.HiddenFor(a => a.UpdateWhitelabelMicroatmUser[i].chargetype)
+                    @Html.DisplayFor(a => a.UpdateWhitelabelMicroatmUser[i].chargetype)
+                </td>
+            </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+}
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script>
+    $('.for-select2').select2();
+
+
+</script>
+
+<script>
+    function OnSuccess1(data) {
+        $('#btnsubmituser').hide();
+        $('#btnsubmitusercommon').hide();
+        $('#btnEdit').show();
+         var chk = '@Model.role';
+            if (chk == "Retailer") {
+                $('#retailerdrop').show();
+                $('#allshow').hide();
+            }
+            else {
+                $('#retailerdrop').hide();
+                $('#allshow').show();
+            }
+    }
+    function onfailed(error) {
+        alert(error.responseText);
+    }
+</script>
+
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

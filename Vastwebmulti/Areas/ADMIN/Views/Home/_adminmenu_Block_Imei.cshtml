@@ -1,0 +1,242 @@
+﻿@model IEnumerable<Vastwebmulti.Areas.ADMIN.Models.App_login_Allow_imei>
+
+@{
+    string usertype = (string)ViewBag.usertype;
+
+    string ret = "";
+    string deler = "";
+    string master = "";
+    string drop_select_name = "Select " + usertype + " ID";
+
+    if(usertype == "Dealer")
+    {
+        deler = "active";
+    }
+    else if (usertype == "Master")
+    {
+        master = "active";
+    }
+
+
+    else
+    {
+        ret = "active";
+    }
+
+}
+
+<style>
+    .delet:hover {
+        color: red;
+        background: transparent !important;
+    }
+    .delet {
+        background-color: rgb(191, 190, 190) !important;
+        text-align: center !important;
+        width: 100%;
+        padding: 0px;
+    }
+
+    .mode {
+        padding: 5px;
+        color: #ffff;
+        float: right;
+        border: none;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    #RetailerSearch {
+        background: var(--main-bg-lcolor) !important;
+    }
+
+        #RetailerSearch span {
+            color: #fff;
+        }
+    .mode-outclass li {
+        background: var(--main-bg-lcolor) !important;
+    }
+
+    #mode-out li.active {
+        background: green !important;
+    }
+</style>
+<ul class="nav nav-tabs mode-outclass" id="mode-out">
+    @* <li class="active"><a href="#">Home</a></li>*@
+    <li class="@ret" style="width:33.33%;border-right:2px solid #eae9e9;"><button type="button" class="mode active" onclick="modelpopupopen123('Retailer')" style="width: 100%;background: transparent;">Retailer&nbsp;Allow&nbsp;IMEI</button></li>
+    <li class="@deler" style="width:33.33%;border-right:2px solid #eae9e9;"><button type="button" class="mode" onclick="modelpopupopen123('Dealer')" style="width: 100%;background: transparent;">Distributor&nbsp;Allow&nbsp;IMEI</button></li>
+    <li class="@master" style="width:33.33%;"><button type="button" class="mode" onclick="modelpopupopen123('Master')" style="width: 100%;background: transparent;">MasterAllow&nbsp;IMEI</button></li>
+
+</ul>
+<div class="three-page-same upi-charge all-type-third upiclass-respfull-third" style="width:100%;">
+    <div class="un-re-wa-right" style="margin: 28px 0px 11px 0px">
+        @*@using (Html.BeginForm("Retailerblockadd", "Home", FormMethod.Post))
+            {*@
+        <input type="hidden" id="hdadminblockImeie" name="hdadminblockImeie" value="" />
+        <div class="unload-item item-one" style="width:50%;">
+            @Html.DropDownList("Retailerid1", ViewBag.apiid as SelectList, drop_select_name, new { @class = " form-control border-0", @style = "border: 1px solid #8e7f7f4d !important;", required = true })
+        </div>
+        <div class="unload-item item-one" style="width:32%;">
+            @Html.TextBox("txtimeino", "", new { @class = " form-control", @style = "border: 1px solid #8e7f7f4d !important; background:#fff; box-shadow: none;text-align:center;padding:0px;", placeholder = "Enter IMEI NO", required = true })
+        </div>
+        <div class="unload-item special-iii item-three" style="width: auto;">
+            <div class="rightt" style="width:26%;">
+                <button type="submit" id="RetailerSearch" class="btn  waves-effect btnssl2233 input-back-second button-center-third" data-loading-text="<i class='fa fa-spinner fa-spin'></i>" style="margin-left: 10px;display:flex;justify-content:center;align-items:center;float:left;background: #fff;">
+                    @*<i class="fa fa-search"></i>*@
+                    <span>Save IMEI</span>
+                </button>
+            </div>
+        </div>
+        @*}*@
+
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="ca-dipo-right height-auto-second height-auto-third" style="height:;">
+            <div class="three-page-same">
+                <div class="row clearfix" id="RetailerSRC">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div id="RetailerSearchList">
+                            <div class="table-responsive table-responsive-payugateway tableseconddes-admin" style="width:100%;">
+
+                                <div id="WAdminSearchList">
+                                    <table class="table table-bordered table-striped table-hover third-design-table table-white-third">
+                                        <thead style="background-color:whitesmoke;">
+                                            <tr>
+                                                <th>Firm Name</th>
+                                                <th>Email</th>
+                                                <th>IMEI NO</th>
+                                                <th>#</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>@item.firmname</td>
+                                                    <td>@item.email</td>
+                                                    <td>@item.imeino</td>
+                                                    <td>
+                                                        @*<i id="del-@item.idno" class="fa fa-remove fa-2x" style="color:red;cursor:pointer;" onclick="deletechk('@item.idno', '@item.role')"></i>*@
+                                                        <button id="@item.idno" class="btn btn-primary delet" onclick="deletedone('@item.idno', '@item.role')">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--.row-->
+
+
+                <div class="row clearfix" id="WAdminSRC" style="display:none">
+                    <div id="divEmp" class="col-md-12 col-sm-12 col-xs-12">
+                    </div>
+                </div><!--.row-->
+
+
+
+            </div><!--.three-page-same-->
+        </div>
+    </div>
+</div>
+<script>
+    $("#RetailerSearch").click(function () {
+
+        var Retailerid1=  $("#Retailerid1").val()
+        var txtimeino= $("#txtimeino").val()
+        var hdadminblockImeie = $("#hdadminblockImeie").val()
+
+         $.ajax({
+                type: "POST",
+             data: { hdadminblockImeie: hdadminblockImeie, Retailerid1: Retailerid1, txtimeino: txtimeino},
+             url: "@Url.Action("Retailerblockaddusingajax", "Home")",
+             success: function (response) {
+                 //
+                 $("#modeldeiv").html(response)
+                 $("#hdadminblockImeie").val(hdadminblockImeie)
+                 //   $('#loaderfa').hide();
+                 //   $mymodal = $("#myModal12344");
+                 //   //update the modal's body with the response received
+                 //$mymodal.find("div.modal-body").html(response);
+                 //   // Show the modal
+                 //   $mymodal.modal("show");
+
+             },
+             error: function (request, error) {
+
+                 alert(" Can't do because: " + request);
+                 alert(" Can't do because: " + error);
+             },
+
+
+        });
+
+    })
+</script>
+<script>
+    function modelpopupopen123(usertype) {
+      //  (".bd-example-modal-lg123321").model("show")
+        $("#hdadminblockImeie").val(usertype);
+         $.ajax({
+             url: '@Url.Action("RetailerblockIMEI")',
+             type: "POST",
+             data: { typeuser: usertype},
+             success: function (response) {
+                 $("#modeldeiv").html(response)
+                 $("#hdadminblockImeie").val(usertype);
+
+             },
+             error: function (request, error) {
+
+                 alert(" Can't do because: " + request);
+                 alert(" Can't do because: " + error);
+             },
+
+
+        });
+
+
+    }
+
+</script>
+
+<script>
+    function deletedone(idno,role) {
+        $.ajax({
+            url: "@Url.Action("DeleteRetailerblockIMEI","Home")",
+            type: 'POST',
+            data: { idno: idno, role: role},
+            success: function (response) {
+                $("#modeldeiv").html(response)
+               // location.reload();
+            },
+            error: function () {
+                //$("#loader").show();
+                alert("error occured");
+            }
+        });
+    }
+</script>
+<script>
+
+    $(document).ready(function () {
+        console.log($(".mode-outclass li"));
+
+        //$(".mode-outclass li").on('click', function () {
+        //    alert('xdfgfdg');
+        //    $(this).addClass("active").siblings().removeClass("active");
+        //});
+
+        var usertype = '@ViewBag.usertype';
+
+
+
+    })
+
+
+</script>

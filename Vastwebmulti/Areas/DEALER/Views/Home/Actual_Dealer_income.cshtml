@@ -1,0 +1,230 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Models.show_all_user_income_Result>
+@{
+    ViewBag.Title = "Actual_Dealer_income";
+    Layout = "~/Areas/DEALER/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Dealer").ToList();
+    var favimage = "";
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Dealer")
+        {
+            favimage = usernname.SingleOrDefault().NickName;
+
+        }
+    }
+}
+<style>
+    .dropdown-menu {
+        margin-top: 75px !important;
+    }
+
+    .pdf-totalbuttonclass a {
+        border-color: #bbb !important;
+    }
+
+    .pdf-totalbuttonclass a {
+        padding-top: 6px !important;
+    }
+
+    @@media screen and (max-width:1366px) {
+    }
+
+    @@media screen and (max-width:768px) {
+        .actual-dealer-incomepage .table-responsive {
+            position: relative !important;
+            z-index: 9;
+        }
+    }
+
+    @@media screen and (max-width:580px) {
+        .dealer-income-date {
+            width: 100% !important;
+            float: left !important;
+            margin-top: 10px;
+        }
+
+        .actualdealer-title p {
+            font-size: 12px !important;
+        }
+    }
+</style>
+<section class="content actual-dealer-incomepage">
+    <div class="container-fluid full-dealer-secondanimation">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Actual Dealer Income</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Account Active&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">My Earn</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card" style="margin-bottom:10px;">
+                    <div class="col-md-6 actualdealer-title dealer-none-fourclass" style="padding: 0px;width:auto;float:left;">
+                        <p style="color:#555; font-size:15px;font-weight:700;margin-top:6px;">@favimage Actual Income</p>
+                    </div>
+
+                    <div class="col-md-2 recharge-report-dealer" style="width:auto;float:right;padding-left:5px;padding-right:0px;">
+                        <div class="form-group" style="margin-bottom:0px;width:100%;float:left;">
+                            <div style="padding-top:0px;float:right">
+                                @*<button class="white-success-button" style="height:32px;border:1px solid #b1a6a638;background:#b1a6a638;float: right;padding: 0px 4px;margin-top:-1px;" onclick="findtotal()">Total</button>*@
+                                <div class="web-white-filter fil" style="float: left;margin-right: 0px;margin-top:0px;">
+                                    <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;">
+                                    <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 dealer-income-date" style="float:right;width:auto;">
+                        <div class="row">
+                            @using (Html.BeginForm("Actual_Dealer_income", "Home", FormMethod.Post))
+                            {
+
+
+                                <div class="col-md-8 col-sm-8 col-xs-8" style="padding:0px 5px;">
+                                    <div class="form-group for-web-date" style="margin-bottom:0px;">
+                                        <div class="input-daterange input-group">
+                                            <div class="custom-date-icon" style="height: 32px;">
+                                                <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                            </div>
+                                            @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #bbbbbb;height:32px;text-align: left;padding-left: 35px;text-align:center; ", autocomplete = "off" })
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-4" style="padding:0px;">
+                                    <center>
+                                        <button type="submit" class="btn waves-effect" style="width:100%; height:32px;border:1px solid #bbbbbb;">
+
+                                            <span style="color:#555;">Search</span>
+                                        </button>
+                                    </center>
+                                </div>
+
+                            }
+                            <div class="col-md-4 pdf-totalbuttonclass" style="display:none;">
+                                <div class="web-white-filter" style="float:right;">
+                                    <table class="dataTable js-exportable ">
+                                        <thead>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card all-reporttable-css">
+
+
+                    <div>
+                        <div class="table-responsive table-responsive-scrolnone tableseconddes-dealer" style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover dataTable" style="width:100%;border-bottom:0;">
+                                <thead class="thborder-cssdealer" style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Sr.&nbsp;No</th>
+                                        <th>Type</th>
+                                        <th>Total&nbsp;Success</th>
+                                        <th>Total&nbsp;Pending</th>
+                                        <th>Total&nbsp;Failed</th>
+                                        <th>Income</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{int i = 1;}
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TotalSuccess)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TotalPending)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TotalFailed)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                </tbody>
+                                <tfoot style="background-color:whitesmoke;">
+                                    <tr>
+                                        <td><p style="font-size:17px;margin-left:-8px;">Total</p></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><p style="font-size:18px;margin-left:-8px;">@Model.Sum(a => a.Amount)</p></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<script>
+$(document).ready(function(){
+
+     $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "bottom auto",
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+    });
+</script>
+

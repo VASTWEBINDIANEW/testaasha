@@ -1,0 +1,309 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Recharge_sell_by_dealer>
+@using Vastwebmulti.Models
+@{
+    ViewBag.Title = "DistibutorList";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities db = new VastwebmultiEntities();
+}
+
+<style>
+    .btn-group, .btn-group-vertical {
+        box-shadow: none;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .toast-top-right1 {
+        top: 65px;
+        left: 81%;
+    }
+
+    #div_Loader {
+        background: rgba(0, 0, 0, 0.6) none repeat scroll 0 0;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 999999;
+    }
+
+
+    .ldio-gs56nt525f > div {
+        transform-origin: 100px 100px;
+        animation: ldio-gs56nt525f 0.2s infinite linear;
+    }
+
+        .ldio-gs56nt525f > div div {
+            position: absolute;
+            width: 22px;
+            height: 152px;
+            background: var(--main-bg-lcolor);
+            left: 100px;
+            top: 100px;
+            transform: translate(-50%,-50%);
+        }
+
+            .ldio-gs56nt525f > div div:nth-child(1) {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+            }
+
+            .ldio-gs56nt525f > div div:nth-child(6) {
+                width: 80px;
+                height: 80px;
+                background: #fff;
+                border-radius: 50%;
+            }
+
+            .ldio-gs56nt525f > div div:nth-child(3) {
+                transform: translate(-50%,-50%) rotate(45deg)
+            }
+
+            .ldio-gs56nt525f > div div:nth-child(4) {
+                transform: translate(-50%,-50%) rotate(90deg)
+            }
+
+            .ldio-gs56nt525f > div div:nth-child(5) {
+                transform: translate(-50%,-50%) rotate(135deg)
+            }
+
+    .loadingio-spinner-gear-94vo528ab8 {
+        width: 200px;
+        height: 200px;
+        display: inline-block;
+        overflow: hidden;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+
+    .ldio-gs56nt525f {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform: translateZ(0) scale(1);
+        backface-visibility: hidden;
+        transform-origin: 0 0; /* see note above */
+    }
+
+        .ldio-gs56nt525f div {
+            box-sizing: content-box;
+        }
+
+    @@keyframes ldio-gs56nt525f {
+        0% {
+            transform: rotate(0deg)
+        }
+
+        50% {
+            transform: rotate(22.5deg)
+        }
+
+        100% {
+            transform: rotate(45deg)
+        }
+    }
+
+    .toast-top-right1 {
+        top: 65px;
+        left: 81%;
+    }
+
+    .for-search {
+        position: absolute;
+        right: 130px;
+    }
+
+        .for-search input {
+            width: 250px;
+            border: 1px solid #dbdbdb;
+            padding: 3px 10px;
+        }
+
+    @@media only screen and (max-width:520px) {
+        .web-white-filter {
+            position: static !important;
+        }
+
+        .for-search {
+            position: absolute;
+            top: 108px;
+        }
+
+            .for-search input {
+                width: 100%;
+            }
+    }
+</style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+<section class="content DistibutorList_page fourdesign-section-admin">
+    <div class="container-fluid">
+
+        <div class="page-header-third pageheader-margin-third">
+            <div class="bread-same-all-page breadsameall-second four-noneclass-admin-only">
+                <ul>
+                    <li class="smli">
+                        <a href="@Url.Action("Dashboard", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                            Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;" />
+                        </a>
+                    </li>
+                    <li class="fullbodydycolorbg tmw-total-color-one" style="line-height: 22px;">
+                        <a href="@Url.Action("DistibutorList", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                            Distributor&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;"/>
+                        </a>
+                    </li>
+                    <li class="fullbodydycolorbg tmw-total-color-one" style="line-height: 22px;">
+                        Seller Distributor
+                    </li>
+                </ul>
+            </div>
+
+            @using (Html.BeginForm("DistibutorListforseller", "Home"))
+            {
+                <div class="web-white-filter pdfexpoer-second pdf-third-design" style="float: right;position:absolute;right:15px;">
+
+                    <input type="submit" style="margin-left:7px;font-size: 11px;float: left; padding: 0px 4px;height:28px;border:1px solid #b1a6a638;background:#b1a6a638;padding-left: 19px;" value="Search">
+
+                </div>
+                <div class="for-search tablesearch-second">
+                    <div class="search-after-third">
+                        <select id="Dealertdd" name="Dealertdd">
+                            <option value="">ALL</option>
+                            @foreach (var i in ViewBag.dealerdetailess)
+                            {
+                                <option value="@i.DealerId">@i.FarmName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+
+        <div class="row clearfix" style="margin-bottom:40px;">
+
+            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                <div class="right-tabs width100 float-left custom-table-responsive">
+                    <div id="distributorlist" class="tablefourdesign-admin">
+                        <table class="table table-bordered table-due-second table-due-second-desti third-design-table" id="mdList">
+                            <thead>
+                                <tr>
+
+                                    <th>Master&nbsp;Distributor&nbsp;Firm</th>
+                                    <th>Distributor&nbsp;Firm</th>
+                                    <th>Distributor&nbsp;Name</th>
+                                    <th>Mobile&nbsp;No</th>
+                                    <th>Email</th>
+                                    <th>#</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="body">
+                                @if (Model != null)
+                                { var sd = 0;
+                                                foreach (var item in Model)
+                                                {
+                                                    var dealess = db.Dealer_Details.Where(s => s.DealerId == item.Dealerid).ToList();
+                                                    string ssdss = dealess[0].SSId;
+                                                    var mastess = db.Superstokist_details.Where(s => s.SSId == ssdss).ToList();
+                                        <tr id="tr">
+                                            <td>@mastess[0].FarmName</td>
+                                            <td>@dealess[0].FarmName</td>
+                                            <td>@dealess[0].DealerName</td>
+                                            <td>@dealess[0].Mobile</td>
+                                            <td>@dealess[0].Email</td>
+                                            <th class="buttd">
+                                         <button style="background: green; color: white; padding: 2px 15px;" onclick="stschange('@item.Dealerid', false , @sd)">ON</button>
+                                            </th>
+                                        </tr>
+                                        sd++;
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</section>
+
+
+
+
+
+<div class="loaderdealer"></div>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Swalalert/datatablejquery.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/select2/dist/css/select2.css" rel="stylesheet" />
+<script src="~/select2/dist/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function myFunction() {
+        debugger;
+        var value = $('#myInput').val().toLowerCase();
+        $("#body .tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    }
+  function stschange(u, s, r) {
+    $.ajax({
+        url: '@Url.Action("Stscanhgedlmsell","Home")',
+        data: { userid: u, status: s },
+        type: 'GET',
+        success: function (data) {
+            if (data == false) {
+                document.getElementsByClassName('buttd')[r].innerHTML =
+                    "<button style='background: red; color: white; padding: 2px 15px;' onclick=\"stschange('" + u + "', true, " + r + ")\">OFF</button>";
+            }
+            else {
+                document.getElementsByClassName('buttd')[r].innerHTML =
+                    "<button style='background: green; color: white; padding: 2px 15px;' onclick=\"stschange('" + u + "', false, " + r + ")\">ON</button>";
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('AJAX request failed: ' + textStatus + ', ' + errorThrown);
+        }
+    });
+}
+</script>
+
+

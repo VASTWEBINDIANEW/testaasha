@@ -1,0 +1,121 @@
+﻿@model List<Vastwebmulti.Models.proc_FlightReport_Result>
+@{
+    Layout = null;
+}
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        #region CssSettings
+        var color = "";
+        var fontweight = "";
+        var text = "";
+        var emailid = "";
+        var Retailername = "";
+        var framname = "";
+        var mobile = "";
+        var rolename = "";
+        var icon = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var sts = "";
+        var refundcolor = "";
+        var dmtytpe = "";
+
+        sts = ((Vastwebmulti.Areas.RETAILER.Enums.TicketStatus)Convert.ToInt32(item.TicketStatusCode)).ToString();
+
+        //if (item.TicketStatusCode == 3 || item.TicketStatusCode == 4 || item.TicketStatusCode == 6 || item.TicketStatusCode == 8 || item.TicketStatusCode == 9)
+        if (item.TicketStatus.Contains("FAILED"))
+        {
+            color = "red";
+            fontweight = "700";
+            icon = "../../ashok-images/closes.svg";
+        }
+        if (item.TicketStatus.Contains("Success"))
+        {
+            color = "green";
+            fontweight = "700";
+            icon = "../../ashok-images/correct.svg";
+        }
+        if (item.TicketStatus.ToUpper().Contains("REFUND"))
+        {
+            color = "#673ab7";
+            fontweight = "700";
+            icon = "../../ashok-images/undo.svg";
+        }
+        if (item.TicketStatus.ToUpper().Contains("PENDING"))
+        {
+            color = "#ff9600";
+            fontweight = "700";
+            icon = "../../ashok-images/clkk.png";
+        }
+        #endregion
+        <tr>
+            <td class="bbrd"><p><img style="background-color:@color" src="@icon" /></p>@item.TicketStatus</td>
+            <td><p>@sts</p></td>
+
+
+            <td><p>@item.Frm_Name</p></td>
+            <td>
+                <p>&nbsp;@item.LeadPaxFirstName @item.LeadPaxLastName&nbsp;</p>
+            </td>
+            <td>@item.AirlineName</td>
+            <td>@item.BookingId</td>
+            <td>@item.PNR</td>
+            <td><p>@String.Format("{0:dd-MMM HH:mm:ss}", item.TicketDate)&nbsp;&nbsp;</p></td>
+            <td>@Math.Round(item.FareAmount, 2)</td>
+
+            <td>
+                @if (!item.TicketStatus.Contains("Refund"))
+                {
+
+
+                    <p id="statusLink" onclick="getTicketStatus('@item.TraceId','@item.BookingId','@item.PNR')"><a class="btn btn-primary" style="background: transparent !important;color: black;padding: 6px 5px;font-size: 12px;">Current Status</a></p>
+
+
+                }
+            </td>
+            <td class="nrch" style="text-align: center;">
+                @if (item.TicketStatusCode == 1 && item.ResponseJson != null && item.ResponseJson.Contains("TicketId"))
+                {
+                    <span><a href="@Url.Action("ViewTicket","Air",new { idno = item.idno, firsName =item.LeadPaxFirstName,lastName= item.LeadPaxLastName})" target="_blank" class="btn btn-primary" style="border: 0px;background: transparent !important;padding: 0px;"><i class="material-icons" style="color: #555555;border: 1px solid #c7c2c2;font-size: 13px;padding: 2px 3px;">print</i></a></span>
+                }
+                else
+                {
+                    <span></span>
+                }
+
+                <span class="fftt" data-toggle="modal" data-target="#defaultModal222" onclick="ActionBtn('@item.idno')"><i class="fa fa-angle-double-right" aria-hidden="true"></i></span>
+            </td>
+
+            @*<td style="font-size:13px;margin-left:-7px;">@Math.Round(item.RemPre, 2)</td>
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.RemInc, 2)</td>
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.RemPost, 2)</td>
+
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.DlmPre, 2)</td>
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.DlmInc, 2)</td>
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.DlmPost, 2)</td>
+
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.MdPre, 2)</td>
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.MdInc, 2)</td>
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.MdPost, 2)</td>
+
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.AdminPre, 2)</td>
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.AdminInc, 2)</td>
+                <td style="font-size:13px;margin-left:-7px;">@Math.Round(item.AdminPost, 2)</td>*@
+        </tr>
+    }
+}
+
+
+
+<script>
+    $(document).ready(function () {
+        $('.second-design .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>

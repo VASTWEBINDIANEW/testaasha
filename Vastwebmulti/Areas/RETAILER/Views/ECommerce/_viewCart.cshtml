@@ -1,0 +1,191 @@
+﻿@model List<Vastwebmulti.Areas.RETAILER.Models.CartVM>
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="col-md-8">
+            <div class="card">
+                <div class="header" style="height:60px;">
+                    <div class="col-md-9">
+                    <h2>ALL VIEW CART DETAILS</h2>
+                    </div>
+                 
+                    <div class="col-md-3">
+                
+                            <a href="#">
+                                <div class="info-box hover-expand-effect" style="height:37px; width:74px; float:right; cursor:pointer; box-shadow:none;border:2px solid #ddd; margin-top:-8px;">
+                      <div class="icon bg" style="margin-top:-15px; width:37px;">
+                                        <div class="navbar" style="position:initial;">
+                                            <i class="material-icons" style="font-size:24px; line-height:64px; ">shopping_cart</i>
+                                        </div>
+
+                                    </div>
+                                    <div class="content" style="margin-top:-2px;">
+                                        <div class="text" style="font-size:15px; text-decoration:none; margin-top:0px; padding-left:8px;"><center>@Model.Count</center></div>
+                                    </div>
+                                </div>
+                            </a>
+                   
+                        @*<button class="" type="button" style="margin-top:-16px;box-shadow:none; border:none;background-color:#e91e63; float:right;"><span style="color:white;font-weight:700;">My&nbsp;Cart</span><i class="material-icons" style="color:white;">shopping_cart</i> <span class="badge" style="background:white;color:black; margin-left:-7px; margin-top:3px; ">@Model.Count</span></button>*@ 
+                    </div>
+                                   
+                  </div>
+                <div class="body">
+                    <div class="bs-example" data-example-id="media-alignment" style="padding-bottom: 40px;">
+                        @foreach (var item in Model)
+                {
+              <div class="media" style="border: 1px solid #1b15151f;padding-top: 12px; padding-left: 8px;padding-right: 8px;width:100%;">
+                                <div class="media-left">
+                                    <a href="javascript:void(0);">
+                                        <img class="media-object" src="@Url.Content("~" + item.imgUrl)" width="64" height="64">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">
+                                        @item.productName
+                                        <span class="pull-right">
+                                            <a href="javascript:void(0);" onclick="onRemoveItem('@item.productId')">
+                            
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:red;">
+                                                    <path fill="none" d="M0 0h24v24H0V0z" />
+                                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z" />
+                                                    <path fill="none" d="M0 0h24v24H0z" />
+                                                </svg>
+                                            </a>
+                                        </span>
+                                    </h4>
+                                    <small>Seller : @item.VenderFirmName</small>
+                                    <p><strong>₹&nbsp;@item.satandardPrice</strong> &nbsp;&nbsp;<span style="text-decoration:line-through;">₹&nbsp;@item.ListPrice</span></p>
+                                   <p style="margin-top:-11px;"><small>MinOrderQty :@item.MinOrderQty</small></p>
+                                    <p>
+                  <ul style="display:flex;list-style:none; margin-left:-40px;">
+                  <li>QTY :</li>
+                   <li>
+                   <a href="javascript:void(0);" onclick="onMinus('@item.Qty','@item.productId')">
+                 <span style="margin: 0px 4px 0px 4px">
+                   <i class="fa fa-minus-square fa-2x" aria-hidden="true" style="color:#9E9E9E;"></i>
+                   </span>
+                    </a>
+                    </li>
+                   <li><input type="text" value="@item.Qty" id="txtQTY" oninput="onChange (this,'@item.productId')" onkeypress="return isNumber(event)" style="border:1px solid #150e0e2e;width:89px; height:23px;margin-top:1px; padding-left:5px;" /></li>
+                    <li>
+                     <a href="javascript:void(0);" onclick="onPluse('@item.Qty','@item.productId')">
+                     <span style="margin: 0px 4px 0px 4px">
+                      <i class="fa fa-plus-square fa-2x" aria-hidden="true" style="color:#607D8B;"></i>
+                       </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        }
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <a href="@Url.Action("Index","Home")" class="btn bg-grey waves-effect">
+                                    <i class="material-icons" style="font-size:31px;">shopping_cart</i>
+              <span style="top:-3px; font-size:16px;color:black;">CONTINUE&nbsp;SHOPPING </span>
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                @using (Html.BeginForm("doPayment", "ECommerce"))
+                                {
+                                    <input type="hidden" name="productID" value="@Model.FirstOrDefault().productId" />
+                                    <button type="submit" id="pay" class="btn bg-grey waves-effect" onclick="if (!confirm('Are you sure you want to pay this order?')) { return false }" >
+                      <i class="material-icons" style="font-size:31px;">offline_bolt</i>
+                             <span style="top:-3px; font-size:16px;color:black;">PAY&nbsp;NOW</span>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        PRICE DETAILS
+                    </h2>
+
+                </div>
+                <div class="body">
+                    <ul class="list-group">
+                        <li class="list-group-item" style="border:none;">
+                            Price(@Model.Count items) <span class="pull-right"><strong>₹&nbsp;@Model.Sum(a => a.satandardPrice * a.Qty)</strong></span>
+                        </li>
+                        <li class="list-group-item" style="border:none">
+                            Delivery Charges
+                            <span class="pull-right" style="color:#249409"><strong>FREE</strong></span>
+                        </li>
+                     
+                        <li class="list-group-item">
+                            <b>Amount Payable</b>
+                            <span class="pull-right"><strong>₹&nbsp;@Model.Sum(a => a.satandardPrice * a.Qty)</strong></span>
+                        </li>
+                        <li class="list-group-item" style="border:none;color:#249409;border-top: 1px solid #ddd;">
+                            Your Total Savings on this order
+                      <span class="pull-right" style="color:#249409"><strong>@string.Format("{0:0.00#}", Model.Sum(a => a.ListPrice * a.Qty) - Model.Sum(a => a.satandardPrice * a.Qty))</strong></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <style>
+            #over img {
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+        </style>
+        <div class="col-sm-12 col-md-6" id="over" style="width:100%; height:100%">
+            <img src="~/images/emptyCart.png" />
+        </div>
+    }
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<link href="~/AdminDesign/plugins/animate-css/animate.min.css" rel="stylesheet" />
+<script src="~/AdminDesign/js/pages/ui/animations.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>
+<script type="text/javascript">
+
+        $.noConflict();
+        jQuery(document).ready(function ($) {
+            var sts = '@TempData["Status"]';
+            var msg = '@TempData["Message"]';
+            if (sts != null && sts != '')
+            {
+                if (sts == "Success")
+                {
+                    $.notify(msg, {
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        },
+                        type: 'success'
+                    });
+                }
+                else {
+                    $.notify(msg, {
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        },
+                        type: 'danger'
+                    });
+                }
+            }
+        });
+</script>
+
+

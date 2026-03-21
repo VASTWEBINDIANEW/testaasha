@@ -1,0 +1,1818 @@
+﻿@{
+    ViewBag.Title = "SMS_Setting";
+}
+<style type="text/css">
+    .loadermoney {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 199999;
+        /*background: url('../../images/smsload.gif') 50% 50% no-repeat rgba(249, 249, 249, 0.9);*/
+        background: url('../../img/loder.gif') 50% 50% no-repeat rgba(249, 249, 249, 0.9);
+    }
+
+    [type="checkbox"].filled-in:not(:checked) + label:after {
+        background-color: #f5f5f5;
+        border: 2px solid #dddddd;
+    }
+
+    .smsapi-pages .smsapi-second .tab-content ul li:first-child {
+        width: 34% !important;
+    }
+
+    .tab-content fieldset.for-outbox {
+        margin-top: 0px !important;
+    }
+
+    .for-outbox li {
+        width: 50% !important;
+    }
+
+    .for-outbox ul {
+        padding: 0px !important;
+    }
+
+    .tab-content fieldset.for-outbox [type="radio"] + label {
+        margin-bottom: 0px;
+        margin-top: 2px;
+    }
+
+    .for-outbox [type="radio"]:checked + label::after {
+        background-color: var(--main-bg-lcolor);
+        border-color: var(--main-bg-lcolor);
+    }
+
+    .toast-top-right1 {
+        top: 65px;
+        left: 81%;
+    }
+
+    [type="checkbox"].filled-in:checked.chk-col-red + label::after {
+        border: 2px solid var(--main-bg-lcolor);
+        background-color: var(--main-bg-lcolor);
+    }
+
+    ul.smssetting-top li button {
+        border: 1px solid #bbb;
+        height: 32px !important;
+        padding: 0;
+    }
+
+        ul.smssetting-top li button span {
+            top: -1px !important;
+        }
+
+    ul.smssetting-top li {
+        padding-left: 0;
+        margin-right: 0 !important;
+    }
+
+    ul.smssetting-top li {
+        width: 25%;
+        float: right;
+        padding: 0px 10px
+    }
+
+    [type="checkbox"].filled-in:checked + label::before {
+        top: -1px;
+        left: 0px;
+    }
+
+    [type="checkbox"].filled-in:checked + label::after {
+        top: 0;
+        width: 18px;
+        height: 18px;
+    }
+
+    [type="checkbox"].filled-in:not(:checked) + label::after {
+        height: 18px;
+        width: 18px;
+    }
+
+    .smsapi-pages .smsapi-second .tab-content ul li button i {
+        top: 1px;
+        font-size: 20px;
+        left: -3px;
+    }
+
+    .smsapi-pages .smsapi-second ul.tabs li:last-child button {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        padding: 3px 16px;
+    }
+
+    .smsapi-pages .smsapi-second .tab-content#tab-3 ul li {
+        width: 24% !important;
+        display: inline-block;
+        float: none;
+        padding-right: 0;
+    }
+
+    .for-message .card {
+        background: transparent;
+    }
+
+    .for-message {
+        width: 100%;
+        float: left;
+        background: var(--second-bg-color);
+        padding: 0px 10px;
+    }
+
+    .custom-table-responsive, #EmailHistory {
+        height: 78vh !important;
+    }
+
+    .smssetting-top {
+        padding: 5px 0 0px 0px !important;
+        background: #f5f5f5;
+    }
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
+<div id="loadermoney" class="loadermoney" style="display:none;"></div>
+<section class="contents sms-settingpage">
+  <ul class="smssetting-top">
+        <li>
+            <button type="button" class="btn  waves-effect for-select-msg" onclick='selectAll()'>
+                <i class="far fa-check-square" aria-hidden="true" style="color:var(--main-bg-lcolor);"></i><span>Select All</span>
+            </button>
+            <button type="button" class="btn  waves-effect for-select-mail" onclick='eselectAll()' style="display:none;">
+                <i class="far fa-check-square" aria-hidden="true" style="color:var(--main-bg-lcolor);"></i><span>Select All</span>
+            </button>
+        </li>
+        <li style="margin-right:10px;">
+            <button type="button" class="btn  waves-effect for-select-msg" onclick='UnSelectAll()'>
+                <i class="fa fa-square-o" aria-hidden="true"></i><span>Unselect All</span>
+            </button>
+            <button type="button" class="btn  waves-effect for-select-mail" onclick='eUnSelectAll()' style="display:none;">
+                <i class="fa fa-square-o" aria-hidden="true"></i><span>Unselect All</span>
+            </button>
+        </li>
+        <li>
+            <button type="button" id="SaveAll" class="btn  waves-effect fullbodydycolorbg">
+                <img src="~/AdminDesign/images/security.svg" />
+                <span>Save Details</span>
+            </button>
+        </li>
+    </ul>
+
+    <div class="row clearfix">
+        <div class="for-message">
+            <div class="col-md-12 col">
+                <!--User Create-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">USER CREATE MESSAGE</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Master Create</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="MasterCreate" value="MasterCreate" class="" name="acs">
+                                        <label for="MasterCreate">Master</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-6 col-xs-6 col">
+                                        <span>API User Create</span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="APICreate" value="APICreate" class="" name="acs">
+                                        <label for="APICreate">API</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Distributor Create</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="DistributorCreateDlm" value="DistributorCreateDlm" class="" name="acs">
+                                        <label for="DistributorCreateDlm">Distributor</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="DistributorCreatemd" value="DistributorCreatemd" class="" name="acs">
+                                        <label for="DistributorCreatemd">Master</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-6 col-xs-6 col">
+                                        <span>Vendor Create</span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="VendorCreate" value="VendorCreate" class="" name="acs">
+                                        <label for="VendorCreate">Vendor</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Retailer Create</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="RetailerCreateREM" value="RetailerCreateREM" class="" name="acs">
+                                        <label for="RetailerCreateREM">Retailer</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="RetailerCreateDLM" value="RetailerCreateDLM" class="" name="acs">
+                                        <label for="RetailerCreateDLM">Distributor</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-6 col-xs-6 col">
+                                        <span>RCH Create</span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="RCHCreate" value="RCHCreate" class="" name="acs">
+                                        <label for="RCHCreate">RCH</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Whitelabel Create</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="WhitelabelCreate" value="WhitelabelCreate" class="" name="acs">
+                                        <label for="WhitelabelCreate">Whitelabel</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-6 col-xs-6 col">
+                                        <span>Fee Collector Create</span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="FeeCreate" value="FeeCreate" class="" name="acs">
+                                        <label for="FeeCreate">Fee</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End-->
+                <!--Fund Transfer-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">FUND TRANSFER MESSAGE</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to Master</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="Admintomasterfundtrans" value="Admintomasterfundtrans" class="" name="acs">
+                                        <label for="Admintomasterfundtrans">Master</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to Distributor</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="Admintodlmfundtrans" value="Admintodlmfundtrans" class="" name="acs">
+                                        <label for="Admintodlmfundtrans">Distributor</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to Retailer</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="AdmintoREMfundtrans" value="AdmintoREMfundtrans" class="" name="acs">
+                                        <label for="AdmintoREMfundtrans">Retailer</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to API</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="AdmintoApifundtrans" value="AdmintoApifundtrans" class="" name="acs">
+                                        <label for="AdmintoApifundtrans">API</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to Whitelabel</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="AdmintoWhitelabelfundtrans" value="AdmintoWhitelabelfundtrans" class="" name="acs">
+                                        <label for="AdmintoWhitelabelfundtrans">Whitelabel</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Master to Distributor</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="MDToDLMMDFundTrans" value="MDToDLMMDFundTrans" class="" name="acs">
+                                        <label for="MDToDLMMDFundTrans">Master</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="MDToDLMdlmFundTrans" value="MDToDLMdlmFundTrans" class="" name="acs">
+                                        <label for="MDToDLMdlmFundTrans">Distributor</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Distributor to Retailer</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="DLMtoRemdlmFundTrans" value="DLMtoRemdlmFundTrans" class="" name="acs">
+                                        <label for="DLMtoRemdlmFundTrans">Distributor</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="DLMtoRemRemFundTrans" value="DLMtoRemRemFundTrans" class="" name="acs">
+                                        <label for="DLMtoRemRemFundTrans">Retailer</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Retailer to Retailer</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="RemtoRemRemFundTrans" value="RemtoRemRemFundTrans" class="" name="acs">
+                                        <label for="RemtoRemRemFundTrans">Retailer</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="RemtoRem1RemFundTrans" value="RemtoRem1RemFundTrans" class="" name="acs">
+                                        <label for="RemtoRem1RemFundTrans">Retailer</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Fund Transfer-->
+                <!--Recharge-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">RECHARGE MESSAGE</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Recharge Success</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="Rechsucconline" value="Rechsucconline" class="" name="acs">
+                                        <label for="Rechsucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="Rechsuccoffline" value="Rechsuccoffline" class="" name="acs">
+                                        <label for="Rechsuccoffline">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechsuccApp" value="RechsuccApp" class="" name="acs">
+                                        <label for="RechsuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Success To Failed</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecSucctofailonline" value="RecSucctofailonline" class="" name="acs">
+                                        <label for="RecSucctofailonline">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecSucctofailoffline" value="RecSucctofailoffline" class="" name="acs">
+                                        <label for="RecSucctofailoffline">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecSucctofailApp" value="RecSucctofailApp" class="" name="acs">
+                                        <label for="RecSucctofailApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Recharge Failed</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailedOnline" value="RechFailedOnline" class="" name="acs">
+                                        <label for="RechFailedOnline">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailedoffline" value="RechFailedoffline" class="" name="acs">
+                                        <label for="RechFailedoffline">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailedApp" value="RechFailedApp" class="" name="acs">
+                                        <label for="RechFailedApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Failed To Success</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailtoSucconline" value="RechFailtoSucconline" class="" name="acs">
+                                        <label for="RechFailtoSucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailtoSuccoffline" value="RechFailtoSuccoffline" class="" name="acs">
+                                        <label for="RechFailtoSuccoffline">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailtoSuccApp" value="RechFailtoSuccApp" class="" name="acs">
+                                        <label for="RechFailtoSuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Check Balance</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="RecCheckBaloffline" value="RecCheckBaloffline" class="" name="acs">
+                                        <label for="RecCheckBaloffline">Offline</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Recharge Proccess</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecProconline" value="RecProconline" class="" name="acs">
+                                        <label for="RecProconline">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecProcoffline" value="RecProcoffline" class="" name="acs">
+                                        <label for="RecProcoffline">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecProcApp" value="RecProcApp" class="" name="acs">
+                                        <label for="RecProcApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Recharge-->
+                <!--Money Transfer-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">MONEY TRANSFER MESSAGE</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>DMT Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtsucconline" value="dmtsucconline" class="" name="acs">
+                                        <label for="dmtsucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtsuccApp" value="dmtsuccApp" class="" name="acs">
+                                        <label for="dmtsuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Success To Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtsucctofailonline" value="dmtsucctofailonline" class="" name="acs">
+                                        <label for="dmtsucctofailonline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtsucctofailApp" value="dmtsucctofailApp" class="" name="acs">
+                                        <label for="dmtsucctofailApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>DMT Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtfailedonline" value="dmtfailedonline" class="" name="acs">
+                                        <label for="dmtfailedonline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtfailedApp" value="dmtfailedApp" class="" name="acs">
+                                        <label for="dmtfailedApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Failed To Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtfailtosucconline" value="dmtfailtosucconline" class="" name="acs">
+                                        <label for="dmtfailtosucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtfailtosuccApp" value="dmtfailtosuccApp" class="" name="acs">
+                                        <label for="dmtfailtosuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">AEPS MESSAGE</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>AEPS Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="aepssucconline" value="aepssucconline" class="" name="acs">
+                                        <label for="aepssucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="aepssuccApp" value="aepssuccApp" class="" name="acs">
+                                        <label for="aepssuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>AEPS Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="Aepsfailonline" value="Aepsfailonline" class="" name="acs">
+                                        <label for="Aepsfailonline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="AepsfailApp" value="AepsfailApp" class="" name="acs">
+                                        <label for="AepsfailApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <!--End AEPS-->
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">M-POSS MESSAGE</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>M-poss Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="Mposssucconline" value="Mposssucconline" class="" name="acs">
+                                        <label for="Mposssucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="MposssuccApp" value="MposssuccApp" class="" name="acs">
+                                        <label for="MposssuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>M-poss Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="Mpossfailonline" value="Mpossfailonline" class="" name="acs">
+                                        <label for="Mpossfailonline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="MpossfailApp" value="MpossfailApp" class="" name="acs">
+                                        <label for="MpossfailApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <!--End M-Poss-->
+                    </div>
+                </div>
+                <!--End Money Transfer-->
+                <!--Pancard-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">PANCARD MESSAGE</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Token Purchase Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="pantokensucconline" value="pantokensucconline" class="" name="acs">
+                                        <label for="pantokensucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="pantokensuccApp" value="pantokensuccApp" class="" name="acs">
+                                        <label for="pantokensuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col">
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Pancard-->
+                <!--Flight-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">FLIGHT BOOKING MESSAGE</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibooksucconline" value="flibooksucconline" class="" name="acs">
+                                        <label for="flibooksucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibooksuccApp" value="flibooksuccApp" class="" name="acs">
+                                        <label for="flibooksuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibookfailedonline" value="flibookfailedonline" class="" name="acs">
+                                        <label for="flibookfailedonline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibookfailedApp" value="flibookfailedApp" class="" name="acs">
+                                        <label for="flibookfailedApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Cancel</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibookcancelonline" value="flibookcancelonline" class="" name="acs">
+                                        <label for="flibookcancelonline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibookcancelApp" value="flibookcancelApp" class="" name="acs">
+                                        <label for="flibookcancelApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col">
+
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Flight Booking-->
+                <!--Bus-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">BUS BOOKING MESSAGE</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="busbooksucconline" value="busbooksucconline" class="" name="acs">
+                                        <label for="busbooksucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="busbooksuccApp" value="busbooksuccApp" class="" name="acs">
+                                        <label for="busbooksuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Cancel</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="busbookcancelonline" value="busbookcancelonline" class="" name="acs">
+                                        <label for="busbookcancelonline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="busbookcancelApp" value="busbookcancelApp" class="" name="acs">
+                                        <label for="busbookcancelApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Bus Booking-->
+                <!--Hotel-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">HOTEL BOOKING MESSAGE</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="hotelbooksucconline" value="hotelbooksucconline" class="" name="acs">
+                                        <label for="hotelbooksucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="hotelbooksuccApp" value="hotelbooksuccApp" class="" name="acs">
+                                        <label for="hotelbooksuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Cancel</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="hotelbookcancelonline" value="hotelbookcancelonline" class="" name="acs">
+                                        <label for="hotelbookcancelonline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="hotelbookcancelApp" value="hotelbookcancelApp" class="" name="acs">
+                                        <label for="hotelbookcancelApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Hotel Booking-->
+                <!--Hotel-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">DTH BOOKING MESSAGE</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dthbooksucconline" value="dthbooksucconline" class="" name="acs">
+                                        <label for="dthbooksucconline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dthbooksuccApp" value="dthbooksuccApp" class="" name="acs">
+                                        <label for="dthbooksuccApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Cancel</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dthbookcancelOnline" value="dthbookcancelOnline" class="" name="acs">
+                                        <label for="dthbookcancelOnline">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dthbookcancelApp" value="dthbookcancelApp" class="" name="acs">
+                                        <label for="dthbookcancelApp">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Hotel Booking-->
+            </div>
+        </div>
+        <div class="for-mail" style="display:none;">
+            <div class="col-md-12 col">
+                <!--User Create-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">USER CREATE EMAIL</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Master Create</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="MasterCreate1" value="MasterCreate1" class="" name="acs1">
+                                        <label for="MasterCreate1">Master</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-6 col-xs-6 col">
+                                        <span>API User Create</span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="APICreate1" value="APICreate1" class="" name="acs1">
+                                        <label for="APICreate1">API</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Distributor Create</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="DistributorCreateDlm1" value="DistributorCreateDlm1" class="" name="acs1">
+                                        <label for="DistributorCreateDlm1">Distributor</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="DistributorCreatemd1" value="DistributorCreatemd1" class="" name="acs1">
+                                        <label for="DistributorCreatemd1">Master</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-6 col-xs-6 col">
+                                        <span>Vendor Create</span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="VendorCreate1" value="VendorCreate1" class="" name="acs1">
+                                        <label for="VendorCreate1">Vendor</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Retailer Create</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="RetailerCreateREM1" value="RetailerCreateREM1" class="" name="acs1">
+                                        <label for="RetailerCreateREM1">Retailer</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="RetailerCreateDLM1" value="RetailerCreateDLM1" class="" name="acs1">
+                                        <label for="RetailerCreateDLM1">Distributor</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-6 col-xs-6 col">
+                                        <span>RCH Create</span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="RCHCreate1" value="RCHCreate1" class="" name="acs1">
+                                        <label for="RCHCreate1">RCH</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Whitelabel Create</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="WhitelabelCreate1" value="WhitelabelCreate1" class="" name="acs1">
+                                        <label for="WhitelabelCreate1">Whitelabel</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-6 col-xs-6 col">
+                                        <span>Fee Collector Create</span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="FeeCreate1" value="FeeCreate1" class="" name="acs1">
+                                        <label for="FeeCreate1">Fee</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End-->
+                <!--Fund Transfer-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">FUND TRANSFER EMAIL</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to Master</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="Admintomasterfundtrans1" value="Admintomasterfundtrans1" class="" name="acs1">
+                                        <label for="Admintomasterfundtrans1">Master</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to Distributor</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="Admintodlmfundtrans1" value="Admintodlmfundtrans1" class="" name="acs1">
+                                        <label for="Admintodlmfundtrans1">Distributor</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to Retailer</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="AdmintoREMfundtrans1" value="AdmintoREMfundtrans1" class="" name="acs1">
+                                        <label for="AdmintoREMfundtrans1">Retailer</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to API</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="AdmintoApifundtrans1" value="AdmintoApifundtrans1" class="" name="acs1">
+                                        <label for="AdmintoApifundtrans1">API</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Admin to Whitelabel</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="AdmintoWhitelabelfundtrans1" value="AdmintoWhitelabelfundtrans1" class="" name="acs1">
+                                        <label for="AdmintoWhitelabelfundtrans1">Whitelabel</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Master to Distributor</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="MDToDLMMDFundTrans1" value="MDToDLMMDFundTrans1" class="" name="acs1">
+                                        <label for="MDToDLMMDFundTrans1">Master</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="MDToDLMdlmFundTrans1" value="MDToDLMdlmFundTrans1" class="" name="acs1">
+                                        <label for="MDToDLMdlmFundTrans1">Distributor</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Distributor to Retailer</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="DLMtoRemdlmFundTrans1" value="DLMtoRemdlmFundTrans1" class="" name="acs1">
+                                        <label for="DLMtoRemdlmFundTrans1">Distributor</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="DLMtoRemRemFundTrans1" value="DLMtoRemRemFundTrans1" class="" name="acs1">
+                                        <label for="DLMtoRemRemFundTrans1">Retailer</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Retailer to Retailer</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="RemtoRemRemFundTrans1" value="RemtoRemRemFundTrans1" class="" name="acs1">
+                                        <label for="RemtoRemRemFundTrans1">Retailer</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="RemtoRem1RemFundTrans1" value="RemtoRem1RemFundTrans1" class="" name="acs1">
+                                        <label for="RemtoRem1RemFundTrans1">Retailer</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Fund Transfer-->
+                <!--Recharge-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">RECHARGE EMAIL</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Recharge Success</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="Rechsucconline1" value="Rechsucconline1" class="" name="acs1">
+                                        <label for="Rechsucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="Rechsuccoffline1" value="Rechsuccoffline1" class="" name="acs1">
+                                        <label for="Rechsuccoffline1">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechsuccApp1" value="RechsuccApp1" class="" name="acs1">
+                                        <label for="RechsuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Success To Failed</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecSucctofailonline1" value="RecSucctofailonline1" class="" name="acs1">
+                                        <label for="RecSucctofailonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecSucctofailoffline1" value="RecSucctofailoffline1" class="" name="acs1">
+                                        <label for="RecSucctofailoffline1">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecSucctofailApp1" value="RecSucctofailApp1" class="" name="acs1">
+                                        <label for="RecSucctofailApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Recharge Failed</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailedOnline1" value="RechFailedOnline1" class="" name="acs1">
+                                        <label for="RechFailedOnline1">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailedoffline1" value="RechFailedoffline1" class="" name="acs1">
+                                        <label for="RechFailedoffline1">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailedApp1" value="RechFailedApp1" class="" name="acs1">
+                                        <label for="RechFailedApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Failed To Success</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailtoSucconline1" value="RechFailtoSucconline1" class="" name="acs1">
+                                        <label for="RechFailtoSucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailtoSuccoffline1" value="RechFailtoSuccoffline1" class="" name="acs1">
+                                        <label for="RechFailtoSuccoffline1">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RechFailtoSuccApp1" value="RechFailtoSuccApp1" class="" name="acs1">
+                                        <label for="RechFailtoSuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Check Balance</span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <input type="checkbox" id="RecCheckBaloffline1" value="RecCheckBaloffline1" class="" name="acs1">
+                                        <label for="RecCheckBaloffline1">Offline</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Recharge Proccess</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecProconline1" value="RecProconline1" class="" name="acs1">
+                                        <label for="RecProconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecProcoffline1" value="RecProcoffline1" class="" name="acs1">
+                                        <label for="RecProcoffline1">Offline</label>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-2 col">
+                                        <input type="checkbox" id="RecProcApp1" value="RecProcApp1" class="" name="acs1">
+                                        <label for="RecProcApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Recharge-->
+                <!--Money Transfer-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">MONEY TRANSFER EMAIL</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>DMT Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtsucconline1" value="dmtsucconline1" class="" name="acs1">
+                                        <label for="dmtsucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtsuccApp1" value="dmtsuccApp1" class="" name="acs1">
+                                        <label for="dmtsuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Success To Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtsucctofailonline1" value="dmtsucctofailonline1" class="" name="acs1">
+                                        <label for="dmtsucctofailonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtsucctofailApp1" value="dmtsucctofailApp1" class="" name="acs1">
+                                        <label for="dmtsucctofailApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>DMT Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtfailedonline1" value="dmtfailedonline1" class="" name="acs1">
+                                        <label for="dmtfailedonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtfailedApp1" value="dmtfailedApp1" class="" name="acs1">
+                                        <label for="dmtfailedApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Failed To Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtfailtosucconline1" value="dmtfailtosucconline1" class="" name="acs1">
+                                        <label for="dmtfailtosucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dmtfailtosuccApp1" value="dmtfailtosuccApp1" class="" name="acs1">
+                                        <label for="dmtfailtosuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">AEPS EMAIL</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>AEPS Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="aepssucconline1" value="aepssucconline1" class="" name="acs1">
+                                        <label for="aepssucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="aepssuccApp1" value="aepssuccApp1" class="" name="acs1">
+                                        <label for="aepssuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>AEPS Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="Aepsfailonline1" value="Aepsfailonline1" class="" name="acs1">
+                                        <label for="Aepsfailonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="AepsfailApp1" value="AepsfailApp1" class="" name="acs1">
+                                        <label for="AepsfailApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <!--End AEPS-->
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">M-POSS EMAIL</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>M-poss Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="Mposssucconline1" value="Mposssucconline1" class="" name="acs1">
+                                        <label for="Mposssucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="MposssuccApp1" value="MposssuccApp1" class="" name="acs1">
+                                        <label for="MposssuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>M-poss Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="Mpossfailonline1" value="Mpossfailonline1" class="" name="acs1">
+                                        <label for="Mpossfailonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="MpossfailApp1" value="MpossfailApp1" class="" name="acs1">
+                                        <label for="MpossfailApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <!--End M-Poss-->
+                    </div>
+                </div>
+                <!--End Money Transfer-->
+                <!--Pancard-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">PANCARD EMAIL</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Token Purchase Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="pantokensucconline1" value="pantokensucconline1" class="" name="acs1">
+                                        <label for="pantokensucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="pantokensuccApp1" value="pantokensuccApp1" class="" name="acs1">
+                                        <label for="pantokensuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col">
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Pancard-->
+                <!--Flight-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">FLIGHT BOOKING EMAIL</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibooksucconline1" value="flibooksucconline1" class="" name="acs1">
+                                        <label for="flibooksucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibooksuccApp1" value="flibooksuccApp1" class="" name="acs1">
+                                        <label for="flibooksuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Failed</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibookfailedonline1" value="flibookfailedonline1" class="" name="acs1">
+                                        <label for="flibookfailedonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibookfailedApp1" value="flibookfailedApp1" class="" name="acs1">
+                                        <label for="flibookfailedApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Cancel</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibookcancelonline1" value="flibookcancelonline1" class="" name="acs1">
+                                        <label for="flibookcancelonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="flibookcancelApp1" value="flibookcancelApp1" class="" name="acs1">
+                                        <label for="flibookcancelApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col">
+
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Flight Booking-->
+                <!--Bus-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">BUS BOOKING EMAIL</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="busbooksucconline1" value="busbooksucconline1" class="" name="acs1">
+                                        <label for="busbooksucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="busbooksuccApp1" value="busbooksuccApp1" class="" name="acs1">
+                                        <label for="busbooksuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Cancel</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="busbookcancelonline1" value="busbookcancelonline1" class="" name="acs1">
+                                        <label for="busbookcancelonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="busbookcancelApp1" value="busbookcancelApp1" class="" name="acs1">
+                                        <label for="busbookcancelApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Bus Booking-->
+                <!--Hotel-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">HOTEL BOOKING EMAIL</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="hotelbooksucconline1" value="hotelbooksucconline1" class="" name="acs1">
+                                        <label for="hotelbooksucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="hotelbooksuccApp1" value="hotelbooksuccApp1" class="" name="acs1">
+                                        <label for="hotelbooksuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Cancel</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="hotelbookcancelonline1" value="hotelbookcancelonline1" class="" name="acs1">
+                                        <label for="hotelbookcancelonline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="hotelbookcancelApp1" value="hotelbookcancelApp1" class="" name="acs1">
+                                        <label for="hotelbookcancelApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Hotel Booking-->
+                <!--Hotel-->
+                <div class="card">
+                    <div class="demo-checkbox">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col">
+                                <p class="algp">DTH BOOKING EMAIL</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Success</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dthbooksucconline1" value="dthbooksucconline1" class="" name="acs1">
+                                        <label for="dthbooksucconline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dthbooksuccApp1" value="dthbooksuccApp1" class="" name="acs1">
+                                        <label for="dthbooksuccApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6 col">
+                                        <span>Booking Cancel</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dthbookcancelOnline1" value="dthbookcancelOnline1" class="" name="acs1">
+                                        <label for="dthbookcancelOnline1">Online</label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 col">
+                                        <input type="checkbox" id="dthbookcancelApp1" value="dthbookcancelApp1" class="" name="acs1">
+                                        <label for="dthbookcancelApp1">App</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </div>
+                </div>
+                <!--End Hotel Booking-->
+            </div>
+        </div>
+        
+    </div>
+</section>
+@*<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>*@
+
+<!-- Custom Js -->
+@*<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>*@
+<!-- Demo Js -->
+@*<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>*@
+
+@*<script src="~/AdminDesign/js/demo.js"></script>*@
+@*<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>*@
+@*<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />*@
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+
+<script>
+    function ToastrMessage() {
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "positionClass": "toast-top-right1",
+            "newestOnTop": false,
+            "progressBar": true,
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "100",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "show",
+            "hideMethod": "hide"
+        };
+        //toastr.info('MY MESSAGE!');
+    }
+</script>
+
+<script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Check_UnchekSMS_Setting", "Home")',
+                cache: false,
+                dataType: 'html',
+                async: true,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    for (var item in obj) {
+                        var sts = obj[item].Status;
+                        var name = obj[item].ServiceName;
+                        if (sts == "Y") {
+                            $("#" + name + "").prop("checked", true);
+                        }
+                    }
+                }
+            });
+
+
+        });
+</script>
+
+<script type="text/javascript">
+    function selectAll() {
+        var items = document.getElementsByName('acs');
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].type == 'checkbox')
+                items[i].checked = true;
+        }
+    }
+    function UnSelectAll() {
+        var items = document.getElementsByName('acs');
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].type == 'checkbox')
+                items[i].checked = false;
+        }
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SaveAll").click(function () {
+                var optCode = []
+                $(".for-message input:checkbox(:checked)").each(function () {
+                    if ($(this).prop('checked') == true) {
+                        optCode.push($(this).val() + ",Y");
+                    }
+                    if ($(this).prop('checked') == false) {
+                        optCode.push($(this).val() + ",N");
+                    }
+                });
+            var MsgType = "Message's";
+            document.getElementById("loadermoney").style.display = "block";
+
+            $.ajax({
+                         type: "POST",
+                         url: '@Url.Action("SMSSettingSave", "Home")',
+                         data: { 'ch': optCode, MsgType: MsgType },
+                         cache: false,
+                         dataType: 'json',
+                         async: true,
+                         success: function (data) {
+                             var pp = data.status;
+                             var mm = data.Message;
+
+                             if (pp == "Success") {
+                                 document.getElementById("loadermoney").style.display = "none";
+
+
+                                 $.ajax({
+                                     type: "GET",
+                                     url: '@Url.Action("Check_UnchekSMS_Setting", "Home")',
+                                     cache: false,
+                                     dataType: 'html',
+                                     async: true,
+                                     success: function (data) {
+                                         var obj = JSON.parse(data);
+                                         for (var item in obj) {
+                                             var sts = obj[item].Status;
+                                             var name = obj[item].ServiceName;
+                                             if (sts == "Y") {
+                                                 $("#" + name + "").prop("checked", true);
+                                             }
+                                         }
+                                     }
+                                 });
+
+                                 ToastrMessage();
+                                 toastr.success(mm);
+                             }
+
+                             else {
+                                 ToastrMessage();
+                                 toastr.error(mm);
+                             }
+
+                         }
+                     });
+            return true;
+
+             $(".sweet-alert").css('background', '@PageData["globalCol"]');
+        });
+
+        });
+</script>
+
+<script>
+    $('.for-message-button').click(function () {
+        $('.for-mail').hide();
+        $('.for-message').show();
+        $('.for-select-mail').hide();
+        $('.for-select-msg').show();
+    })
+    $('.for-email-button').click(function () {
+        $('.for-mail').show();
+        $('.for-message').hide();
+        $('.for-select-mail').show();
+        $('.for-select-msg').hide();
+    })
+</script>

@@ -1,0 +1,493 @@
+﻿@using Vastwebmulti.Areas.RETAILER.ViewModels
+@model Vastwebmulti.Areas.RETAILER.ViewModels.HotelDetailedVM
+@{
+    ViewBag.Title = "Travel";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+    var markup = ViewBag.RetailerMarkup;
+    var charge = ViewBag.charge;
+}
+<style>
+    .scrollypy {
+        overflow-y: auto !important;
+        height: 250px;
+    }
+    /*======================================
+    =            NO GUTTER CODE            =
+    ======================================*/
+    .no-gutter > [class*='col-'] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .loader_innner {
+        position: fixed;
+        z-index: 999999;
+        height: 100%;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .price {
+        font-size: xx-large;
+        font-weight: bold;
+        color: black;
+        margin-top: 50px;
+        margin-left: 20px;
+    }
+</style>
+<style>
+    .scroll {
+        width: 100%;
+        max-height: 530px;
+        overflow: auto;
+    }
+
+        .scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scroll::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .scroll::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+        }
+
+        @@media screen and (max-width:766px){
+            .container-fluid.clrsecodhotelinfo{padding-left:15px !important;}
+            .container-fluid.clrsecodhotelinfo .row.clearfix.clrsecod{margin-left:0;margin-right:0;}
+            .firstclrewqtyu-responsive{margin:0px;}
+        }
+</style>
+<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/AdminDesign/Retailer_Slider/Slieder.css" rel="stylesheet" />
+<link href="~/CSS/PageCss/AirSearch.css" rel="stylesheet" />
+<section class="content content-fourdesign-page allpage-four-design-section" style="margin-left:10px;">
+    <div class="container-fluid clrsecodhotelinfo clrsecodhotelinfo-respons only-fullwidth-fourdesign">
+
+        <div class="row clearfix clrsecod changeback-four-design">
+            <div id="BusLoader" style="display:none;">
+                <div class="loader_innner">
+                    <img src="~/images/Busloader.gif" style="margin-top:15%;margin-left:46%;" />
+                </div>
+            </div>
+            <!-- FirstBox -->
+            <div class="col-lg-4 col-md-4 col-sm-10 col-xs-10 clrsecodmyclass only-margin-top-fourdesign" style="padding:0px; margin-top:20px; width: 100%;">
+                <div class="card cardslid cardslidcutomeclass">
+
+                    <div class="body" style="padding:0px;height:324px;">
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                            <!-- Indicators -->
+                            @*<ol class="carousel-indicators">
+                                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                                </ol>*@
+                            <!-- Wrapper for slides -->
+                            <div class="carousel-inner" role="listbox">
+                                @for (var i = 0; i < Model.hotelInfo.Content.Addinfo.HotelDetails.Images.Length; i++)
+                                {
+                                    string classActive = "";
+                                    if (i == 0)
+                                    {
+                                        classActive = "active";
+                                    }
+                                    <div class="item @classActive">
+                                        @if (!string.IsNullOrWhiteSpace(Model.hotelInfo.Content.Addinfo.HotelDetails.Images[i]))
+                                        {
+                                            <img src="@Model.hotelInfo.Content.Addinfo.HotelDetails.Images[i]" style="height:320px;width:500px;margin-top:2px;" />
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <!-- Controls -->
+                            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END#  -->
+            <div class="block-header hedhtl body-border-bottom">
+                <h2>
+                    @Model.hotelInfo.Content.Addinfo.HotelDetails.HotelName <div class="strshort">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            var isChecked = "";
+                            if (i <= Model.StarRating)
+                            {
+                                isChecked = "checked";
+                            }
+                            <span style="font-size: 25px;" class="fa fa-star @isChecked"></span>
+                        }
+                    </div>
+                    <small> <a href="https://unsplash.com/" target="_blank">@Model.hotelInfo.Content.Addinfo.HotelDetails.Address</a></small>
+                </h2>
+            </div>
+            <div class="twohrd">
+                <h3 id="roomTypeNameHeadding" style="color:#ff0047;">@Model.roomInfo.Content.Addinfo.HotelRoomsDetails.First().RoomTypeName<span></span></h3>
+            </div>
+            <div class="scrol scrl fullbodydycolorbg">
+
+
+                <ul style="list-style:none;">
+                    @for (int i = 0; i < Model.roomInfo.Content.Addinfo.HotelRoomsDetails.First().Inclusion.Length; i++)
+                    {
+                        <li><span><i class="fa fa-check" aria-hidden="true"></i></span>@Model.roomInfo.Content.Addinfo.HotelRoomsDetails.First().Inclusion[i]</li>
+                    }
+                    @*<li><span><i class="fa fa-check" aria-hidden="true"></i></span>Room Only</li>*@
+                    <li><span><i class="fa fa-check" aria-hidden="true"></i></span>Free Cancalltion</li>
+                </ul>
+                <br />
+            </div>
+            <!-- Second Box -->
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4 crd">
+                <div class="card cardchk">
+                    <div class="body">
+                        <div class="cahk">
+                            <h4>Check-IN : </h4>
+                            <p>@Model.CheckInDate.ToString("dddd, dd MMMM yyyy")</p>
+                        </div>
+                        <div class="cahk">
+                            <h4>Check-OUT : </h4>
+                            <p>@Model.CheckOutDate.ToString("dddd, dd MMMM yyyy")</p>
+                        </div>
+                        <div class="cahk">
+                            <h4>Total Night Stay : </h4>
+                            <p>@Model.TotalNights</p>
+                        </div>
+                        <div class="cahk">
+                            <h4>Selected Rooms : </h4>
+                            <p>@Model.TotalRooms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# -->
+            <!-- Third Box -->
+            <div class="col-lg-5 col-md-5 col-sm-6 col-xs-6 cdr" style="padding:0px; padding-right:10px;">
+                <div class="card crdhh">
+                    <div class="body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @using (Html.BeginForm("BookHotel", "Hotel", FormMethod.Get))
+                                {
+                                    string defaultRoomCombination = string.Join("_", Model.roomInfo.Content.Addinfo.RoomCombinations.RoomCombination.FirstOrDefault().RoomIndex);
+                                    @Html.Hidden("RIndex", Model.RIndex)
+                                    @Html.Hidden("HCode", Model.HCode)
+                                    @Html.Hidden("RTypeCode", @defaultRoomCombination)
+                                    <div class="col-md-12" style="padding-right: 0px; margin-bottom: 0px;">
+
+                                    </div>
+                                    @*<div class="col-md-4">
+                                            <div class="price">
+                                                <span><i class="fa fa-inr" aria-hidden="true"></i></span>
+                                                <span id="roomPriceSpan"> @String.Format("{0:n0}", Model.roomInfo.Content.Addinfo.HotelRoomsDetails.First().Price.PublishedPriceRoundedOff)</span>
+                                            </div>
+                                        </div>*@
+                                    <div class="clearfix"></div>
+
+                                    <div class="pull-left htl">
+                                        <button class="btn btn-primary" onclick="gotoRoomsTab(event)">
+                                            Book Other Hotel
+                                        </button>
+                                    </div>
+                                    <div class="pull-right htr">
+                                        <button class="btn btn-primary">Book This Room</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# -->
+        </div>
+        <div class="row clearfix firstclr firstclrewqtyu firstclrewqtyu-responsive">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cardlu">
+                <div class="card cardul">
+                    <div class="body hoteldetailstab hoteldetailstab-responshivefg">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs tab-nav-right tabb" role="tablist">
+                            <li role="presentation" style="margin-left:1px;background: #a4a0a0;" class="active"><a href="#roomstab" id="roomsLiTab" data-toggle="tab" aria-expanded="true">ROOMS</a></li>
+                            <li role="presentation" style="margin-left:1px;background: #a4a0a0;" class=""><a href="#DescTab" id="roomsLiTab1"  data-toggle="tab" aria-expanded="false">DESCRIPTION</a></li>
+                            <li role="presentation" style="margin-left:1px;background: #a4a0a0;" class=""><a href="#facilityTab"  data-toggle="tab" aria-expanded="false">FACILITIES</a></li>
+                            <li role="presentation" style="margin-left:1px;background: #a4a0a0; display:none;" class=""><a href="#locationTab"  data-toggle="tab" aria-expanded="false">LOCATION</a></li>
+                            <li role="presentation" style="margin-left:1px;background: #a4a0a0;" class=""><a href="#policyTab" data-toggle="tab" aria-expanded="false">POLICIES</a></li>
+                            <li role="presentation" style="margin-left:1px;background: #a4a0a0;" class=""><a href="#ratingAndReward" data-toggle="tab" aria-expanded="false">RATING&nbsp;AND&nbsp;REWARDS</a></li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content tabrom">
+                            <div role="tabpanel" class="tab-pane fade active in" id="roomstab">
+                                <div class="body table-responsive">
+                                    <table class="table table-striped tblmar">
+                                        <thead>
+                                            <tr style="background: #f5f5f5;">
+                                                <th>Room Type</th>
+                                                <th>
+                                                    Price
+                                                    <span id="showofferfare" style="cursor:pointer;"> <i class="fa fa-exchange"></i>   </span>
+                                                </th>
+                                                @*<th>Day Rate</th>*@
+                                                <th>Amenities</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.roomInfo.Content.Addinfo.RoomCombinations.InfoSource == "FixedCombination")
+                                            {
+                                                for (int item = 0; item < Model.roomInfo.Content.Addinfo.RoomCombinations.RoomCombination.Count; item++)
+                                                {
+                                                    var LoopItem = Model.roomInfo.Content.Addinfo.RoomCombinations.RoomCombination[item];
+                                                    string ischecked = "";
+                                                    if (item == 0)
+                                                    {
+                                                        ischecked = "checked=''";
+                                                    }
+                                                    for (int i = 0; i < LoopItem.RoomIndex.Length; i++)
+                                                    {
+                                                        int roomCominationIndexVal = LoopItem.RoomIndex[i];
+                                                        var roomNode = Model.roomInfo.Content.Addinfo.HotelRoomsDetails.Where(a => a.RoomIndex == roomCominationIndexVal).FirstOrDefault();
+                                                        var totalp = roomNode.Price.PublishedPriceRoundedOff + markup;
+
+                                                        if (i == 0)
+                                                        {
+
+
+                                                            <tr>
+                                                                <td rowspan="@LoopItem.RoomIndex.Length" scope="rowgroup">
+                                                                    <span>
+
+                                                                        <input name="group5" type="radio" id="@string.Join("_", LoopItem.RoomIndex)" class="with-gap radio-col-blue roomRadio" @ischecked data-room-price="@roomNode.Price.PublishedPriceRoundedOff" data-room-typename="@roomNode.RoomTypeName">
+                                                                        <label for="@string.Join("_", LoopItem.RoomIndex)">@roomNode.RoomTypeName</label>
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    @totalp
+                                                                    @{
+                                                                        var totalcharge = (roomNode.Price.OfferedPriceRoundedOff * charge) / 100;
+                                                                        totalcharge = roomNode.Price.OfferedPriceRoundedOff + totalcharge;
+                                                                        var publishfare = roomNode.Price.PublishedPriceRoundedOff;
+                                                                        if (publishfare <= totalcharge)
+                                                                        {
+                                                                            totalcharge = roomNode.Price.OfferedPriceRoundedOff;
+                                                                        }
+                                                                    }
+                                                                    <br />
+                                                                    <span class="showofferchk" style="display:none;"> @totalcharge</span>
+                                                                   
+                                                                </td>
+                                                                @* <td>@roomNode.DayRates.First().Amount on @roomNode.DayRates.First().Date</td>*@
+                                                                <td>@string.Join(",", roomNode.Amenities)</td>
+                                                            </tr>
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td scope="rowgroup">@totalp</td>
+                                                                @* <td>@roomNode.DayRates.First().Amount on @roomNode.DayRates.First().Date</td>*@
+                                                                <td>@string.Join(",", roomNode.Amenities)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                int startIndex = 0;
+                                                int roomCount = Model.roomInfo.Content.Addinfo.RoomCombinations.RoomCombination.Count();
+                                                for (int i = 0; i < Model.roomInfo.Content.Addinfo.RoomCombinations.RoomCombination[0].RoomIndex.Count(); i++)
+                                                {
+                                                    for (int j = 0; j < Model.roomInfo.Content.Addinfo.RoomCombinations.RoomCombination[0].RoomIndex.Count(); j++)
+                                                    {
+
+                                                    }
+                                                    int indexValue = Model.roomInfo.Content.Addinfo.RoomCombinations.RoomCombination[startIndex].RoomIndex[i];
+                                                    var roomNode = Model.roomInfo.Content.Addinfo.HotelRoomsDetails.Where(a => a.RoomIndex == indexValue);
+                                                    if (startIndex < roomCount)
+                                                    {
+                                                        startIndex++;
+                                                    }
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="DescTab">
+                                @Html.Raw(Model.hotelInfo.Content.Addinfo.HotelDetails.Description)
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="facilityTab">
+                                @for (var i = 0; i < Model.hotelInfo.Content.Addinfo.HotelDetails.HotelFacilities.Length; i++)
+                                {
+                                    <b>@Model.hotelInfo.Content.Addinfo.HotelDetails.HotelFacilities[i]</b> <br />
+                                }
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="locationTab">
+                                <b>@Model.hotelInfo.Content.Addinfo.HotelDetails.Address</b>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="policyTab">
+                                <b style="margin-top: 10px;display: block;font-size: 18px;">Free Cancallation Date : @Model.roomInfo.Content.Addinfo.HotelRoomsDetails.First().LastCancellationDate</b>
+                                @foreach (var item in Model.roomInfo.Content.Addinfo.HotelRoomsDetails)
+                                {
+                                    try
+                                    {
+                                        <p>
+                                            @Html.Raw(item.CancellationPolicy.Replace("#^#", "<br />"))
+                                        </p>
+                                    }
+                                    catch { }
+                                }
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="ratingAndReward" style="margin-left: 5px;">
+                                <b class="strbb">A @Model.hotelInfo.Content.Addinfo.HotelDetails.StarRating Star Hotel</b><br />
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    var isChecked = "";
+                                    if (i <= Model.StarRating)
+                                    {
+                                        isChecked = "checked";
+                                    }
+                                    <span style="font-size:25px;" class="fa fa-star @isChecked"></span>
+                                }
+
+                                <div class="scrol scrl2">
+
+
+                                    <ul style="list-style:none;">
+                                        @for (int i = 0; i < Model.roomInfo.Content.Addinfo.HotelRoomsDetails.First().Inclusion.Length; i++)
+                                        {
+                                            <li><span><i class="fa fa-check" aria-hidden="true"></i></span>@Model.roomInfo.Content.Addinfo.HotelRoomsDetails.First().Inclusion[i]</li>
+                                        }
+                                        @*<li><span><i class="fa fa-check" aria-hidden="true"></i></span>Room Only</li>*@
+                                        <li><span><i class="fa fa-check" aria-hidden="true"></i></span>Free Cancalltion</li>
+                                    </ul>
+                                    <br />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/Retailer_Slider/multislider.js"></script>
+<script src="~/Scripts/PageScript/Retailer/AirSearch.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+@*<script>
+        $('#basicSlider').multislider({
+            continuous: true,
+            duration: 2000
+        });
+        $('#mixedSlider').multislider({
+            duration: 750,
+            interval: 3000
+        });
+    </script>*@
+<!--Calendar Javascript-->
+<script type="text/javascript">
+    $(function () {
+        $('#date').bootstrapMaterialDatePicker
+            ({
+                clearButton: false
+            });
+        $('#txt_to_date').bootstrapMaterialDatePicker
+            ({
+                weekStart: 0, format: 'DD/MM/YYYY'
+            });
+        $('#txt_frm_date').bootstrapMaterialDatePicker
+            ({
+                weekStart: 0, format: 'DD/MM/YYYY'
+            }).on('change', function (e, date) {
+                $('#txt_to_date').bootstrapMaterialDatePicker('setMinDate', date);
+            });
+        $('#min-date').bootstrapMaterialDatePicker({ format: 'DD/MM/YYYY HH:mm', minDate: new Date() });
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+@*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+      rel="Stylesheet" type="text/css" />
+<script>
+    function gotoRoomsTab(event) {
+        // alert('Hey i am calling');
+        event.preventDefault();
+        $("#roomsLiTab").click();
+        // alert();
+    }
+    $(".roomRadio").click(function () {
+        $("#RTypeCode").val($(this).attr('id'));
+        //$("#roomPriceSpan").html($(this).attr("data-room-price"));
+        $("#roomTypeNameHeadding").html($(this).attr("data-room-typename"));
+    });
+</script>
+
+<script>
+
+    $(".twohrd span").hover(function () {
+        $('.scrol.scrl').css("display", "block");
+    }, function () {
+        $('.scrol.scrl').css("display", "none");
+    });
+
+</script>
+
+
+
+
+<script>
+
+
+
+    $('#showofferfare').click(function () {
+        if ($('.showofferchk:visible').length == 0) {
+            $('.showofferchk').show();
+        }
+        else {
+            $('.showofferchk').hide();
+        }
+    });
+
+
+
+</script>

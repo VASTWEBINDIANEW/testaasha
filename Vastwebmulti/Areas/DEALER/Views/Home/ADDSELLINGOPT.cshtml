@@ -1,0 +1,137 @@
+﻿@model IEnumerable<Vastwebmulti.Models.operatorcommforsellStatu>
+    <style>
+
+        select {
+            background: rgb(255 255 255 / 95%);
+            padding: 5px;
+            border-radius: 2px;
+            width: 30%;
+            border: 1px solid #a7a7a7;
+            color: #4a4646;
+        }
+        .w_set {
+            width: 100%;
+            float: left;
+            text-align: center;
+        }
+
+        .w_set2 {
+            float: right;
+            text-align: right;
+        }
+            .w_set2 span {
+                border: 1px solid #CCC;
+                padding: 5px 15px;
+                background: var(--main-bg-lcolor);
+                color: #fff;
+                float: left;
+            }
+        #optname select {
+            margin: 3px 0;
+        }
+
+        #comsd {
+            width: 30%;
+            margin: auto;
+        }
+            #comsd input {
+                width: 100%;
+                padding: 7px 5px;
+                border: 1px solid #bfbebe;
+                background: transparent;
+                color: #777;
+                margin: 8px 0;
+            }
+        .table tbody tr td, .table tbody tr th {
+            border: 1px solid #cccccc;
+        }
+
+    </style>
+<section class="content classrecharge-report" style=" padding:5px 15px;">
+
+
+    @using (Ajax.BeginForm("ADDSELLINGOPT", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess1", OnFailure = "onfailed", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+    {
+
+    <div style="text-align:center;width:100%;float:left;margin-bottom: 10px;">
+
+        <div class="w_set2 page-header-third">
+
+            <a style="display: table;" href="@Url.Action("addsim","Home")"><span>Add Sim</span></a>
+
+        </div> 
+        <div class="w_set page-header-third">
+            <div>
+                <select id="myDropdown" onchange="dropdownChanged()" name="drop1" class="allinput">
+                    <option>SELECT</option>
+                    <option>PrePaid</option>
+                    <option>DTH</option>
+                </select>
+            </div>
+            <div id="optname" onchange="dropdown1()">
+
+            </div>
+            <div id="comsd" style="display:none">
+                <input type="number" step="0.01" name="comm1" class="allinput" placeholder="ENTER COMMISSION IN %" required />
+                
+                <input type="submit" style="background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)); color: #fff; width: 30%; " />
+            </div>
+        </div>
+
+
+
+
+    </div>
+    }
+
+    <div class="page-header-third">
+        @Html.Partial("optsellforrcharge", Model)
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+
+<script>
+    function dropdownChanged() {
+        document.getElementById('comsd').style.display = "none";
+        var selectedValue = document.getElementById('myDropdown').value;
+        var optnames1= document.getElementById('optname');
+         $.ajax({
+            url: '@Url.Action("filteroperatorforsell","Home")',
+            type: "POST",
+             data: { type: selectedValue  },
+            cache: false,
+             success: function (data2) {
+                 optnames1.innerHTML = "";
+              
+                 if (data2.list.length != 0) {
+
+                     var selects = document.createElement("select");
+                     var selectss2 = document.createElement("option");
+                     selectss2.text = "SELECT OPERATOR";
+                     selectss2.value = "";
+                     selects.appendChild(selectss2);
+                     for (var i = 0; i < data2.list.length; i++) {
+                         var selectss = document.createElement("option");
+                         selectss.text = data2.list[i].optname;
+                         selectss.value = data2.list[i].optname;
+                         selects.appendChild(selectss);
+                     }
+                     selects.setAttribute("name", "drop2");
+                     selects.setAttribute("class", "allinput");
+                     optnames1.appendChild(selects);
+                 }
+             }
+        });
+    }
+    function dropdown1() {
+        document.getElementById('comsd').style.display = "block";
+    }
+    function OnSuccess1() {
+        document.getElementById('optname').innerHTML = "";
+
+        document.getElementById('comsd').style.display = "none";
+        document.getElementById("myDropdown").innerHTML.reload
+        location.reload();
+    }
+</script>

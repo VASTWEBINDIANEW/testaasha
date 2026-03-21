@@ -1,0 +1,78 @@
+﻿@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity
+@model List<Vastwebmulti.Models.proc_BusReport_Result>
+@{
+    Layout = null;
+}
+
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+    <tr>
+        <td style="color:;font-weight:700;">
+            <img src="~/ashok-images/correct.svg" style="height:20px;width:20px;margin-right:3px;float:left;background-color:green;" /><span style="font-size:0 !important;">@Html.DisplayFor(modelItem => item.TicketStatus)</span>@Html.DisplayFor(modelItem => item.PNR)
+        </td>
+        <td>@Html.DisplayFor(modelItem => item.PassengerName)</td>
+        <td>@Html.DisplayFor(modelItem => item.TicketNo)</td>
+        <td style="display:none;">@Html.DisplayFor(modelItem => item.PNR)</td>
+        <td style="color:green;font-weight:700;display:none;">@Html.DisplayFor(modelItem => item.TicketStatus)</td>
+        <td>@Html.DisplayFor(modelItem => item.sourceStationName)</td>
+        <td>@Html.DisplayFor(modelItem => item.destinationStationName)</td>
+        <td>@item.dateOfJourney.ToString("dddd,dd MMMM yyyy")</td>
+        <td>@Html.DisplayFor(modelItem => item.FareAmount)</td>
+        <td>@Html.DisplayFor(modelItem => item.RemPre)</td>
+        <td>@Html.DisplayFor(modelItem => item.RemPost)</td>
+        <td>@Html.DisplayFor(modelItem => item.RemInc)</td>
+        <td>@Html.DisplayFor(modelItem => item.TicketDate)</td>
+        @if (item.Status == "Success" || item.Status == "Cancelled")
+        {
+            <td title="View Booking Details" class="current-stataus-bus">
+                <span onclick="BookingDetails('@item.TraceId')">
+
+                    <a class="btn btn-primary">Current Status</a>
+                </span>
+            </td>
+        }
+        else
+        {
+            <td><span>&nbsp;</span></td>
+        }
+
+        @if (item.Status == "Success")
+        {
+            <td title="Cancel Booking" class="current-stataus-bus">
+                <span onclick="CancelBooking('@item.TraceId','@item.BusId','@item.TicketNo')">
+
+                    <a class="btn btn-primary">Ticket Cancel</a>
+                </span>
+            </td>
+        }
+        else
+        {
+            <td><span>&nbsp;</span></td>
+        }
+        @if (item.Status == "Success")
+        {
+            <td class="bus-printpage"><a href="@Url.Action("Bus_Print_Pdf","Bus",new { TraceId = item.TraceId})" style="font-size:14px;color:blue;font-weight:500; text-decoration:none;" class="btn btn-primary" target="_blank"><i class="material-icons">print</i></a></td>
+        }
+    </tr>
+}
+        }
+
+else
+{
+<tr>
+    @if (@ViewBag.checkdata != null)
+    {
+        <td colspan="13"><h3 style="text-align:center;">No Data For Current Search</h3></td>
+    }
+    else
+    {
+        <td colspan="13"><h3 style="text-align:center;">Data Not Found</h3></td>
+    }
+
+</tr>
+
+}

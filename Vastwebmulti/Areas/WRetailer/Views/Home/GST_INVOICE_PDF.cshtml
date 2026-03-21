@@ -1,0 +1,1037 @@
+﻿@model Vastwebmulti.Areas.WRetailer.Models.GST_PDF_MODEL
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Vastwebmulti</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta content="" charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap core CSS -->
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/fonts/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/css/animate.min.css" rel="stylesheet">
+    <!-- Custom styling plus plugins -->
+    <link href="~/css/custom.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/css/maps/jquery-jvectormap-2.0.3.css" />
+    <link href="~/css/icheck/flat/green.css" rel="stylesheet" />
+    <link href="~/css/floatexamples.css" rel="stylesheet" type="text/css" />
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/nprogress.js"></script>
+    <script type="text/javascript">
+     $(window).load(function () {
+          var cb = function (start, end, label) {
+              console.log(start.toISOString(), end.toISOString(), label);
+              $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+              //alert("Callback has fired: [" + start.format('MMMM D, YYYY') + " to " + end.format('MMMM D, YYYY') + ", label = " + label + "]");
+          }
+          var optionSet1 = {
+              startDate: moment().subtract(0, 'days'),
+              endDate: moment(),
+              minDate: '01/01/2011',
+              maxDate: '12/31/2020',
+              dateLimit: {
+                  days: 60
+              },
+              showDropdowns: true,
+              showWeekNumbers: true,
+              timePicker: false,
+              timePickerIncrement: 1,
+              timePicker12Hour: true,
+              ranges: {
+                  'Today': [moment(), moment()],
+                  'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                  'Last 7 Days': [moment().subtract(6, 'days'), moment()]
+              },
+              opens: 'left',
+              buttonClasses: ['btn btn-default'],
+              applyClass: 'btn-small btn-primary',
+              cancelClass: 'btn-small',
+              format: 'MM/DD/YYYY',
+              separator: ' to ',
+              locale: {
+                  applyLabel: 'Submit',
+                  cancelLabel: 'Clear',
+                  fromLabel: 'From',
+                  toLabel: 'To',
+                  customRangeLabel: 'Custom',
+                  daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                  monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                  firstDay: 1
+              }
+          };
+          $('#reportrange span').html(moment().subtract(0, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+          $('#reportrange').daterangepicker(optionSet1, cb);
+          $('#reportrange').on('show.daterangepicker', function () {
+              console.log("show event fired");
+          });
+          $('#reportrange').on('hide.daterangepicker', function () {
+              console.log("hide event fired");
+          });
+          $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
+              console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
+          });
+          $('#reportrange').on('cancel.daterangepicker', function (ev, picker) {
+              console.log("cancel event fired");
+          });
+          $('#options1').click(function () {
+              $('#reportrange').data('daterangepicker').setOptions(optionSet1, cb);
+          });
+          $('#options2').click(function () {
+              $('#reportrange').data('daterangepicker').setOptions(optionSet2, cb);
+          });
+          $('#destroy').click(function () {
+              $('#reportrange').data('daterangepicker').remove();
+          });
+      });
+    </script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <!-- gauge js commented on 03-08-17-->
+    <!-- bootstrap progress js -->
+    <script src="~/js/progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="~/js/nicescroll/jquery.nicescroll.min.js"></script>
+    <!-- icheck -->
+    <script src="~/js/icheck/icheck.min.js"></script>
+    <!-- daterangepicker -->
+    <script type="text/javascript" src="~/js/moment/moment.min.js"></script>
+    <script type="text/javascript" src="~/js/datepicker/daterangepicker.js"></script>
+    <!-- chart js -->
+    <script src="~/js/chartjs/chart.min.js"></script>
+    <script src="~/js/customrem.js"></script>
+    <!-- flot js -->
+    <!--[if lte IE 8]><script type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+    <script type="text/javascript" src="~/js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="~/js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="~/js/flot/jquery.flot.orderBars.js"></script>
+    <script type="text/javascript" src="~/js/flot/jquery.flot.time.min.js"></script>
+    <script type="text/javascript" src="~/js/flot/date.js"></script>
+    <script type="text/javascript" src="~/js/flot/jquery.flot.spline.js"></script>
+    <script type="text/javascript" src="~/js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="~/js/flot/curvedLines.js"></script>
+    <script type="text/javascript" src="~/js/flot/jquery.flot.resize.js"></script>
+    <script>
+   $(window).load(function() {
+      // [17, 74, 6, 39, 20, 85, 7]
+      //[82, 23, 66, 9, 99, 6, 2]
+      var data1 = [
+        [gd(2012, 1, 1), 17],
+        [gd(2012, 1, 2), 74],
+        [gd(2012, 1, 3), 6],
+        [gd(2012, 1, 4), 39],
+        [gd(2012, 1, 5), 20],
+        [gd(2012, 1, 6), 85],
+        [gd(2012, 1, 7), 7]
+      ];
+      var data2 = [
+        [gd(2012, 1, 1), 82],
+        [gd(2012, 1, 2), 23],
+        [gd(2012, 1, 3), 66],
+        [gd(2012, 1, 4), 9],
+        [gd(2012, 1, 5), 119],
+        [gd(2012, 1, 6), 6],
+        [gd(2012, 1, 7), 9]
+      ];
+      $("#canvas_dahs").length && $.plot($("#canvas_dahs"), [
+        data1, data2
+      ], {
+        series: {
+          lines: {
+            show: false,
+            fill: true
+          },
+          splines: {
+            show: true,
+            tension: 0.4,
+            lineWidth: 1,
+            fill: 0.4
+          },
+          points: {
+            radius: 0,
+            show: true
+          },
+          shadowSize: 2
+        },
+        grid: {
+          verticalLines: true,
+          hoverable: true,
+          clickable: true,
+          tickColor: "#d5d5d5",
+          borderWidth: 1,
+          color: '#fff'
+        },
+        colors: ["rgba(38, 185, 154, 0.38)", "rgba(3, 88, 106, 0.38)"],
+        xaxis: {
+          tickColor: "rgba(51, 51, 51, 0.06)",
+          mode: "time",
+          tickSize: [1, "day"],
+          //tickLength: 10,
+          axisLabel: "Date",
+          axisLabelUseCanvas: true,
+          axisLabelFontSizePixels: 12,
+          axisLabelFontFamily: 'Verdana, Arial',
+          axisLabelPadding: 10
+            //mode: "time", timeformat: "%m/%d/%y", minTickSize: [1, "day"]
+        },
+        yaxis: {
+          ticks: 8,
+          tickColor: "rgba(51, 51, 51, 0.06)",
+        },
+        tooltip: false
+      });
+      function gd(year, month, day) {
+        return new Date(year, month - 1, day).getTime();
+      }
+    });
+    </script>
+    <!-- worldmap -->
+    <script type="text/javascript" src="~/js/maps/jquery-jvectormap-2.0.3.min.js"></script>
+    <script type="text/javascript" src="~/js/maps/gdp-data.js"></script>
+    <script type="text/javascript" src="~/js/maps/jquery-jvectormap-world-mill-en.js"></script>
+    <script type="text/javascript" src="~/js/maps/jquery-jvectormap-us-aea-en.js"></script>
+    <!-- pace -->
+    <script src="~/js/pace/pace.min.js"></script>
+    <script>
+      $(function () {
+          $('#world-map-gdp').vectorMap({
+              map: 'world_mill_en',
+              backgroundColor: 'transparent',
+              zoomOnScroll: false,
+              series: {
+                  regions: [{
+                      values: gdpData,
+                      scale: ['#E6F2F0', '#149B7E'],
+                      normalizeFunction: 'polynomial'
+                  }]
+              },
+              onRegionTipShow: function (e, el, code) {
+                  el.html(el.html() + ' (GDP - ' + gdpData[code] + ')');
+              }
+          });
+      });
+    </script>
+    <!-- skycons -->
+    <script src="~/js/skycons/skycons.min.js"></script>
+    <script>
+      var icons = new Skycons({
+          "color": "#73879C"
+      }),
+      list = [
+        "clear-day", "clear-night", "partly-cloudy-day",
+        "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+        "fog"
+      ],
+      i;
+      for (i = list.length; i--; )
+          icons.set(list[i], list[i]);
+      icons.play();
+    </script>
+    <!-- dashbord linegraph -->
+    <!-- /dashbord linegraph -->
+    <!-- datepicker -->
+    <script>
+      NProgress.done();
+    </script>
+    <!-- gauge js -->
+    <!-- skycons -->
+    <!-- dashbord linegraph -->
+    <!-- /datepicker -->
+    <!-- /footer content -->
+</head>
+<body class="nav-sm">
+    <div class="container body">
+        <div class="main_container">
+
+
+            <div>
+
+
+                <style>
+                    article, aside, figure, footer, header, hgroup,
+                    menu, nav, section {
+                        display: block;
+                    }
+
+                    td {
+                        border: 1px solid black;
+                        width: 50px;
+                        text-align: center;
+                        margin: 0;
+                        padding: 0;
+                        height: 100%;
+                    }
+
+                    #span1 {
+                        background-color: #DDD;
+                        width: 25px;
+                        float: right;
+                        height: 100%;
+                    }
+
+                    #span2 {
+                        background-color: #EEE;
+                        width: 24px;
+                        float: left;
+                    }
+
+                    .t {
+                        border-top: 1px solid black;
+                    }
+
+                    .r {
+                        border-right: 1px solid black;
+                        height: 100%;
+                    }
+                </style>
+
+                <div class="" role="main">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <center><h3 style="color:black; padding-top:5px;">Goods and Services Tax Invoice</h3></center>
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <div class="pull-left" style="margin-right:20px;">
+
+                                        <table style="width:300px;">
+                                            <tr>
+                                                <th style="color:black;">
+                                                    <p>Company Name : @ViewBag.AdminDetails.Name</p>
+                                                    <p>Email Id : @ViewBag.AdminDetails.email</p>
+                                                    <p>Mobile No :  @ViewBag.AdminDetails.mobile</p>
+                                                    <p>
+                                                        Pan Card No :
+                                                        @if (string.IsNullOrEmpty(ViewBag.AdminDetails.pencardno))
+                                                        {
+                                                            @:N \A
+                                                          }
+                                                        else
+                                                        {
+                                                            @ViewBag.AdminDetails.pencardno
+                                                        }
+
+                                                    </p>
+                                                    <p>
+                                                        GST No :
+
+                                                        @if (string.IsNullOrEmpty(ViewBag.AdminDetails.Gstno))
+                                                        {
+                                                            @:N \A
+                                                          }
+                                                        else
+                                                        {
+                                                            @ViewBag.AdminDetails.Gstno
+                                                        }
+
+                                                    </p>
+                                                    @*<p>Aadhaar No : @ViewBag.AdminDetails.Aadhar</p>*@
+                                                    <p>
+                                                        Address : @ViewBag.AdminDetails.Address
+                                                    </p>
+                                                </th>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="pull-left">
+
+                                        <table style="width:300px;">
+                                            <tr>
+                                                @if (ViewBag.Role == "API")
+                                                {
+                                                    <th style="color:black;">
+                                                        <p>API Name : @ViewBag.UserDetails.username</p>
+                                                        <p>API Id : @ViewBag.UserDetails.apiid</p>
+                                                        <p>Email Id : @ViewBag.UserDetails.emailid</p>
+                                                        <p>Mobile No :  @ViewBag.UserDetails.mobile</p>
+                                                        <p>
+                                                            Pan Card No :
+                                                            @if (string.IsNullOrEmpty(ViewBag.UserDetails.pancard))
+                                                            {
+                                                                @:N /A
+                                                        }
+                                                            else
+                                                            {
+                                                                @ViewBag.UserDetails.pancard
+                                                            }
+
+                                                        </p>
+
+                                                        <p>
+                                                            GST No :
+                                                            @if (string.IsNullOrEmpty(ViewBag.UserDetails.gst))
+                                                            {
+                                                                @:N /A
+                                                        }
+                                                            else
+                                                            {
+                                                                @ViewBag.UserDetails.gst
+                                                            }
+
+                                                        </p>
+                                                        <p>Address: @ViewBag.UserDetails.address</p>
+                                                        @*<p>Aadhaar No : @ViewBag.UserDetails.AadharCard</p>*@
+                                                    </th>
+                                                }
+                                                @if (ViewBag.Role == "Retailer")
+                                                {
+                                                    <th style="color:black;">
+                                                        <p>Retailer Name : @ViewBag.UserDetails.RetailerName</p>
+                                                        <p>Retailer Id : @ViewBag.UserDetails.RetailerId</p>
+                                                        <p>Email Id : @ViewBag.UserDetails.Email</p>
+                                                        <p>Mobile No :  @ViewBag.UserDetails.Mobile</p>
+                                                        <p>
+                                                            Pan Card No :
+                                                            @if (string.IsNullOrEmpty(ViewBag.UserDetails.PanCard))
+                                                            {
+                                                                @:N /A
+                                                        }
+                                                            else
+                                                            {
+                                                                @ViewBag.UserDetails.PanCard
+                                                            }
+
+                                                        </p>
+
+                                                        <p>
+                                                            GST No :
+                                                            @if (string.IsNullOrEmpty(ViewBag.UserDetails.gst))
+                                                            {
+                                                                @:N /A
+                                                        }
+                                                            else
+                                                            {
+                                                                @ViewBag.UserDetails.gst
+                                                            }
+
+                                                        </p>
+                                                        <p>Address: @ViewBag.UserDetails.Address</p>
+                                                        @*<p>Aadhaar No : @ViewBag.UserDetails.AadharCard</p>*@
+                                                    </th>
+                                                }
+                                                @if (ViewBag.Role == "Dealer")
+                                                {
+                                                    <th style="color:black;">
+                                                        <p>Buyer Name : @ViewBag.UserDetails.FarmName</p>
+                                                        <p>Dealer Id : @ViewBag.UserDetails.DealerId</p>
+                                                        <p>Email : @ViewBag.UserDetails.Email</p>
+                                                        <p>Mobile :  @ViewBag.UserDetails.Mobile</p>
+                                                        <p>
+                                                            Pan Card No :
+
+                                                            @if (string.IsNullOrEmpty(ViewBag.UserDetails.pancard))
+                                                            {
+                                                                @:N /A
+                                                          }
+                                                            else
+                                                            {
+                                                                @ViewBag.UserDetails.pancard
+                                                            }
+
+                                                        </p>
+                                                        @*<p>Aadhaar No : @ViewBag.UserDetails.adharcard</p>*@
+                                                        <p>
+                                                            GST No :
+                                                            @if (string.IsNullOrEmpty(ViewBag.UserDetails.gst))
+                                                            {
+                                                                @:N /A
+                                                        }
+                                                            else
+                                                            {
+                                                                @ViewBag.UserDetails.gst
+                                                            }
+                                                        </p>
+
+                                                        <p>
+                                                            Address: @ViewBag.UserDetails.Address
+                                                        </p>
+                                                    </th>
+                                                }
+                                                @if (ViewBag.Role == "master")
+                                                {
+                                                    <th style="color:black;">
+                                                        <p>Buyer Name : @ViewBag.UserDetails.FarmName</p>
+                                                        <p>MD Id : @ViewBag.UserDetails.SSId</p>
+                                                        <p>Email : @ViewBag.UserDetails.Email</p>
+                                                        <p>Mobile :  @ViewBag.UserDetails.Mobile</p>
+                                                        <p>
+                                                            Pan Card No :
+
+                                                            @if (string.IsNullOrEmpty(ViewBag.UserDetails.pancard))
+                                                            {
+                                                                @:N /A
+                                                          }
+                                                            else
+                                                            {
+                                                                @ViewBag.UserDetails.pancard
+                                                            }
+
+                                                        </p>
+                                                        @*<p>Aadhaar No : @ViewBag.UserDetails.adharcard</p>*@
+                                                        <p>
+                                                            GST No :
+                                                            @if (string.IsNullOrEmpty(ViewBag.UserDetails.gst))
+                                                            {
+                                                                @:N /A
+                                                        }
+                                                            else
+                                                            {
+                                                                @ViewBag.UserDetails.gst
+                                                            }
+                                                        </p>
+
+                                                        <p>
+                                                            Address: @ViewBag.UserDetails.Address
+                                                        </p>
+                                                    </th>
+                                                }
+
+                                            </tr>
+
+
+                                        </table>
+
+
+                                    </div>
+
+                                    <div class="pull-right" style="">
+                                        <table>
+                                            <tr>
+                                                <th style="color:black;">
+                                                    <div class="col-md-12">
+                                                        <div class="col-md-4">
+                                                            <div class="col-md-12"><strong style="font-size:18px;">Invoice No :</strong><span style="font-size:18px; color:black;"> @Model.INVOICENO</span></div>
+                                                            @*<div class="col-md-6"><span style="font-size: 18px;color:black;">@Model.INVOICENO</span></div>*@
+                                                        </div>
+
+                                                    </div>
+                                                </th>
+                                            </tr>
+
+
+                                        </table>
+                                        <table>
+                                            <tr>
+                                                <th style="color:black;">
+                                                    <div class="col-md-12">
+                                                        <div class="col-md-4">
+                                                            <div class="col-md-12"><strong>Date :</strong><span style=" color:black;"> @ViewData["month"]</span></div>
+                                                            @*<div class="col-md-6"><span style="font-size: 18px;color:black;">@ViewData["month"]</span></div>*@
+                                                        </div>
+
+                                                    </div>
+                                                </th>
+                                            </tr>
+
+
+                                        </table>
+                                        <table>
+                                            <tr>
+                                                <th style="color:black;">
+                                                    <div class="col-md-12" style="float:right">
+                                                        <div class="col-md-4">
+                                                            <div class="col-md-12"><p>Opening Balance : @ViewBag.OpnBal</p></div>
+                                                            @*<div class="col-md-6"><span style="font-size: 12px;color:black;">@ViewBag.OpnBal</span></div>*@
+
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                            </tr>
+
+
+                                        </table>
+                                        <table>
+                                            <tr>
+                                                <th style="color:black;">
+                                                    <div class="col-md-12">
+                                                        <div class="col-md-4">
+                                                            <div class="col-md-12"><p>Advance Value : @ViewBag.Purchase</p></div>
+                                                            @*<div class="col-md-6"><span style="font-size: 12px;color:black;">@ViewBag.Purchase</span></div>*@
+                                                        </div>
+
+                                                    </div>
+                                                </th>
+                                            </tr>
+
+
+                                        </table>
+                                        <table>
+                                            <tr>
+                                                <th style="color:black;">
+                                                    <div class="col-md-12">
+                                                        <div class="col-md-4">
+                                                            <div class="col-md-12"><p>Closing Balance : @ViewBag.CloseBal</p></div>
+                                                            @*<div class="col-md-6"><span style="font-size: 12px;color:black;">@ViewBag.CloseBal</span></div>*@
+                                                        </div>
+
+                                                    </div>
+                                                </th>
+                                            </tr>
+
+
+                                        </table>
+
+                                    </div>
+
+                                    <div class="clearfix" style="border-bottom:1px solid black;"></div>
+                                </div>
+
+                                <div class="x_content">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                @if (Model.APIGst != null)
+                                                {
+                                                    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead style="color:black;">
+                                                            <tr>
+                                                                <th>SR</th>
+                                                                <th>Description</th>
+                                                                <th>HSN/SAC</th>
+                                                                <th>Recharge Amount</th>
+                                                                <th>Discount</th>
+                                                                <th>Net Amount</th>
+                                                                <th>Taxable Value</th>
+
+                                                                @if (ViewBag.CloseBal == "ISGST")
+                                                                {
+                                                                    <th> IGST(18%)</th>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <th>CGST(9%)</th>
+                                                                    <th>SGST(9%)</th>
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="myTable">
+                                                            @{int i = 1;}
+                                                            @foreach (var item in Model.APIGst)
+                                                            {
+                                                                <tr style="color:black;">
+                                                                    <td>@i</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.operator_Name) (E-Top)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.HSN_SAC)</td>
+                                                                    <td>@Html.DisplayFor(modelItem => item.Sell)</td>
+
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.APISellAmt)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.NetAmount)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.TaxableValue)</td>
+
+                                                                    @if (ViewBag.CloseBal == "ISGST")
+                                                                    {
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.IGST)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.CGST)</td>
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.SGST)</td>
+                                                                    }
+
+
+                                                                </tr>
+                                                                i++;
+                                                            }
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr style="font-weight:bold;color:black;">
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td style="">Total</td>
+                                                                <td style=""></td>
+                                                                <td></td>
+                                                                <td>@Model.APIGst.Sum(modelItem => modelItem.NetAmount)</td>
+                                                                <td>@Model.APIGst.Sum(modelItem => modelItem.TaxableValue)</td>
+                                                                @if (ViewBag.CloseBal == "ISGST")
+                                                                {
+                                                                    <td style="">@Model.APIGst.Sum(modelItem => modelItem.IGST)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="">@Model.APIGst.Sum(modelItem => modelItem.CGST)</td>
+                                                                    <td style="">@Model.APIGst.Sum(modelItem => modelItem.SGST)</td>
+                                                                }
+
+                                                            </tr>
+                                                        </tfoot>
+
+                                                    </table>
+
+                                                    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+                                                        <tbody id="myTable">
+
+                                                            <tr style="color:black;">
+                                                                <td class="align-right">Total: @Model.APIGst.Sum(a => a.NetAmount)&nbsp;&nbsp;&nbsp;@ViewData["total"] </td>
+                                                                <td colspan="4"></td>
+
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                                }
+                                                @if (Model.RetailerGst != null)
+                                                {
+                                                    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead style="color:black;">
+                                                            <tr>
+                                                                <th>SR</th>
+                                                                <th>Description</th>
+                                                                <th>HSN/SAC</th>
+                                                                <th>Recharge Amount</th>
+                                                                <th>Discount</th>
+                                                                <th>Net Amount</th>
+                                                                <th>Taxable Value</th>
+
+                                                                @if (ViewBag.CloseBal == "ISGST")
+                                                                {
+                                                                    <th> IGST(18%)</th>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <th>CGST(9%)</th>
+                                                                    <th>SGST(9%)</th>
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="myTable">
+                                                            @{int i = 1;}
+                                                            @foreach (var item in Model.RetailerGst)
+                                                            {
+                                                                <tr style="color:black;">
+                                                                    <td>@i</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.operator_Name) (E-Top)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.HSN_SAC)</td>
+                                                                    <td>@Html.DisplayFor(modelItem => item.Sell)</td>
+
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.RetailerSellAmt)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.NetAmount)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.TaxableValue)</td>
+
+                                                                    @if (ViewBag.CloseBal == "ISGST")
+                                                                    {
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.IGST)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.CGST)</td>
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.SGST)</td>
+                                                                    }
+
+
+                                                                </tr>
+                                                                i++;
+                                                            }
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr style="font-weight:bold;color:black;">
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td style="">Total</td>
+                                                                <td style=""></td>
+                                                                <td></td>
+                                                                <td>@Model.RetailerGst.Sum(modelItem => modelItem.NetAmount)</td>
+                                                                <td>@Model.RetailerGst.Sum(modelItem => modelItem.TaxableValue)</td>
+                                                                @if (ViewBag.CloseBal == "ISGST")
+                                                                {
+                                                                    <td style="">@Model.RetailerGst.Sum(modelItem => modelItem.IGST)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="">@Model.RetailerGst.Sum(modelItem => modelItem.CGST)</td>
+                                                                    <td style="">@Model.RetailerGst.Sum(modelItem => modelItem.SGST)</td>
+                                                                }
+
+                                                            </tr>
+                                                        </tfoot>
+
+                                                    </table>
+
+                                                    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+                                                        <tbody id="myTable">
+
+                                                            <tr style="color:black;">
+                                                                <td class="align-right">Total: @Model.RetailerGst.Sum(a => a.NetAmount)&nbsp;&nbsp;&nbsp;@ViewData["total"] </td>
+                                                                <td colspan="4"></td>
+
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                                }
+                                                @if (Model.DealerGst != null)
+                                                {
+                                                    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead style="color:black;">
+                                                            <tr>
+                                                                <th>SR</th>
+                                                                <th>Description</th>
+                                                                <th>HSN/SAC</th>
+                                                                <th>Recharge Amount</th>
+                                                                <th>Discount</th>
+                                                                <th>Net Amount</th>
+                                                                <th>Taxable Value</th>
+
+                                                                @if (ViewBag.CloseBal == "ISGST")
+                                                                {
+                                                                    <th> IGST(18%)</th>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <th>CGST(9%)</th>
+                                                                    <th>SGST(9%)</th>
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="myTable">
+                                                            @{int i = 1;}
+                                                            @foreach (var item in Model.DealerGst)
+                                                            {
+                                                                <tr style="color:black;">
+                                                                    <td>@i</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.operator_Name) (E-Top)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.HSN_SAC)</td>
+                                                                    <td>@Html.DisplayFor(modelItem => item.Sell)</td>
+
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.DealerSellAmt)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.NetAmount)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.TaxableValue)</td>
+
+                                                                    @if (ViewBag.CloseBal == "ISGST")
+                                                                    {
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.IGST)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.CGST)</td>
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.SGST)</td>
+                                                                    }
+
+
+                                                                </tr>
+                                                                i++;
+                                                            }
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr style="font-weight:bold;color:black;">
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td style="">Total</td>
+                                                                <td style=""></td>
+                                                                <td></td>
+                                                                <td>@Model.DealerGst.Sum(modelItem => modelItem.NetAmount)</td>
+                                                                <td>@Model.DealerGst.Sum(modelItem => modelItem.TaxableValue)</td>
+                                                                @if (ViewBag.CloseBal == "ISGST")
+                                                                {
+                                                                    <td style="">@Model.DealerGst.Sum(modelItem => modelItem.IGST)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="">@Model.DealerGst.Sum(modelItem => modelItem.CGST)</td>
+                                                                    <td style="">@Model.DealerGst.Sum(modelItem => modelItem.SGST)</td>
+                                                                }
+
+                                                            </tr>
+                                                        </tfoot>
+
+                                                    </table>
+
+                                                    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+                                                        <tbody id="myTable">
+
+                                                            <tr style="color:black;">
+                                                                <td class="align-right">Total: @Model.DealerGst.Sum(a => a.NetAmount)&nbsp;&nbsp;&nbsp;@ViewData["total"] </td>
+                                                                <td colspan="4"></td>
+
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+
+                                                                }
+                                                @if (Model.MdGst != null)
+                                                {
+                                                    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead style="color:black;">
+                                                            <tr>
+                                                                <th>SR</th>
+                                                                <th>Description</th>
+                                                                <th>HSN/SAC</th>
+                                                                <th>Recharge Amount</th>
+                                                                <th>Discount</th>
+                                                                <th>Net Amount</th>
+                                                                <th>Taxable Value</th>
+
+                                                                @if (ViewBag.CloseBal == "ISGST")
+                                                                {
+                                                                    <th> IGST(18%)</th>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <th>CGST(9%)</th>
+                                                                    <th>SGST(9%)</th>
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="myTable">
+                                                            @{int i = 1;}
+                                                            @foreach (var item in Model.MdGst)
+                                                            {
+                                                                <tr style="color:black;">
+                                                                    <td>@i</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.operator_Name) (E-Top)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.HSN_SAC)</td>
+                                                                    <td>@Html.DisplayFor(modelItem => item.Sell)</td>
+
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.MDSellAmt)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.NetAmount)</td>
+                                                                    <td style="">@Html.DisplayFor(modelItem => item.TaxableValue)</td>
+
+                                                                    @if (ViewBag.CloseBal == "ISGST")
+                                                                    {
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.IGST)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.CGST)</td>
+                                                                        <td style="">@Html.DisplayFor(modelItem => item.SGST)</td>
+                                                                    }
+
+
+                                                                </tr>
+                                                                i++;
+                                                            }
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr style="font-weight:bold;color:black;">
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td style="">Total</td>
+                                                                <td style=""></td>
+                                                                <td></td>
+                                                                <td>@Model.MdGst.Sum(modelItem => modelItem.NetAmount)</td>
+                                                                <td>@Model.MdGst.Sum(modelItem => modelItem.TaxableValue)</td>
+                                                                @if (ViewBag.CloseBal == "ISGST")
+                                                                {
+                                                                    <td style="">@Model.MdGst.Sum(modelItem => modelItem.IGST)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="">@Model.MdGst.Sum(modelItem => modelItem.CGST)</td>
+                                                                    <td style="">@Model.MdGst.Sum(modelItem => modelItem.SGST)</td>
+                                                                }
+
+                                                            </tr>
+                                                        </tfoot>
+
+                                                    </table>
+
+                                                    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr></tr>
+                                                        </thead>
+                                                        <tbody id="myTable">
+
+                                                            <tr style="color:black;">
+                                                                <td class="align-right">Total: @Model.MdGst.Sum(a => a.NetAmount)&nbsp;&nbsp;&nbsp;@ViewData["total"] </td>
+                                                                <td colspan="4"></td>
+
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+
+                                                                }
+                                            </div>
+                                            <div class="pull-left" style="margin-right:20px;">
+
+                                                <table style="width:500px;">
+                                                    <tr>
+                                                        <th>
+                                                            <p style="font-size:17px; color:black;font-weight:200;">Terms & Condition: </p>
+                                                            <p style="font-size:11px; color:black;">1.Goods once sold will not be taken back.  </p>
+                                                            <p style="font-size:11px; color:black;">2.Interest 18% p.a. will be charged if payment is not made within due date.  </p>
+                                                            <p style="font-size:11px; color:black;">3.Our risk and responsibility ceases as soon as the goods leave our premises.</p>
+                                                            <p style="font-size:11px; color:black;">4.We declare that this invoice shows the actual price of the goods </p>
+                                                            <p style="font-size:11px; color:black;">described and that all particulars      true and correct.</p>
+                                                            <p style="font-size:11px; color:black;">5."Subject to <span style="text-transform:uppercase;">"@ViewBag.city"</span> Jurisdiction only. E.&.O.E"</p>
+                                                        </th>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="pull-right">
+                                                <br /><br />
+                                                <table>
+                                                    <tr>
+                                                        <th style="color:black;">
+                                                            <div class="col-md-12">
+                                                                <div class="col-md-4">
+                                                                    <div class="col-md-12"><p style="font-size:17px;">For, @ViewBag.AdminDetails.Name </p></div>
+                                                                </div>
+
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+
+
+                                                </table>
+                                                <table>
+                                                    <tr>
+                                                        <th style="color:black;">
+                                                            <div class="col-md-12">
+                                                                <div class="col-md-4">
+                                                                    <div class="col-md-4"></div>
+                                                                    <div class="col-md-6"><p style="font-size:14px; color:black;">(Authorised Signatory)</p></div>
+                                                                </div>
+
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+
+
+                                                </table>
+
+
+                                            </div>
+
+                                        </div>
+                                        <br />
+                                        <center><p style="color:black;">THIS IS A COMPUTER GENERATED RECEIPT HENCE DOES NOT REQUIRE ANY SEAL AND SIGNATURES.</p></center>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    @*<footer>
+            <div class="copyright-info">
+                <p style="text-align:center; padding-top:10px; margin-bottom:-10px;">© 2016-17. PayNowRecharge All Rights Reserved. </p>
+            </div>
+        </footer>*@
+
+    <!-- Visual Studio Browser Link -->
+    <script type="application/json" id="__browserLink_initializationData">
+        {"appName":"Chrome","requestId":"b2c0c035506c4a3f8a52b028bc8c06f8"}
+    </script>
+    <script type="text/javascript" src="http://localhost:62672/d31f0e776a2a49dbbbfa237618791ccc/browserLink" async="async"></script>
+    <!-- End Browser Link -->
+
+</body>
+</html>

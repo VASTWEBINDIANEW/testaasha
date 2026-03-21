@@ -1,0 +1,860 @@
+﻿@model Vastwebmulti.Models.Retailer_Details
+@{
+    ViewBag.Title = "RetailerKYC";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+<!-- /#Modal HTML -->
+<!-- LOADER HTML -->
+<div id="loader" style="display:none;">
+    <div class="loader_innner">
+        <img src="~/loaderimage/moneyload.gif" />
+    </div>
+</div>
+<!-- /#LOADER HTML -->
+<style>
+    #loader {
+        background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 999999;
+    }
+
+    .loader_innner {
+        margin: 10% auto 0;
+        width: 50%;
+        text-align: center;
+    }
+</style>
+<section class="content" style="margin:90px 0px 0px 0px; overflow-x:hidden;">
+    <div class="row clearfix">
+        <div class="col-md-3">
+            <div class="card navbar" style="height:371px; position:initial;">
+                <div class="header " style="padding:10px;border-bottom:1px solid white;">
+                    <h2 style="color:white;"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Profile Image</h2>
+                </div>
+                <div class="body">
+                    <center>
+                        <div class="image" style="margin-top:-2px;">
+                            @if (Model.Photo != null)
+                            {
+                                <img src="@Url.Content("~/" + Model.Photo)" width="100" height="100" class="img-circle" alt="User">
+
+
+                            }
+                            else
+                            {
+                                <img src="/Vastwebmulti/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User">
+                            }
+
+                        </div>
+                        <div class="msg" style="padding-top:15px; color:white;text-transform:uppercase;">@Model.RetailerName</div>
+                    </center>
+                    <div class="row" style="margin-top:9%;">
+
+                        <div class="col-xs-6">
+                            <a href="#" class="btn btn-info waves-effect" style="text-decoration:none;box-shadow:none; border:1px solid #dddddd;"  id="Btnoutlet" onclick="registerOutlet('@Model.Mobile')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;INST&nbsp;OUTLET</a>
+                
+                        </div>
+                        <div class="col-xs-6">
+                            <a href="#" class="btn btn-info waves-effect" style="text-decoration:none;box-shadow:none; border:1px solid #dddddd;" onclick="ViewKYCstatus()"><i class="fa fa-eye" aria-hidden="true" style="top:2px;"></i>&nbsp;INST&nbsp;View KYC</a>
+                             </div>
+                    
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <a href="#" class="btn btn-info waves-effect" style="text-decoration:none;box-shadow:none; border:1px solid #dddddd; padding-left:19px;" id="Btn_outletKYC" onclick="UploadKYCDocs()"><i class="fa fa-upload" aria-hidden="true" style="font-size:15px;top:1px;"></i>&nbsp;UPLOAD KYC</a>
+
+                        </div>
+                        <div class="col-xs-6">
+                            <a href="#" class="btn btn-info waves-effect" style="text-decoration:none;box-shadow:none; border:1px solid #dddddd; margin-left:-3px;" id="UpdatePanCard" onclick="UpdatePanCard()"><i class="fa fa-credit-card-alt" aria-hidden="true" style="top:2px; font-size:15px;"></i>&nbsp;Update&nbsp;Pancard</a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+                 
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="header " style="padding:10px;">
+                    <h2><i class="fa fa-user" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;User KYC Information</h2>
+                </div>
+                <div class="row">
+                    <div class="body table-responsive" style="margin-bottom:4px;">
+                        <table class="table table-bordered" style="margin-top:-20px;">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" style="border-top:none;">Email-Id</th>
+                                    <td style="border-top:none;">@Model.Email</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">Name</th>
+                                    <td>@Model.RetailerName</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">Mobile Number</th>
+                                    <td>@Model.Mobile</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">Pincode Number</th>
+                                    <td>@Model.Pincode</td>
+
+                                </tr>
+                              
+                                <tr>
+                                    <th scope="row">Pancard Number</th>
+                                    <td>@Model.PanCard</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">Aadharcard Number</th>
+                                    <td>@Model.AadharCard</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">Address</th>
+                                    <td>@Model.Address</td>
+
+                                </tr>
+                         
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!--Outlet Model Poppup-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Retailer Details</h4>
+            </div>
+        @*@using (Ajax.BeginForm("RegisterOutlet", "Outlet", new AjaxOptions { HttpMethod = "POST", OnBegin = "OnBegin", OnSuccess = "OnSuccess", OnFailure = "OnFailure" }))
+        {*@
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        @*<form>*@
+                            @*@Html.ValidationSummary(true)*@
+                            <div class="row clearfix">
+                                @Html.HiddenFor(m => m.RetailerId)
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Enter OTP</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                       @Html.TextBox("OTP", "", new { @class = "form-control", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                             <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                           @Html.TextBoxFor(m => m.RetailerName, new { @class = "form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Firm Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                            @Html.TextBoxFor(m => m.Frm_Name, new { @class = "form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Email</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", @readonly = "readonly", onkeypress = "return isNumber(event)", maxlength = "10" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control", required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">PinCode</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                            @Html.TextBoxFor(m => m.Pincode, new { @class = "form-control", @readonly = "readonly", onkeypress = "return isNumber(event)", maxlength = "6" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Store</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownList("store_type", new List<SelectListItem> {
+                                       new SelectListItem { Text = "AUTOMOBILE DEALER AND SERVICES", Value = "AUTOMOBILE DEALER AND SERVICES" } ,
+                                       new SelectListItem { Text = "BAKERY SHOP", Value = "BAKERY SHOP" } ,
+                                       new SelectListItem { Text = "BOUTIQUE", Value = "BOUTIQUE" } ,
+                                       new SelectListItem { Text = "CAMPUS CAFETERIA", Value = "CAMPUS CAFETERIA" } ,
+                                       new SelectListItem { Text = "CARPENTER", Value = "CARPENTER" } ,
+                                       new SelectListItem { Text = "CHEMIST AND PHARMACY", Value = "CHEMIST AND PHARMACY" } ,
+                                       new SelectListItem { Text = "COMPUTER CENTER AND CYBER CAFE", Value = "COMPUTER CENTER AND CYBER CAFE" } ,
+                                       new SelectListItem { Text = "CONCIERGE SERVICES", Value = "CONCIERGE SERVICES" } ,
+                                       new SelectListItem { Text = "CONFECTIONARY STORE", Value = "CONFECTIONARY STORE" } ,
+                                       new SelectListItem { Text = "COSMETICS", Value = "COSMETICS" } ,
+                                       new SelectListItem { Text = "COURIER SERVICES", Value = "COURIER SERVICES" } ,
+                                       new SelectListItem { Text = "DAIRY", Value = "DAIRY" } ,
+                                       new SelectListItem { Text = "DANCE AND MUSIC CLASSES", Value = "DANCE AND MUSIC CLASSES" } ,
+                                       new SelectListItem { Text = "ELECTRICAL STORE", Value = "ELECTRICAL STORE" } ,
+                                       new SelectListItem { Text = "ELECTRICIAN", Value = "ELECTRICIAN" } ,
+                                       new SelectListItem { Text = "ELECTRONICS AND HOME APPLIANCES", Value = "ELECTRONICS AND HOME APPLIANCES" } ,
+                                       new SelectListItem { Text = "FAST FOOD STORE", Value = "FAST FOOD STORE" } ,
+                                       new SelectListItem { Text = "FLORIST", Value = "FLORIST" } ,
+                                       new SelectListItem { Text = "FOOTWEAR", Value = "FOOTWEAR" }  ,
+                                       new SelectListItem { Text = "FOREX AND MONEY EXCHANGER", Value = "FOREX AND MONEY EXCHANGER" }  ,
+                                       new SelectListItem { Text = "FURNITURE STORE", Value = "FURNITURE STORE" }  ,
+                                       new SelectListItem { Text = "GAME PARLOUR", Value = "GAME PARLOUR" }  ,
+                                       new SelectListItem { Text = "GARMENT AND APPAREL", Value = "GARMENT AND APPAREL" }  ,
+                                       new SelectListItem { Text = "GIFT AND TOY SHOP", Value = "GIFT AND TOY SHOP" }  ,
+                                       new SelectListItem { Text = "GROCERY AND KIRANA", Value = "GROCERY AND KIRANA" }  ,
+                                       new SelectListItem { Text = "GYM AND FITNESS", Value = "GYM AND FITNESS" }  ,
+                                       new SelectListItem { Text = "HARDWARE STORE", Value = "HARDWARE STORE" }  ,
+                                       new SelectListItem { Text = "HOBBY CLASSES", Value = "HOBBY CLASSES" }  ,
+                                       new SelectListItem { Text = "HOTEL", Value = "HOTEL" }  ,
+                                       new SelectListItem { Text = "INDIVIDUAL", Value = "INDIVIDUAL" }  ,
+                                       new SelectListItem { Text = "INSURANCE ADVISOR", Value = "INSURANCE ADVISOR" }  ,
+                                       new SelectListItem { Text = "INVESTMENT ADVISOR", Value = "INVESTMENT ADVISOR" } ,
+                                       new SelectListItem { Text = "JEWELLER", Value = "JEWELLER" } ,
+                                       new SelectListItem { Text = "LANGUAGE CLASSES", Value = "LANGUAGE CLASSES" } ,
+                                       new SelectListItem { Text = "LAUNDRY AND DRY CLEANER", Value = "LAUNDRY AND DRY CLEANER" } ,
+                                       new SelectListItem { Text = "MOBILE AND ACCESSORIES", Value = "MOBILE AND ACCESSORIES" } ,
+                                       new SelectListItem { Text = "NEWSPAPER STALL", Value = "NEWSPAPER STALL" } ,
+                                       new SelectListItem { Text = "OPTICIAN AND OPTICAL STORE", Value = "OPTICIAN AND OPTICAL STORE" } ,
+                                       new SelectListItem { Text = "OTHERS", Value = "OTHERS" } ,
+                                       new SelectListItem { Text = "PAN SHOP", Value = "PAN SHOP" } ,
+                                       new SelectListItem { Text = "PATHOLOGY LAB", Value = "PATHOLOGY LAB" } ,
+                                       new SelectListItem { Text = "PERSONAL TUTOR", Value = "PERSONAL TUTOR" } ,
+                                       new SelectListItem { Text = "PHOTO STUDIO", Value = "PHOTO STUDIO" } ,
+                                       new SelectListItem { Text = "PHOTOCOPY AND PHOTOSTAT", Value = "PHOTOCOPY AND PHOTOSTAT" } ,
+                                       new SelectListItem { Text = "PLUMBER", Value = "PLUMBER" } ,
+                                       new SelectListItem { Text = "PROFESSIONAL CLASSES", Value = "PROFESSIONAL CLASSES" } ,
+                                       new SelectListItem { Text = "PROPERTY DEALER", Value = "PROPERTY DEALER" } ,
+                                       new SelectListItem { Text = "REPAIR SERVICES", Value = "REPAIR SERVICES" } ,
+                                       new SelectListItem { Text = "RESTAURANT", Value = "RESTAURANT" } ,
+                                       new SelectListItem { Text = "RWA SOCIETY OFFICE", Value = "RWA SOCIETY OFFICE" } ,
+                                       new SelectListItem { Text = "SALON AND PARLOUR", Value = "SALON AND PARLOUR" } ,
+                                       new SelectListItem { Text = "SPA AND WELLNESS", Value = "SPA AND WELLNESS" } ,
+                                       new SelectListItem { Text = "SPORTS COACHING", Value = "SPORTS COACHING" } ,
+                                       new SelectListItem { Text = "SPORTS GOODS", Value = "SPORTS GOODS" } ,
+                                       new SelectListItem { Text = "STATIONARY AND BOOK STORE", Value = "STATIONARY AND BOOK STORE" } ,
+                                       new SelectListItem { Text = "SUPERMARKET", Value = "SUPERMARKET" } ,
+                                       new SelectListItem { Text = "TAILOR", Value = "TAILOR" } ,
+                                       new SelectListItem { Text = "TAXI OR CAB OR AUTO", Value = "TAXI OR CAB OR AUTO" } ,
+                                       new SelectListItem { Text = "TELECOM STORE", Value = "TELECOM STORE" } ,
+                                       new SelectListItem { Text = "TOUR AND TRAVEL AGENT", Value = "TOUR AND TRAVEL AGENT" } ,
+                                       new SelectListItem { Text = "TUITION CENTRE", Value = "TUITION CENTRE" } ,
+                                       new SelectListItem { Text = "VEGETABLE STORE", Value = "VEGETABLE STORE" } ,
+
+                                   },
+                                 "-- Store Type--", new { @class = "selectpicker form-control", data_live_search = "true", required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="btnupdate" class="btn btn-primary waves-effect" onclick="registractionoutlet()">Update</button>
+                                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        @*</form>*@
+                    </div>
+                </div>
+            @*}*@
+
+        </div>
+    </div>
+</div>
+
+<!--Upload KYC Modal -->
+<div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;">Upload KYC Document </h4>
+            </div>
+        @using (Ajax.BeginForm("Upload_KYC_Doc", "Outlet", new AjaxOptions { HttpMethod = "POST" }, new { enctype = "multipart/form-data", @id = "formDocUpload" }))
+        {
+            @Html.AntiForgeryToken()
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        <form>
+                            @Html.ValidationSummary(true)
+                            <div class="row clearfix">
+                                @Html.HiddenFor(m => m.RetailerId)
+                                @Html.HiddenFor(m => m.PanCard)
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Select Document</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.DropDownList("DocId", new List<SelectListItem> {
+                                       new SelectListItem { Text = "AADHAAR CARD", Value = "14" } ,
+                                       new SelectListItem { Text = "PAN CARD", Value = "1" }
+                                       },
+
+                                       "-- Select Doc Type--", new { @class = "selectpicker form-control", data_live_search = "true", @required = "required" })
+                                            @Html.ValidationMessage("File Type Is Required")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Document Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="file" name="file" id="fu1" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                                <div class="modal-footer">
+                                <button type="submit" id="btnupdate" class="btn btn-primary waves-effect">Update File</button>
+                                <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--View KYC Modal-->
+
+<div class="modal fade" id="viewKYCModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header navbar" style="position:initial;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:white;"> View KYC Document Status</h4>
+            </div>
+
+                <div class="modal-body" style="margin-top:-26px;">
+                    <div class="body">
+                        <form>
+                              <div class="row clearfix">
+                              <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">APPROVED</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <span id="spanApproved">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">SCREENING</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <span id="spanSCREENING">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">REQUIRED</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <span id="spanREQUIRED">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                         
+                        </form>
+                    </div>
+                </div>
+                 </div>
+    </div>
+</div>
+@*<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>*@
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<script src="~/Scripts/jquary.form.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script type="text/javascript">
+        function isNumber(evt) {
+            var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+                return false;
+            return true;
+        }
+</script>
+
+<script>
+    function FillDistict() {
+        var State_id = $('#State').val();
+    $.ajax({
+        url: '@Url.Action("FillDistict", "Home")',
+        type: "GET",
+        dataType: "JSON",
+
+        data: { State: State_id },
+        success: function (cities) {
+            $("#District").html("");
+            $.each(cities, function (i, District) {
+                $("#District").append(
+                    $('<option></option>').val(District.Dist_id).html(District.Dist_Desc));
+            });
+        }
+    });
+  }
+</script>
+
+<!--Outlet Javascript-->
+<script>
+    function registerOutlet(mobile) {
+              var url = '@Url.Action("VerifyOutlet", "Outlet")';
+        var jqXHR = $.post(url, { Mobile: mobile },"json");
+            $("#loader").show();
+            jqXHR.done(function (data) {
+             $("#loader").hide();
+           
+            var Response = JSON.parse(data);
+         
+            if(Response.RESULT == "0")
+            {
+                $('#myModal').modal('show');
+            }
+           if(Response.RESULT == "1")
+           {
+             swal("Oops..", Response.ADDINFO, "error");
+            }
+            //else {
+            //    alert("Oops!! \n something went wrong");
+            //}
+        });
+        jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
+            $("#loader").hide();
+            alert("Error: " + jqXHR.responseText);
+         });
+
+    }
+    function UploadKYCDocs()
+    {
+        $('#fileUploadModal').modal('show');
+    }
+</script>
+
+
+<!--register outlet-->
+<script>
+    function registractionoutlet()
+    {
+        var RetailerId = $("#RetailerId").val();
+        var OTP = $("#OTP").val();
+         var RetailerName = $("#RetailerName").val();
+        var Frm_Name = $("#Frm_Name").val();
+        var Email = $("#Email").val();
+        var Mobile = $("#Mobile").val();
+        var Address = $("#Address").val();
+        var Pincode = $("#Pincode").val();
+        var e = document.getElementById("store_type");
+        var ddltype = e.options[e.selectedIndex].value;
+
+        if(OTP !="" && Address !="" && ddltype  !="")
+        {
+          $.ajax({
+                type: "POST",
+                url: '@Url.Action("RegisterOutlet", "Outlet")',
+              data: { "RetailerId": RetailerId, "Mobile": Mobile, "OTP": OTP, "email": Email, "store_type": ddltype, "Frm_Name": Frm_Name, "RetailerName": RetailerName, "pincode": Pincode, "address": Address },
+                cache: false,
+                dataType: 'json',
+
+                success: function (data) {
+                  var Response = JSON.parse(data)
+                 if (Response.RESULT == "0") {
+                        swal("Good job!", Response.ADDINFO, "success");
+                    }
+                      if (Response.RESULT == "1") {
+                  
+                        swal("Oops..", Response.ADDINFO, "error");
+                     
+                    }
+
+                },
+                error: function (xhr, err) {
+
+                    swal("Error!", err, "error");
+                }
+          }).done(function () {
+              $("#myModal").modal('hide');
+
+          });
+
+         }
+        else {
+           
+            $("#OTP").css("border", "1px solid red");
+            $("#Address").fieldValue("border", "1px solid red");
+            $("#store_type").css("border", "1px solid red");
+            return false;
+
+        }
+
+
+    }
+</script>
+
+<!-- End-->
+
+<script>
+    function UpdatePanCard()
+    {
+
+        var Pan = '@Model.PanCard';
+        var RetailerId = '@Model.RetailerId';
+
+        swal({
+            title: "Are you sure?",
+            text: "Once verified, you will not be able to update this number!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "OK!",
+            cancelButtonText: "cancel!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+function (isConfirm) {
+    if (isConfirm) {
+        $("#loader").show();
+        /* send pan card */
+        var url = '@Url.Action("UpdatePancard", "Outlet")';
+        var jqxhr = $.post(url, { "RetailerID": RetailerId, "PanCard": Pan }, function (data) {
+            $("#loader").hide();
+            //alert("success");
+            //alert(data);
+            var response = JSON.parse(data);
+
+            if (response.RESULT == "0") {
+                swal({
+                    title: "Wow!",
+                    text: "Your pan card is verified successfully.",
+                    icon: "success",
+                    button: "OK",
+                });
+            }
+            else if (response.RESULT == "1") {
+                swal({
+                    title: "Oops!",
+                    text: response.ADDINFO,
+                    icon: "error",
+                    button: "OK",
+                });
+            }
+            else {
+                swal({
+                    title: "Oops!",
+                    text: data,
+                    icon: "error",
+                    button: "OK",
+                });
+
+            }
+        })
+
+          .fail(function (jqXHR) {
+              $("#loader").hide();
+              swal({
+                  title: "Oops!",
+                  text: "Some thing went wrong!",
+                  icon: "error",
+                  button: "OK",
+              });
+
+          })
+          .always(function () {
+              $("#loader").hide();
+
+          });
+
+    } else {
+        swal("NOTE!", "Pan card verification is mandatory to upload KYC document!", "error");
+    }
+});
+    }
+</script>
+
+<script>
+    function ViewKYCstatus()
+    {
+
+        var Pan = '@Model.PanCard';
+        var RetailerId = '@Model.RetailerId';
+        $("#loader").show();
+        var url = '@Url.Action("ViewKYCDocsAndStatus", "Outlet")';
+        var jqxhr = $.post(url, { "RetailerID": RetailerId, "PanCard": Pan }, function (data) {
+            $("#loader").hide();
+            //alert("success");
+            //alert(data);
+            var response = JSON.parse(data);
+            if (response.RESULT == "0") {
+               // alert(response.ADDINFO);
+
+                var SCREENING = response.ADDINFO.SCREENING;
+                var APPROVED = response.ADDINFO.APPROVED;
+                var REQUIRED = response.ADDINFO.REQUIRED;
+                //alert(SCREENING);
+                //alert(APPROVED);
+                //alert(REQUIRED);
+
+                var arrSCREENING = SCREENING.toString().split(',');
+                var arrAPPROVED = APPROVED.toString().split(',');
+                var arrREQUIRED = REQUIRED.toString().split(',');
+                var ApprovedString = "";
+                var ScreeningString = "";
+                var RequiredString = "";
+                if (arrAPPROVED[0] != null && arrAPPROVED[0] != "") {
+                    ApprovedString = ApprovedString+"1) " + arrAPPROVED[0] + ' ';
+                }
+                if (arrAPPROVED[2] != null) {
+                    ApprovedString = ApprovedString + "2) " + arrAPPROVED[2] + ' ';
+                }
+                if (arrAPPROVED[4] != null) {
+                    ApprovedString = ApprovedString + "3) " + arrAPPROVED[4] + '.';
+                }
+                //// SCREENING
+                if (arrSCREENING[1] != null && arrSCREENING[1] != "") {
+                    ScreeningString = ScreeningString + "1) " + arrSCREENING[1] + ' ';
+                }
+                if (arrSCREENING[4] != null) {
+                    ScreeningString = ScreeningString + "2) " + arrSCREENING[4] + ' ';
+                }
+                if (arrSCREENING[7] != null) {
+                    ScreeningString = ScreeningString + "3) " + arrSCREENING[7] + '.';
+                }
+                //// RequiredString
+                if (arrREQUIRED[1] != null && arrREQUIRED[1] != "") {
+                    RequiredString = RequiredString + "1) " + arrREQUIRED[1] + ' ';
+                }
+                if (arrREQUIRED[4] != null) {
+                    RequiredString = RequiredString + "2) " + arrREQUIRED[4] + ' ';
+                }
+                if (arrREQUIRED[7] != null) {
+                    RequiredString = RequiredString + "3) " + arrREQUIRED[7] + '.';
+                }
+
+                $("#spanApproved").html(ApprovedString);
+                $("#spanSCREENING").html(ScreeningString);
+                $("#spanREQUIRED").html(RequiredString);
+                $("#viewKYCModal").modal('show');
+
+            }
+            else if (response.RESULT == "1") {
+                swal({
+                    title: "Oops!",
+                    text: response.ADDINFO,
+                    icon: "error",
+                    button: "OK",
+                });
+            }
+            else {
+                swal({
+                    title: "Oops!",
+                    text: data,
+                    icon: "error",
+                    button: "OK",
+                });
+
+            }
+        })
+
+          .fail(function (jqXHR) {
+              $("#loader").hide();
+              swal({
+                  title: "Oops!",
+                  text: "Some thing went wrong!",
+                  icon: "error",
+                  button: "OK",
+              });
+
+          })
+          .always(function () {
+              $("#loader").hide();
+
+          });
+    }
+</script>
+<script type="text/javascript">
+    function OnBegin()
+    {
+        alert("onbegin");
+        $("#loader").show();
+
+    }
+    function OnSuccess(data) {
+        alert("success");
+        $("#loader").hide();
+        $('#myModal').modal('hide');
+        //alert("success");
+        var response = JSON.parse(data);
+        //alert(response.RESULT);
+        if (response.RESULT == "0")
+        {
+            alert("Wow!!\n" + "Your OutletId is " + response.ADDINFO);
+            swal({
+                title: "Wow!",
+                text: "Your OutletId is " + response.ADDINFO +"\n Now, You Need to Verify PAN CARD",
+                icon: "success",
+                button: "Okay!",
+            });
+            //UpdatePanCard();
+            /**********************   TODO  *****************************/
+            swal({
+                title: "Congratulations?",
+                text: "Your OutletId is " + response.ADDINFO + ".\n Now, You Need to Verify PAN CARD.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((gotoupdatePan) => {
+                if (gotoupdatePan) {
+                    UpdatePanCard();
+                } else {
+                    swal("NOTE!", "Pan card verification is mandatory to upload KYC document!", "error");
+                }
+            });
+
+        }
+        else if(response.RESULT == "1")
+        {
+            swal({
+                title: "Oops!",
+                text: response.ADDINFO,
+                icon: "error",
+                button: "Okay!",
+            });
+
+        }
+        else {
+            swal({
+                title: "Oops!",
+                text: data,
+                icon: "error",
+                button: "Okay!",
+            });
+
+        }
+     }
+
+    function OnFailure(data) {
+        alert();
+        $("#loader").hide();
+        $('#myModal').modal('hide');
+
+        var response = ajaxContext.get_response();
+        var statusCode = response.get_statusCode();
+
+        swal({
+            title: "Oops!",
+            text: "Something went wrong : "+statusCode,
+            icon: "error",
+            button: "Okay!",
+        });
+
+    }
+</script>
+

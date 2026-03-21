@@ -1,0 +1,1630 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+@{
+    ViewBag.Title = "Master_list";
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+}
+
+@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity
+@{
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var currentuser = User.Identity.GetUserId();
+    var iswritepermision = DB1.tbl_permission_Services.Where(x => x.Employee_ID == currentuser && x.Servicename == "USERS" && x.iswrite == true).Any();
+
+}
+@if (iswritepermision)
+{
+    <input type="submit" value="Add New API User" />
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
+<style>
+    /* new css   */
+
+    body.stop-scrolling {
+        overflow: inherit;
+        overflow-x: hidden;
+    }
+
+    .Masterlist-page .left-first-tabs, .tab-design .left-first-tabs {
+        background: #fff;
+    }
+
+    #Masterlistupdate {
+        background: #fff !important;
+    }
+
+    .res_div {
+        width: 50%;
+        float: left;
+    }
+
+    .pageheader-margin-third {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .search-after-third {
+        margin-right: 3px;
+    }
+
+    #mdList i {
+        cursor: pointer;
+    }
+
+    /* new css   */
+
+    .btn-group, .btn-group-vertical {
+        box-shadow: none;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .master-form-select .select2-container {
+        height: 34px;
+    }
+
+    .toast-top-right1 {
+        top: 65px;
+        left: 81%;
+    }
+
+    .for-search {
+        float: left;
+    }
+
+        .for-search input {
+            width: 250px;
+            border: 1px solid #dbdbdb;
+            padding: 3px 10px;
+        }
+
+
+    @@media only screen and (max-width:1280px) {
+
+        section.content {
+            margin: 75px 0px 0 160px;
+        }
+    }
+
+    @@media only screen and (max-width:1169px) {
+
+        .ls-closed section.content {
+            margin-left: 0px;
+        }
+    }
+
+    @@media only screen and (max-width:1024px) {
+
+        #sidebar-open {
+            top: 29px;
+            left: -147px;
+        }
+    }
+
+    @@media only screen and (max-width:767px) {
+        #sidebar-open {
+            top: -1px;
+            left: -4px;
+        }
+
+        .pageheader-margin-third {
+            display: block;
+            float: left;
+            width: 100%;
+        }
+
+        .res_div {
+            width: 100%;
+            padding: 2px 0;
+        }
+    }
+
+    @@media screen and (max-width:768px) {
+        .third-design {
+            overflow: auto !important;
+        }
+    }
+
+    @@media only screen and (max-width:520px) {
+        .web-white-filter {
+            position: static !important;
+        }
+
+
+        .Masterlist-page .left-first-tabs {
+            margin-top: 15px;
+        }
+
+        .for-search input {
+            width: 100%;
+        }
+    }
+
+    @@media only screen and (max-width:480px) {
+
+        .for-search.tablesearch-second {
+            width: 100%;
+            float: left;
+            margin-bottom: 3px;
+        }
+
+        .res_w {
+            width: 100%;
+        }
+
+        .search-after-third {
+            margin: 0;
+        }
+
+        .create-bulk-add-image {
+            margin-right: 0px;
+        }
+
+        .Upload-form input[type="file"] {
+            padding: 10px;
+        }
+    }
+</style>
+
+<section class="content Masterlist-page fourdesign-section-admin">
+
+    <div class="container-fluid">
+
+
+        <div class="page-header-third pageheader-margin-third">
+            <div class="bread-same-all-page breadsameall-second four-noneclass-admin-only res_div">
+                <ul class="">
+                    <li class="smli">
+                        <a href="@Url.Action("Dashboard", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                            Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;" />
+                        </a>
+                    </li>
+                    <li class="fullbodydycolorbg tmw-total-color-one">
+
+                        Master Distributor
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="web-white-filter pdfexpoer-second pdf-third-design res_div" style="float: right;">
+
+                <div class="res_w" style="float: right;">
+
+                    <div class="for-search tablesearch-second">
+                        <div class="search-after-third">
+                            <input id="myInput" name="myInput" type="text" placeholder="Search..." onkeyup="myFunction()" />
+                        </div>
+                    </div>
+                    <input type="button" id="btnExport" value="Export" style="margin-left:0px;font-size: 11px;float: left; padding: 0px 4px;height:28px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                    <input type="button" id="btnPDF" value="PDF" style="margin-left:3px;font-size: 11px;float: left; padding: 0px 4px;height:28px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row clearfix margin-top-admin-four">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div id="Masterlistupdate" class="right-first float-left width100 table-responsive tablefourdesign-admin boxback-allpage-admin page-header-third" style="background:var(--second-bg-color);height:80vh;">
+                    @Html.Partial("_Masterlist")
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="div-loader" style="display:none; position: fixed;top: 0px;background: rgba(0,0,0,.5);left: 0px;bottom: 0px;right: 0px;width: 100%;height: 100vh;z-index: 9999;">
+        <div id="loader" style="position: absolute;right: 34%;top: 50%;display:block; transform: translate(-34%,-50%);">
+            <div class="loadingio-spinner-ripple-92ar2pfqk5j" style="background:transparent;">
+                <div class="ldio-zdyd6mf6t5">
+                    <div></div><div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!--Add New Master Distributor  modal-->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add New Master Distributor</h4>
+            </div>
+            @using (Html.BeginForm("insert_master_super", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.SuperstokistName, "", new { @class = "form-control", placeholder = "Enter Name", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.SuperstokistName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Firm Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.FarmName, "", new { @class = "form-control", placeholder = "Enter Firm Name", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.FarmName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">State</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownListFor(model => model.State, new SelectList(ViewBag.state, "Value", "Text"), "Select State", new { @class = "selectpicker form-control", data_live_search = "true" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">District</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownListFor(m => m.District, new SelectList(Enumerable.Empty<SelectListItem>(), "Dist_id", "Dist_Desc"), "Select district", new { @class = "form-control" })
+
+                                        </div>
+
+                                        @Html.ValidationMessageFor(m => m.District, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.Mb, new { @class = "form-control", placeholder = "Enter Mobile Number", onkeypress = "return isNumber(event)", maxlength = "10", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Mb, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextAreaFor(m => m.Address, new { @class = "form-control", placeholder = "Enter Address ", @onkeypress = "javascript:return AddValidation(event)", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pincode</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.Pincode, "", new { @class = "form-control", placeholder = "Enter Pincode No", onkeypress = "return isNumber(event)", maxlength = "6", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Pincode, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Email-ID</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control", placeholder = "Enter Email-id", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pancard</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.pancard, "", new { @class = "form-control", placeholder = "Enter Pancard No", maxlength = 10, @style = "text-transform:uppercase" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Aadhar Card</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.adharcard, "", new { @class = "form-control", placeholder = "Enter Aadhaarcard No", onkeypress = "return isNumber(event)", maxlength = "12" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Gst Number</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.gst, "", new { @class = "form-control", placeholder = "Enter Gst No", maxlength = "15", @style = "text-transform:uppercase" })
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Edit Master Distributor  modal-->
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Edit Master Distributor</h4>
+            </div>
+            @using (Html.BeginForm("Edit_master_dealer", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+
+                            <div class="row clearfix">
+                                <input type="text" id="txtSSID" name="txtSSID" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.SuperstokistName1, "", new { @class = "form-control", placeholder = "Enter Name", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.SuperstokistName1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Firm Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.FarmName1, "", new { @class = "form-control", placeholder = "Enter Firm Name", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.FarmName1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Mobile No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.Mb1, "", new { @class = "form-control", placeholder = "Enter Mobile No", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Mb1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">State</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+
+                                            @Html.DropDownListFor(model => model.State1, new SelectList(ViewBag.state, "Value", "Text"), "Select State", new { @class = "form-control", data_live_search = "true" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.State1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">District</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.DropDownListFor(m => m.District1,
+           new SelectList(Enumerable.Empty<SelectListItem>(), "Dist_id", "Dist_Desc"),
+                  "Select district",
+                  new { @class = "form-control" })
+
+                                            @*@Html.DropDownListFor(model => model.District, new SelectList(ViewBag.district, "Value", "Text"), "Select District", new { @class = "selectpicker form-control", data_live_search = "true" })*@
+                                        </div>
+
+                                        @Html.ValidationMessageFor(m => m.District1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                        <label for="email_address_2">Slab List</label>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                        <div class="form-group">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                @Html.DropDownListFor(m => m.slab_name1, ViewBag.slabname as SelectList, "Select Slab", new { @class = "form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;", required = "required" })
+
+                                            </div>
+                                            @Html.ValidationMessageFor(m => m.slab_name1, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextAreaFor(m => m.Address1, new { @class = "form-control", placeholder = "Enter Address ", @onkeypress = "javascript:return AddValidation(event)", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Address1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pincode</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.Pincode1, "", new { @class = "form-control", placeholder = "Enter Pincode No", onkeypress = "return isNumber(event)", maxlength = "6", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Pincode1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Pancard</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.pancard1, "", new { @class = "form-control", placeholder = "Enter Pancard No", maxlength = 10, @style = "text-transform:uppercase", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.pancard1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Aadhar Card</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.adharcard1, "", new { @class = "form-control", placeholder = "Enter Aadhaarcard No", onkeypress = "return isNumber(event)", maxlength = "12", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.adharcard1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Gst Number</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            @Html.TextBoxFor(m => m.gst1, "", new { @class = "form-control", placeholder = "Enter Gst No", maxlength = "15", @style = "text-transform:uppercase", required = "required" })
+
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.gst1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--For Right Popup -->
+<div class="modal mastetr222Modal" id="defaultModal222" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content width100 float-left">
+            <div class="modal-header width100 float-left">
+                <div class="modal-back width100 float-left">
+                    <div class="sam">
+                        <h4 class="oneh">
+                            <span class="first">
+                                M
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <div class="sam">
+                        <h4 class="twoh">
+                            <span class="first">
+                                D
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <div class="sam">
+                        <h4 class="threeh">
+                            <span class="first">
+                                R
+                            </span>
+                        </h4>
+                        <span class="lastData">
+                            000
+                        </span>
+                    </div>
+                    <button type="button" class="btn waves-effect" data-dismiss="modal">
+                        <i class="fa fa-times fulltextbodycolor fullbodydycolorbg" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div><!--.modal-header-->
+            <div class="modal-body width100 float-left">
+                <div class="background-kk width100 float-left">
+                    <div class="thisLeft float-left">
+                        <img src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" />
+                    </div>
+                    <div class="thisRight">
+                        <ul class="float-left width100">
+                            <li><span><b>Name:</b></span><span>TestTest</span></li>
+                            <li><span><b>Firm:</b></span><span>TestTest</span></li>
+                            <li><span><b>Registered Date:</b></span><span>9837452845</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="float-left width100">
+
+                    <form class="first-form">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" placeholder="Email-ID" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Pancard</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pancard No" readonly />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>Aadhar Card</label>
+                                    <input type="text" class="form-control" placeholder="Enter Aadhaar Number" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Firm Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter Firm Registration No" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>GST Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter GST Registration No" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <input type="text" class="form-control" placeholder="Select District" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <input type="text" class="form-control" placeholder="Select State" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <textarea class="form-control" placeholder="Enter Address" readonly></textarea>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Pin Code</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pin Code" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </form>
+
+                    <!--=============-->
+                    <form class="second-form" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" placeholder="EmailID" readonly />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Pancard</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pancard No" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Firm Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter Firm Registration No" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>GST Registration No</label>
+                                    <input type="text" class="form-control" placeholder="Enter GST Registration No" />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group spspl">
+                                    <label>Aadhar Card</label>
+                                    <input type="text" class="form-control" placeholder="Enter Aadhaar Number" />
+                                    <div class="ss-right">
+                                        <button type="button" class="btn" value="view">View</button>
+                                        <button type="button" class="btn" value="reject">Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <select class="form-control">
+                                        <option value="" selected>Select District</option>
+                                        <option value="1">Test</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-2">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <select class="form-control">
+                                        <option value="" selected>Select State</option>
+                                        <option value="1">Test</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <textarea class="form-control" placeholder="Enter Address"></textarea>
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Pin Code</label>
+                                    <input type="text" class="form-control" placeholder="Enter Pin Code" />
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                    </form>
+
+                </div>
+            </div><!--.modal-body-->
+
+            <div class="modal-footer width100 float-left">
+                <ul class="width100 float-left">
+                    <li class="one">
+                        <button type="button" value="Edit" class="btn">Edit</button>
+                    </li>
+                    <li class="One2" style="display:none;">
+                        <button type="button" value="SaveChange" class="btn special-iii btnssl2233" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Save Change</button>
+                    </li>
+                    <li class="two">
+                        <button type="button" value="Change" class="btn special-iii btnssl2233" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Reset Password</button>
+                    </li>
+                    <li class="three">
+                        <button type="button" value="Email_Verify" class="btn">Email Verify</button>
+                    </li>
+                    <li class="four">
+                        <button type="button" value="Delet" class="btn">Delete User</button>
+                    </li>
+                </ul>
+            </div><!--.modal-footer-->
+        </div>
+    </div>
+</div>
+<div class="modal fund-tr-history  in" id="myModal" tabindex="-1" role="dialog" style="display: none;">
+    <div class="modal-dialog" role="document" style="margin:0px;float:right;">
+
+        <div class="modal-content width100 float-left">
+            <div class="modal-header width100 float-left ecomm-pop-head">
+
+                <h5 id="mdhis">Not Create User History</h5>
+
+
+                <button type="button" class="btn waves-effect " data-dismiss="modal" style="float:right;border:0px;color:var(--main-bg-lcolor);padding:0px; height:auto;">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+
+
+            </div><!--.modal-header-->
+            <div class="modal-body width100 float-left ecomm-pop-body">
+                <div class="float-left width100">
+
+                    <div id="htmleerrrorrtable">
+
+                    </div>
+
+
+
+
+
+                    <!--=============-->
+
+                </div><!--.modal-body-->
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="~/Swalalert/datatablejquery.js"></script>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/select2/dist/css/select2.css" rel="stylesheet" />
+<script src="~/select2/dist/js/select2.min.js"></script>
+
+<script>
+    $('#btnExport').click(function () {
+
+           var  usernm = $('#myInput').val();
+
+        var url = '@Url.Action("ExcellGenerateForMaster", "Home")?usernm='+ usernm;
+        location.href = url;
+
+    })
+    $('#btnPDF').click(function () {
+
+      var usernm = $('#myInput').val();
+
+          var url = '@Url.Action("PrintMasterPartialViewToPdf", "Home")?usernm='+ usernm;;
+        //location.href = url;
+window.open(
+  url,
+  '_blank' // <- This is what makes it open in a new window.
+);
+
+    })
+
+
+</script>
+
+
+<script>
+    function ToastrMessage() {
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "positionClass": "toast-top-right1",
+            "newestOnTop": false,
+            "progressBar": true,
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "100",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "show",
+            "hideMethod": "hide"
+        };
+        //toastr.info('MY MESSAGE!');
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('ul.tabs li').click(function () {
+            var tab_id = $(this).attr('data-tab');
+
+            $('ul.tabs li').removeClass('current');
+            $('.tab-content').removeClass('current');
+
+            $(this).addClass('current');
+            $("#" + tab_id).addClass('current');
+        })
+
+    })
+</script>
+
+<script>
+    var ravi = $.noConflict()
+    ravi(document).ready(function () {
+
+        // Initialize select2
+        ravi("select").select2();
+
+        // Read selected option
+
+    });
+    $(document).ajaxComplete(function () {
+        ravi("select").select2();
+    });
+</script>
+
+<script>
+    $('#fileform').submit(function () {
+        valid = true;
+
+        if ($("#FileUpload1").val() == '') {
+
+
+            $("#FileUpload1").parent().after("<div class='danger' style='color:red;margin-bottom: 20px;'>Please Upload File</div>");
+            valid = false;
+        }
+
+        return valid
+    });
+</script>
+<!--Add fill dropdown list-->
+<script language="javascript" type="text/javascript">
+                    $(function () {
+                        ravi('#State').change(function () {
+                            // alert('Value:' + ' ' + $('#State1').val())
+                            var stid = $('#State').val()
+
+                            GetDistrict(stid)
+                            GetDistrict1(stid)
+                        });
+                    })
+
+                    function GetDistrict(_stateId) {
+                        var procemessage = "<option value='0'> Please wait...</option>";
+                        $("#District").html(procemessage).show();
+                        var url = '@Url.Action("DistrictList","Home")'
+                        $.ajax({
+                            url: url,
+                            data: { Id: _stateId },
+                            cache: false,
+                            type: "POST",
+                            success: function (data) {
+
+                                ravi("#District").html("");
+                                for (var x = 0; x < data.length; x++) {
+
+                                    ravi("#District").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                                }
+
+                            },
+                            error: function (reponse) {
+                                alert("error1 : " + reponse);
+                            }
+                        });
+                    }
+
+    function GetDistrict1(_stateId) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#District1").html(procemessage).show();
+        var url = '@Url.Action("DistrictList","Home")'
+        $.ajax({
+            url: url,
+            data: { Id: _stateId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                ravi("#District1").html("");
+                for (var x = 0; x < data.length; x++) {
+                    //alert(markup)
+                    ravi("#District1").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                }
+
+            },
+            error: function (reponse) {
+                alert("error1 : " + reponse);
+            }
+        });
+    }
+
+
+</script>
+<script language="javascript" type="text/javascript">
+                    $(function () {
+                        ravi('#State1').change(function () {
+                            // alert('Value:' + ' ' + $('#State1').val())
+                            var stid = $('#State1').val()
+                            if (stid === "") {
+                                stid = 0;
+                                //alert(stid)
+                            }
+                            else {
+                                //alert(stid)
+                                GetDistrict(stid)
+                            }
+                            function GetDistrict(_stateId) {
+                                var procemessage = "<option value='0'> Please wait...</option>";
+                                $("#District1").html(procemessage).show();
+                                var url = '@Url.Action("DistrictList","Home")'
+                                $.ajax({
+                                    url: url,
+                                    data: { Id: _stateId },
+                                    cache: false,
+                                    type: "POST",
+                                    success: function (data) {
+                                       ravi("#District1").html("");
+                                         for (var x = 0; x < data.length; x++) {
+                                            ravi("#District1").append($('<option></option>').val(data[x].Value).html(data[x].Text));
+                                          }
+                                    },
+                                    error: function (reponse) {
+                                        alert("error1 : " + reponse);
+                                    }
+                                });
+                            }
+                        });
+                    })
+</script>
+<!--Edit master detail-->
+<script type="text/javascript">
+        var val1 = "";
+        function animation(SSID) {
+            var url = '@Url.Action("MasterIdSearch","Home")'
+            $.ajax({
+                url: url,
+                data: { ssid: SSID },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    $("#SuperstokistName1").val(data[0].SuperstokistName);
+                    $("#txtSSID").val(SSID);
+                    $("#FarmName1").val(data[0].FarmName);
+                    $("#Mb1").val(data[0].Mobile);
+                    $("#Address1").val(data[0].Address);
+                    $("#Pincode1").val(data[0].Pincode);
+                    $("#pancard1").val(data[0].pancard);
+                    $("#adharcard1").val(data[0].adharcard);
+                    $("#gst1").val(data[0].gst);
+                    //$("#slab_name1").val(data[0].slab_name);
+                    $("#State1").val(data[0].State);
+                    GetDistrict1(data[0].State)
+                    var objSelect1 = document.getElementById("District1");
+                    binddist(data[0].State, data[0].District, objSelect1);
+                    $('#defaultModal1').modal('show');
+                },
+                error: function (reponse) {
+                    alert("error1 : " + reponse);
+                }
+            });
+
+        }
+        function binddist(staid, dist, objSelect1) {
+            var url = '@Url.Action("DistrictList","Home")'
+            $.ajax({
+                url: url,
+                data: { Id: staid },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var markup = "<option value='0'>Select District</option>";
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+                    $("#District").html(markup).show();
+                    setSelectedValue(objSelect1, dist);
+                },
+                error: function (reponse) {
+                    alert("error1 : " + reponse);
+                }
+            });
+        }
+    function setSelectedValue(selectObj, valueToSet) {
+
+            for (var i = 0; i < selectObj.options.length; i++) {
+                if (selectObj.options[i].value == valueToSet) {
+                    //alert(selectObj.options[i].value);
+                    selectObj.options[i].selected = true;
+                    return;
+                }
+            }
+        }
+</script>
+
+<!--Insert Popuop-->
+<script>
+
+    $(document).ready(function () {
+
+        var chkanyerrorbulk = "@TempData["errorexist"]"
+        if (chkanyerrorbulk != null && chkanyerrorbulk!="") {
+         var htm ="@Html.Raw(TempData["errortable"])" ;
+        $('#htmleerrrorrtable').append(htm)
+      $('#myModal').modal('show')
+        }
+
+
+
+        var message = '☒ @TempData["msgrem"]'
+        if (message != "" && message != null) {
+            //swal("Good job!", message, "success");
+             $('#error1').text(message);
+
+        }
+        var mobileconfrimation = '☒ @TempData["mobileno"]'
+        if (mobileconfrimation != "" && mobileconfrimation != null) {
+
+            $('#error1').text(mobileconfrimation);
+
+        }
+
+        var mailconfrimation = '☒ @TempData["emailconfrim"]'
+        if (mailconfrimation != "" && mailconfrimation != null) {
+
+            $('#error1').text(mailconfrimation);
+        }
+        //Edit Message
+        var editdata = '@TempData["edit"]'
+        if (editdata != null && editdata != "") {
+            swal("Good job!", editdata, "success");
+        }
+
+        var mobileuser = '☒ @TempData["alerdymobile"]';
+        if (mobileuser != "" && mobileuser != null) {
+            swal("Oops...", mobileuser, "error1");
+        }
+        var errormessage = '☒ @TempData["Error"]'
+        if (errormessage != "" && errormessage != null) {
+            swal("Oops...", errormessage, "error1");
+        }
+        var resendmail = '@ViewData["ResendMail"]'
+        if (resendmail != null && resendmail != "") {
+            swal("Good job!", resendmail, "success");
+        }
+
+    })
+
+</script>
+
+
+
+<script>
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    $(function () {
+        var val = '@ViewData["value"]';
+
+        if(val=="OK")
+        {
+
+            $('#clickshow').click();
+        }
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".sweet-alert").addClass("fullbodydycolorbg");
+    });
+</script>
+<script>
+    function ajaxValidate() {
+        var aadhar = document.getElementById("txtadharcard").value;
+        if (aadhar.length > 0) {
+
+
+
+
+            var res = validatesss(aadhar)
+
+            if (res == false) {
+                $('#lblerror').text('Invalid AADHAR No.')
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+
+            }
+
+        }
+
+
+
+
+    }
+    // multiplication table
+    const d = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+        [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+        [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+        [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+        [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+        [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+        [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+        [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+        [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    ]
+
+    // permutation table
+    const p = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+        [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+        [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+        [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+        [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+        [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+        [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+    ]
+
+    // validates Aadhar number received as string
+    function validatesss(aadharNumber) {
+        let c = 0
+        let invertedArray = aadharNumber.split('').map(Number).reverse()
+
+        invertedArray.forEach((val, i) => {
+            c = d[c][p[(i % 8)][val]]
+        })
+
+        return (c === 0)
+    }
+</script>
+
+<script type="text/javascript">
+    function validateEmail(emailField){
+        var reg = /^([A-Za-z0-9_\-\.])+\@@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+        if (reg.test(emailField) == false)
+        {
+              $('#lblerror').show()
+            $('#error1').text('☒ Invalid Email-ID')
+            $('#error1').css('padding' , '10px')
+            return false;
+        }
+
+        return true;
+
+    }
+
+    function AddNewMD() {
+
+        $('#lblSuccess').hide()
+          $('#error').text('')
+        $('#lblerror').hide()
+
+         $('#error1').text('')
+
+        var name = $('#SuperstokistName').val();
+        var FarmName = $('#FarmName').val();
+        var Email = $('#Email').val();
+        var Mb = $('#Mb').val();
+         var State = $('#State').val();
+         var District = $('#District').val();
+        var Address = $('#Address').val();
+        var Pincode = $('#Pincode').val();
+        var adharcard = $('#adharcard').val();
+        var ddlrole = $('#ddlrole').val();
+        var gst = $('#gst').val();
+        var pancard = $('#pancard').val();
+        if (name == null || name == '') {
+            $('#lblerror').show()
+            $('#error1').text('☒ Master Distributor Name Required')
+            $('#error1').css('padding', '10px');
+
+
+
+              return false;
+        }
+        if (FarmName == null || FarmName == '') {
+              $('#lblerror').show()
+            $('#error1').text('☒ Firm Name Required')
+              $('#error1').css('padding', '10px');
+            return false;
+        }
+        if (Email == null || Email == '') {
+               $('#lblerror').show()
+             $('#error1').text('☒ Email-ID Required')
+               $('#error1').css('padding', '10px');
+
+            return false;
+        }
+        if (validateEmail(Email) == false) {
+
+              return false;
+        }
+        if (Mb == null || Mb == '') {
+              $('#lblerror').show()
+             $('#error1').text('☒ Mobile No. Required')
+               $('#error1').css('padding', '10px');
+            return false;
+        }
+        if (Mb.length < 9) {
+            $('#lblerror').show()
+             $('#error1').text('☒ Mobile No. Should be 10')
+               $('#error1').css('padding', '10px');
+            return false;
+        }
+        if (pancard.length != 0) {
+              var regex = /([A-Z]){5}([0-9]){4}([A-Z]){1}$/;
+            if (!regex.test(pancard.toUpperCase())) {
+                  $('#lblerror').show()
+                $('#error1').text('☒ Invalid Pan No')
+                  $('#error1').css('padding', '10px');
+                return false;
+            }
+
+
+        }
+        if (ddlrole == null || ddlrole == '') {
+               $('#lblerror').show()
+             $('#error1').text('☒ Role Required')
+               $('#error1').css('padding', '10px');
+            return false;
+        }
+        if (State == null || State == '') {
+               $('#lblerror').show()
+             $('#error1').text('☒ State Required')
+               $('#error1').css('padding', '10px');
+            return false;
+        }
+        if (District == null || District == '') {
+               $('#lblerror').show()
+             $('#error1').text('☒ District Required')
+               $('#error1').css('padding', '10px');
+            return false;
+        }
+        if (Address == null || Address == '') {
+              $('#lblerror').show()
+            $('#error1').text('☒ Address Required')
+              $('#error1').css('padding', '10px');
+            return false;
+        }
+
+          if (adharcard.length != 0) {
+
+
+              if (validatesss(adharcard) == false) {
+                    $('#lblerror').show()
+                  $('#error1').text('☒ Invalid Adhar No')
+                    $('#error1').css('padding', '10px');
+                return false;
+            }
+
+
+        }
+        if (gst.length != 0) {
+
+              var gstinformat = new RegExp('^([0][1-9]|[1-2][0-9]|[3][0-5])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+            if (!gstinformat.test($('#gst').val())) {
+                //   $('#error').text('Invalid GST No')
+                //  return false;
+                  $('#lblerror').show()
+                $('#error1').text('☒ Invalid GST No')
+                  $('#error1').css('padding', '10px');
+                return false;
+            }
+
+   }
+
+        if (Pincode == null || Pincode == '') {
+              $('#lblerror').show()
+            $('#error1').text('☒ Pincode Required')
+              $('#error1').css('padding', '10px');
+            return false;
+        }
+        if (Address.length < 15) {
+              $('#lblerror').show()
+             $('#error1').text('☒ Minimium Character 32')
+              $('#error1').css('padding', '10px');
+            return false;
+        }
+        $('.div-loader').show();
+         $.ajax({
+                url: '@Url.Action("insert_master_super","Home")',
+                data: { SuperstokistName: $('#SuperstokistName').val(),FarmName: $('#FarmName').val(),Email: $('#Email').val(),Mb: $('#Mb').val(),pancard: $('#pancard').val(),State: $('#State').val(),District: $('#District').val(),Address: $('#Address').val(),Pincode: $('#Pincode').val(),adharcard: $('#adharcard').val(),gst: $('#gst').val(),role:ddlrole },
+                cache: false,
+                type: "POST",
+                 dataType: 'json',
+             success: function (data) {
+                 $('.div-loader').hide();
+                 var sts = data.status;
+                  $('#lblSuccess').hide()
+          $('#error').text('')
+        $('#lblerror').hide()
+
+         $('#error1').text('')
+                 if (sts=== "Success") {
+                     ToastrMessage();
+                     toastr.success('Congratulations Account successfully Created');
+                     $('#lblSuccess').show()
+                     $('#error').text('✅ Congratulations Account successfully Created')
+                     $('#error').css('padding', '10px');
+                 }
+                 else {
+                       $('#lblerror').show()
+
+                     $('#error1').text(data.message)
+                      $('#error1').css('padding', '10px');
+                    ToastrMessage();
+                    toastr.error(data.message);
+                 }
+
+                    $('#SuperstokistName').val('');
+                            $('#FarmName').val('');
+                            $('#Email').val('');
+                            $('#Mb').val('');
+                            $('#pancard').val('');
+                            $('#pancard').val('');
+                            $('#Address').val('');
+                            $('#Pincode').val('');
+                            $('#adharcard').val('');
+                    $('#gst').val('');
+                    $('#ddlrole').val('');
+                    if (sts === "Success") {
+                         var reason = data.value;
+                        $.ajax({
+                            url: '@Url.Action("MasterlistPart","Home")',
+                            type: 'GET',
+                            cache: false,
+                            success: function (response) {
+
+                                $('#Masterlistupdate').html(response);
+
+                            }
+                        })
+
+                    }
+
+
+                }
+            });
+
+    }
+    function md_dlm_List(SSId, id) {
+        var idno = "subTbl";
+        idno = idno + id;
+           var idshow = "subTblshow";
+                    idshow = idshow +id;
+                    var idhide = "subTblhide";
+                    idhide = idhide + id;
+    $.ajax({
+        url: '@Url.Action("_SelectDlmID","Home")',
+        data: { MdId: SSId },
+        type: 'POST',
+        cache: false,
+        success: function (response) {
+            $('#' + idno).html(response);
+             $('#' + idshow).css("display", "none");
+            $('#' + idhide).css("display", "block");
+            $('#' + id).css("display", "table-row");
+           }
+        })
+    }
+
+    function md_dlm_Listhide( id) {
+          var idno = "subTbl";
+        idno = idno + id;
+           var idshow = "subTblshow";
+                    idshow = idshow +id;
+                    var idhide = "subTblhide";
+                    idhide = idhide + id;
+            $('#' + idshow).css("display", "block");
+            $('#' + idhide).css("display", "none");
+            $('#' + id).css("display", "none");
+    }
+</script>
+<script>
+
+    $(document).ready(function () {
+        $('.master-upload-file input:file').change(function () {
+            if ($(this).val()) {
+                $('.master-upload-file input:submit').attr('disabled', false);
+                // or, as has been pointed out elsewhere:
+                // $('input:submit').removeAttr('disabled');
+            }
+        }
+        );
+    });
+</script>
+<script>
+    function myFunction() {
+
+        //  var value = $(this).val().toLowerCase();
+        var value = $('#myInput').val().toLowerCase();
+
+        $("#body .tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    }
+
+
+</script>
+
+@*<script>
+        $('.second-design .example-second').DataTable({
+
+        });
+
+    </script>*@
+

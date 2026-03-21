@@ -1,0 +1,221 @@
+﻿@model Vastwebmulti.Areas.ADMIN.ViewModel.GeltALLEmployee
+
+
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+    .onofswich-admin label.switch span.slider {
+        border-radius: 20px;
+        border: 1px solid #555;
+        width: 85px;
+        float: left;
+        height: 29px;
+        background: red;
+    }
+    input:checked + .slider {
+        background: green !important;
+    }
+    .onofswich-admin .slider:before {
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        
+    }
+    input:checked + .slider:before {
+        float: right;
+        left: auto;
+        right: 30px !important;
+    }
+    .onofswich-admin label.switch span.active, .onofswich-admin label.switch span.deactive {
+        font-size: 13px;
+        color: #fff;
+        position: relative;
+        top: 5px;
+        left: 5px;
+    }
+    .onofswich-admin label.switch span.deactive {
+        float: right;
+        left: auto;
+        right: -19px;
+    }
+    .onofswich-admin label.switch span.active {
+        left: 11px;
+    }
+    .onofswich-admin label.switch span.slider {
+        border-radius: 0;
+        color: #fff;
+        text-align: center;
+        display: grid;
+        align-content: center;
+    }
+        .onofswich-admin label.switch span.slider::before {
+            display: none;
+        }
+</style>
+
+<table class="table table-bordered" id="mdList">
+    <thead>
+        <tr>
+            <th>Current Status</th>
+            <th>Employee Name</th>
+            <th>Address</th>
+            <th>Pincode</th>
+            <th>Mobile&nbsp;No</th>
+            <th>Joining &nbsp;Date</th>
+            <th>Date of Birth</th>
+            <th>EmailId</th>
+            <th>Adhar&nbsp;No</th>
+            <th>PAN&nbsp;No</th>
+            <th>Email&nbsp;V/F</th>
+        </tr>
+    </thead>
+    <tbody id="body">
+        @if (Model.Emplist != null)
+        {
+            int i = 0;
+            int id = 1;
+            foreach (var item in Model.Emplist)
+            {
+                var input = item.AadharCard;
+                var aadharcard = "";
+                if (string.IsNullOrEmpty(input) == false)
+                {
+                    //take first 6 characters
+                    string firstPart = input.Substring(0, 6);
+
+                    //take last 4 characters
+                    int len = input.Length;
+                    string lastPart = input.Substring(len - 4, 4);
+
+                    //take the middle part (XXXXXXXXX)
+
+                    string middlePart = new String('X', 5);
+                    aadharcard = middlePart+  lastPart;
+                }
+                var isactive = item.Status == true ? "Checked" : "";
+
+        <tr class="tr">
+
+            <td class="onofswich-admin" style=" white-space: nowrap; padding-right: 30px;">
+                @if (item.Status == true)
+                {
+                <label class="switch">
+                    <input type="checkbox" onchange="statusIsActive('@item.EmployeeID')" name="status" @isactive>
+                    <span class="slider slideractive-admin">✓&nbsp;Active</span>
+                    <span class="active"></span>
+                </label>
+
+
+                    
+
+
+                }
+                else
+                {
+            <label class="switch">
+                <input type="checkbox" name="status" onchange="statusIsActive('@item.EmployeeID')" @isactive>
+                <span class="slider slider-deactiveadmin">✕&nbsp;Deactive</span>
+               
+            </label>
+
+                    
+                }
+
+            </td>
+
+            <td>@item.Employee_name</td>
+
+            <td>@item.Address</td>
+            <td>@item.Pincode</td>
+            <td>@item.Mobile</td>
+            <td>@item.JoinDate</td>
+            <td> @item.DOB</td>
+            <td> @item.E_mail</td>
+            <td> @aadharcard</td>
+            <td> @item.PanCard</td>
+
+
+            <td data-toggle="modal" data-target="#defaultModal222" onclick="mdActionBtn('@item.EmployeeID')">
+                @if (item.EmailConfirmed == true)
+                {
+                    <button class="btn " style="border:1px solid #bbb;font-size: 11px !important;padding: 4px 7px;height: 25px;border: 1px solid #bbb;">Done</button>
+                }
+                else
+                {
+                    <button type="button" onclick="clickVerifyEmail('@item.EmployeeID')" class="btn btn-warning">
+                        Due
+
+                    </button>
+                    @*<div class="btn" style="background:var(--main-bg-lcolor);height: 25px;color:#fff; padding: 4px 8px;float:left; font-size: 11px;">&nbsp;Due&nbsp;</div>*@
+                }
+
+            </td>
+
+
+        </tr>
+
+
+                @*<tr id="@i" style="display:none;background-color: rgb(245, 245, 245);">
+                        <td colspan="8">
+                            <div id="@idno">
+
+                            </div>
+                        </td>
+                    </tr>*@
+
+                i++;
+                id++;
+            }
+
+        }
+    </tbody>
+</table>

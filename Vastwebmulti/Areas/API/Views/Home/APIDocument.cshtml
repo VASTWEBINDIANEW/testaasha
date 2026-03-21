@@ -1,0 +1,1129 @@
+﻿@model  IEnumerable<Vastwebmulti.Models.User_ip_info>
+@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "APIDocument";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .BtnTransparent {
+        background-color: Transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-15px;">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="color:black; padding-left:22px;">
+                                TOKAN MANAGEMENT
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 style="color:black; padding-left:22px;">
+                                        SECURITY STATUS &nbsp;&nbsp;[ IP ADDRESS / MAC ADDRESS ]
+                                    </h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <p style="color:red; font-size:16px; margin-top: 8px; padding-left:22px;">
+                                        Note :- Please Select One At a Time.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @{VastwebmultiEntities db = new VastwebmultiEntities();
+                            var loginid = User.Identity.GetUserId();
+                            var STATUS = db.Security_ip_macaddreess.Where(aa => aa.userid == loginid).SingleOrDefault();
+                        }
+                        <div class="col-md-3">
+                            <p style="font-size:25px; margin-top:12px; padding-left:22px;">IP ADDRESS</p>
+                        </div>
+                        <div class="col-md-1">
+                            @if (STATUS.ipsts == "Y")
+                            {
+                                <a href="@Url.Action("Securitysts","Home",new { idno = STATUS.idno,type="ip",sts="N" })" style="text-decoration:none;"><i class="icofont icofont-toggle-on " style="color:green;font-size:61px; padding-left:22px;"></i></a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Securitysts","Home",new { idno = STATUS.idno,type="ip",sts="Y" })" style="text-decoration:none;"><i class="icofont icofont-toggle-off " style="color:red;font-size:61px; padding-left:22px;"></i></a>
+                            }
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                        <div class="col-md-3">
+                            <p style="font-size:25px; margin-top:12px; padding-left:22px;">MAC ADDRESS</p>
+                        </div>
+                        <div class="col-md-1">
+                            @if (STATUS.macsts == "Y")
+                            {
+                                <a href="@Url.Action("Securitysts","Home",new { idno = STATUS.idno,type="mac",sts="N" })" style="text-decoration:none;"><i class="icofont icofont-toggle-on " style="color:green;font-size:61px; padding-left:22px;"></i></a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Securitysts","Home",new { idno = STATUS.idno,type="mac",sts="Y" })" style="text-decoration:none;"><i class="icofont icofont-toggle-off " style="color:red;font-size:61px; padding-left:22px;"></i></a>
+                            }
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="color:black; padding-left:22px;">
+                                GENERATE IP-ADDRESS TOKEN
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left:22px;">
+                        <div class="col-md-4">
+                            <input type="text" id="txtipaddress" name="txtipaddress" class="form-control " placeholder="Enter Your IP" required="" />
+                        </div>
+                        <div class="col-md-4" style="display:none;" id="verifyOTP">
+                            <input type="hidden" id="ipaddress" value="" name="ipaddress" class="hidden">
+                            <input type="text" name="otp" id="otp" class="form-control" placeholder="Enter OTP" required="" />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" id="btn" value="Submit" class="btn btn-primary" onclick="insertip()" />
+                            <button type="submit" class="btn btn-primary" onclick="VerifyOtp()" style="display:none;" id="Otp">Insert</button>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 style="color:black; font-size:16px; padding-left:22px;">
+                                Your IP Address and Token No:-
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="body" style="margin-top:-20px;">
+                            <div class="table-responsive " style="position:inherit;">
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th>Your&nbsp;Ip&nbsp;Address</th>
+                                            <th>Token&nbsp;No</th>
+                                            <th>Status</th>
+                                            <th>Update&nbsp;Date</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ var i = 1;}
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@item.userip</td>
+                                                <td align="center"><input type="text" value="@item.token" id="@i" name="myInput" style="height:34px;background-color:#00000038; border:1px dashed #f30850;" readonly=""><button onclick="myFunction('@i')" class="btn btn-primary" style="border-top-left-radius:0px;border-bottom-left-radius:0px;background:#f30850;border-color:#f30850; height: 35px; color: white;">Copy</button></td>
+                                                @{ var sts = item.status;}
+                                                @if (sts)
+                                                {
+                                                    <td style="padding-top:0px;">
+                                                        <button class="icofont icofont-toggle-on  BtnTransparent" style="font-size:46px; color:green;"></button>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="padding-top:0px;">
+                                                        <button class="icofont icofont-toggle-off  BtnTransparent" style="font-size:46px; color:red;"></button>
+                                                    </td>
+                                                }
+                                                <td>@item.udate</td>
+                                                <td><span id="btn1" data-toggle="modal" onclick="deleteipaddress('@item.idno')"><i class="fa fa-trash-o" aria-hidden="true" style="font-size:31px; color:#ed174c;"></i></span></td>
+                                            </tr>
+                                         i = i + 1;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h4 style="color:black; padding-left:22px;">
+                                        GENERATE MAC-ADDRESS TOKEN
+                                    </h4>
+                                </div>
+                                <div class="col-md-8">
+                                    <span style="color:red; font-size:14px; padding-left:22px;"><b> Note :- Please enter Mac Address Without Colon</b></span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left:22px;">
+                        <div class="col-md-4">
+                            <input type="text" id="txtmacaddress" name="txtmacaddress" class="form-control " placeholder="Enter Your MAC Address" required="" />
+                        </div>
+                        <div class="col-md-4" style="display:none;" id="verifyOTPmac">
+                            <input type="hidden" id="macaddress" value="" name="macaddress" class="hidden">
+
+                            <input type="text" name="otpmac" id="otpmac" class="form-control" placeholder="Enter OTP" required="" />
+
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" id="btn11" value="Submit" class="btn btn-primary" onclick="insertmacaddress()" />
+                            <button type="submit" class="btn btn-info" id="btnn2" name="btnn2" onclick="VerifyMAC()" style="display:none;">Insert</button>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 style="color:black; font-size:16px; padding-left:22px;">
+                                Your Mac Address and Token No:-
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="body" style="margin-top:-20px;">
+                        <div class="table-responsive " style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>Your&nbsp;Mac&nbsp;Address</th>
+                                        <th>Token&nbsp;No</th>
+                                        <th>Status</th>
+                                        <th>Update&nbsp;Date</th>
+                                        @*<th>Edit</th>*@
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ var j = 20;}
+                                    @foreach (var item in ViewBag.macadd)
+                                    {
+                                        <tr>
+                                            <td>@item.usermacaddress</td>
+                                            <td align="center"><input type="text" value="@item.token" id="@j" name="myInput1" style="height:34px;background-color:#00000038; border:1px dashed #f30850;" readonly=""><button onclick="Copymacarrdess('@j')" class="btn btn-primary" style="border-top-left-radius:0px;border-bottom-left-radius:0px;background:#f30850;border-color:#f30850;height: 35px; color: white;">Copy</button></td>
+                                            @{ var sts = item.status;}
+                                            @if (sts)
+                                            {
+                                                <td style="padding-top:0px;">
+                                                    <button class="icofont icofont-toggle-on  BtnTransparent" style="font-size:46px; color:green;"></button>
+
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="padding-top:0px;">
+                                                    <button class="icofont icofont-toggle-off  BtnTransparent" style="font-size:46px; color:red;"></button>
+
+                                                </td>
+                                            }
+                                            <td>@item.udate</td>
+
+                                            <td><span id="btn2" data-toggle="modal" data-target="#rr" onclick="deletemacaddress('@item.idno')"><i class="fa fa-trash-o" aria-hidden="true" style="font-size:31px; color:#ed174c;"></i></span></td>
+                                        </tr>
+                                                    j = j + 1;
+                                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 style="padding-left:22px;">RESPONSE URL </h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="float:right; padding-right:22px;">
+                                <input id="but" type="button" value="Add New" href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary" />
+                            </div>
+                        </div>
+                       
+                        </div>
+                    <div class="body" style="margin-top:-20px;">
+                        <div class="table-responsive " style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>Response URL</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.apiurl)
+                                    {
+                                        <tr>
+                                            <td style="color:blue;">@item.responseurl</td>
+                                            <td>
+                                                <span id="but" onclick="animation('@item.idno','@item.responseurl')" value="Edit" href="#" data-toggle="modal" data-target="#exampleModal1"><i class="fa fa-edit" style="font-size:27px; color:#f30850;"></i></span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 style="padding-left:22px;">Success Parameter Example:- </h4>
+                            <div class="body" style="margin-top:-20px;">
+                                <div class="table-responsive " style="position:inherit; overflow-x: hidden;">
+                                    <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                        <thead class="navbar" style="color:white;position:inherit;">
+                                            <tr>
+                                                <th>SR.No</th>
+                                                <th>Parameter</th>
+                                                <th>Parameter Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>rchid</td>
+                                                <td>Recharge Request ID </td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Status</td>
+                                                <td>SUCCESS</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>operatorid</td>
+                                               <td>Operator Transaction ID</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>lapubal</td>
+                                                <td> Your Lapu Remain Balance</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>rechargeno</td>
+                                                <td>Recharge No</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>amount</td>
+                                                <td>Recharge Amount</td>
+                                            </tr>
+                                            <tr>
+                                                <td>7</td>
+                                                <td>lapuno</td>
+                                                <td>Lapu No / UserID</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 style="padding-left:22px;">Failed Parameter Example:- </h4>
+                            <div class="body" style="margin-top:-20px;">
+                                <div class="table-responsive " style="position:inherit; overflow-x: hidden;">
+                                    <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                        <thead class="navbar" style="color:white;position:inherit;">
+                                            <tr>
+                                                <th>SR.No</th>
+                                                <th>Parameter</th>
+                                                <th>Parameter Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>rchid</td>
+                                                <td>Recharge Request ID  </td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Status</td>
+                                                <td>FAILED</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>operatorid</td>
+                                                <td>Operator Transaction ID / Failed Reason</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>lapubal</td>
+                                                <td> Your Lapu Remain Balance</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>rechargeno</td>
+                                                <td>Recharge No</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>amount</td>
+                                                <td>Recharge Amount</td>
+                                            </tr>
+                                            <tr>
+                                                <td>7</td>
+                                                <td>lapuno</td>
+                                                <td>Lapu No / UserID</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">OPERATOR CODE LIST</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="body" style="margin-top:-20px;">
+                                <div class="table-responsive " style="position:inherit;">
+                                    <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                        <thead class="navbar" style="color:white;position:inherit;">
+                                            <tr>
+                                                <th>Operator&nbsp;Name</th>
+                                                <th>Operator&nbsp;Code</th>
+                                                <th>Operator&nbsp;Type</th>
+                                                @*<th>#</th>*@
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @*@{var k = 1; }*@
+                                            @foreach (var item in ViewBag.opt)
+                                            {
+                                                if (item.Operator_id <76 )
+                                                {
+                                                    <tr>
+                                                        <td>@item.operator_Name</td>
+                                                        <td>@item.new_opt_code</td>
+                                                        <td>@item.Operator_type</td>
+                                                        @*<td>@k</td>*@
+                                                    </tr>
+                                                }
+                                                //k++;
+                                            }   
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="body" style="margin-top:-20px;">
+                                <div class="table-responsive " style="position:inherit;">
+                                    <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                        <thead class="navbar" style="color:white;position:inherit;">
+                                            <tr>
+                                                <th>Operator&nbsp;Name</th>
+                                                <th>Operator&nbsp;Code</th>
+                                                <th>Operator&nbsp;Type</th>    
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        
+                                            @foreach (var item in ViewBag.opt)
+                                            {
+                                                if (item.Operator_id > 76)
+                                                {
+                                                    <tr>
+                                                        <td>@item.operator_Name</td>
+                                                        <td>@item.new_opt_code</td>
+                                                        <td>@item.Operator_type</td> 
+                                                    </tr>
+                                                } 
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">RESPONSE CHECK</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive " style="position:inherit;">
+                                <p style="color:blue; padding-left:22px;"><span style="color:black; font-size:16px;"><b>URL:-</b></span>&nbsp;&nbsp;  https://www.vastwebmulti.com/API/Api/Responseoutput?yourrchid=iii&userid=uuu&optcode=ooo </p>
+                            </div>
+                            </div>
+                    </div>
+                    <h4 style="padding-left:22px;">Response Check Parameter Example:- </h4>
+                    <div class="body" style="margin-top:-20px;">
+                        <div class="table-responsive " style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>SR.No</th>
+                                        <th>Parameter</th>
+                                        <th>Parameter&nbsp;Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>yourrchid</td>
+                                        <td>Your Recharge Request ID </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>userid</td>
+                                        <td>Your Registered User Id</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>optcode</td>
+                                        <td>Operator Code</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">Recharge Success Response Format:- </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                       <div class="col-md-12">
+                           <div class="table-responsive " style="position:inherit;">
+                               <p style="color:blue; padding-left:22px;">{"Status":"SUCCESS","Mobile":"Mobile No","Amount":"Amount","RID":"Your Recharge ID","Operatorid":"OperatorID","remainamount":"Lapu Balance"}</p>
+                           </div>
+                           </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">Recharge Failed Response Format:-  </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive " style="position:inherit;">
+                                <p style="color:blue; padding-left:22px;">{"Status":"FAILED","Mobile":"Mobile","Amount":"Amount","RID":"Your Recharge ID","Operatorid":" Reason","remainamount":"0"}</p>
+                            </div>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">Recharge Pending Response Format:-  </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive " style="position:inherit;">
+                                <p style="color:blue; padding-left:22px;">{"Status":"PENDING","Mobile":"Mobile","Amount":"Amount","RID":"Your Recharge ID","Operatorid":"", "remainamount":"0"}</p>
+                            </div>
+                            </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">
+                                RECHARGE REQUEST URL
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive " style="position:inherit;">
+                                <p style="color:blue; padding-left:22px;"><span style="color:black; font-size:16px;"><b>Recharge URL:-</b></span> https://www.vastwebmulti.com/API/API/Recharge?Mobile=mmm&OptCode=ooo&Amount=aaa&Token=GeneratedToken&Userid=RegisteredEmail-ID&rch_id=iii </p>
+                            </div>
+                            </div>
+                    </div>
+                    <h4 style="padding-left:22px;">Recharge URL Parameter Example:- </h4>
+                    <div class="body" style="margin-top:-20px;">
+                        <div class="table-responsive " style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>SR.No</th>
+                                        <th>Parameter</th>
+                                        <th>Parameter&nbsp;Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Mobile</td>
+                                        <td> Customer Recharge Number </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>OptCode</td>
+                                        <td>Operator Code</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Amount</td>
+                                        <td>Recharge Amount</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Token</td>
+                                        <td>Token Number</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>UserID</td>
+                                        <td>Registered Email-ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>rch_id</td>
+                                        <td>Recharge Request ID</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">Recharge Success Response Format:- </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive " style="position:inherit;">
+                                <p style="color:blue; padding-left:22px;">{"Status":"SUCCESS","Mobile":"Mobile No","Amount":"Amount","RID":"Your Recharge ID","Operatorid":"OperatorID","remainamount":"Lapu Balance"}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">Recharge Failed Response Format:-  </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive " style="position:inherit;">
+                                <p style="color:blue; padding-left:22px;">{"Status":"FAILED","Mobile":"Mobile","Amount":"Amount","RID":"Your Recharge ID","Operatorid":" Reason","remainamount":"0"}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="padding-left:22px;">Recharge Pending Response Format:-  </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive " style="position:inherit;">
+                                <p style="color:blue; padding-left:22px;">{"Status":"PENDING","Mobile":"Mobile","Amount":"Amount","RID":"Your Recharge ID","Operatorid":"", "remainamount":"0"}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+</section>
+<!--Add Response URL Popup-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("AddUrl", "Home", FormMethod.Post))
+            {
+                <form class="form-horizontal" id="edit-form">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Add Response Url Page</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                           
+                                <label for="recipient-name" class="control-label">Enter Url</label>
+                            <div class="form-line">
+                                <input type="text" class="form-control" id="apiurl" name="apiurl" placeholder="http://domainname/pagename" required="">
+                            </div>
+                                <p style="padding-top:7px; color:#ed174c;"><span style="color:black; font-size:14px;"><b>Example :-</b> </span> &nbsp;&nbsp; https://www.abcd.in/Responsepagename.aspx </p>
+                          
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Insert" class="btn btn-primary" />
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<!--Edit Response Url Poupup-->
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("EditResponseUrl", "Home", FormMethod.Post))
+            {
+                <form class="form-horizontal" id="edit-form">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Edit Response Url Page</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                                <input id="txtid" name="txtid" style="display:none;" />
+                                <label for="recipient-name" class="control-label">Update Url</label>
+                            <div class="form-line">
+                                <input type="text" class="form-control" id="editapiurl" name="editapiurl" placeholder="http://domainname/pagename" required="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<!---DELETE otp -->
+<div class="modal fade" id="otp-modal1" tabindex="-1" role="dialog" aria-labelledby="otp-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="top:150px;">
+            @*@using (Html.BeginForm("otpinsert", "Home", FormMethod.Post))
+                {*@
+            <form class="form-horizontal" id="edit-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="edit-modal-label">Enter Otp</h4>
+                </div>
+                <div class="clearfix"></div>
+                <div class="modal-body">
+                    <input type="hidden" id="Deleteidno" value="" name="Deleteidno" class="hidden">
+                    <div class="form-group">
+
+                        <label for="firstname" class="col-sm-3 control-label">Enter OTP Here</label>
+                        <div class="col-md-9">
+                            <div class="form-line">
+                                <input type="text" name="otp1" id="otp1" class="form-control" required="" />
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="deleteConfirmOTP()">Insert</button>
+                </div>
+            </form>
+            @*}*@
+        </div>
+    </div>
+</div>
+<!--Delete MAC Address Model-->
+<div class="modal fade" id="rr" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="top:150px;">
+            @*@using (Html.BeginForm("otpinsert", "Home", FormMethod.Post))
+                {*@
+            <form class="form-horizontal" id="edit-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="edit-modal-label">Enter MAC Address Otp</h4>
+                </div>
+                <div class="clearfix"></div>
+                <div class="modal-body">
+                    <input type="hidden" id="Deleteidno" value="" name="Deleteidno" class="hidden">
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-3 control-label">Enter OTP Here</label>
+                            <div class="col-sm-9">
+                                <div class="form-line">
+                                    <input type="text" name="txtotp" id="txtotp" class="form-control" required="" />
+                                </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="deleteConfirmMACADDRESSOTP()">Insert</button>
+                </div>
+            </form>
+            @*}*@
+        </div>
+    </div>
+</div>
+
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+@*<script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>*@
+
+<script>
+    window.onload = function () {
+        var item = '@ViewData["url"]'
+        if(item !="")
+        {
+                if (item == "Data Insert Successfully.")
+            {
+                swal("Wow..", item, "success");
+            }
+            else
+            {
+                    swal("Oops...", item, "error");
+            }
+        }
+
+        var item1 = '@ViewData["show"]'
+        if (item1 != "") {
+            if (item1 == "Update Successfully.")
+            {
+                swal("Wow..", item1, "success");
+            }
+            else {
+                swal("Oops...", item1, "error");
+            }
+        }
+    }
+</script>
+
+<script>
+    function myFunction(p) {
+        var copyText = document.getElementById(p);
+       copyText.select();
+     document.execCommand('copy');
+         }
+</script>
+<!--insert IP Address-->
+<script>
+    function insertip()
+    {
+
+        //document.getElementById("btn").value = "Please Wait...";
+
+        var ipaddress = $('input[name=txtipaddress]').val();
+        var CheckIP = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+        if (CheckIP.test(ipaddress)) {
+            $.ajax(
+            {
+                url: '@Url.Action("insertipaddress", "Home")',
+                type: 'POST',
+                dataType: "html",
+                data: { ipaddress: ipaddress },
+                success: function (data) {
+                    var response = JSON.parse(data);
+                    if (response.Status) {
+                        swal("Good job!", response.Message, "success");
+                        $("#ipaddress").val(ipaddress);
+                        $('#verifyOTP').css("display", "block");
+                        $('#Otp').css("display", "block");
+                        $('#btn').css("display", "none");
+
+                    }
+                    else {
+                        swal("Oops...", response.Message, "error");
+                    }
+                },
+
+                failure: function (jqXHR, textStatus, errorThrown) {
+                    alert("HTTP Status: " + jqXHR.status + "; Error Text: " + jqXHR.responseText); // Display error message
+                }
+            });
+        }
+        else {
+            swal("Oops...", "Your IP Address Is Not Valid.", "error");
+
+        }
+    }
+</script>
+<!--Verify IP Address OTP-->
+<script>
+    function VerifyOtp()
+    {
+        var ipaddress = $('input[name=ipaddress]').val();
+        var otp = $('input[name=otp]').val();
+
+        $.ajax(
+            {
+            url: '@Url.Action("verifyOTP","Home")',
+            type: 'POST',
+            dataType: "html",
+            data: {otp:otp, ipaddress: ipaddress },
+            success: function (data) {
+                var response = JSON.parse(data);
+                if (response.Status) {
+                    alert(response.Message);
+                    $('#verifyOTP').css("display", "none");
+                    $('#Otp').css("display", "none");
+                    $('#btn').css("display", "block");
+                    var url = '@Url.Action("APIDocument","Home")'
+                    window.location.href = url;
+               }
+                else
+                {
+                   alert(response.Message);
+
+                }
+              },
+            error: function (data) {
+
+            }
+        });
+    }
+</script>
+<!--Send Delete OTP-->
+<script>
+    function deleteipaddress(idno)
+    {
+        $.ajax(
+            {
+                url: '@Url.Action("deteipaddressOTP","Home")',
+                type: 'POST',
+                dataType: "json",
+                data: { idno:idno },
+                   success: function (response) {
+                        if (response == "Success") {
+                            swal("Good job!", "Send  OTP Your Email!", "success");
+                            $("#Deleteidno").val(idno);
+                            $('#otp-modal1').modal('show');
+                             }
+                        else if (response == "Failed") {
+
+                            swal("Error!", "Please Enter IP Address!", "error");
+                        }
+                    },
+
+                    failure: function (jqXHR, textStatus, errorThrown) {
+                        alert("HTTP Status: " + jqXHR.status + "; Error Text: " + jqXHR.responseText); // Display error message
+                    }
+            });
+    }
+</script>
+<!--Delete Confrimed-->
+<script>
+    function deleteConfirmOTP() {
+        var answer = confirm("ARE YOU SURE?")
+        if (answer) {
+        var idno = $('input[name=Deleteidno]').val();
+        var otp = $('input[name=otp1]').val();
+        $.ajax(
+           {
+               url: '@Url.Action("ConfirmedDeleteIp", "Home")',
+               type: 'POST',
+               dataType: "html",
+               data: { idno: idno, otp: otp },
+               success: function (data) {
+                   var response = JSON.parse(data);
+                   if (response.Status) {
+                       alert(response.Message);
+                       var url = '@Url.Action("APIDocument", "Home")';
+                       window.location.href = url;
+                   }
+                   else {
+                       alert(response.Message);
+                       var url = '@Url.Action("APIDocument", "Home")';
+                       window.location.href = url;
+
+                   }
+               },
+               error: function (data) {
+
+               }
+           });
+            return true;
+        }
+    }
+
+</script>
+
+<!--Edit Response Url-->
+<script>
+    function animation(idno,responseurl)
+    {
+        $("#txtid").val(idno);
+        var n = responseurl.indexOf("?");
+        var res = responseurl.substring(0, n);
+        $("#editapiurl").val(res);
+    }
+</script>
+<!------------------------------------------------------------Mac Addresss javascript----------------------->
+<!--Copy Fuction mac address Token-->
+<script>
+    function Copymacarrdess(q) {
+        var copyText1 = document.getElementById(q);
+          copyText1.select();
+          document.execCommand('copy');
+         }
+</script>
+<!--insert MAC Address-->
+<script>
+    function insertmacaddress()
+    {
+        var macaddress = $('input[name=txtmacaddress]').val();
+
+            $.ajax(
+            {
+                url: '@Url.Action("insertmacaddress", "Home")',
+                type: 'POST',
+                dataType: "html",
+                data: { macaddress: macaddress },
+                success: function (data) {
+                    var response = JSON.parse(data);
+                    if (response.Status) {
+                         swal("Good job!", response.Message, "success");
+                        $("#txtmacaddress").val(macaddress);
+                        $('#verifyOTPmac').css("display", "block");
+                        $('#otpmac').css("display", "block");
+                        $('#btnn2').css("display", "block");
+                        $('#btn11').css("display", "none");
+                    }
+                    else {
+                        swal("Oops...", response.Message, "error");
+                    }
+                },
+
+                failure: function (jqXHR, textStatus, errorThrown) {
+                    alert("HTTP Status: " + jqXHR.status + "; Error Text: " + jqXHR.responseText); // Display error message
+                }
+            });
+
+
+    }
+</script>
+<!--Verify MAC Address OTP-->
+<script>
+    function VerifyMAC()
+    {
+        var macaddress = $('input[name=txtmacaddress]').val();
+        var otp = $('input[name=otpmac]').val();
+          $.ajax(
+            {
+            url: '@Url.Action("verifyOTPmacaddress", "Home")',
+            type: 'POST',
+            dataType: "html",
+            data: { otp: otp, macaddress: macaddress },
+            success: function (data) {
+                var response = JSON.parse(data);
+                if (response.Status) {
+                    alert(response.Message);
+                    $('#verifyOTPmac').css("display", "none");
+                    $('#otpmac').css("display", "none");
+                    $('#btnn2').css("display", "block");
+                    $('#btn11').css("display", "none");
+                    var url = '@Url.Action("APIDocument","Home")'
+                    window.location.href = url;
+               }
+                else
+                {
+                   alert(response.Message);
+
+                }
+              },
+            error: function (data) {
+
+            }
+        });
+    }
+</script>
+<!--Send MAC Address Delete OTP-->
+<script>
+    function deletemacaddress(idno)
+    {
+        $.ajax(
+            {
+                url: '@Url.Action("detemacaddressOTP","Home")',
+                type: 'POST',
+                dataType: "json",
+                data: { idno:idno },
+                   success: function (response) {
+                        if (response == "Success") {
+                            swal("Good job!", "Send  OTP Your Email!", "success");
+                            $("#Deleteidno").val(idno);
+                            $('#rr').modal('show');
+                             }
+                        else if (response == "Failed") {
+
+                            swal("Error!", "Please Enter IP Address!", "error");
+                        }
+                    },
+
+                    failure: function (jqXHR, textStatus, errorThrown) {
+                        alert("HTTP Status: " + jqXHR.status + "; Error Text: " + jqXHR.responseText); // Display error message
+                    }
+            });
+    }
+</script>
+<!-- Delete MAC Address Confrimed-->
+<script>
+    function deleteConfirmMACADDRESSOTP()
+    {
+        var answer = confirm("ARE YOU SURE?")
+        if (answer) {
+            var idno = $('input[name=Deleteidno]').val();
+            var otp = $('input[name=txtotp]').val();
+
+        $.ajax(
+           {
+               url: '@Url.Action("ConfirmedMACAddressDeleteIp", "Home")',
+               type: 'POST',
+               dataType: "html",
+               data: { idno: idno, otp: otp },
+               success: function (data) {
+                   var response = JSON.parse(data);
+                   if (response.Status) {
+                       alert(response.Message);
+                       var url = '@Url.Action("APIDocument", "Home")';
+                       window.location.href = url;
+                   }
+                   else {
+                       alert(response.Message);
+                       var url = '@Url.Action("APIDocument", "Home")';
+                       window.location.href = url;
+
+                   }
+               },
+               error: function (data) {
+
+               }
+           });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+</script>
+
+
+
+

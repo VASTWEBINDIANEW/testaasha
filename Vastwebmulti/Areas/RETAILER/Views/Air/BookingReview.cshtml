@@ -1,0 +1,1159 @@
+﻿@model Vastwebmulti.Areas.RETAILER.ViewModels.FlightDetailsVM
+@{
+    ViewBag.Title = "Booking review";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+    decimal margin = ViewBag.RetailerMarkup;
+}
+<style>
+    .scrollypy {
+        overflow-y: auto !important;
+        height: 250px;
+    }
+
+    .btmPlusMinus {
+        padding: 3px 6px;
+        margin-right: 4px;
+        padding-bottom: 6px;
+        border-radius: 5px;
+    }
+
+        .btmPlusMinus i {
+            font-size: 10px;
+        }
+
+    .table {
+        display: table; /* Allow the centering to work */
+        margin: 0 auto;
+    }
+
+    ul#horizontal-list {
+        min-width: 696px;
+        list-style: none;
+        padding-top: 20px;
+    }
+
+        ul#horizontal-list li {
+            display: inline;
+            text-align: center;
+            padding: 20px;
+        }
+
+    span.field-validation-error {
+        font-size: 12px;
+        display: block;
+        margin-top: 5px;
+        font-weight: normal;
+        color: #F44336;
+    }
+
+    .vertical-text {
+        transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+        bottom: 5%;
+        top: 0%;
+        position: absolute;
+        color: var(--main-bg-lcolor);
+    }
+</style>
+<style type="text/css">
+    .loadermoney {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 199999;
+        background: url('../../images/TRAVEL.svg') 50% 50% no-repeat rgba(249, 249, 249, 0.9);
+    }
+</style>
+<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/AdminDesign/Retailer_Slider/Slieder.css" rel="stylesheet" />
+@*@Html.Partial("_FareQuote",Model.FareQuoteVM)*@
+
+<div id="loadermoney" class="loadermoney" style="display:none;"></div>
+<section class="content" style="margin-left: 10px;margin-right: 10px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" id="PNR_BookingDetails" style="display:none;">
+                <div class="card" style="min-height:70px;">
+                    <div class="body bg-white">
+                        <div class="col-md-6" id="leftCol">
+
+                        </div>
+                        <div class="col-md-6" id="rightCol">
+
+                        </div>
+                    </div>
+                </div>
+                @Html.Hidden("PNRNO")
+                @Html.Hidden("BookingID")
+                @Html.Hidden("OfferedFare")
+                @Html.Hidden("ItinerarySource")
+                @Html.Hidden("PublishedFare")
+            </div>
+
+
+            <!-- Fare Details -->
+            <div class="col-md-3 flight-rules">
+                <div class="col-md-3 flightbook-fare">
+                    <div class="block-header" style="padding: 12px 0 22px 1px;margin-bottom: 4px;">
+                        <h2>Fare Details</h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bookfare">
+                            <div class="card bookfared">
+                                <div class="body bg-white bookfaredc">
+                                    @{
+                                        var of = Model.Onward.FareQuoteVM.Content.Addinfo.Results.Fare.OfferedFare;
+                                        var pf = Model.Onward.FareQuoteVM.Content.Addinfo.Results.Fare.PublishedFare;
+                                        var bf = Model.Onward.FareQuoteVM.Content.Addinfo.Results.Fare.BaseFare;
+                                        var tax = Model.Onward.FareQuoteVM.Content.Addinfo.Results.Fare.Tax;
+                                        var TxnFee = Model.Onward.FareQuoteVM.Content.Addinfo.Results.Fare.AdditionalTxnFeeOfrd;
+                                        if (Model.isDomastic && Model.JourneyType == 2)
+                                        {
+                                            of = of + Model.Inward.FareQuoteVM.Content.Addinfo.Results.Fare.OfferedFare;
+                                            pf = pf + Model.Inward.FareQuoteVM.Content.Addinfo.Results.Fare.PublishedFare;
+                                            bf = bf + Model.Inward.FareQuoteVM.Content.Addinfo.Results.Fare.BaseFare;
+                                            tax = tax + Model.Inward.FareQuoteVM.Content.Addinfo.Results.Fare.Tax;
+                                            TxnFee = TxnFee + Model.Inward.FareQuoteVM.Content.Addinfo.Results.Fare.AdditionalTxnFeeOfrd;
+                                        }
+                                        var otherCharge = pf - (bf + tax + TxnFee);
+                                        TxnFee = TxnFee + margin;
+                                        pf = pf + margin;
+                                    }
+                                    <div>
+                                        Base Fare <span class="pull-right">@bf</span><br>
+                                        Fuel & Tax <span class="pull-right">@tax</span><br>
+                                        Other Charges <span class="pull-right">@otherCharge</span><br>
+                                        Txn Fee <span class="pull-right">@TxnFee</span><br>
+                                        <strong>Total Fare <span class="pull-right">@pf</span></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fare rule -->
+                <div class="farerules-full" style="overflow-y: inherit;overflow-x: initial;height:auto;">
+
+                    @*<h2>NO HEADER CARDS</h2>*@
+
+                    <h2 style="margin-bottom: 10px;">
+                        Fare Rule <span class="from-to-class" style="float:right;">
+                            @{
+                                var source = ""; var desti = "";
+                                var count = @Model.Onward.FareQuoteVM.Content.Addinfo.Results.Segments[0].Count;
+                                count = count - 1;
+                                source = Model.Onward.FareQuoteVM.Content.Addinfo.Results.Segments[0][0].Origin.Airport.CityName;
+                                desti = Model.Onward.FareQuoteVM.Content.Addinfo.Results.Segments[0][count].Destination.Airport.CityName;
+                            }
+
+                            @source-@desti
+                        </span>
+                    </h2>
+
+
+
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card" style="background:#f5f5f5;height: 490px !important;overflow-y: scroll !important;">
+                                <div class="body bg-white slimScrollDiv slimScrollDivs">
+
+
+
+                                    @*@foreach (var item in Model.Onward.FareRuleVM.Content.Addinfo.FareRules)*@
+                                    @if (ViewBag.FareRuleOB != null)
+                                    {
+                                        var OBFareRule = (Vastwebmulti.Areas.RETAILER.ViewModels.FareRuleVM)ViewBag.FareRuleOB;
+                                        foreach (var item in OBFareRule.Content.Addinfo.FareRules)
+                                        {
+                                            <!-- <strong>@item.Origin - @item.Destination</strong>-->
+                                            string[] stringSeparators = new string[] { "\r\n" };
+                                            string[] lines = item.FareRuleDetail.Split(stringSeparators, StringSplitOptions.None);
+                                            //Console.WriteLine("Nr. Of items in list: " + lines.Length); // 2 lines
+                                            foreach (string s in lines)
+                                            {
+                                                //Console.WriteLine(s); //But will print 3 lines in total.
+                                                @Html.Raw(s)
+                                            }
+
+                                        }
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# Fare rule -->
+                @if (Model.JourneyType == 2)
+                {
+                    <div class="farerules-full">
+                        <h2>
+                            Fare Rules <span class="from-to-class" style="float:right;">
+                                @{
+                                    source = ""; desti = "";
+                                    count = @Model.Inward.FareQuoteVM.Content.Addinfo.Results.Segments[0].Count;
+                                    count = count - 1;
+                                    source = Model.Inward.FareQuoteVM.Content.Addinfo.Results.Segments[0][0].Origin.Airport.CityName;
+                                    desti = Model.Inward.FareQuoteVM.Content.Addinfo.Results.Segments[0][count].Destination.Airport.CityName;
+                                }
+                                @source-@desti
+                            </span>
+                        </h2>
+                        <div class="cancellation" style="padding-top: 21px;">
+                            <h3>Cancellation Fee <span>(Per Guest/Sector)</span></h3>
+                            <span>Prior to the date/time of departure</span>
+                        </div>
+                        @if (Model.isDomastic && Model.JourneyType == 2)
+                        {
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="card" style="min-height:auto;height:auto;margin-bottom:0;">
+                                        <div class="body bg-white slimScrollDiv" style="height:auto;">
+
+                                            @*@foreach (var item in Model.Inward.FareRuleVM.Content.Addinfo.FareRules)*@
+                                            @if (ViewBag.FareRuleIB != null)
+                                            {
+                                                var IBFareRule = (Vastwebmulti.Areas.RETAILER.ViewModels.FareRuleVM)ViewBag.FareRuleIB;
+                                                foreach (var item in IBFareRule.Content.Addinfo.FareRules)
+                                                {
+                                                    <strong>@item.Origin - @item.Destination</strong><br />
+                                                    string[] stringSeparators = new string[] { "\r\n" };
+                                                    string[] lines = item.FareRuleDetail.Split(stringSeparators, StringSplitOptions.None);
+                                                    //Console.WriteLine("Nr. Of items in list: " + lines.Length); // 2 lines
+                                                    foreach (string s in lines)
+                                                    {
+                                                        //Console.WriteLine(s); //But will print 3 lines in total.
+                                                        @Html.Raw(s)<br />
+                                                    }
+
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+            </div>
+                    <!-- #END# Fare Details -->
+
+
+                    <div class="col-md-9 flight-book flight-book-start">
+                        <!-- Flight Details start -->
+                        <div class="block-header book-block-header" style="padding: 12px 0 22px 1px;margin-bottom: 20px;background: #a4a0a0 !important;">
+                            @*<h2>NO HEADER CARDS</h2>*@
+                            <div class="col-md-6 pull-left">
+                                <h2>Booking Details Flight</h2>
+                            </div>
+                            <div class="col-md-6 flight-back" style="text-align:right;">
+                                @*<button type="button" class="btn bg-purple waves-effect pull-right">
+                            <i class="material-icons">search</i>
+                            <span>Modify Search</span>
+                        </button>*@
+                                <a src="javascript:void(0)" onclick="goBacks()">change Flight</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @if (Model.Onward.FareQuoteVM != null)
+                            {
+                                foreach (var item in Model.Onward.FareQuoteVM.Content.Addinfo.Results.Segments.FirstOrDefault())
+                                {
+                                    var AirlineCode = item.Airline.AirlineCode;
+                                    var dir = Server.MapPath("~/images/AirlineLogo");
+
+                                    var myFiles = Directory.GetFiles(dir, "" + AirlineCode + ".*", SearchOption.AllDirectories);
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="card">
+                                            <div class="body bg-white class-changebg">
+                                                <div class="table bookflightshow">
+                                                    <strong class="vertical-text">DEPARTURE</strong>
+                                                    <div class="col-md-3" style="padding-right:0px;padding-left:0px;width: 16%;">
+                                                        <div class="media">
+                                                            <div class="media-left">
+                                                                <a href="javascript:void(0);">
+                                                                    @if (myFiles != null && myFiles.Length > 0)
+                                                                    {
+                                                                        string pPath = myFiles[0];
+                                                                        int endIndex = pPath.LastIndexOf(@"\");
+                                                                        string vPath = "~/images/AirlineLogo/" + pPath.Remove(0, endIndex);
+                                                                        <img class="media-object" src="@Url.Content(vPath)" width="32" height="32">
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img class="media-object" src="http://placehold.it/32x32" width="32" height="32">
+                                                                    }
+
+                                                                </a><br />
+                                                            </div>
+                                                            <div class="media-body" style="text-align:left;">
+                                                                <h4 class="media-heading">@item.Airline.AirlineName</h4>
+                                                                @item.Airline.AirlineCode - @item.Airline.FlightNumber
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeDiv col-md-9 timeDiv-book timeDiv-bookflight" style="padding-right:0px;padding-left:0px;width: 84%;">
+                                                        <div class="col-md-3 changename" style="padding-left:0px;padding-right:0px;">
+                                                            <span class="channame">@item.Origin.Airport.CityName (@item.Origin.Airport.AirportCode)</span>
+                                                            @*<strong>@string.Format("{0}", item.StopPointDepartureTime != null ? Convert.ToDateTime(item.StopPointDepartureTime).ToString("HH:mm") : "")</strong> <br />
+                                                            <Bold>@string.Format("{0}", item.StopPointDepartureTime != null ? Convert.ToDateTime(item.StopPointDepartureTime).ToString("ddd, dd MMM yyyy") : "")</Bold> <br />*@
+                                                            <span>@item.Origin.DepTime.ToString("HH:mm ")</span>
+                                                            <p>@item.Origin.DepTime.ToString("ddd, dd MMM yyyy")</p>
+                                                            <span class="flightcity">@item.Origin.Airport.AirportName (Terminal : @item.Origin.Airport.Terminal)</span>
+                                                        </div>
+                                                        <div class="col-md-3 flight-afterpadding" style="text-align:right;padding-right:0px;">
+
+                                                            <div class="demo-google-material-icon flight-after flight-afterbefore" style="text-align:center;">
+
+                                                            </div>
+                                                            Baggage(@item.Baggage + @item.CabinBaggage) KG
+
+                                                        </div>
+                                                        <div class="col-md-3 changename" style="padding-right:0px;">
+                                                            <span class="channame">@item.Destination.Airport.CityName (@item.Destination.Airport.AirportCode)</span>
+                                                            <strong>@Convert.ToDateTime(item.Destination.ArrTime).ToString("HH:mm")</strong> <br />
+                                                            <Bold>@Convert.ToDateTime(item.Destination.ArrTime).ToString("ddd, dd MMM yyyy")</Bold> <br />
+                                                            <span class="flightcity">@item.Destination.Airport.AirportName (Terminal : @item.Destination.Airport.Terminal)</span>
+
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            @{
+                                                                TimeSpan spWorkMin = TimeSpan.FromMinutes(item.Duration);
+                                                            }
+                                                            @string.Format("{0:00}:{1:00}", (int)spWorkMin.TotalHours, spWorkMin.Minutes) approax
+                                                        </div>
+
+                                                        @*<div class="col-md-2">
+                                                    <button class="btn btn-primary bg-dark-green">Book Now</button>
+                                                </div>*@
+                                                    </div>
+
+                                                    <div class="Important-content">
+                                                        <strong><img src="~/ashok-images/info.svg" style="width:15px;margin-right: 5px;">Important Note</strong>
+                                                        <p><span></span>The Fare Rules for your flight selection have changed. Please review them before proceeding.</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        @if (Model.JourneyType == 2 || Model.JourneyType == 5)
+                        {
+                            <div class="row">
+                                @if (Model.Inward.FareQuoteVM != null)
+                                {
+                                    foreach (var item in Model.Inward.FareQuoteVM.Content.Addinfo.Results.Segments.FirstOrDefault())
+                                    {
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="card">
+                                                <div class="body bg-white class-changebg">
+                                                    <div class="table bookflightshow">
+                                                        <div class="col-md-3" style="padding-right:0px;padding-left:0px;width: 16%;">
+                                                            <strong class="vertical-text" style="padding-right: 25px;left:-43px;">RETURN</strong>
+                                                            <div class="media">
+                                                                <div class="media-left">
+                                                                    <a href="javascript:void(0);">
+                                                                        @if (item.Airline.AirlineCode == "AI")
+                                                                        {
+                                                                            <img class="media-object" src="https://logo.clearbit.com/www.airindia.com?size=64" width="64" height="64">
+                                                                        }
+                                                                        else if (item.Airline.AirlineCode == "6E")
+                                                                        {
+                                                                            <img class="media-object" src="https://logo.clearbit.com/www.goindigo.in?size=64" width="64" height="64">
+                                                                        }
+                                                                        else if (item.Airline.AirlineCode == "SG")
+                                                                        {
+                                                                            <img class="media-object" src="https://logo.clearbit.com/www.spicejet.com/?size=64" width="64" height="64">
+                                                                        }
+                                                                        else if (item.Airline.AirlineCode == "9W")
+                                                                        {
+                                                                            <img class="media-object" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="64" height="64">
+                                                                        }
+                                                                        else if (item.Airline.AirlineCode == "9W")
+                                                                        {
+                                                                            <img class="media-object" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="64" height="64">
+                                                                        }
+                                                                        else if (item.Airline.AirlineCode == "UK")
+                                                                        {
+                                                                            <img class="media-object" src="https://logo.clearbit.com/www.airvistara.com?size=64" width="64" height="64">
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <img class="media-object" src="http://placehold.it/64x64" width="64" height="64">
+                                                                        }
+
+                                                                    </a><br />
+                                                                </div>
+                                                                <div class="media-body" style="text-align:left;">
+                                                                    <h4 class="media-heading">@item.Airline.AirlineName</h4>
+                                                                    @item.Airline.AirlineCode - @item.Airline.FlightNumber
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="timeDiv col-md-9 timeDiv-book timeDiv-bookflight" style="padding-right:0px;padding-left:0px;width: 84%;">
+                                                            <div class="col-md-3 changename" style="padding-left:0px;padding-right:0px;">
+                                                                <span class="channame">@item.Origin.Airport.CityName (@item.Origin.Airport.AirportCode)</span>
+                                                                <strong>@string.Format("{0}", item.StopPointDepartureTime != null ? Convert.ToDateTime(item.StopPointDepartureTime).ToString("HH:mm") : "")</strong> <br />
+                                                                <Bold>@string.Format("{0}", item.StopPointDepartureTime != null ? Convert.ToDateTime(item.StopPointDepartureTime).ToString("ddd, dd MMM yyyy") : "")</Bold> <br />
+                                                                <span class="flightcity">@item.Origin.Airport.AirportName (Terminal : @item.Origin.Airport.Terminal)</span>
+
+                                                            </div>
+                                                            <div class="col-md-3 flight-afterpadding" style="text-align:right;padding-right:0px;">
+
+                                                                <div class="demo-google-material-icon flight-after flight-afterbefore" style="text-align:center;">
+
+                                                                </div>
+                                                                Baggage(@item.Baggage + @item.CabinBaggage) KG
+
+                                                            </div>
+                                                            <div class="col-md-3 changename" style="padding-right:0px;">
+                                                                <span class="channame">@item.Destination.Airport.CityName (@item.Destination.Airport.AirportCode)</span>
+                                                                <strong>@Convert.ToDateTime(item.Destination.ArrTime).ToString("HH:mm")</strong> <br />
+                                                                <Bold>@Convert.ToDateTime(item.Destination.ArrTime).ToString("ddd, dd MMM yyyy")</Bold> <br />
+                                                                <span class="flightcity">@item.Destination.Airport.AirportName (Terminal : @item.Destination.Airport.Terminal)</span>
+
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                @{
+                                                                    TimeSpan spWorkMin = TimeSpan.FromMinutes(item.Duration);
+                                                                }
+                                                                @string.Format("{0:00}:{1:00}", (int)spWorkMin.TotalHours, spWorkMin.Minutes) approax
+                                                            </div>
+
+                                                            @*<div class="col-md-2">
+                                                        <button class="btn btn-primary bg-dark-green">Book Now</button>
+                                                    </div>*@
+                                                        </div>
+                                                        <div class="Important-content">
+                                                            <strong><img src="/ashok-images/info.svg" style="width:15px;margin-right: 5px;">Important Note</strong>
+                                                            <p><span></span>The Fare Rules for your flight selection have changed. Please review them before proceeding.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                        <!-- #END# Flight Details start -->
+                        <!-- Passanger Details-->
+
+                        @{
+                            List<SelectListItem> Title = new List<SelectListItem>()
+                                                                    {
+                              new SelectListItem {Text="MR",Value="Mr",Selected=false },
+                              new SelectListItem {Text="Ms",Value="Ms" },
+                              new SelectListItem {Text="Mrs",Value="Mrs"},
+                              new SelectListItem {Text="Miss",Value="Miss"},
+                              new SelectListItem {Text="Mstr",Value="Mstr" },
+                                };
+
+                            int PaxCounter = 1;
+                            int adultCounter = 1;
+
+                            foreach (var item in Model.AdultPax)
+                            {
+                                @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].PaxType)
+                                <!-- Adult Details-->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 passanger-header-cardpage" style="padding-left: 0px;padding-right: 0px;">
+                                    <div class="card passanger-header-card">
+                                        <div class="header passanger-header" style="background: #f5f5f5;">
+                                            <h2>Passanger @PaxCounter (Adult @adultCounter)  </h2>
+                                        </div>
+                                        <div class="body passanger-body">
+                                            <div class="border-top1" style="height:1px;"></div>
+                                            <div class="row clearfix clearfix-custome clearfix-customee">
+
+                                                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 col-md-2 Adult-css form-control-label">
+                                                    <label for="email_address_2">Name :</label>
+                                                </div>
+                                                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.DisplayTextFor(m => m.AdultPax[adultCounter - 1].Title)&nbsp;@Html.DisplayTextFor(m => m.AdultPax[adultCounter - 1].FirstName)&nbsp;@Html.DisplayTextFor(m => m.AdultPax[adultCounter - 1].LastName)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row clearfix clearfix-custome clearfix-customes">
+                                                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 col-md-2 Adult-css form-control-label">
+                                                    <label for="email_address_2">Gender :</label>
+                                                </div>
+                                                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.DisplayTextFor(m => m.AdultPax[adultCounter - 1].Gender)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row clearfix clearfix-custome clearfix-customess">
+                                                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label dobshow">
+                                                    <label for="email_address_2">D.O.B :</label>
+                                                </div>
+                                                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.DisplayTextFor(m => m.AdultPax[adultCounter - 1].DateOfBirth)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (adultCounter == 1)
+                                            {
+                                                <div class="row clearfix clearfix-Address">
+                                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label clearfixyy-Address">
+                                                        <label for="email_address_2">Address :</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 clearfixxx-Address">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.DisplayTextFor(m => m.AdultPax[adultCounter - 1].AddressLine1)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].ContactNo)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].Email)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].AddressLine1)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].AddressLine2)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].CountryCode)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].CountryName)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].Nationality)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].City)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].PassportNo)
+                                            @Html.HiddenFor(m => m.AdultPax[adultCounter - 1].PassportExpiry)
+                                        </div>
+                                    </div>
+                                </div>
+                                PaxCounter++;
+                                adultCounter++;
+                            }
+                            if (Model.ChildPax != null)
+                            {
+                                int childCounter = 1;
+                                foreach (var item in Model.ChildPax)
+                                {
+                                    @Html.HiddenFor(m => m.ChildPax[childCounter - 1].PaxType)
+                                    <!-- Child Details-->
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 passanger-header-cardpage" style="padding-left: 0px;padding-right: 0px;">
+                                        <div class="card passanger-header-card">
+                                            <div class="header passanger-header">
+                                                <h2>Passanger @PaxCounter (Child @adultCounter)  </h2>
+                                            </div>
+                                            <div class="body passanger-body">
+                                                <div class="border-top1" style="height:1px;"></div>
+                                                <div class="row clearfix clearfix-custome clearfix-customee">
+                                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 col-md-2 Adult-css form-control-label">
+                                                        <label for="email_address_2">Name :</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.DisplayTextFor(m => m.ChildPax[childCounter - 1].Title)&nbsp;@Html.DisplayTextFor(m => m.ChildPax[childCounter - 1].FirstName)&nbsp;@Html.DisplayTextFor(m => m.ChildPax[childCounter - 1].LastName)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix clearfix-custome clearfix-customes">
+                                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 col-md-2 Adult-css form-control-label">
+                                                        <label for="email_address_2">Gender :</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.DisplayTextFor(m => m.ChildPax[childCounter - 1].Gender)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix clearfix-custome clearfix-customess">
+                                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label dobshow">
+                                                        <label for="email_address_2">D.O.B :</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.DisplayTextFor(m => m.ChildPax[childCounter - 1].DateOfBirth)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].ContactNo)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].Email)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].AddressLine1)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].AddressLine2)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].CountryCode)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].CountryName)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].Nationality)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].City)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].PassportNo)
+                                                @Html.HiddenFor(m => m.ChildPax[childCounter - 1].PassportExpiry)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    PaxCounter++;
+                                    childCounter++;
+                                }
+                            }
+                            if (Model.InfantPax != null)
+                            {
+                                int infantCounter = 1;
+                                foreach (var item in Model.InfantPax)
+                                {
+                                    @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].PaxType)
+                                    <!-- Infant Details-->
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 passanger-header-cardpage" style="padding-left: 0px;padding-right: 0px;">
+                                        <div class="card passanger-header-card">
+                                            <div class="header passanger-header">
+                                                <h2>Passanger @PaxCounter (Infant @adultCounter)  </h2>
+                                            </div>
+                                            <div class="body passanger-body">
+                                                <div class="border-top1" style="height:1px;"></div>
+                                                <div class="row clearfix clearfix-custome clearfix-customee">
+                                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 col-md-2 Adult-css form-control-label">
+                                                        <label for="email_address_2">Name :</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.DisplayTextFor(m => m.InfantPax[infantCounter - 1].Title)&nbsp;@Html.DisplayTextFor(m => m.InfantPax[infantCounter - 1].FirstName)&nbsp;@Html.DisplayTextFor(m => m.InfantPax[infantCounter - 1].LastName)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix clearfix-custome clearfix-customes">
+                                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 col-md-2 Adult-css form-control-label">
+                                                        <label for="email_address_2">Gender :</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.DisplayTextFor(m => m.InfantPax[infantCounter - 1].Gender)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix clearfix-custome clearfix-customess">
+                                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label dobshow">
+                                                        <label for="email_address_2">D.O.B :</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7 cssbookflight">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.DisplayTextFor(m => m.InfantPax[infantCounter - 1].DateOfBirth)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].ContactNo)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].Email)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].AddressLine1)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].AddressLine2)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].CountryCode)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].CountryName)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].Nationality)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].City)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].PassportNo)
+                                                @Html.HiddenFor(m => m.InfantPax[infantCounter - 1].PassportExpiry)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    PaxCounter++;
+                                    infantCounter++;
+                                }
+                            }
+                        }
+                        <!-- Passanger Details End-->
+                        <!--  T & C -->
+                        <div id="TandParentDiv">
+                            <div class="block-header" style="padding: 12px 0 22px 1px;margin-bottom: 20px;">
+                                @*<h2>NO HEADER CARDS</h2>*@
+                                <div class="col-md-6 pull-left">
+                                    <h2>Term & Conditions:</h2>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="card">
+                                        <div class="demo-checkbox">
+                                            <input type="checkbox" id="basic_checkbox_2" class="filled-in" required>
+                                            <label for="basic_checkbox_2">I have reviewed and agreed on the fares and commission offered for this booking. In Unticketed PNR, ADM might come from the Airline. Please cancel the untickted PNR in order to avoid the ADM Charges.</label>
+                                            <label id="basic_checkbox_2-error" class="error" for="basic_checkbox_2" style="display: none;color:red;">⚠ You need to agree to the Terms and Conditions to Proceed.</label>
+                                            <span id="lowblan"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- #END# T & C -->
+                        <div class="col-md-12 lastpageflight">
+                            @*@if (!Model.Onward.FareQuoteVM.Content.Addinfo.Results.IsLcc && !Model.Inward.FareQuoteVM.Content.Addinfo.Results.IsLcc)
+                    {
+                        <button class="btn btn-primary waves-effect" type="button" id="btnBook">Book</button>
+                        <button class="btn btn-primary waves-effect" type="button" id="btnReleasePNR" style="display:none;">Release PNR</button>
+                        <button class="btn btn-primary waves-effect" type="button" id="btnTicket">Ticket</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary waves-effect" type="button" id="btnTicketLCC">Ticket</button>
+                    }*@
+                            <button class="btn btn-primary waves-effect" type="button" id="btnTicketLCC">
+                                <span id="btnTicketLCCspan">Book Ticket</span><div id="nextloaderesas" style="display:none">
+                                    <div class="loader1 loader--style2" title="1">
+                                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                                        <rect x="0" y="0" width="4" height="20" fill="#ff0048">
+                                        <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+
+
+
+                                                                         </rect>
+                                        <rect x="7" y="0" width="4" height="20" fill="#ff0048">
+                                        <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0.2s" dur="0.6s" repeatCount="indefinite"></animate>
+
+
+
+                                                                        </rect>
+                                        <rect x="14" y="0" width="4" height="20" fill="#ff0048">
+                                        <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0.4s" dur="0.6s" repeatCount="indefinite"></animate>
+
+
+
+ </rect>
+  </svg>
+                                    </div>
+                                </div>
+                            </button>
+                            @*<button type="button" class="btn btn-primary btn-lg" id="btnTicketLCC" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing Order">Ticket</button>*@
+                        </div>
+                    </div>
+
+
+                </div>
+
+    </div>
+    <!--Slider div-->
+    <br />
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<!-- Start Rechargepaybill js-->
+<script src="~/Retailerjavascript/Rechargepaybill/electricityl.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Landline.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Dth.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/gas.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Insurance.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/mobileperpaidandpostpaid.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Water.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/broadband.js"></script>
+<!--End-->
+<script src="~/AdminDesign/Retailer_Slider/multislider.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(document).ajaxStart(function () {
+            document.getElementById("loadermoney").style.display = "block";
+        });
+        $(document).ajaxComplete(function () {
+            document.getElementById("loadermoney").style.display = "none";
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        //uncomment to enable loader on submit button
+        //$('.btn').on('click', function () {
+        //    var $this = $(this);
+        //    $this.button('loading');
+        //    setTimeout(function () {
+        //        $this.button('reset');
+        //    }, 6000);
+        //});
+        $('.slimScrollDiv').slimScroll({
+            height: '250px',
+            wheelStep: 10,
+        });
+    });
+
+    $("#btnBook").on('click', function () {
+        //alert("Book");
+        var vm = '@Html.Raw(Json.Encode(@Model))';
+        console.log(vm);
+
+        var ckbox = $('#basic_checkbox_2');
+        document.getElementById("loadermoney").style.display = "block";
+        if (ckbox.is(':checked')) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Book", "Air")",
+                data:  vm ,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                document.getElementById("loadermoney").style.display = "none";
+                if (response != null) {
+                    var respo = JSON.parse(response);
+
+                    if(respo.Content.ADDINFO.Error.ErrorCode == 0)
+                    {
+                        //alert("booking success");
+                        var ADDINFOResponse = respo.Content.ADDINFO.Response;
+                        var FlightItinerary = respo.Content.ADDINFO.Response.FlightItinerary;
+                        var Email = FlightItinerary.Passenger[0].Email;
+                        var mobile = FlightItinerary.Passenger[0].ContactNo;
+                        $("#PNR_BookingDetails").show();
+
+                        var leftcol = $("#PNR_BookingDetails").find("div#leftCol");
+                        var rightCol = $("#PNR_BookingDetails").find("div#rightCol");
+                        rightCol.css("text-align", "right");
+                        var leftColText = "Email : " + Email;
+                        leftColText = leftColText +"<br/>Contact : " + mobile;
+                        var rightColText = "PNR: " + ADDINFOResponse.PNR;
+                        if (ADDINFOResponse.IsTimeChanged) {
+                            alert("time changed");
+                            rightColText = rightColText + "<br/>New Time : " + FlightItinerary.Segments[0].StopPointDepartureTime;
+                        }
+                        if (ADDINFOResponse.IsPriceChanged) {
+                            var IsContinue = confirm("Oops! \n Search fare has been changed!\n Do you want to continue with new price: " + FlightItinerary.Fare.OfferedFare + "?");
+                            if (IsContinue == true) {
+                                var Fare = FlightItinerary.Fare;
+                                alert("TODO\n Work in progress");
+                            } else {
+                                //TODO
+                            }
+                        }
+                        else {
+                            $("#btnReleasePNR").show();
+                            $("#btnBook").hide();
+                            $("#TandParentDiv").hide();
+                        }
+                        $("#PNRNO").val(ADDINFOResponse.PNR);
+                        $("#BookingID").val(ADDINFOResponse.BookingId);
+                        $("#OfferedFare").val(FlightItinerary.Fare.OfferedFare);
+                        $("#PublishedFare").val(FlightItinerary.Fare.PublishedFare)
+                        $("#ItinerarySource").val(FlightItinerary.Source)
+                        leftcol.html(leftColText);
+                        rightCol.html(rightColText);
+                    }
+                    else {
+                        alert("ErrorMessage: " + respo.Content.ADDINFO.Error.ErrorMessage);
+                    }
+                } else {
+                    alert("Something went wrong");
+                }
+            },
+            failure: function (response) {
+                document.getElementById("loadermoney").style.display = "none";
+                alert(response.responseText);
+            },
+            error: function (response) {
+                document.getElementById("loadermoney").style.display = "none";
+                alert(response.responseText);
+            }
+        });
+
+    } else {
+        //alert('You Un-Checked it');
+            $("#basic_checkbox_2-error").show();
+        }
+    })
+
+    $("#btnTicket").on('click', function () {
+        var traceid1 = '@Model.TraceId'.toString();
+        var pnr = $("#PNRNO").val();
+        var bookingid = $("#BookingID").val();
+        var offeredFare = $("#OfferedFare").val();
+        var PubFare = $("#PublishedFare").val();
+        //alert(traceid1);
+        console.log(traceid1);
+        console.log(pnr);
+        console.log(bookingid);
+        var jsonRequestObj = { TraceId: traceid1.toString(), PNR: pnr, BookingId: bookingid, OfferedFare: offeredFare, PublishedFare: PubFare }
+        var jjj = JSON.stringify(jsonRequestObj);
+        if(traceid1 != null && traceid1!= '')
+        {
+            //alert("traceid1  " +traceid1);
+            if (pnr != null && pnr != '') {
+                if (bookingid != null && bookingid != '') {
+                    //////////////////  ticket ////////////
+                    document.getElementById("loadermoney").style.display = "block";
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("TicketNonLCC", "Air")",
+                        data: jjj,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        document.getElementById("loadermoney").style.display = "none";
+                        if (response != null) {
+                            var respo = JSON.parse(response);
+                            var respoString = JSON.stringify(respo);
+                            console.log(respo);
+                            console.log(respo.Content);
+                            console.log(respo.Content.ADDINFO.ResponseStatus);
+                            if (respo.Content.ADDINFO.ResponseStatus != null ) {
+                                if (respo.Content.ADDINFO.Response.TicketStatus == 1)
+                                {
+                                    alert("Ticket Success")
+                                    var bookingDetailsURL = '@Url.Action("TicketReport","Air")';
+                                    window.location = bookingDetailsURL;
+                                }
+                                else {
+                                    alert(respo.Content.ADDINFO.Response.Message);
+                                }
+                                if (respoString.includes("ErrorCode") && respo.Content.ADDINFO.Error.ErrorCode == 0) {
+                                    //alert("ticket success");
+                                    var ADDINFOResponse = respo.Content.ADDINFO.Response;
+                                    //alert(ADDINFOResponse);
+                                }
+                                else {
+                                    alert("ErrorMessage: " + respo.Content.ADDINFO.Error.ErrorMessage);
+                                }
+                            } else {
+                                alert("Something went wrong");
+                            }
+                        } else {
+                            alert("Something went wrong");
+                        }
+                    },
+                        failure: function (response) {
+                            document.getElementById("loadermoney").style.display = "none";
+                        alert(response.responseText);
+                    },
+                        error: function (response) {
+                            document.getElementById("loadermoney").style.display = "none";
+                        alert(response.responseText);
+                    }
+                });
+                /////////////////////////////////////////
+            }
+            else {
+                alert("Unable to proccess request!");
+            }
+        }
+        else {
+            alert("Unable to proccess request!");
+        }
+    }
+    else
+    {
+            alert("Unable to proccess request!");
+    }
+    });
+</script>
+<script>
+    $("#btnReleasePNR").on('click', function () {
+        var traceid2 = '@Model.TraceId'.toString();
+        var pnr = $("#PNRNO").val();
+        var bookingid = $("#BookingID").val();
+        var SourceNo = $("#ItinerarySource").val();
+
+
+        //console.log(traceid1);
+       // console.log(pnr);
+        console.log(bookingid);
+        var jsonRequestObj = { TraceId: traceid2.toString(), PNR: pnr, BookingId: bookingid, Source: SourceNo }
+        var jjj = JSON.stringify(jsonRequestObj);
+        if (traceid2 != null && traceid2 != '')
+        {
+            //alert("traceid1  " +traceid1);
+            if (pnr != null && pnr != '') {
+                if (bookingid != null && bookingid != '') {
+                    //////////////////  ReleasePNR ////////////
+                    document.getElementById("loadermoney").style.display = "block";
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("ReleasePNR", "Air")",
+                        data: jjj,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        document.getElementById("loadermoney").style.display = "none";
+                        if (response != null) {
+                            var respo = JSON.parse(response);
+                            var respoString = JSON.stringify(respo);
+                            console.log(respo);
+                            console.log(respo.Content);
+                            console.log(respo.Content.ADDINFO.ResponseStatus);
+                            if (respo.Content.ADDINFO.ResponseStatus != null ) {
+                                if (respo.Content.ADDINFO.Error!= null && respo.Content.ADDINFO.Error.ErrorCode == 0)
+                                {
+                                    alert("Released Success")
+                                    var bookingDetailsURL = '@Url.Action("Travel", "Home")';
+                                    window.location = bookingDetailsURL;
+                                }
+                                else {
+                                    alert("ErrorMessage: " + respo.Content.ADDINFO.Error.ErrorMessage);
+                                }
+
+                            } else {
+                                alert("Something went wrong");
+                            }
+                        } else {
+                            alert("Something went wrong");
+                        }
+                    },
+                        failure: function (response) {
+                            document.getElementById("loadermoney").style.display = "none";
+                        alert(response.responseText);
+                    },
+                        error: function (response) {
+                            document.getElementById("loadermoney").style.display = "none";
+                        alert(response.responseText);
+                    }
+                });
+                /////////////////////////////////////////
+            }
+            else {
+                alert("Unable to proccess request!");
+            }
+        }
+        else {
+            alert("Unable to proccess request!");
+        }
+    }
+    else
+    {
+            alert("Unable to proccess request!");
+    }
+    });
+</script>
+<script>
+    $("#btnTicketLCC").on('click', function () {
+        var vm = '@Html.Raw(Json.Encode(@Model))';
+        console.log(vm);
+        console.log("===== Ticket start =====");
+        var ckbox = $('#basic_checkbox_2');
+        if (ckbox.is(':checked'))
+        {
+            document.getElementById("nextloaderesas").style.display = "block";
+            document.getElementById("btnTicketLCCspan").style.display = "none";
+            document.getElementById("loadermoney").style.display = "block";
+            $("#basic_checkbox_2-error").hide();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Ticket", "Air")",
+                data: vm,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+                success: function (response) {
+                    document.getElementById("nextloaderesas").style.display = "none";
+                    document.getElementById("btnTicketLCCspan").style.display = "block";
+                document.getElementById("loadermoney").style.display = "none";
+                if (response != null) {
+                    var respo = JSON.parse(response);
+                    if (respo != null )
+                    {
+                        //alert("araha hai");
+                        //alert(respo.length);
+                        //alert(respo[0].IsSuccess);
+                        var Message1 = respo[0].Message;
+                        //alert(respo[1].IsSuccess);
+                        if (respo.length > 1 )
+                        {
+                            var Message2 = respo[1].Message;
+                            if(respo[0].IsSuccess == true && respo[1].IsSuccess == true)
+                            {
+                                alert("Booking Success");
+                                window.location = '@Url.Action("TicketReport","Air")';
+                            }
+                            else if (respo[0].IsSuccess == true && respo[1].IsSuccess == false) {
+                                alert("Only One Way Booking Success")
+                                window.location = '@Url.Action("TicketReport","Air")';
+                            }
+                            else if (respo[0].IsSuccess == false && respo[1].IsSuccess == true) {
+                                alert("Only Return Booking Success")
+                                window.location = '@Url.Action("TicketReport","Air")';
+                            }
+                            else if (respo[0].IsSuccess == false && respo[1].IsSuccess == false) {
+                                alert("Booking Failed");
+                            }
+                        }
+                        else {
+                            //alert("else 1");
+                            if (respo.length = 1 && respo[0].IsSuccess == true) {
+                                alert("Booking Success");
+                                window.location = '@Url.Action("TicketReport","Air")';
+                            }
+                            else {
+                                //alert("else 2");
+                                //alert(respo.length);
+                                //alert(respo[0].IsSuccess);
+                                if (Message1 == "Low Balance") {
+                                    Message1 = "⚠ You do not have enough wallet left";
+                                }
+                                $("#lowblan").text(Message1);
+                            }
+                        }
+                    }
+                    else {
+                        alert("ErrorMessage: \nInternal error!!!");
+                    }
+                }
+                else {
+                    alert("Something went wrong");
+                    
+                }
+            },
+                failure: function (response) {
+                    document.getElementById("loadermoney").style.display = "none";
+                    alert(response.responseText);
+                    console.log("===== end with failure=====");
+            },
+                error: function (response) {
+                    document.getElementById("loadermoney").style.display = "none";
+                    alert(response.responseText);
+                    console.log("===== end with error=====");
+            }
+        });
+        } else {
+        //alert('You Un-Checked it');
+                $("#basic_checkbox_2-error").show();
+        }
+    });
+</script>
+
+
+
+<script>
+    function goBacks() {
+        window.history.back();
+    }
+</script>
+

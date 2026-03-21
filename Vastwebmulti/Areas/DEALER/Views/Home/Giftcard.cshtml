@@ -1,0 +1,476 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Models.Gift_card_details_report_Result>
+@{
+    ViewBag.Title = "Giftcard";
+    Layout = "~/Areas/DEALER/Views/Shared/_Layout.cshtml";
+
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Retailer").ToList();
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Retailer")
+        {
+            var favimage = usernname.SingleOrDefault().NickName;
+            ViewBag.nickname = favimage;
+        }
+    }
+ 
+    var usernname1 = DB1.Usernicknames.Where(aa => aa.Role == "Dealer").ToList();
+    if (usernname1.Count() > 0)
+    {
+        if (usernname1.SingleOrDefault().Role == "Dealer")
+        {
+            var favimage1 = usernname1.SingleOrDefault().NickName;
+            ViewBag.dealer = favimage1;
+        }
+    }
+
+}
+
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 75px !important;
+    }
+
+    .dataTables_wrapper .dt-buttons a.dt-button {
+        padding: 7px 10px 8px 8px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+
+    .table-condensed tr td.selected.active::before {
+        display: none;
+    }
+
+    @@media screen and (max-width:992px) {
+        .ecommerce-reportpage .selectcss-ecommerce {
+            float: left;
+            width: 18%;
+        }
+
+        .ecommerce-reportpage .col-md-4.eccommerce-date {
+            float: left;
+            width: 35%;
+        }
+
+        .ecommerce-reportpage .col-md-1 {
+            float: left;
+            padding-right: 0;
+            width: 11%;
+        }
+
+            .ecommerce-reportpage .col-md-1 button {
+                width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+        .ecommerce-reportpage .selectcss-ecommerce .form-group {
+            margin-bottom: 10px;
+        }
+
+        .ecommerce-reportpage .col-md-3.ecommerce-pdfbutton {
+            float: right;
+            margin-bottom: 10px;
+        }
+
+        .giftcard-reportpage .col-md-5.eccommerce-date {
+            float: left;
+            width: 35%;
+        }
+    }
+
+    @@media screen and (max-width:768px) {
+        .ecommerce-reportpage .table-responsive {
+            border: 0;
+        }
+
+        .col-md-9.eccommerce-reportclass.giftcard-class .col-lg-12.col-md-12.col-sm-12.col-xs-12 {
+            padding-right: 0;
+        }
+
+        .col-md-9.eccommerce-reportclass.giftcard-class {
+            padding-right: 0;
+        }
+
+        .table-responsive.web-white-table {
+            padding-bottom: 15px;
+        }
+
+        .giftcard-reportpage .table-responsive {
+            position: relative !important;
+            z-index: 9;
+        }
+    }
+
+    @@media screen and (max-width:520px) {
+        .ecommerce-reportpage .selectcss-ecommerce {
+            float: left;
+            width: 33.3%;
+        }
+
+        .ecommerce-reportpage .col-md-4.eccommerce-date {
+            float: left;
+            width: 78%;
+        }
+
+        .ecommerce-reportpage .col-md-1 {
+            width: 22%;
+        }
+
+        .ecommerce-reportpage .col-md-3.ecommerce-pdfbutton .dt-buttons {
+            padding: 0;
+        }
+
+        .ecommerce-reportpage .col-md-3.ecommerce-pdfbutton {
+            margin-top: 10px;
+        }
+
+        .giftcard-reportpage .col-md-5.eccommerce-date {
+            float: left;
+            width: 78%;
+        }
+
+            .giftcard-reportpage .col-md-5.eccommerce-date .custom-date-icon {
+                display: none;
+            }
+
+        .giftcard-reportpage .select-statusgift {
+            padding-right: 0 !important;
+        }
+    }
+
+    @@media screen and (max-width:420px) {
+        .ecommerce-reportpage .select2 span, .ecommerce-reportpage input, .ecommerce-reportpage button span, .ecommerce-reportpage a, .ecommerce-reportpage button {
+            font-size: 12px !important;
+        }
+
+            .ecommerce-reportpage button span {
+                margin-left: 0 !important;
+            }
+
+        #m-d-fund-transfer .modal-dialog.modal-dialog-reportclass {
+            width: 100% !important;
+            float: left !important;
+        }
+
+            #m-d-fund-transfer .modal-dialog.modal-dialog-reportclass .modal-body.width100.float-left.dealer-pop-body {
+                height: auto !important;
+            }
+
+        .giftcard-reportpage .giftcard-class .form-group > div {
+            padding-bottom: 0 !important;
+        }
+    }
+
+    @@media screen and (max-width:320px) {
+    }
+</style>
+<section class="content ecommerce-reportpage giftcard-reportpage">
+    <div class="container-fluid full-dealer-secondanimation">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Gift Card Report's</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Report's&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Gift Card</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card" style="margin-bottom: 10px;">
+                    <div class="">
+                        <div class="col-md-9 eccommerce-reportclass giftcard-class" style="padding-left:0px;">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left:0px;">
+                                <div class="" style="margin-top: 2px;">
+                                    @using (Html.BeginForm("Giftcard", "Home", FormMethod.Post))
+                                    {
+                                        <div class="">
+                                            <div class="col-md-2 only-select-css selectcss-ecommerce" style="display:block;padding:0px;padding-right:5px;" id="rem">
+                                                <div class="form-group">
+                                                    <div class="" style="width:100%;padding-bottom:10px;">
+                                                        @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "Select User", new { id = "allretailer", @class = "selectpicker form-control for-select2", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 only-select-css selectcss-ecommerce" style="padding:0px;">
+                                                <div class="form-group">
+                                                    <div class="" style="width:100%;padding-bottom:10px;">
+                                                        @Html.DropDownList("Operator", ViewBag.Operator as SelectList, "Select Operator", new { id = "Operator", @class = "selectpicker form-control for-select2", data_live_search = "true", @style = "margin-top:0px; padding:0px; text-align:center;height:34px;" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2 only-select-css selectcss-ecommerce select-statusgift" style="padding:0px 5px;">
+                                                <div class="form-group">
+                                                    <div class="" style="width:100%;padding-bottom:10px;">
+                                                        @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                                {
+                                                new SelectListItem{ Text="Status",Value="ALL",},
+                                                new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                                                new SelectListItem{Text="Pending",Value="PENDING"},
+                                                new SelectListItem{Text="FAILED",Value="FAILED"}
+                                                }, new { @class = "selectpicker form-control for-select2", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-5 eccommerce-date" style="padding:0px;">
+                                                <div class="form-group for-web-date" style="margin-bottom:0px; ">
+                                                    <div class="input-daterange input-group">
+                                                        <div class="all-report-inputclass all-report-inputclass-left">
+                                                            <div class="custom-date-icon border-colorchangecss" style="height: 32px;">
+                                                                <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                                            </div>
+                                                            @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #ccc; height:32px;", autocomplete = "off" })
+                                                        </div>
+                                                        @*<span class="input-group-addon">
+                                                                <i class="fa fa-exchange" style="padding-top:8px;"></i>
+                                                            </span>*@
+                                                        <div class="all-report-inputclass all-report-inputclass-right">
+                                                            <div class="custom-date-icon border-colorchangecss" style="height: 32px;">
+                                                                <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                                            </div>
+                                                            @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #ccc; height:32px;", autocomplete = "off" })
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- /.input group -->
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1" style="padding-left:5px;">
+                                                <center>
+                                                    <button type="submit" class="btn  waves-effect" style=" height:32px;background:#eeebeb;">
+                                                        <i class="fa fa-search" style="top:-1px;font-size:13px;color:#444;"></i>
+                                                        <span style="color:#444;">Search</span>
+                                                    </button>
+                                                </center>
+                                            </div>
+
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 ecommerce-pdfbutton" style="padding-right:0;width:auto;float:right;">
+
+
+                            <button class="white-success-button">Total</button>
+                            <div class="white-success" style="display:none;width: 215px;right:0px">
+                                <button type="button" class="btn btn-default waves-effect" style="margin-top:2px;" title="Total  Success"><img src="~/ashok-images/correct.svg" style="width: 19px;background: green;border-radius: 50%;padding: 3px;margin-left:0;" />&nbsp;@ViewData["Totals"]</button>
+                                <button type="button" class="btn btn-default waves-effect" style="margin-top:2px;" title="Total  Failed"><img src="~/ashok-images/closes.svg" style="width: 19px;background: red;border-radius: 50%;padding: 3px;" />&nbsp;@ViewData["Totalf"]</button>
+                                <button type="button" class="btn btn-default waves-effect" style="margin-top:2px;" title="Total  Pending"><img src="~/ashok-images/clock.svg" style="width: 20px;" />&nbsp;@ViewData["Totalp"]</button>
+
+                            </div>
+                            <div class="web-white-filter fil" style="float: left;margin-right: 0px;margin-top:0px;">
+                                <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;">
+                                <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                            </div>
+                            <div class="web-white-filter" style="float:right;">
+                                <table class="dataTable js-exportable ">
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+
+
+
+
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card all-reporttable-css" style="margin-top:6px;">
+
+                    <div class="row clearfix">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="">
+                                <div class=" table-responsive web-white-table tableseconddes-dealer" style="position:inherit;">
+                                    <table id="example" class="table table-bordered table-striped table-hover " cellspacing="0" style="width:100%;font-size:12px;">
+                                        <thead style="position:inherit;">
+                                            <tr>
+                                                <th>Status</th>
+                                                <th>Sender&nbsp;Information</th>
+                                                <th>Receiver&nbsp;Information</th>
+                                                <th>Request&nbsp;Date</th>
+                                                <th>Amount</th>
+                                                <th>Service&nbsp;Name</th>
+                                                <th>Type</th>
+                                                <th>Operator&nbsp;Id</th>
+                                                <th><span>@ViewBag.nickname</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">Pre&nbsp;Amt&nbsp;</span><span style="padding-left:2px;">│</span><span style="padding-left:3px;">Net&nbsp;INC</span><span style="padding-left:2px;">│</span><span style="padding-left:2px;">Post&nbsp;Amt</span></th>
+                                                <th><span>@ViewBag.dealer</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">Pre&nbsp;Amt&nbsp;</span><span style="padding-left:2px;">│</span><span style="padding-left:3px;">Net&nbsp;INC</span><span style="padding-left:2px;">│</span><span style="padding-left:2px;">Post&nbsp;Amt</span></th>
+                                                <th>Response&nbsp;Time</th>
+                                                <th>Gift&nbsp;Card&nbsp;Message</th>
+                                                <th>API&nbsp;Request</th>
+                                                <th>API&nbsp;Response</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model != null)
+                                            {
+                                                foreach (var item in Model)
+                                                {
+                                                    var color = "";
+                                                    var fontweight = "";
+
+                                                    if (item.status.Contains("success"))
+                                                    {
+                                                        color = "green";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.status.Contains("failed"))
+                                                    {
+                                                        color = "red";
+                                                        fontweight = "700";
+                                                    }
+
+                                                    if (item.status.Contains("Pending"))
+                                                    {
+                                                        color = "#FF9800";
+                                                        fontweight = "700";
+                                                    }
+                                                    if (item.status.Contains("Refund "))
+                                                    {
+                                                        color = "#9C27B0";
+                                                        fontweight = "700";
+                                                    }
+
+
+                                                    <tr>
+                                                        <td><p style="font-size:13px;color:@color;font-weight:@fontweight">&nbsp;@item.status</p></td>
+                                                        <td><p style="font-size:11px;"><span>&nbsp;<i class="fa fa-user-circle-o"></i>&nbsp;@item.sender_name</span>&nbsp;⇒&nbsp;@item.sender_email</p></td>
+                                                        <td><p style="font-size:11px;"><span>&nbsp;<i class="fa fa-user-circle-o"></i>&nbsp;@item.reciver_name</span>&nbsp;⇒&nbsp;@item.reciver_email</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@String.Format("{0:dd-MMM-yy HH:mm:ss}", item.request_time)</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@item.amount</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@item.operator_Name</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@item.Operator_type</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@item.operator_id</p></td>
+                                                        <td><p><span>Retailer</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.rem_pre_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.comm_rem</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.rem_post_remain</span></p></td>
+                                                        <td><p><span>Dealer</span><span style="padding-left:4px;">⇒</span><span style="padding-left:8px;">@item.dlm_pre_remain</span><span style="padding-left:18px;">│</span><span style="padding-left:3px;">@item.comm_dlm</span><span style="padding-left:14px;">│</span><span style="padding-left:9px;">@item.dlm_post_remain</span></p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@String.Format("{0:dd-MMM-yy HH:mm:ss}", item.Response_time)</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@item.gift_message</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@item.api_request</p></td>
+                                                        <td><p style="font-size:13px;">&nbsp;@item.api_response</p></td>
+                                                    </tr>
+                                                }
+                                            }
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+
+
+<script>
+    $('.for-select2').select2();
+
+
+</script>
+
+
+<!--Calendar Javascript-->
+<script>
+    $(document).ready(function () {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+    });
+</script>
+
+<script>
+    $('.white-success-button').click(function () {
+        $('.white-success').toggle();
+    });
+</script>
+
+
+
+

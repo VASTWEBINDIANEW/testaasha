@@ -1,0 +1,349 @@
+﻿@{
+    
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .bas-selectsite .seat.selected-seatclass, .bas-selectsite .sleeper.selected-seatclass {
+        background: #CCE8B5 !important;
+    }
+
+    @@media screen and (max-width:766px) {
+        .bookbus-continue .body.body-busbook .row.clearfix .col-lg-offset-5 button {right: 15px;}
+    }
+
+    @@media screen and (max-width:420px){
+        .bookbus-continue.bookbus-continue-responshive .col-lg-12.col-md-12.col-sm-12.col-xs-12 {padding: 0;}
+    }
+
+    @@media screen and (max-width:360px){
+        .busbefore-idshow-responshive .addcusomesfdr-responshive .body {padding: 0;}
+        .busbefore-idshow-responshive .addcusomesfdr-responshive {margin-left: 11px !important;}
+        .row.busbefore-idshow.busbefore-idshow-responshive .col-md-12 .body .sleeper {width: 30px !important;font-size: 12px;padding-top: 5px;}
+        .addmynewclassder .col0 {left: 53px;}
+        .addmynewclassder .col2 {left: 100px;}
+        .addmynewclassder .col4 {left: 160px;}
+        .addmynewclassder .col6 {left: 225px;}
+        .addmynewclassder .col8 {left: 296px;}
+        .addmynewclassder .col1 {left: 53px;}
+        .addmynewclassder .col3 {left: 124px;}
+        .addmynewclassder .col5 {left: 190px;}
+        .addmynewclassder .col7 {left: 260px;}
+        .addmynewclassder .col9 {left: 319px;}
+        .addmynewclassder .busbefore-idshow-responshive .seat.Seatdiv{width: 20px !important;height: 20px !important;font-size: 11px !important;padding-top: 1px;}
+        .busbefore-idshow-responshive .Lower {position: relative;left: -75px;}
+        .bookbus-continue.bookbus-continue-responshive {width: 100%;float: left;}
+        .bookbus-continue.bookbus-continue-responshive .col-md-12 {padding: 0;}
+        .travel-customestart ul li.last-tabt:last-child {width: 24% ;}
+        .dmttransfer-responshivee .amount.radiobuttonimps label p {position: static;}
+    }
+
+</style>
+
+@model Vastwebmulti.Areas.RETAILER.ViewModels.SeatsLayoutVM
+
+@if (Model != null || Model.Content.Addinfo.SeatLayoutDetails.SeatLayout.SeatDetails.Count < 1)
+{
+    <section class="content" style="margin: 90px 0px 0px 0px;">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-left: 9px;">
+            <div class="card">
+                <div class="header busbook-header">
+                    <p style="font-size:19px;">@Model.Content.Addinfo.SeatLayoutDetails.AvailableSeats Seats Available</p>
+                </div>
+                <div class="body selecSeatbody selecSeatbody-bus">
+                    <div class="row">
+                        <div class="col-md-6 addmynewclassder">
+                            @{ var id = "seatwraper_" + Model.ResultIndex;}
+                            <div class="row busbefore-idshow busbefore-idshow-responshive bas-selectsite" id="@id">
+                                <div class="">
+                                    <div class="col-md-12" style="border: 2px solid #bbbbbb;margin-left:20px;    border-bottom-left-radius: 28px;border-top-left-radius: 28px;">
+                                        <div class="body busdriver-body busdriver-body-responshive" style="min-height:225px;margin-bottom:-29px;">
+                                            <div class="driverstreng"><img src="~/ashok-images/car.svg" /></div>
+                                            <div class="Upper">
+                                                <strong class="vertical-text">FRONT(UPPER)</strong>
+                                                @foreach (var Layouts in Model.Content.Addinfo.SeatLayoutDetails.SeatLayout.SeatDetails)
+                                                {
+                                                    foreach (var item in Layouts.Where(a => a.IsUpper == true))
+                                                    {
+                                                        var priceToShow = item.Price.PublishedPriceRoundedOff + ViewBag.RetailerMarkup;
+                                                        //var seatType = item.Sleeper ? "Sleeper" : "Seat";
+                                                        var seatType = item.SeatType;
+                                                        if (item.Height == 1 && item.Width == 2) // vertical sleeper
+                                                        {
+                                                            seatType = Vastwebmulti.Areas.RETAILER.ViewModels.EnumSeatType.vertical_sleeper;
+                                                        }
+                                                        var rw = "row" + string.Format("{0:0}", Convert.ToInt32(item.RowNo));
+                                                        var cl = "col" + string.Format("{0:0}", Convert.ToInt32(item.ColumnNo));
+                                                        var colr = "white";
+                                                        var isAvailable = item.SeatStatus ? "true" : "false";
+                                                        var isLadies = item.IsLadiesSeat ? "true" : "false";
+                                                        if (!item.SeatStatus)
+                                                        {
+                                                            colr = "#C0C0C0";
+                                                        }
+                                                        @*<div class="@seatType Seatdiv @rw @cl">@item.Id : @item.Row - @item.Column</div>*@
+                                                        <div class="@seatType Seatdiv @rw @cl" style="background-color:@colr;border: 1px solid gray;" onclick='OnSeatClick("@item.Price.PublishedPriceRoundedOff","@item.SeatIndex","@item.SeatName","@isAvailable","@isLadies",this)'>
+                                                            @*@item.RowNo - @item.ColumnNo*@
+                                                            @item.SeatName
+                                                            @if (item.SeatType == Vastwebmulti.Areas.RETAILER.ViewModels.EnumSeatType.sleeper)
+                                                            {
+                                                                <span class="pillow"></span>
+                                                            }
+                                                        </div>
+
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="border: 2px solid #bbbbbb;margin-left:20px;border-bottom-left-radius: 28px;border-top-left-radius: 28px;padding-top: 10px;">
+                                        <div class="body" style="min-height:225px;margin-bottom:-29px;">
+                                            <div class="Lower">
+                                                <strong class="vertical-text">FRONT(LOWER)</strong>
+                                                @foreach (var Layouts in Model.Content.Addinfo.SeatLayoutDetails.SeatLayout.SeatDetails)
+                                                {
+                                                    foreach (var item in Layouts.Where(a => a.IsUpper == false))
+                                                    {
+                                                        var priceToShow = item.Price.PublishedPriceRoundedOff + ViewBag.RetailerMarkup;
+                                                        //var seatType = item.Sleeper ? "Sleeper" : "Seat";
+                                                        var seatType = item.SeatType;
+                                                        if (item.Height == 1 && item.Width == 2) // vertical sleeper
+                                                        {
+                                                            seatType = Vastwebmulti.Areas.RETAILER.ViewModels.EnumSeatType.vertical_sleeper;
+                                                        }
+                                                        var rw = "row" + string.Format("{0:0}", Convert.ToInt32(item.RowNo));// Convert.ToInt32(item.RowNo);
+                                                        var cl = "col" + string.Format("{0:0}", Convert.ToInt32(item.ColumnNo));//Convert.ToInt32(item.ColumnNo);
+                                                        var colr = "white";
+                                                        var isAvailable = item.SeatStatus ? "true" : "false";
+                                                        var isLadies = item.IsLadiesSeat ? "true" : "false";
+                                                        var dynamicBorder = item.IsLadiesSeat ? "1px solid #ed719e;" : "1px solid gray;";
+                                                        if (!item.SeatStatus)
+                                                        {
+                                                            colr = "#C0C0C0";
+                                                        }
+                                                        <div class="@seatType Seatdiv @rw @cl" style="background-color:@colr;border: @dynamicBorder" onclick='OnSeatClick("@priceToShow","@item.SeatIndex","@item.SeatName","@isAvailable","@isLadies",this)' data-toggle="tooltip" data-html="true" title="Fare : &nbsp;@priceToShow &nbsp;|&nbsp;Seat No : &nbsp;@item.SeatName">
+                                                            @*@item.RowNo - @item.ColumnNo*@
+                                                            @item.SeatName
+                                                            @if (item.SeatType == Vastwebmulti.Areas.RETAILER.ViewModels.EnumSeatType.sleeper)
+                                                            {
+                                                                <span class="pillow"></span>
+                                                            }
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 addcusomesfdr-responshive" style="margin-left:20px;">
+                                        <div class="body" style="min-height:40px;margin-bottom:-29px;">
+                                            <div class="addcusomesfdr">
+                                                <div class="Seatdiv row8 col0" style="background-color:white;border: 1px solid gray; width:60px; padding-top:4px;text-align:center;">
+                                                    Available
+                                                </div>
+                                                <div class="Seatdiv row8 col2" style="background-color:#CCE8B5;border: 1px solid gray; width:60px; padding-top:4px;text-align:center;">
+                                                    Selected
+                                                </div>
+                                                <div class="Seatdiv row8 col4" style="background-color:#C0C0C0;border: 1px solid gray; width:60px; padding-top:4px;text-align:center;">
+                                                    Booked
+                                                </div>
+                                                <div class="Seatdiv row8 col6" style="background-color:#c396a6;border: 1px solid #ed719e; width:60px; padding-top:4px;text-align:center;">
+                                                    Ladies
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 bookbus-continue bookbus-continue-responshive">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card" style="box-shadow: none;border: 1px dashed;">
+                                    <div class="header" style="padding-top:10px;padding-bottom:5px;">
+                                        <p>
+                                            <strong>From <span id="spanSource" style="color:darkgray;">@Model.source</span> to <span id="spanDestination" style="color:darkgray;">@Model.destination</span></strong>
+                                        </p>
+                                        <p>
+                                            <strong>on <span id="spanDoj" style="color:darkgray;">@Model.doj</span></strong>
+                                        </p>
+                                    </div>
+                                    <div class="body body-busbook">
+                                        @using (Html.BeginForm("PaxInfo", "Bus", FormMethod.Post))
+                                        {
+                                            <form class="form-horizontal">
+                                                @Html.Hidden("txt_frm_dateBus", Model.doj)
+                                                @Html.Hidden("txtSourceBus", Model.source)
+                                                @Html.Hidden("txtDestinationBus", Model.destination)
+                                                @Html.Hidden("ResultIndex", Model.ResultIndex)
+                                                <div class="row clearfix">
+                                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                        <label for="selectedSeats">Boarding At</label>
+                                                    </div>
+                                                    <div class="col-lg-7 col-md-7 col-sm-8 col-xs-7" style="margin-bottom : 0px;">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @*<select  id="selectedBoarding" class="form-control" autocomplete="off" style="background-color:white;">
+                                                                </select>*@
+                                                                @if (Model.boardingPoints != null)
+                                                                {
+                                                                    @Html.DropDownList("BoardingPoints", Model.boardingPoints.Select(a => new SelectListItem { Text = a.CityPointName + " - " + a.CityPointTime, Value = a.CityPointIndex + "~" + a.CityPointLocation + "~" + a.CityPointTime }))
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix">
+                                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                        <label for="selectedSeats">Droping point</label>
+                                                    </div>
+                                                    <div class="col-lg-7 col-md-7 col-sm-8 col-xs-7" style="margin-bottom : 0px;">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @if (Model.droppingPoints != null)
+                                                                {
+                                                                    @Html.DropDownList("DropingPoints", Model.droppingPoints.Select(a => new SelectListItem { Text = a.CityPointName + " - " + a.CityPointTime, Value = a.CityPointIndex + "~" + a.CityPointLocation + "~" + a.CityPointTime }))
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix">
+                                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                        <label for="selectedSeats">Your Seats</label>
+                                                    </div>
+                                                    <div class="col-lg-7 col-md-7 col-sm-8 col-xs-7" style="margin-bottom : 0px;">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                <input type="text" id="selectedSeatsName" name="selectedSeatsName" class="form-control" readonly="readonly" autocomplete="off" style="background-color:white;">
+                                                                <input type="hidden" id="selectedSeats" name="selectedSeats">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix">
+                                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                                        <label for="password_2">Total Fare</label>
+                                                    </div>
+                                                    <div class="col-lg-7 col-md-7 col-sm-8 col-xs-7 " style="margin-bottom : 0px;">
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                <input type="text" id="TotalFare" class="form-control" readonly="readonly" autocomplete="off" style="background-color:white;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row clearfix">
+                                                    <div class="col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-xs-offset-5">
+                                                        <button type="submit" class="btn btn-primary waves-effect" style="margin-top:13px;">Continue</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+        }
+        else
+        {
+        <div class="col-lg-12 col-md-12 col-sm-12 col-lx-12">
+            <div class="card">
+                <div class="header">
+                    <p style="font-size:19px;">Faild to get Bus layout</p>
+                </div>
+            </div>
+        </div>
+
+    
+}
+
+@*<script>
+    $(".bas-selectsite .seat ,.bas-selectsite .sleeper").click(function () {
+        $(this).toggleClass("selected-seatclass");
+    });
+</script>*@
+
+<script>
+    function OnSeatClick(fare, seatid, seatName, isAvailable, isladiesSeat, dom) {
+        //alert(isAvailable);
+        // alert(isladiesSeat);
+        console.log(seatid);
+        console.log(seatName);
+        isAvailable = JSON.parse(isAvailable);
+        isladiesSeat = JSON.parse(isladiesSeat);
+        if (isAvailable) {
+            if (isladiesSeat) {
+                $(dom).css("background-color", "#c396a6");
+                $(dom).css("border", "#ed719e");
+            } else {
+                $(dom).css("background-color", "#CCE8B5");
+            }
+            // $(dom).setAttribute('onclick', 'writeLED(1,1)')
+            var str = "OnSeatDeSelect('" + fare + "','" + seatid + "','" + seatName + "','" + isAvailable + "','" + isladiesSeat + "',this)" + "";
+            //alert(str);
+            //ADD FARE
+            var totalFare = parseInt($('#TotalFare').val()) == NaN ? 0 : $('#TotalFare').val();
+            if (totalFare == "NaN" || totalFare == NaN || totalFare == "") {
+                totalFare = parseInt(0);
+            }
+            //alert(totalFare);
+            totalFare = parseInt(totalFare) + parseInt(fare);
+            $('#TotalFare').val(totalFare);
+            //ADD seats
+            var selectedSeats = $('#selectedSeats').val();
+            selectedSeats += ',' + seatid;
+            selectedSeats = selectedSeats.replace(/(^,)|(,$)/g, "");
+            selectedSeats = selectedSeats.replace(',,', ",");
+            /////
+            var selectedSeatsName = $('#selectedSeatsName').val();
+            selectedSeatsName += ',' + seatName;
+            selectedSeatsName = selectedSeatsName.replace(/(^,)|(,$)/g, "");
+            selectedSeatsName = selectedSeatsName.replace(',,', ",");
+            $('#selectedSeats').val(selectedSeats);
+            $('#selectedSeatsName').val(selectedSeatsName);
+            $(dom).attr("onclick", str);
+
+        }
+        //$(this).css("background-color", "red");
+    }
+    function OnSeatDeSelect(fare, seatid, seatName, isAvailable, isladiesSeat, dom) {
+        //alert("deselect");
+        $(dom).css("background-color", "white");
+        $(dom).css("border", "1px solid gray");
+        var str = "OnSeatClick('" + fare + "','" + seatid + "','" + seatName + "','" + isAvailable + "','" + isladiesSeat + "',this)" + "";
+        $(dom).attr('onclick', str);
+        //remove seats
+        var selectedSeats = $('#selectedSeats').val();
+        selectedSeats = selectedSeats.replace(seatid, "");
+        selectedSeats = selectedSeats.replace(',,', ",");
+        selectedSeats = selectedSeats.replace(/(^,)|(,$)/g, "");
+        ///////
+        var selectedSeatsName = $('#selectedSeatsName').val();
+        selectedSeatsName = selectedSeatsName.replace(seatName, "");
+        selectedSeatsName = selectedSeatsName.replace(',,', ",");
+        selectedSeatsName = selectedSeatsName.replace(/(^,)|(,$)/g, "");
+        $('#selectedSeats').val(selectedSeats);
+        $('#selectedSeatsName').val(selectedSeatsName);
+        //recalculate FARE
+        var totalFare = parseInt($('#TotalFare').val()) == NaN ? 0 : $('#TotalFare').val();
+        if (totalFare == "NaN" || totalFare == NaN || totalFare == "") {
+            totalFare = parseInt(0);
+        }
+        //alert(totalFare);
+        totalFare = parseInt(totalFare) - parseInt(fare);
+        $('#TotalFare').val(totalFare);
+    }
+    function ShowLayoutClick(id) {
+        //alert();
+        $(".selectSeatRightCol").html('');
+        $(".selectSeatRightCol").hide();
+        //$("#" + id).show();
+        $("#" + id).fadeIn(3000).animate({ opacity: 1 }, { queue: false, duration: '4000' });
+    }
+</script>

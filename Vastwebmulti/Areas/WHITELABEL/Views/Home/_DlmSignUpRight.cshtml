@@ -1,0 +1,103 @@
+﻿@model Vastwebmulti.Areas.WHITELABEL.Models.Token_PaidService_VM
+
+    <div class="button-right">
+        <h3>Self User Registration Rights</h3>
+        <div class="left">
+            <img src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" />
+        </div>
+        <div class="rightright">
+            <div class="ririririr">
+                @if (Model.Select_dealer_list != null)
+                {
+
+                    <div class="combi-left-right">
+                        <div class="rights samright" style="display:none;" id="ddldealer11">
+                            <div class="fname custom-district">
+                                @Html.DropDownList("dealerId", ViewBag.SignUpddlDealers as IEnumerable<SelectListItem>, "Select Distributor", new { @class = "", data_live_search = "true" })
+                            </div>
+                        </div>
+                        <div class="lefts samright">
+                            @foreach (var item in Model.Select_dealer_list)
+                            {
+                                if (item.DefaultStatus == "Y")
+                                {
+                                    <div class="fname" id="firmName">
+                                        <span>
+                                            <img src="~/img/house.svg" style="width:16px;" />
+                                            @item.FarmName
+                                        </span>
+                                    </div>
+                                    <div class="name" id="dlmName">
+                                        <span>
+                                            <img src="~/img/user-silhouette.svg" style="width:15px;" />
+                                            @item.DealerName
+                                        </span>
+                                    </div>
+                                    <div class="numbers" id="dlmNumber">
+                                        <span>
+                                            <img src="~/img/old-typical-phone.svg" style="width:15px;margin-top:1px;"/>
+                                            @item.Mobile
+                                        </span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                }
+            </div>
+            <button type="button" id="Change_Default1" class="fullbodydycolorbg">Change Default Distributor</button>
+            <button type="button" class="btnssl2233 fullbodydycolorbg" id="submit" onclick="SETsignUpRight();" style="display:none;" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Save Change</button>
+        </div>
+        </div>
+<script>
+    function SETsignUpRight() {
+        var dlmid = $("#dealerId").val();
+        if (dlmid != "") {
+            $.ajax({
+                url: '@Url.Action("dealer_sts_default_Authorise","Home")',
+                type: 'GET',
+                data: { dealerid: $("#dealerId").val() },
+                cache: false,
+                success: function (response) {
+
+                    $.ajax({
+                        url: '@Url.Action("_DlmSignUpRight","Home")',
+                        type: 'GET',
+                        cache: false,
+                        success: function (response) {
+                            $("#SignUpSetting").html(response);
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            $.ajax({
+                       url: '@Url.Action("_DlmSignUpRight","Home")',
+                       type: 'GET',
+                       cache: false,
+                       success: function (response) {
+                       $("#SignUpSetting").html(response);
+                       }
+                });
+        }
+    }
+
+    $('#Change_Default1').click(function () {
+        $('#ddldealer11').show();
+        $('#submit').show();
+        $('#firmName').hide();
+        $('#Change_Default1').hide();
+    });
+
+</script>
+<script>
+    $('.btnssl2233').on('click', function () {
+        var $this = $(this);
+        $this.button('loading');
+        setTimeout(function () {
+            $this.button('reset');
+        }, 500);
+    });
+</script>

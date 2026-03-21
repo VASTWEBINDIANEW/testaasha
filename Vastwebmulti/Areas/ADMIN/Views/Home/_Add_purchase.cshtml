@@ -1,0 +1,460 @@
+﻿
+<style>
+    .add-pur-first {height: auto;min-height: 620px;}
+    .purchase-history {height: auto;}
+    .add-purchase-page-right {height: 650px;overflow: auto;}
+
+    @@media screen and (max-width:766px){
+        .add-pur-first{min-height:inherit;}
+    }
+
+</style>
+
+<ul class="add-pur-button">
+    <li class="for-list-button">
+        <input type="radio" value="value3" name="group1" id="byapi2" checked="" onclick="show1('sell')">
+        <label for="byapi2" id="MsgSet">Seller Account List</label>
+    </li>
+    <li class="for-account-button">
+        <input type="radio" value="value4" name="group1" id="bysim2" onclick="show1('add')">
+        <label for="bysim2" id="EmailSet">Add Seller Account</label>
+    </li>
+</ul>
+<div id="divaccountlistadd" class="for-account-list input-border-third divacc-third-respon">
+    <form>
+        <div class="row">
+            <div class="col-md-12 only-select-third">
+                <label>Select (seller) Party</label>
+                @Html.DropDownList("sellerapi", new SelectList(ViewBag.sellerapi, "Value", "Text"), "Select (seller) Party", new { @class = "form-control", data_live_search = "true", @required = "required" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Account No</label>
+                @Html.TextBox("saccount", "", new { @class = "form-control", @required = true, @readonly = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>IFSC Code</label>
+                @Html.TextBox("sifsc", "", new { @class = "form-control", @required = true, @readonly = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Enter Transfer Amount</label>
+                @Html.TextBox("txtamt", "", new { @type = "number", @class = "form-control", placeholder = "Enter Amount", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Select Pay Mode</label>
+                @Html.DropDownList("ddlType", new List<SelectListItem>
+                           {
+                        new SelectListItem{ Text="IMPS",Value="IMPS"},
+                        new SelectListItem{Text="NEFT",Value="NEFT"}
+                       }, new { @class = "form-control",@style = "margin-top:0px; padding:0px;text-align:left;" })
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Enter Receiving Lapu/API Balance</label>
+                @*<input type="text" class="all_fields" />*@
+                @Html.TextBox("txtreciveamt", "", new { @type = "number", @class = "form-control", placeholder = "Enter Receiving Amount", @required = true })
+                <button type="button" onclick="viewcomm()" style="position: absolute;right: 18px;top: 28px;padding: 3px 10px;color: #000;border:0px;background:#a4a0a0;">View Commission</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Commission Amount & Ratio</label>
+                @Html.TextBox("commamt", "", new { @type = "number", @class = "form-control", @required = true, @readonly = true })
+                <button id="percomm" style="position: absolute;right: 18px;top: 28px;padding: 3px 10px;color: #000;border:0px;background:#a4a0a0;">0</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 add-pur-bottom button-seconddesign">
+                <button id="resetform" type="reset" class="reset btn-second button-third-design">Reset</button>
+                <button type="button" class="fullbodydycolorbg btn-first button-third" onclick="pay()"><span style="color:#fff;position:relative;">Pay</span></button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label id="lblerrorpay" style="color:red;"></label>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="divaccountlist" class="for-account-list-show" style="display:none;">
+    @using (Ajax.BeginForm("_Add_purchase_seller", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "success1", OnFailure = "fail1", UpdateTargetId = "tab-10" }))
+    {
+        <div class="row">
+            <div class="select-border">
+                <div class="col-md-6">
+                    <span>Api Name</span>
+                </div>
+                <div class="col-md-6">
+                    @Html.Hidden("hideapinm")
+                    <span id="spanapinm"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="select-border">
+                <div class="col-md-6">
+                    <span>Account No</span>
+                </div>
+                <div class="col-md-6">
+                    <span id="spanaccount"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="select-border">
+                <div class="col-md-6">
+                    <span>IFSC Code</span>
+                </div>
+                <div class="col-md-6">
+                    <span id="spanifsccode"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="select-border">
+                <div class="col-md-6">
+                    <span>Transfer Amount</span>
+                </div>
+                <div class="col-md-6">
+                    @Html.Hidden("hideamt")
+                    <span id="spanamt"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="select-border">
+                <div class="col-md-6">
+                    <span>Pay Mode</span>
+                </div>
+                <div class="col-md-6">
+                    @Html.Hidden("hidepaymode")
+                    <span id="spanpaymode"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="select-border">
+                <div class="col-md-6">
+                    <span>Receiving Amount</span>
+                </div>
+                <div class="col-md-6">
+                    @Html.Hidden("hidereciveamt")
+                    <span id="spanreciveamt"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <span>Transition  Password</span>
+                @Html.Password("txtpaass", "", new { placeholder = "Enter Transition  Password", @style = "border: 1px solid #bbb;margin-bottom:10px;margin-top:10px; height: 32px;width: 100%;float: left;padding: 0px 10px;" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 add-pur-bottom">
+
+                <button type="submit" class="fullbodydycolorbg for-account-list-hide">Pay</button>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label id="msgpurchasemanual" style="color:red;"></label>
+            </div>
+        </div>
+    }
+</div>
+<div id="post1" class="for-seller-account input-border-third divacc-third-respon" style="display:none;">
+    <form>
+        <div class="row">
+            <div class="col-md-12 only-select-third">
+                <label>Select Api Name</label>
+                <div class="select-purchase">
+                    @Html.DropDownList("b_Apinm", new SelectList(ViewBag.apinm, "Value", "Text"), "Select Api Name", new { @class = "form-control", data_live_search = "true", @required = "required" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Bank Name</label>
+                @Html.TextBox("b_Banknm", "", new { @class = "form-control", placeholder = "Enter Bank Name", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Payee Name</label>
+                @Html.TextBox("b_payeenm", "", new { @class = "form-control", placeholder = "Enter Payee Name", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Account Number</label>
+                @Html.TextBox("b_accountnm", "", new { @class = "form-control", placeholder = "Enter Account Number", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Ifsc Code</label>
+                @Html.TextBox("b_ifsccode", "", new { @class = "form-control", placeholder = "Enter IFSC Code", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Api User EmailId</label>
+                @Html.TextBox("b_email", "", new { @class = "form-control", placeholder = "Enter Email Id", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Api User Phone Number</label>
+                @Html.TextBox("b_phone", "", new { @class = "form-control", placeholder = "Enter Phone", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tabcurrent-seconddesign">
+                <label>Comment</label>
+                @Html.TextArea("b_comment", "", new { @class = "form-control", placeholder = "Enter Comment", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 add-pur-bottom" style="margin-top:15px;">
+                <button class="button-third" type="button" onclick="addbank()">Add Seller Account</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label id="msgidno" style="color:red;"></label>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="post2" class="for-seller-account1" style="display:none;">
+    @using (Ajax.BeginForm("_Add_purchase", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "success", OnFailure = "fail", UpdateTargetId = "tab-8" }))
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <label>Api Name</label>
+                <div class="select-purchase">
+                    @Html.Hidden("Apinm")
+                    <label id="show_Apinm"></label>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Bank Name</label>
+                @Html.Hidden("Banknm")
+                <label id="show_Banknm"></label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <label>Payee Name</label>
+                @Html.Hidden("payeenm")
+                <label id="show_payeenm"></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Account Number</label>
+                @Html.Hidden("accountnm")
+                <label id="show_accountnm"></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Ifsc Code</label>
+                @Html.Hidden("ifsccode")
+                <label id="show_ifsccode"></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Comment</label>
+                @Html.Hidden("comment")
+                <label id="show_comment"></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Email</label>
+                @Html.Hidden("hideemail")
+                <label id="show_email"></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Phone</label>
+                @Html.Hidden("hidephone")
+                <label id="show_phone"></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Comment</label>
+                @Html.Hidden("comment")
+                <label id="show_comment"></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Enter OTP</label>
+                @Html.TextBox("OTP", "", new { @class = "form-control", placeholder = "Enter OTP", @required = true })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 add-pur-bottom">
+                <button type="submit" class="fullbodydycolorbg">Add Seller Account</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label id="addmsgshow" style="color:red;"></label>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    $("#sellerapi").change(function () {
+        var val = $(this).val();
+           $.ajax({
+            url: '@Url.Action("Showsellinfo", "Home")',
+            type: "POST",
+               data: { Apinm: val },
+            cache: false,
+               success: function (data2) {
+                   $('#saccount').val(data2.AccountNo);
+                   $('#sifsc').val(data2.Ifsccode);
+            }
+        });
+    });
+</script>
+<script>
+    function viewcomm() {
+        var amt = $('#txtamt').val();
+        var reciamt = $('#txtreciveamt').val();
+        var commval = parseInt(reciamt) - parseInt(amt);
+        var commper = (((parseInt(reciamt) / parseInt(amt)) * 100) - 100).toFixed(2);
+        $('#commamt').val(commval);
+        $('#percomm').text(commper);
+    }
+</script>
+<script>
+    function addbank() {
+       var apinm= $('#b_Apinm').val();
+       var banknm=  $('#b_Banknm').val();
+       var payeenm= $('#b_payeenm').val();
+       var accountnm= $('#b_accountnm').val();
+       var ifsccode= $('#b_ifsccode').val();
+        var comment = $('#b_comment').val();
+        var email = $('#b_email').val();
+        var phone = $('#b_phone').val();
+
+        $('#Apinm').val(apinm);
+        $('#Banknm').val(banknm);
+        $('#payeenm').val(payeenm);
+        $('#accountnm').val(accountnm);
+        $('#ifsccode').val(ifsccode);
+        $('#comment').val(comment);
+        $('#hideemail').val(email);
+        $('#hidephone').val(phone);
+
+        $('#show_Apinm').text(apinm);
+        $('#show_Banknm').text(banknm);
+        $('#show_payeenm').text(payeenm);
+
+        $('#show_accountnm').text(accountnm);
+        $('#show_ifsccode').text(ifsccode);
+        $('#show_comment').text(comment);
+        $('#show_email').text(email);
+        $('#show_phone').text(phone);
+
+            $.ajax({
+            url: '@Url.Action("add_purchase_Bank", "Home")',
+            type: "POST",
+                data: { apinm: apinm },
+            cache: false,
+                success: function (data2) {
+                    $('#post1').hide();
+                    $('#post2').show();
+                   
+                   
+            }
+        });
+    }
+</script>
+
+<script>
+    function show1(ddd) {
+        $('#addmsgshow').text("");
+        $('#msgidno').text("");
+        $('#b_Banknm').val("");
+        $('#b_payeenm').val("");
+        $('#b_accountnm').val("");
+        $('#b_ifsccode').val("");
+        $('#b_comment').val("");
+        if (ddd == "add") {
+            $('#post2').hide();
+            $('#post1').show();
+        }
+        else {
+            $('#post2').hide();
+        }
+    }
+</script>
+
+
+<script>
+    function pay() {
+      var sellerapi= $('#sellerapi').val();
+      var amt=  $('#txtamt').val();
+      var reciveamt=  $('#txtreciveamt').val();
+      var saccount=  $('#saccount').val();
+        var ifsc = $('#sifsc').val();
+        var paymodechk = $('#ddlType').val();
+        $('#lblerrorpay').text("");
+        if (sellerapi != "" && amt != "") {
+            if (amt > 0) {
+                $('#spanapinm').text(sellerapi);
+                $('#hideapinm').val(sellerapi);
+                $('#spanaccount').text(saccount);
+                $('#spanifsccode').text(ifsc);
+                $('#spanamt').text(amt);
+
+                $('#hideamt').val(amt);
+                $('#spanpaymode').text(paymodechk);
+
+                $('#hidepaymode').val(paymodechk);
+
+                $('#spanreciveamt').text(reciveamt);
+                $('#hidereciveamt').val(reciveamt);
+                
+                $('#lblerrorpay').text("");
+                $('#divaccountlist').show();
+                $('#divaccountlistadd').hide();
+            }
+            else {
+                $('#lblerrorpay').text("Amount Must Be Positive ");
+            }
+        }
+        else {
+            if (sellerapi != "") {
+                $('#lblerrorpay').text("Select Api Name ");
+            }
+            else {
+                $('#lblerrorpay').text("Enter Any Amount ");
+            }
+        }
+    }
+</script>

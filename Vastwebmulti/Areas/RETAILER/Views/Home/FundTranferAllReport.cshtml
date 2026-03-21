@@ -1,0 +1,243 @@
+﻿@model List<Vastwebmulti.Models.fundTransferALLReports_Result>
+@{
+    ViewBag.Title = "FundTranferAllReport";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+
+<h2>FundTranferAllReport</h2>
+
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .btn-group, .btn-group-vertical {
+        box-shadow: none;
+    }
+
+    .ppp {
+        margin-top: -20px !important;
+    }
+
+    .form-inline .bootstrap-select.btn-group, .form-horizontal .bootstrap-select.btn-group, .form-group .bootstrap-select.btn-group {
+        height: 29px;
+    }
+</style>
+<section class="content" style="margin-top: 38px;">
+    <div class="container-fluid retailer-page fundtranfer">
+        
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+
+                    <div class="col-md-12 fundtranfer-content">
+
+                        @* @using (Html.BeginForm("Retailer_to_retailer", "Home", FormMethod.Post))*@
+
+                        @using (Ajax.BeginForm("FundTranferAllReportwithpart", "Home", new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "trow" }))
+
+                        {
+                            <div class="">
+                                <input type="hidden" id="pageindex" name="pageindex" value="1" />
+
+                                <div class="col-md-4 fundtranfer-first">
+                                    <div class="form-group" style="">
+
+                                        <select class="form-control" id="ddlfundTransfer" name="ddlfundTransfer">
+                                            <option value="All">ALL Payment</option>
+                                            <option value="admin">Fund By Company</option>
+                                            <option value="Dealer">Fund By Dealer</option>
+                                            <option value="Retailer">Fund By Retailer</option>
+                                        </select>
+                                        @*@Html.DropDownList("RetailerID", ViewBag.retailerid as SelectList, "Select Retailer", new { @class = "selectpicker form-control", data_live_search = "true", required = "required" })*@
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4 fundtranfer-second">
+                                    <div class="form-group" style="">
+
+                                        <select class="form-control" id="ddlHeadType" name="ddlHeadType">
+                                            <option value="AllHead">Payment Head</option>
+                                            <option value="Direct">Direct Transfer</option>
+                                            <option value="FundReq">Wallet Request</option>
+                                            <option value="GetWay">Via GetWay</option>
+                                        </select>
+                                        @*@Html.DropDownList("RetailerID", ViewBag.retailerid as SelectList, "Select Retailer", new { @class = "selectpicker form-control", data_live_search = "true", required = "required" })*@
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 fundtranfer-three">
+                                    <div class="form-group" style="margin-bottom:0px;width:100%;">
+                                        <div class="input-daterange input-group">
+                                            <div class="datesate datesates">
+                                                <div class="form-iconmy" style="top: 0px;left: 1px;padding: 6px 5px;"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i></div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;", autocomplete = "off" })
+                                            </div>
+                                            <span class="input-group-addon" style="display:none;">
+                                                <i class="fa fa-exchange"></i>
+                                            </span>
+                                            <div class="datesate datesatese">
+                                                <div class="form-iconmy form-iconmyss" id="iconmyssee" style="top: 0px;left: 1px;padding: 6px 5px;"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i></div>
+                                                @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                </div>
+                                <div class="col-md-2 fundtranfer-for">
+                                    <center>
+                                        <button type="submit" class="btn bg-grey waves-effect">
+                                            <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                            <span style="top:-2px;color:black;">Search</span>
+                                        </button>
+                                    </center>
+                                </div>
+                                <div class="col-md-3 buttonPdf" style="float: right;">
+
+                                    <button>PDF</button>
+                                    <button>Export</button>
+                                    <button>Total</button>
+                                </div>
+
+
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="" style="display:none;">
+                        <h2 id="word" style="color:black; font-size:16px;padding-top:9px; padding-left:22px; font-family:initial;"></h2>
+                    </div>
+                    <div class="row">
+                        <div class="body rwertfdaaa">
+                            <div class="table-responsive fundtran-responsive" style="position:inherit;margin-top:-10px;">
+                                <table id="tbldata" class="table table-bordered table-striped table-hover dataTable" cellspacing="0" style="width:100%;margin-top:0;">
+                                    <thead style="background-color:whitesmoke;">
+                                        <tr>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Transfer By</th>
+                                            @*<th style="padding-left:2px; padding-right:2px;text-align:center;">Name</th>*@
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Head</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">P_ Mode</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">TotalBal</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Charge</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Old Balance</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Net Transfer</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">New Balance</th>
+                                            @*<th style="padding-left:2px; padding-right:2px;text-align:center;">Dealer New Balance</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">Dealer Old Balance</th>*@
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">New Credit </th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">old Credit</th>
+                                            <th style="padding-left:2px; padding-right:2px;text-align:center;">RechargeDate</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="trow">
+                                        @{
+                                            Html.RenderAction("_FundTransferReports", "Home", new { Model = Model });
+                                        }
+                                    </tbody>
+                                </table>
+                                <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:20px;">
+                                    <div class="loadertablecssnew">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<!--Add State dropdown list-->
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+  
+        var pageindex = 2;
+        var NoMoredata = false;
+        var inProgress = false;
+    $(window).scroll(function () {
+            if ($(window).scrollTop() > Number($("#tbldata").height()) / 4 && !NoMoredata && !inProgress) {
+                inProgress = true;
+                $("#loadingdiv").show();
+                $.post("@Url.Action("InfiniteScrollss","Home")",
+                    { "pageindex": pageindex, txt_frm_date: $('#txt_frm_date').val(), txt_to_date: $('#txt_to_date').val() },
+                    function (data) {
+                        
+                        pageindex = pageindex + 1;
+                        NoMoredata = data.NoMoredata;
+                        $("#trow").append(data.HTMLString);
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    });
+            }
+        });
+</script>
+
+<script>
+    $(document).ready(function()
+    {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+    });
+</script>
+
+
+<script>
+    $(".input-daterange").click(function () {
+        $(".datepicker").addClass('datepickerfundt');
+    });
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        var current = location.pathname;
+        $('.report-list-change li a').each(function () {
+            var $this = $(this);
+            if ($this.attr('href').indexOf(current) !== -1) {
+                $this.addClass('active');
+
+
+            }
+        })
+    });
+</script>
+

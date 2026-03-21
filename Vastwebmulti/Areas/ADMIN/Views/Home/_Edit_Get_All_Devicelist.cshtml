@@ -1,0 +1,138 @@
+﻿@model Vastwebmulti.Areas.ADMIN.ViewModel.GetAllDeviceinfo
+
+
+<table class="table table-bordered" style="background: #eae9e9; border: 0;" id="mdList">
+    <thead>
+        <tr>
+            <th>Device&nbsp;ID</th>
+            <th>Plan&nbsp;Name</th>
+            <th>Firm&nbsp;Name</th>
+            <th>Mobile</th>
+            <th>Inserted&nbsp;Date</th>
+            <th>Start&nbsp;Date</th>
+            <th>Expire&nbsp;Date</th>
+            <th>Remain&nbsp;Days</th>
+            <th>Charge&nbsp;Type</th>
+            <th>Edit</th>
+
+        </tr>
+    </thead>
+
+    <tbody id="body">
+
+        @foreach (var item in Model.devicelist)
+        {
+            string paymenttype = "";
+            int totalremainday = 0;
+            System.TimeSpan diffResult;
+            if (item.expdate == null)
+            {
+                paymenttype = "Full Payment Mode";
+
+            }
+            else
+            {
+                diffResult = item.expdate.Value - DateTime.Now.Date;
+                if (diffResult.Days < 1)
+                {
+                    paymenttype = "Full Payment";
+
+                }
+                else
+                {
+                    paymenttype = "";
+                    totalremainday = diffResult.Days;
+                }
+            }
+
+            <tr class="tr">
+                <td>@item.deviceid</td>
+                <td>@item.planname</td>
+              
+                <td>
+                    @if (item.idno == Model.DevicelistByid.idno)
+                    {
+                        
+                            <div class="select2addnew">
+                                @Html.DropDownList("Frm_Name", (IEnumerable<SelectListItem>)ViewBag.remid,
+                               new { @class = "for-select2", style = "padding-left:0px;", required = "required" })
+                            </div>
+                   @Html.TextBox("txtdevicenm",item.userid,new { style = "display:none;" })
+
+                    }
+                    else
+                    {
+                        @item.Frm_Name
+                    }
+                </td>
+
+                <td>@item.Mobile</td>
+                <td> @item.inseteddate</td>
+                <td> @item.startdate</td>
+                <td> @item.expdate</td>
+                <td>
+                    @if (paymenttype == "")
+                    {
+                        <span>  @totalremainday</span>
+                    }
+                    else
+                    {
+                        <span>  @paymenttype</span>
+
+                    }
+                </td>
+                <td>
+                    @if (item.idno == Model.DevicelistByid.idno)
+                    {
+                        <div class="select2addnew">
+                            @Html.DropDownList("chargetypeEdit", new List<SelectListItem>
+         {
+          new SelectListItem{ Text="Daily",Value="Daily"},
+              new SelectListItem{Text="Monthly",Value="Monthly"}
+          }, new { @class = "form-control", required = "required" })
+                        </div>
+                        @Html.TextBox("txtchargetype", item.chargetype, new { style = "display:none;" })
+                    }
+                    else
+                    {
+                        @item.chargetype
+                    }
+                </td>
+                @if (item.idno == Model.DevicelistByid.idno)
+                {
+                    <td>
+                        <button type="button" class="switch-edit-button custom-table-loading" onclick="Savebyamount(@item.idno)" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                            Save
+                        </button>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <button class="btn btn default micro-edit-button" id="EditBtn_@item.idno" onclick="Editbyamount('@item.idno')" style="background-color:transparent;height: auto;padding: 3px 10px; border:none;border: 1px solid #aaa4a4;" title="Edit Information">
+                            <span id="editmicro_@item.idno">Edit</span>
+                            <span class="editbutton-spinclass" id="microloader_@item.idno"></span>
+                        </button>
+                    </td>
+                }
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+<link href="~/select2/dist/css/select2.css" rel="stylesheet" />
+<script src="~/select2/dist/js/select2.min.js"></script>
+<!--Add State dropdown list-->
+
+
+<script>
+    $('.for-select2').select2();
+</script>
+<script>
+    $('#chargetypeEdit').val("Monthly");
+    $('#Frm_Name').val($('#txtdevicenm').val()).change();
+    $('#chargetypeEdit').val($('#txtchargetype').val()).change();
+    
+</script>

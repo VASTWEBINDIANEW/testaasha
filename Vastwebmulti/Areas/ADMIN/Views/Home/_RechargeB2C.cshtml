@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Vastwebmulti.Models.RechargeB2CStatus>
+@using System;
+@using Vastwebmulti.Models;
+
+@{ 
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var dw = 0;
+}
+
+    @foreach (var item in Model)
+    {
+      
+            var chk = db.Retailer_Details.Where(s => s.RetailerId == item.userid).ToList();
+      
+        <tr>
+
+            <td>@chk[0].RetailerName - @chk[0].Frm_Name</td>
+            <td class="budd">
+
+                @if (item.Sts == true)
+                {
+                    <button onclick="changests('@item.userid', 'OFF', '@dw')" class="on">ON</button>
+                }
+                else
+                {
+                    <button onclick="changests('@item.userid' , 'ON' , '@dw')" class="off">OFF</button>
+                }
+
+            </td>
+        </tr>
+        dw++;
+    }
+
+<script>
+    function changests(id, sts, re) {
+        if (sts == "OFF") {
+            set = '<button onclick="changests1(' + '\'' + id + '\'' + ',' + '\'' + 'OFF' + '\'' + ',' + re + ')" class="sures">Are You Sure.?</button>'
+
+        }
+        else {
+            set = '<button onclick="changests1(' + '\'' + id + '\'' + ',' + '\'' + 'ON' + '\'' + ',' + re + ')" class="sures">Are You Sure.?</button>'
+        }
+
+        var cldd = document.getElementsByClassName('budd');
+        cldd[re].innerHTML = set;
+    }
+
+
+
+
+
+    function changests1(id, sts , re) {
+        console.log(id);
+        console.log(sts);
+        var dlmiss = document.getElementById('Dlmids').value;
+        var remids = document.getElementById("remid").value;
+        console.log(dlmiss);
+        console.log(remids);
+          var url = '@Url.Action("B2Cupdatests", "Home")';
+        $.ajax({
+   type: "GET",
+            url: url,
+            data: { Remid: id, status: sts },
+            success: function (result) {
+
+                if (result.Message == "Done") {
+                    var set = "";
+                    if (sts == "OFF") {
+                        set = '<button onclick="changests(' + '\'' + id + '\'' + ',' + '\'' + 'ON' + '\'' + ',' + re +')" class="off">OFF</button>'
+
+                    }
+                    else {
+                        set = '<button onclick="changests(' + '\'' + id + '\'' + ',' + '\'' + 'OFF' + '\'' + ',' + re + ')" class="on">ON</button>'
+                    }
+
+                    var cldd = document.getElementsByClassName('budd');
+                    cldd[re].innerHTML = set;
+
+                }
+
+   },
+
+        });
+
+
+
+    }
+</script>

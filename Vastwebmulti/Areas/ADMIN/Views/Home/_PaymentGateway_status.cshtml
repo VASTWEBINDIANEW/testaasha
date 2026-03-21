@@ -1,0 +1,110 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.upiChargeAndgateway
+@using Vastwebmulti.Models;
+<style>
+    .wallet-bank-input input[readonly="readonly"] {
+        background: #f5f5f5;
+    }
+    
+    @@media screen and (max-width:991px){
+        .getway-search-select .col-md-8, .getway-search-select .col-md-4 {
+            width: 100%;
+            float: left;
+            padding: 0px !important;
+            margin-bottom: 10px;
+        }
+    }
+
+</style>
+@if (Model.msg != "DONE")
+{
+    <label style="color:red;">@Model.msg</label>
+}
+@using (Ajax.BeginForm("_PaymentGateway_status", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccesssts", OnFailure = "onfailed11", UpdateTargetId = "divEditFormComm1", InsertionMode = InsertionMode.Replace }))
+{
+    <div class="col-md-12 getway-search-select" style="padding:0px;margin-bottom:10px;">
+        <div class="col-md-8" style="padding:0px;">
+            @Html.DropDownList("Retaileridsts", ViewBag.Retaileridsts as SelectList, "Select Retailer ID", new { @class = " form-control", @style = "border:1px solid #8e7f7f4d;" })
+        </div>
+        <div class="col-md-4" style="padding-right:0px;">
+            <input id="submitclick" type="submit" value="Search" style="width:100%;border: 1px solid #ccc;padding: 5px 0;color:#555;" />
+        </div>
+    </div>
+}
+
+<table id="Showdata" class="table table-bordered" style="margin: 0px;width: 100%;border-top:medium;">
+    <tbody>
+        <tr>
+            <th>Retailer Id</th>
+            <th>Payment Type</th>
+            <th>Status</th>
+        </tr>
+
+        @foreach (var item in Model.PaymentGateway_Status)
+        {
+            var firmname = item.Retailerid;
+            if (firmname != "All")
+            {
+
+                VastwebmultiEntities db = new VastwebmultiEntities();
+                firmname = db.Retailer_Details.Where(aa => aa.RetailerId == firmname).SingleOrDefault().Frm_Name;
+            }
+            var status = "Open";
+            if (item.PaymentStatus == false)
+            {
+                status = "Close";
+            }
+            <tr>
+                <td>@firmname</td>
+                <td>@item.Paymenttype</td>
+                <td>
+                    @if (status == "Open")
+                    {
+                        <i onclick="changepayment('@item.Retailerid', '@status', '@item.idno')" class="fas fa-toggle-on fa-2x" style="color:green;cursor:pointer;"></i>
+                    }
+                    else
+                    {
+                        <i onclick="changepayment('@item.Retailerid', '@status', '@item.idno')" class="fas fa-toggle-off fa-2x" style="color: red;cursor: pointer;"></i>
+                    }
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+<script>
+    function changepayment(remid, sts, idno) {
+        debugger
+        $.ajax({
+           url: '@Url.Action("Gateway_Update_Status", "Home")',
+            type: 'POST',
+            data: { remid1: remid, sts1: sts, idno1: idno},
+            success: function (data) {
+                $('#submitclick').click();
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>
+
+@*<script>
+        function editsetting() {
+            $('#Showdata').hide();
+            $('#Editdata').show();
+            $('#Updatebtn').show();
+            $('#EditBtn').hide();
+        }
+    </script>
+    <script>
+        function OnSuccess1() {
+            $('#myModalNew').modal('toggle');
+        }
+    </script>
+    <script>
+        function onfailed() {
+            $('#myModalNew').modal('toggle');
+        }
+    </script>*@
+
+

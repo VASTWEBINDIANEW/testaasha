@@ -1,0 +1,205 @@
+﻿@model List<Vastwebmulti.Models.PaidServicesChargeList>
+@{
+    ViewBag.Title = "PaidServices";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<section class="content tmw-pad-services">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+               <div class="card">
+<div style="margin-left:1px;">
+    @Html.Partial("Signupsettingmenu")
+</div>
+               </div>
+            </div>
+        </div>
+             <div class="row clearfix">
+            <div class="col-md-12">
+               <div class="body-two">
+                        <div class="body table-responsive">
+                            <table class="table table-bordered special-iii">
+                                <thead>
+                                    <tr>
+                                        <th>Service&nbsp;Name</th>
+                                        <th>Type</th>
+                                        <th>Payment&nbsp;Mode</th>
+                                        <th>Price</th>
+                                        <th>Edit&nbsp;/&nbsp;Save</th>
+                                    </tr>
+                                </thead>
+                                @{
+                                    List<SelectListItem> ddl = new List<SelectListItem>() {
+                                        new SelectListItem {Text = "Monthly",Value ="Monthly" },
+                                        new SelectListItem {Text = "Yearly",Value ="Yearly" },
+                                        new SelectListItem {Text = "LifeTime",Value ="LifeTime" },
+                                    };
+                                    List<SelectListItem> ddlFree = new List<SelectListItem>() {
+                                        new SelectListItem {Text = "Free",Value ="true" },
+                                        new SelectListItem {Text = "Paid",Value ="false"}
+                                       
+                                    };
+
+                                }
+                                @foreach (var item in Model)
+                                {
+                                    <tbody>
+                                        <tr id="@item.Idno">
+                                            <td>@Html.DisplayFor(modelItem => item.ServiceName) </td>
+                                            @{ var xx = item.IsFree ? "Free" : "Paid"; }
+                                            <td>@xx</td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PaymentType)
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                                            <td class="last-td">
+                                                <button type="button" id="btnEdit" class="btn waves-effect shownextrow" value="Edit">
+                                                    <p>Edit</p>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr id="@item.Idno" style="display:none;">
+                                            
+                                                @*@using (Html.BeginForm("UpdatePaidService", "Home", new { FormMethod = FormMethod.Post }))*@
+                                                @using (Ajax.BeginForm("UpdatePaidService", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailed" }))
+                                                {
+                                                @Html.Hidden("Idno", item.Idno)
+                                                <td>@Html.DisplayFor(modelItem => item.ServiceName)</td>
+                                                <td>
+                                                    @Html.DropDownList("ddlChargeType", ddlFree, new { @class = "form-control" })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownList("ddlServiceName", ddl, new { @class = "form-control" })
+                                                </td>
+                                                <td>@Html.TextBox("Price", item.Price, new { @class = "form-control" })</td>
+                                                <td class="last-td">
+                                                    <button type="submit" id="btnSave" class="btn waves-effect btnssl" value="Save" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                                        <p>Save</p>
+                                                    </button>
+
+                                                </td>
+                                                }
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Scripts/PageScript/Retailer/FundRecive.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<!--Calendar Javascript-->
+<script>
+    window.onload = function () {
+        answers();
+        $('#date').bootstrapMaterialDatePicker
+             ({
+                 clearButton: false
+             });
+        $('#txt_to_date').bootstrapMaterialDatePicker
+        ({
+            weekStart: 0, format: 'DD/MM/YYYY'
+        });
+        $('#txt_frm_date').bootstrapMaterialDatePicker
+        ({
+            weekStart: 0, format: 'DD/MM/YYYY'
+        }).on('change', function (e, date) {
+            $('#txt_to_date').bootstrapMaterialDatePicker('setMinDate', date);
+        });
+
+        $('#min-date').bootstrapMaterialDatePicker({ format: 'DD/MM/YYYY HH:mm', minDate: new Date() });
+
+        var from = '@ViewBag.fromdate';
+        var to = '@ViewBag.todate';
+        if (from != "" && to != "") {
+            $('#txt_frm_date').val(from);
+            $('#txt_to_date').val(to);
+        }
+        else {
+            var month = new Array("Jan", "Feb", "Mar",
+   "Apr", "May", "Jun", "Jul", "Aug", "Sep",
+   "Oct", "Nov", "Dec");
+            var d = new Date();
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth();
+            var curr_year = d.getFullYear();
+
+            var tt = curr_date + "-" + month[curr_month]
+            + "-" + curr_year;
+            document.getElementById("txt_frm_date").value = tt;
+            document.getElementById("txt_to_date").value = tt;
+        }
+        answers();
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("button.shownextrow").click(function () {
+            $(this).closest("tr").next().show();
+            $(this).closest("tr").hide();
+        });
+        var succ = '@ViewData["success"]';
+        var error = '@ViewData["error"]';
+        if (succ != null && succ != "") {
+            swal("Good job!", succ, "success");
+        }
+        if (error != null && error != "") {
+            swal("Oops!", error, "error");
+        }
+
+        var from = '@ViewBag.fromdate';
+        var to = '@ViewBag.todate';
+        fundreciveonload(from, to);
+
+    });
+    function OnSuccess(data) {
+        //alert("Success");
+        var respose = JSON.parse(data);
+        console.log(data);
+        if (respose.status == "Success") {
+            swal("Good job!", respose.Message, "success");
+             
+        } else if (respose.status == "Failed") {
+            swal("Oops!", respose.Message, "error");
+        }
+        $(".sweet-alert").css('background', '@PageData["globalCol"]');
+        setTimeout(function () {
+            location.reload();
+        }, 2000);
+    }
+    function OnFailed() {
+        swal("Oops!", "Failed to update.", "error");
+       
+    }
+</script>
+
+
+
+

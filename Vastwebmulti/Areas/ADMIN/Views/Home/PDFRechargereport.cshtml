@@ -1,0 +1,98 @@
+﻿@model List<Vastwebmulti.Models.proc_Recharge_operator_report_newPaging_Result>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF Recharge Report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        thead {
+            display: table-header-group
+        }
+
+        tfoot {
+            display: table-row-group
+        }
+
+        tr {
+            page-break-inside: avoid
+        }
+    </style>
+</head>
+<body>
+    <table cellspacing="0">
+        <thead style="background-color: whitesmoke; display:table-header-group;">
+            <tr>
+                <th>Status&nbsp;</th>
+                <th>Firm&nbsp;Name&nbsp;</th>
+                <th>Operator&nbsp;Name&nbsp;</th>
+                <th>Consumer&nbsp;/&nbsp;Circle</th>
+                <th>Amount&nbsp;</th>
+                <th>Port&nbsp;/&nbsp;API&nbsp;</th>
+                <th>Lapu&nbsp;Remain&nbsp;</th>
+                <th>Operator&nbsp;ID&nbsp;</th>
+                <th>Request&nbsp;Time&nbsp;</th>
+                <th>Response&nbsp;Time&nbsp;</th>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                DateTime Rch_time = Convert.ToDateTime(item.Rch_time);
+                DateTime resp_time = Convert.ToDateTime(item.resp_time);
+                var duedate = item.BillDueDate;
+                var billdueinfo = "Due Date " + duedate;
+                var Circle = item.Circle;
+                var Circleinfo = "Circle " + Circle;
+                var sts = item.rstatus;
+                if (item.rstatus.ToUpper().Contains("REQ"))
+                {
+                    sts = "Pending";
+                }
+                <tr>
+                    <td>@sts</td>
+                    <td>@item.frm_name</td>
+                    <td>
+                        @item.Operator_name <br>
+                        @if (!string.IsNullOrWhiteSpace(duedate))
+                        {
+                            <span style="font-size:10px;">@billdueinfo</span>
+                        }
+                    </td>
+                    <td>
+                        @item.mobile  <br>
+                        @if (!string.IsNullOrWhiteSpace(Circle))
+                        {
+                            <span style="font-size:10px;">@Circleinfo</span>
+                        }
+                    </td>
+                    <td>@item.amount</td>
+                    <td>@item.portno</td>
+                    <td>@item.lapubal</td>
+                    <td>@item.opt_id</td>
+                    <td>@Rch_time.ToString("d-MMM-yyyy HH:mm:ss")</td>
+                    @if (item.resp_time != null)
+                    {
+                        <td>@resp_time.ToString("d-MMM-yyyy HH:mm:ss")</td>
+                    }
+                    else
+                    {
+                        <td>@item.resp_time</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

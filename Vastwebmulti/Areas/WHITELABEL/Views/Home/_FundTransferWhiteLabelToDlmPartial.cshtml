@@ -1,0 +1,59 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.WHITELABEL.ViewModel.FundTransferWhitelabelToDLM
+@{ VastwebmultiEntities db = new VastwebmultiEntities(); }
+
+@{ decimal? runningTotal = 0M; decimal? Totalcharges = 0M; decimal? TotalNetTransfer = 0M; decimal? total = 0M; }
+@if (Model.WhitelabelPurchaseOrder != null)
+{
+    <table class="table table-bordered table-striped table-hover">
+        <thead style="background-color:whitesmoke;">
+            <tr>
+                <th class="text-center">Status </th>
+                <th>Order&nbsp;No</th>
+                <th>Request To </th>
+                <th><center>Amount</center></th>
+                <th><center>Charge</center></th>
+                <th>PayMent&nbsp;Mode</th>
+                <th>Request&nbsp;Date </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.WhitelabelPurchaseOrder)
+            {
+                var color = "text-warning";
+                if(@item.sts == "APPROVED")
+                {
+                    color = "text-success";
+                }
+                else if(@item.sts == "REJECTED")
+                {
+                    color = "text-danger";
+                }
+                <tr data-toggle="modal" onclick="tablerowshowdetail22('@item.firmname','@item.orderno','@item.sts','@item.paymode','@item.utrno','@item.details','@item.amount','@item.reqdate','@item.responsedate','@item.cashDepositCharge','@item.finalAmount','Purchase Order')" data-target="#m-d-fund-transfer12" style="background:no-repeat;">
+                    <td class="@color font-bold text-uppercase text-center">@item.sts</td>
+                    <td><p style="margin-top:6px;">@item.orderno</td>
+                    <td><p style="margin-top:6px;">"Admin"</p></td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p> </td>
+                    <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.cashDepositCharge)</p> </td>
+                    <td>@item.paymode.ToUpper()</td>
+                    <td>@Html.DisplayFor(modelItem => item.reqdate)<img src="~/ashok-images/rightaeps.svg" style="width:13px;cursor:pointer;" /></td>
+                </tr>
+            }
+            <tr><td colspan="3">TOTAL</td><td>@runningTotal</td><td>@Totalcharges</td><td colspan="2"></td></tr>
+        </tbody>
+    </table>
+
+}
+@{
+
+    var message = Model.message;
+    if (!string.IsNullOrEmpty(message))
+    {
+
+        <script type="text/javascript">
+         ToastrMessage();
+            toastr.warning('@message');
+
+        </script>
+    }
+}

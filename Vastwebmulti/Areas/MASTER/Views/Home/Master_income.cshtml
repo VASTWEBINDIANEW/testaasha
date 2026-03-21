@@ -1,0 +1,202 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Models.show_all_user_income_Result>
+@{
+    ViewBag.Title = "Master_income";
+    Layout = "~/Areas/MASTER/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "master").ToList();
+    var favimage = "";
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "master")
+        {
+            favimage = usernname.SingleOrDefault().NickName;
+
+        }
+    }
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .rowmasterinco-master .col-md-12 .body {
+        padding-top: 0px;
+    }
+
+    .rowmasterinco-master .col-md-12 .card {
+        margin-bottom: 10px;
+    }
+
+    @@media screen and (max-width:766px) {
+        .rowmasterinco-master .col-md-12 {
+            padding: 0px;
+        }
+
+        .card {
+            width: 100%;
+            float: left;
+        }
+
+        .rowmasterinco-master .col-md-12 .body {
+            padding-left: 0px;
+        }
+    }
+</style>
+<section class="content">
+    <div class="container-fluid rowmasterinco-master">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Master Income</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                <li><a href="javascript:void(0);">Basic Setting&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                <li><a href="javascript:void(0);">My Earn</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-4 dealer-none-fourclass" style="float:left;width:auto;padding:0px;">
+                        <p style="font-size:20px;margin-top:6px;">@favimage Actual Income</p>
+                    </div>
+                    <div class="col-md-2" style="padding: 0px;float:right; width: auto;padding-left:5px;margin-top: 5px;">
+                        <div class="form-group">
+                            <div style="float:right">
+
+                                <input type="button" id="btnExport" value="Excel" style="margin-left:0px;font-size: 14px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                <input type="button" id="btnPDF" value="PDF" style="margin-left:2px;font-size: 14px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                <button class="white-success-button" style="height:32px;font-size: 14px;padding: 0px 4px;height: 32px;border: 1px solid #b1a6a638;float: left;margin-left: 2px;background: #b1a6a638;" onclick="findtotal()">Total</button>
+                            </div>
+
+
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" style="width:auto;float:right;padding:0px;">
+                        @using (Html.BeginForm("Master_income", "Home", FormMethod.Post))
+                        {
+                            <div class="row" style="margin:0px;">
+
+                                <div class="col-md-7" style="width:auto;float:left;padding:0px;padding-right:5px;">
+                                    <div class="form-group" style="margin-bottom:0px;">
+                                        <div class="input-daterange input-group">
+                                            @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;", autocomplete = "off" })
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="width:auto;float:left;padding-left:0px;padding:0px;">
+                                    <center>
+                                        <button type="submit" class="btn bg-grey waves-effect" style="width:100%;float:left;margin-top: 4px; margin-left: 0px; height:32px;border:1px solid #c7c2c2;border-bottom: 1px solid #c7c2c2 !important;">
+                                            <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                            <span style="top:-2px;color:black;">Search</span>
+                                        </button>
+                                    </center>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="">
+                <div class="card">
+
+
+                    <div class="body" style="padding:0px;">
+                        <div class="table-responsive tableseconddes-master" style="position:inherit;">
+                            <table class="table table-bordered table-striped responsiveborder-master" style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Sr.&nbsp;No</th>
+                                        <th>Type</th>
+                                        <th>Total&nbsp;Success</th>
+                                        <th>Total&nbsp;Pending</th>
+                                        <th>Total&nbsp;Failed</th>
+                                        <th>Income</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{int i = 1;}
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TotalSuccess)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TotalPending)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TotalFailed)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                </tbody>
+                                <tfoot style="background-color:whitesmoke;">
+                                    <tr>
+                                        <td><p style="font-size:17px;margin-left:-8px;">Total</p></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><p style="font-size:18px;margin-left:-8px;">@Model.Sum(a => a.Amount)</p></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<script>
+$(document).ready(function(){
+
+     $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "bottom auto",
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+    });
+</script>
+

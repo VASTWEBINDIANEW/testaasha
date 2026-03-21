@@ -1,0 +1,910 @@
+﻿@model  Vastwebmulti.Areas.ADMIN.Models.Show_all_slab
+
+@{
+    ViewBag.Title = "ShowAllSlab";
+    Layout = "~/Areas/WMASTER/Views/Shared/_Layout.cshtml";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card" style="margin-top:2px;">
+                    @using (Html.BeginForm("ShowAllSlab", "Home", FormMethod.Post, new { id = "CreateForm" }))
+                    {
+                        <div class="">
+                            <div class="col-md-4">
+                                <div class="form-group" style="margin-top: 2px;">
+                                    <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:6px;">
+                                        <li><a href="javascript:void(0);" style="font-weight:100; font-size:15px;">Slab Setting</a></li>
+                                        <li class="active" style="color:#607d8b; font-size:15px;font-weight:700;">Show All Slab List</li>
+                                    </ol>
+                                </div>
+                         
+                            </div>
+                       
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="" style="padding-top:3px;border:1px solid #dddddd;margin-top:3px;">
+                                        @Html.DropDownList("Operatortype", ViewBag.Operatortype as SelectList, "Select Operator Type", new { id = "Operatortype", @class = "selectpicker form-control", data_live_search = "true", @required = "required", @style = "padding-left:0px;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <div class="" style="padding-top:3px;border:1px solid #dddddd;margin-top:3px;">
+                                        @Html.DropDownList("slabname", ViewData["distributorslab"] as SelectList, "Select Slab Name", new { id = "slabname", @class = "form-control", data_live_search = "true", @style = "padding-left:0px;" })
+                                    </div>
+                             
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group" style="margin-top:3px;">
+                                    <button type="submit" class="btn bg-blue-grey waves-effect" style="height:37px;">
+                                        <i class="material-icons" style="top:2px;">search</i>
+                                        <span style="top:-4px;">Search</span>
+                                    </button>
+                                    <button type="button" value="EDIT" class="btn bg-blue-grey waves-effect" onclick="funedit()" style="height:37px; margin-top:1px;">
+                                        <i class="fa fa-pencil-square-o" style="top:2px;"></i>
+                                        <span style="top:-3px;">Edit</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-41px;">
+                <div class="card">
+                    <div class="">
+                        <h2 style="color:black; font-size:16px;padding-top:9px; padding-left:22px;">
+                
+                        </h2>
+                    </div>
+                    <div class="body" style="margin-top:23px;">
+                        <div id="PrePaid" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="PrePaid_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable" style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px; text-align:center">Default&nbsp;Commission</th>
+                                            <th style="padding-left:0px;text-align:center">Commission</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="PrePaid_show">
+                                        @foreach (var item in Model.Slab_prepaid)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.DefaultComm)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.commission)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="PrePaid_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_prepaid)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_prepaid[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_prepaid[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_prepaid[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_prepaid[i].DefaultComm)
+                                                @Html.Hidden("ID", "SLABPrePaid")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_prepaid[i].OperatorName)  </td>
+                                                    <td>@Html.DisplayFor(o => o.Slab_prepaid[i].DefaultComm)</td>
+                                                    <td>
+                                                        @Html.EditorFor(o => o.Slab_prepaid[i].commission)
+                                                        @Html.ValidationMessageFor(o => o.Slab_prepaid[i].commission)
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                                            }
+                        </div>
+
+                        <div id="DTH" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="DTH_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable" style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px; text-align:center">Default&nbsp;Commission</th>
+                                            <th style="padding-left:0px;text-align:center">Commission</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DTH_show">
+                                        @foreach (var item in Model.Slab_DTH)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.DefaultComm)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.commission)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="DTH_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_DTH)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_DTH[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_DTH[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_DTH[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_DTH[i].DefaultComm)
+                                                @Html.Hidden("ID", "SLABDTH")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_DTH[i].OperatorName)  </td>
+                                                    <td>@Html.DisplayFor(o => o.Slab_DTH[i].DefaultComm)</td>
+                                                    <td>
+                                                        @Html.EditorFor(o => o.Slab_DTH[i].commission)
+                                                        @Html.ValidationMessageFor(o => o.Slab_DTH[i].commission)
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                                            }
+                        </div>
+
+                        <div id="DTH-Booking" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="DTH-Booking_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px; text-align:center">Default&nbsp;Commission</th>
+                                            <th style="padding-left:0px;text-align:center">Commission</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DTH-Booking_show">
+                                        @foreach (var item in Model.Slab_DthBooking)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.DefaultComm)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.commission)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="DTH-Booking_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_DthBooking)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_DthBooking[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_DthBooking[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_DthBooking[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_DTH[i].DefaultComm)
+                                                @Html.Hidden("ID", "SLABDTHBOOKING")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_DthBooking[i].OperatorName)</td>
+                                                    <td>@Html.DisplayFor(o => o.Slab_DthBooking[i].DefaultComm)</td>
+                                                    <td>
+                                                        @Html.EditorFor(o => o.Slab_DthBooking[i].commission)
+                                                        @Html.ValidationMessageFor(o => o.Slab_DthBooking[i].commission)
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="Electricity" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="Electricity_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(10001&nbsp;and&nbsp;Above)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(10001&nbsp;and&nbsp;Above)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Electricity_show">
+                                        @foreach (var item in Model.Slab_Electricity)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm4)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm4)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="Electricity_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_Electricity.ToList())
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_Electricity[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_Electricity[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_Electricity[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_Electricity[i].DefaultComm1)
+                                                @Html.HiddenFor(o => o.Slab_Electricity[i].DefaultComm2)
+                                                @Html.HiddenFor(o => o.Slab_Electricity[i].DefaultComm3)
+                                                @Html.HiddenFor(o => o.Slab_Electricity[i].DefaultComm4)
+                                                @Html.Hidden("ID", "SLABElectricity")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_Electricity[i].OperatorName)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Electricity[i].DefaultComm1)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Electricity[i].DefaultComm2)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Electricity[i].DefaultComm3)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Electricity[i].DefaultComm4)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Electricity[i].comm1)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Electricity[i].comm2)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Electricity[i].comm3)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Electricity[i].comm4)</td>
+
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="Gas" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="Gas_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(10001&nbsp;and&nbsp;Above)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(10001&nbsp;and&nbsp;Above)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Gas_show">
+                                        @foreach (var item in Model.Slab_Gas)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm4)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm4)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="Gas_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_Gas)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_Gas[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_Gas[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_Gas[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_Gas[i].DefaultComm1)
+                                                @Html.HiddenFor(o => o.Slab_Gas[i].DefaultComm2)
+                                                @Html.HiddenFor(o => o.Slab_Gas[i].DefaultComm3)
+                                                @Html.HiddenFor(o => o.Slab_Gas[i].DefaultComm4)
+                                                @Html.Hidden("ID", "SLABGas")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_Gas[i].OperatorName)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Gas[i].DefaultComm1)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Gas[i].DefaultComm2)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Gas[i].DefaultComm3)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Gas[i].DefaultComm4)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Gas[i].comm1)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Gas[i].comm2)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Gas[i].comm3)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Gas[i].comm4)</td>
+
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="Insurance" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="Insurance_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(10001&nbsp;and&nbsp;Above)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(10001&nbsp;and&nbsp;Above)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Insurance_show">
+                                        @foreach (var item in Model.slab_insurance)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm4)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm4)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="Insurance_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.slab_insurance)
+                                            {
+                                                @Html.HiddenFor(o => o.slab_insurance[i].idno)
+                                                @Html.HiddenFor(o => o.slab_insurance[i].slabfor)
+                                                @Html.HiddenFor(o => o.slab_insurance[i].slabname)
+                                                @Html.HiddenFor(o => o.slab_insurance[i].DefaultComm1)
+                                                @Html.HiddenFor(o => o.slab_insurance[i].DefaultComm2)
+                                                @Html.HiddenFor(o => o.slab_insurance[i].DefaultComm3)
+                                                @Html.HiddenFor(o => o.slab_insurance[i].DefaultComm4)
+                                                @Html.Hidden("ID", "SLABInsurance")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.slab_insurance[i].OperatorName)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_insurance[i].DefaultComm1)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_insurance[i].DefaultComm2)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_insurance[i].DefaultComm3)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_insurance[i].DefaultComm4)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_insurance[i].comm1)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_insurance[i].comm2)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_insurance[i].comm3)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_insurance[i].comm4)</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="Broadband" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="Broadband_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(10001&nbsp;and&nbsp;Above)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(10001&nbsp;and&nbsp;Above)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Broadband_show">
+                                        @foreach (var item in Model.Slab_Broadband)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm4)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm4)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="Broadband_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_Broadband)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_Broadband[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_Broadband[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_Broadband[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_Broadband[i].comm1)
+                                                @Html.HiddenFor(o => o.Slab_Broadband[i].comm2)
+                                                @Html.HiddenFor(o => o.Slab_Broadband[i].comm3)
+                                                @Html.HiddenFor(o => o.Slab_Broadband[i].comm4)
+                                                @Html.Hidden("ID", "SLABBroadband")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_Broadband[i].OperatorName)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Broadband[i].DefaultComm1)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Broadband[i].DefaultComm2)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Broadband[i].DefaultComm3)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Broadband[i].DefaultComm4)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Broadband[i].comm1)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Broadband[i].comm2)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Broadband[i].comm3)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Broadband[i].comm4)</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="Landline" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="Landline_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(10001&nbsp;and&nbsp;Above)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(10001&nbsp;and&nbsp;Above)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Landline_show">
+                                        @foreach (var item in Model.slab_landline)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm4)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm4)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="Landline_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.slab_landline)
+                                            {
+                                                @Html.HiddenFor(o => o.slab_landline[i].idno)
+                                                @Html.HiddenFor(o => o.slab_landline[i].slabfor)
+                                                @Html.HiddenFor(o => o.slab_landline[i].slabname)
+                                                @Html.HiddenFor(o => o.slab_landline[i].DefaultComm1)
+                                                @Html.HiddenFor(o => o.slab_landline[i].DefaultComm2)
+                                                @Html.HiddenFor(o => o.slab_landline[i].DefaultComm3)
+                                                @Html.HiddenFor(o => o.slab_landline[i].DefaultComm4)
+                                                @Html.Hidden("ID", "SLABLandline")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.slab_landline[i].OperatorName)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_landline[i].DefaultComm1)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_landline[i].DefaultComm2)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_landline[i].DefaultComm3)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_landline[i].DefaultComm4)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_landline[i].comm1)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_landline[i].comm2)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_landline[i].comm3)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_landline[i].comm4)</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="PostPaid" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="PostPaid_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(10001&nbsp;and&nbsp;Above)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(10001&nbsp;and&nbsp;Above)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="PostPaid_show">
+                                        @foreach (var item in Model.slab_Postpaid)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm4)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm4)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="PostPaid_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.slab_Postpaid)
+                                            {
+                                                @Html.HiddenFor(o => o.slab_Postpaid[i].idno)
+                                                @Html.HiddenFor(o => o.slab_Postpaid[i].slabfor)
+                                                @Html.HiddenFor(o => o.slab_Postpaid[i].slabname)
+                                                @Html.HiddenFor(o => o.slab_Postpaid[i].DefaultComm1)
+                                                @Html.HiddenFor(o => o.slab_Postpaid[i].DefaultComm2)
+                                                @Html.HiddenFor(o => o.slab_Postpaid[i].DefaultComm3)
+                                                @Html.HiddenFor(o => o.slab_Postpaid[i].DefaultComm4)
+                                                @Html.Hidden("ID", "SLABPostPaid")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.slab_Postpaid[i].OperatorName)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_Postpaid[i].DefaultComm1)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_Postpaid[i].DefaultComm2)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_Postpaid[i].DefaultComm3)</td>
+                                                    <td> @Html.DisplayFor(o => o.slab_Postpaid[i].DefaultComm4)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_Postpaid[i].comm1)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_Postpaid[i].comm2)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_Postpaid[i].comm3)</td>
+                                                    <td> @Html.EditorFor(o => o.slab_Postpaid[i].comm4)</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="Water" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="Water_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.&nbsp;(10001&nbsp;and&nbsp;Above)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1&nbsp;-&nbsp;1000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(1001&nbsp;-&nbsp;5000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(5001&nbsp;-&nbsp;10000)</th>
+                                            <th style="padding-left:0px;text-align:center">Range(10001&nbsp;and&nbsp;Above)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Water_show">
+                                        @foreach (var item in Model.Slab_Water)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm4)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm1)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm2)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm3)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm4)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="Water_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_Water)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_Water[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_Water[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_Water[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_Water[i].DefaultComm1)
+                                                @Html.HiddenFor(o => o.Slab_Water[i].DefaultComm2)
+                                                @Html.HiddenFor(o => o.Slab_Water[i].DefaultComm3)
+                                                @Html.HiddenFor(o => o.Slab_Water[i].DefaultComm4)
+                                                @Html.Hidden("ID", "SLABWater")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_Water[i].OperatorName)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Water[i].DefaultComm1)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Water[i].DefaultComm2)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Water[i].DefaultComm3)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Water[i].DefaultComm4)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Water[i].comm1)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Water[i].comm2)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Water[i].comm3)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Water[i].comm4)</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="PAN" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="PAN_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Operator&nbsp;Name</th>
+                                            <th style="padding-left:0px;text-align:center">Token&nbsp;Value</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Commission</th>
+                                            <th style="padding-left:0px;text-align:center">Commission</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="PAN_show">
+                                        @foreach (var item in Model.Slab_PanCard)
+                                        {
+
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.OperatorName)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.tokenval)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.DefaultComm)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.Commission)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="PAN_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_PanCard)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_PanCard[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_PanCard[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_PanCard[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_PanCard[i].DefaultComm)
+                                                @Html.Hidden("ID", "SLABPAN")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_PanCard[i].OperatorName)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_PanCard[i].tokenval)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_PanCard[i].DefaultComm)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_PanCard[i].Commission)</td>
+                                                </tr>
+                                                i++;
+                                            }
+
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="Money" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="Money_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+                                            <th style="padding-left:0px; text-align:center">Type</th>
+                                            <th style="padding-left:0px;text-align:center">Min&nbsp;Value</th>
+                                            <th style="padding-left:0px;text-align:center">Max&nbsp;Value</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.</th>
+                                            <th style="padding-left:0px;text-align:center">Commission</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="Money_show">
+                                        @foreach (var item in Model.Slab_Money)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.type)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.min)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.max)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.value)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="Money_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_Money)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_Money[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_Money[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_Money[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_Money[i].value)
+                                                @Html.Hidden("ID", "SLABMONEY")
+                                                <tr>
+                                                    <td>@Html.DisplayFor(o => o.Slab_Money[i].type)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Money[i].min)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Money[i].max)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_Money[i].value)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_Money[i].comm)</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+
+                        <div id="NEPAL" class="table-responsive " style="position:inherit; display:none; margin-top: -40px;">
+                            @using (Html.BeginForm("EditAllSlab", "Home", FormMethod.Post, new { id = "EditForm" }))
+                            {
+                                <div id="NEPAL_Save" style="padding-bottom: 10px; display:none;">
+                                    <input type="submit" value="Save" class="btn bg-grey waves-effect" style="margin-top:6px;" />
+                                </div>
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                    <thead class="navbar" style="color:white;position:inherit;">
+                                        <tr>
+
+                                            <th style="padding-left:0px;text-align:center">Min&nbsp;Value</th>
+                                            <th style="padding-left:0px;text-align:center">Max&nbsp;Value</th>
+                                            <th style="padding-left:0px;text-align:center">Default&nbsp;Comm.</th>
+                                            <th style="padding-left:0px;text-align:center">Commission</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="NEPAL_show">
+                                        @foreach (var item in Model.Slab_IndoNepal)
+                                        {
+                                            <tr>
+                                                <td> @Html.DisplayFor(modelItem => item.min)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.max)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.value)</td>
+                                                <td> @Html.DisplayFor(modelItem => item.comm)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tbody id="NEPAL_edit" style="display:none;">
+                                        @{
+                                            int i = 0;
+                                            foreach (var item in Model.Slab_IndoNepal)
+                                            {
+                                                @Html.HiddenFor(o => o.Slab_IndoNepal[i].idno)
+                                                @Html.HiddenFor(o => o.Slab_IndoNepal[i].slabfor)
+                                                @Html.HiddenFor(o => o.Slab_IndoNepal[i].slabname)
+                                                @Html.HiddenFor(o => o.Slab_IndoNepal[i].value)
+                                                @Html.Hidden("ID", "SLABNEPAL")
+                                                <tr>
+
+                                                    <td> @Html.DisplayFor(o => o.Slab_IndoNepal[i].min)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_IndoNepal[i].max)</td>
+                                                    <td> @Html.DisplayFor(o => o.Slab_IndoNepal[i].value)</td>
+                                                    <td> @Html.EditorFor(o => o.Slab_IndoNepal[i].comm)</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    $(function () {
+        var chh = '@ViewData["type"]';
+        var chh1 = '@ViewData["slabname"]';
+        if (chh == "INDO NEPAL")
+        {
+            chh = "NEPAL";
+        }
+        $('#' + chh+'').show();
+    });
+   
+    function funedit() {
+        var chh1 = '@ViewData["type"]';
+        if (chh1 == "INDO NEPAL") {
+            chh1 = "NEPAL";
+        }
+        $('#' + chh1 + '_show').hide();
+        $('#' + chh1 + '_edit').show();
+        $('#' + chh1 + '_Save').show();
+    }
+
+    var succ = '@ViewData["Defaultslab"]';
+    if (succ != null && succ != "")
+    {
+        swal("Oops!", succ, "error");
+    }
+</script>
+

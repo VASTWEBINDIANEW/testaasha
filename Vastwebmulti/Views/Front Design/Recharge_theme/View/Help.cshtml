@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNet.Identity
+@using Vastwebmulti.Models;
+@{
+    ViewBag.Title = "Help";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@{
+    VastwebmultiEntities DB = new VastwebmultiEntities();
+    var url = Request.Url.GetLeftPart(UriPartial.Authority) + Request.ApplicationPath;
+    var admindetail = DB.Admin_details.ToList();
+    var Firm_Name = admindetail.SingleOrDefault().Companyname;
+    var weburl = admindetail.SingleOrDefault().WebsiteUrl;
+    var weburl2 = "http://" + weburl;
+    var logoimage = "";
+    var logo = DB.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    List<Vastwebmulti.JsonData.Hlp_TC_Privacy> people = new List<Vastwebmulti.JsonData.Hlp_TC_Privacy>();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("PrivacyAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Privacy = people.ToList();
+}
+
+<div class="container">
+    <h1 style="margin-top: 25px; text-align: center;" class="help-foot-head">Help</h1>
+    
+    <h3><strong>How to check my past transaction?</strong></h3>
+
+    <p>Yes, you can easily check your past transaction, just login your accountand click on history bottom right side and see all type off transections.</p>
+
+    <h3><strong>Can I claim refund of amount added to Aasha Digital Indiawallets?</strong></h3>
+
+    <p>No, any amount added to Aasha Digital India wallet is non-refundable; it can be used for recharges only. !</p>
+
+    <h3><strong>What should I do if recharge fails?</strong></h3>
+
+    <p>Wait for 5 to 10 minutes after the payment is successfully done. If your mobile number is still not recharged then go to link and register a complaint. We will respond to it as soon as possible.</p>
+
+    <h3><strong>How much time it takes to recharge?</strong></h3>
+
+    <p>Normally, you get your recharge immediately, as soon as payment is made and you will get confirmation mail from Aasha Digital India.</p>
+
+    <h3><strong>For whom I canrecharge?</strong></h3>
+
+    <p>You can recharge for your loved ones using the same account. You just need to know the mobile number to make a successful recharge.</p>
+
+    <h3><strong>Is there any extra charge for recharging?</strong></h3>
+
+    <p>No, there is no extra charge for recharging.You will get same talk time what your mobile service provider offers you.</p>
+    
+</div>
+

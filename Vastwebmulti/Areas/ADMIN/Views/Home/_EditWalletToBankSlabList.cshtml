@@ -1,0 +1,103 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.CashDepositeAndBank_Info_VM
+
+
+<style>
+    .wallet-bank-input input[readonly="readonly"] {
+        background: #f5f5f5;
+    }
+
+    .wallet-bank-input input {
+        width: 50px !important;
+    }
+</style>
+
+
+<table class="table table-bordered wallet-bank-input">
+    <thead>
+        <tr>
+            <th>Min</th>
+            <th>Max</th>
+            <th>Max Time</th>
+            <th>IMPS Fee</th>
+            <th>NEFT Fee</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 1;}
+        @if (Model.WulChargeList.Count > 0)
+        {
+            foreach (var item in Model.WulChargeList.OrderBy(x=>x.AmtFromTatkal))
+            {
+        <tr>
+
+            @if (item.Idno == Model.WulChargeByid.Idno)
+            {
+                <td style="display:none;"><input type="text" id="Idno" value="@item.Idno" /></td>
+                <td style="display:none;"><input type="text" id="UserRole" value="@item.UserRole" /></td>
+                <td><input type="text" id="AmtFromTatkal" value="@item.AmtFromTatkal" /></td>
+                <td><input type="text" id="AmtToTatkal" value="@item.AmtToTatkal" /></td>
+                <td><input type="text" id="TimeTakesTatkal" value="@item.TimeTakesTatkal" /></td>
+                <td><input type="text" id="chargeTatkal" value="@item.chargeTatkal" /></td>
+                <td><input type="text" id="chargeTatkalNEFT" value="@item.chargeTatkalNEFT" /></td>
+                <td>
+
+                    <button type="button" id="btnsavechange" name="btnsavechange" class="wallet-save bt btnssl special-iii" style="background:transparent;border:1px solid #bbb;padding:2px;">
+                        save
+                    </button>
+                </td>
+            }
+            else
+            {
+                <td>@item.AmtFromTatkal</td>
+                <td>@item.AmtToTatkal</td>
+                <td>@item.TimeTakesTatkal</td>
+                <td>@item.chargeTatkal</td>
+                <td>@item.chargeTatkalNEFT</td>
+                <td>
+                    <button type="submit" onclick="EditChrg('@item.Idno','@item.UserRole')" class="wallet-edit   waves-effect bt btnssl special-iii" style="background:transparent;border:1px solid #bbb;padding:2px;">
+                        <img src="~/AdminDesign/images/edit.svg" style="width:16px;" />
+                    </button>
+                </td>
+
+            }
+
+        </tr>
+                i++;
+            }
+        }
+
+    </tbody>
+</table>
+
+<script>
+    $('#btnsavechange').click(function () {
+         $.ajax({
+            url: '@Url.Action("EditWalletToBankSlab1","Home")',
+              type: 'POST',
+              data: { Idno: $('#Idno').val(), AmtFromTatkal: $('#AmtFromTatkal').val(), AmtToTatkal: $('#AmtToTatkal').val(),TimeTakesTatkal: $('#TimeTakesTatkal').val(), chargeTatkal: $('#chargeTatkal').val(), chargeTatkalNEFT: $('#chargeTatkalNEFT').val(),Role: $('#UserRole').val() },
+            success: function (data) {
+                $('#RemTbl').html(data);
+                $('#WhiteTbl').html(data);
+                $('#SellerTbl').html(data);
+                
+                $("#Idno").val(''),
+                $("#RemMinAmt").val(''),
+                $("#RemMaxAmt").val(''),
+                $("#RemChargeFee").val(''),
+                $('#RemTime').val('')
+            }
+        });
+
+
+    })
+   
+</script>
+
+<script>
+    $('.wallet-edit').click(function () {
+        $(this).closest('tr').find('input').removeAttr('readonly');
+        $(this).closest('tr').find('.wallet-save').css('display', 'block');
+         $(this).css('display', 'none');
+    });
+</script>

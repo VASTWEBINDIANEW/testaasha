@@ -1,0 +1,849 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    string urllinks = @ViewBag.urllink;
+
+    VastwebmultiEntities db2 = new VastwebmultiEntities();
+    var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+    var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+    var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+
+}
+
+
+<meta name="viewport" content="width=device-width">
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var col = "";
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "";
+    }
+    var color = col;
+    var Apk_Version = "";
+    var apkversion = db.uploaded_apklink.SingleOrDefault();
+    if (apkversion != null)
+    {
+        if (!string.IsNullOrWhiteSpace(apkversion.Apk_Version))
+        {
+            Apk_Version = apkversion.Apk_Version;
+        }
+
+    }
+    var logoimage = "";
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    var aboutbac = db.tblAboutUsBackgroundColorChanges.Where(p => p.Role == "ADMIN").ToList();
+    var aboutbaccolor = aboutbac.Count == 0 ? "" : aboutbac.SingleOrDefault().MultipalAboutUsColor;
+
+    var service = db.tblServiceOuterColors.Where(p => p.Role == "ADMIN").ToList();
+    var servicecolor = service.Count == 0 ? "" : service.SingleOrDefault().ServiceBackGroundcolor;
+
+    ViewBag.Services = db.tblServices.Where(p => p.Role == "ADMIN").ToList();
+
+    ViewBag.product = db.tblProducts.ToList();
+
+    var productcolor = db.tblProductBackColors.ToList();
+    var productbackcolor = productcolor.Count == 0 ? "" : productcolor.SingleOrDefault().ProductBackColor;
+
+    ViewBag.works = db.tblWorks.ToList();
+    var workbackcolor1 = db.tblWorkbackColors.ToList();
+    var workbackcolor = workbackcolor1.Count == 0 ? "" : workbackcolor1.SingleOrDefault().WorkBackColor;
+
+    var border = db.Admin_Outer_Border.ToList();
+    var bordersize = border.Count == 0 ? "" : border.SingleOrDefault().Border;
+
+    ViewBag.card = db.tblCards.Where(p => p.Role == "ADMIN").ToList();
+    var cardbackcolor1 = db.tblCardBackColors.Where(p => p.Role == "ADMIN").ToList();
+    var cardbackcolor = cardbackcolor1.Count == 0 ? "" : cardbackcolor1.SingleOrDefault().CardBackColor;
+    ViewBag.about = db.tblAboutUsContents.Where(p => p.Role == "ADMIN").ToList();
+    ViewBag.address = db.tblContects.ToList();
+    var st = db.tblMenus.Where(p => p.Role == "ADMIN").ToList();
+    var homests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "HOME").SingleOrDefault().Status;
+    var aboutsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "ABOUT").SingleOrDefault().Status;
+    var servicests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "SERVICES").SingleOrDefault().Status;
+    var productsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "PRODUCTS").SingleOrDefault().Status;
+    var worksts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "WORKS ").SingleOrDefault().Status;
+    //var cardsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "CARDS").SingleOrDefault().Status;
+    var travelsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "TRAVEL").SingleOrDefault().Status;
+    var dthsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "DTHCONNECTION").SingleOrDefault().Status;
+    var teamsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "TEAM").SingleOrDefault().Status;
+    var contactsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "CONTACTUS").SingleOrDefault().Status;
+    var whychoosests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "WHYCHOOSEUS").SingleOrDefault().Status;
+    var newupdatasts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "NEWUPDATE").SingleOrDefault().Status;
+
+
+}
+
+@{
+    var favimage = "";
+    var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+    if (faviconlogo.Count() > 0)
+    {
+        if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+        {
+            favimage = faviconlogo.SingleOrDefault().faviconimage;
+        }
+    }
+    else
+    {
+
+        <link rel="icon" href="" type="image/x-icon" />
+    }
+    var admindetail = db2.Admin_details.ToList();
+    var mailid = admindetail.SingleOrDefault().email;
+    var mobile = admindetail.SingleOrDefault().mobile;
+    var Address = admindetail.SingleOrDefault().Address;
+    var Firm_Name = admindetail.SingleOrDefault().Companyname;
+    var SupportMail = admindetail.SingleOrDefault().email1;
+    var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
+    var PinCode = admindetail.SingleOrDefault().pincode;
+
+    int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
+    int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
+    var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
+    var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+
+
+}
+
+
+
+
+<div class="swiper swiper--edu swiper--edu-banner">
+    <div class="swiper-container swiper-swiper-unique-id-0 initialized swiper-container-horizontal pagination-hidden">
+        <div class="video-background-holder">
+            <div class="video-background-overlay"></div>
+            <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+                <source src="~/images/img10/office-env.mp4" type="video/mp4">
+
+            </video>
+            <div class="video-background-content container">
+                <div class="d-flex h-100 text-center align-items-center">
+                    <div class="w-100 text-white">
+                        <h2 class="display-4 mb-2">
+                            <span>Welcome</span>
+                            <span>To @Firm_Name</span>
+                            @*<span>to provide</span>
+                                <span>the best services</span>*@
+                        </h2>
+                        <p class="display-5 mytext2">
+                            Every target requires execution. @Firm_Name develops<br>
+                            high quality apps, websites and systems.
+                        </p>
+                        <a href="@Url.Action("Contact", "Home")" class="btn btn-primary btn-contactClick rounded-pill text-nowrap">Let's Connect</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="rs-services" class="rs-services style6">
+    <div class="container-fluid custom">
+        <div class="services-box-area bg20 ml-5 mr-5">
+            <div class="row margin-0">
+                <div class="col-lg-3 col-md-6 col-sm-6 padding-0">
+                    <div class="services-item">
+                        <div class="services-icon b_img">
+                            <img class="dance_hover" src="~/images/img10/bank-red.png" alt="Services">
+                        </div>
+                        <div class="services-content">
+                            <h2 class="title"><a href="#">Bank APIs</a></h2>
+                            <p class="margin-0">Integrate banking into your business workflow with APIs for collection, payouts, cards & more</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 padding-0">
+                    <div class="services-item pl-2">
+                        <div class="services-icon b_img2">
+                            <img class="dance_hover" src="~/images/img10/it-services-red.png" alt="Services">
+
+                        </div>
+                        <div class="services-content">
+                            <h2 class="title"><a href="#">IT Consulting</a></h2>
+                            <p class="margin-0">Enhance performance and reduce costs with our digital IT services and solutions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 padding-0">
+                    <div class="services-item pl-2">
+                        <div class="services-icon b_img3">
+                            <img class="dance_hover" src="~/images/img10/banking-red.png" alt="Services">
+
+                        </div>
+                        <div class="services-content">
+                            <h2 class="title"><a href="#">Banking - BC Model </a></h2>
+                            <p class="margin-0">With the objective of ensuring best Financial Inclusion and increasing outreach of the banking and financial Services in Rural India</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 padding-0">
+                    <div class="services-item no-border pl-0">
+                        <div class="services-icon b_img4">
+                            <img class="dance_hover" src="~/images/img10/custom-S.png" alt="Services">
+                        </div>
+                        <div class="services-content">
+                            <h2 class="title"><a href="#">Custom Software Development</a></h2>
+                            <p class="margin-0">We assist at every stage of the software development life cycle from conceptualization & consulting to development and support.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="rs-about style4 bg21 pt-100 pb-100 md-pt-70 md-pb-70">
+    <div class="container-fluid">
+        <div class="row y-middle">
+            <div class="col-lg-6">
+                <div class="sec-title3 ml-5">
+                    <span class="sub-text">About Us</span>
+                    <h2 class="title pb-25">We are happy to introduce you to @Firm_Name</h2>
+                    <div class="desc pb-17">
+                        @Firm_Name is an IT and Recharge services provider company that deals with IT market Requirements and custom software.
+                    </div>
+                    <p class="margin-0">
+                        We are the foremost Recharge API provider in India and issue Multi Recharge API to our great consumers. We have a team of specialists and crackerjack professionals. Our panel of experts is proficient to serve excellence to accomplish your business objectives.
+                    </p>
+
+                    <p class="mt-3">@Firm_Name is the leading and trustworthy Multi Recharge API Provider in India. We have command of Fintech's Software and have well-built backend support & Database. Through our excellent services, anyone can start Recharge, Bill Payment & Fintech Services without speculating a lot of money. The boom in the telecom and Fintech industries favors promising results. We offer effortless, fast, and speedy mobile recharge, Bill Payment, Money Transfer, Aadhaar Based Payment amenities via our brawny and secured software.</p>
+                    <div class="crypto_mlm_btns mt-45">
+
+                        <div class="ikon_logo">
+                            <img src="@Url.Content("~/"+@logoimage)" />
+                        </div>
+
+                        <a href="#" class="btn consult_btn cryptmlmwhatsappbtn_color" name="button" target="_blank"><i class="fa fa-whatsapp"></i> | WhatsApp </a>
+                        <a href="#" target="_blank" class="btn consult_btn cryptmlmtelegrambtn_color ml-1" name="button"><i class="fa fa-telegram"></i> | Telegram</a>
+                        <a href="#" target="_blank" class="btn consult_btn cryptmlmskypebtn_color ml-1" name="button"><i class="fa fa-skype"></i> | Skype</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-img">
+                    <img src="~/images/img10/about11.png" alt="images" width="645" height="655">
+
+                    <div class="animations one">
+                        @*<img class="dance2" src="~/images/img10/1.png" alt="About">*@
+
+                        <div class="experience">
+
+                            <div style="text-align: center; width: 100%;">
+                                <h5>10+</h5><br />
+                                <h6>Years of Experience</h6>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="animations two">
+                        @*<img class="scale" src="~/images/img10/2.png" alt="About">
+                        *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="content-inner-2">
+    <div class="container-fluid">
+        <div class="row icon-wraper-1 ml-5 mr-5">
+            <div class="col-lg-4 col-md-6">
+                <div class="section-head-sectionService style-3 wow fadeInUp" data-wow-duration="2s" data-wow-delay="0.2s">
+                    <h2 class="sub-title m-b15" style="color: #fff;">OUR SERVICES</h2>
+                    <h3 class="title m-t10">We Provide Digital Services</h3>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="icon-bx-wraper style-3 m-b30 box-hover wow fadeInUp">
+                    <div class="icon-bx-sm radius bgl-primary">
+                        <a class="icon-cell" href="/#">
+                            <div class="icon-img">
+                                <img src="~/images/img10/IT Services.jpg" alt="Services">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="wraper-effect"></div>
+                    <div class="icon-content">
+                        <h4 class="dlab-title m-b15">IT Services</h4>
+                        <p>Substantially, the prosperity of organizations in the sector hangs on their capability to establish their services and develop their technical competence. We provide the preeminent IT service to make you grow digitally.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="icon-bx-wraper style-3 m-b30 box-hover wow fadeInUp">
+                    <div class="icon-bx-sm radius bgl-primary">
+                        <a class="icon-cell" href="/#">
+                            <div class="icon-img">
+                                <img src="~/images/img10/FinTech.jpg" alt="Services">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="wraper-effect"></div>
+                    <div class="icon-content">
+                        <h4 class="dlab-title m-b15">FinTech</h4>
+                        <p>Fintech is a budgetary transformation that illustrates a growing folding of money superintendence area. @Firm_Name specializes in technology development to aid the banking and financial industries. </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="icon-bx-wraper style-3 m-b30 box-hover wow fadeInUp" style="margin-top:-90px;">
+                    <div class="icon-bx-sm radius bgl-primary">
+                        <a class="icon-cell" href="/#">
+                            <div class="icon-img">
+                                <img src="~/images/img10/Travel Services.jpg" alt="Services">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="wraper-effect"></div>
+                    <div class="icon-content">
+                        <h4 class="dlab-title m-b15">Travel Services</h4>
+                        <p>"Travel is the only thing you purchase that shapes you wealthy". We thoroughly vow by this and contemplate in satisfying travel dreams that shape you unfailingly wealthy by degrees. @Firm_Name is selling stupendous episodes over years.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="icon-bx-wraper style-3 m-b30 box-hover wow fadeInUp">
+                    <div class="icon-bx-sm radius bgl-primary">
+                        <a class="icon-cell" href="/#">
+                            <div class="icon-img">
+                                <img src="~/images/img10/VAS Services.jpg" alt="Services">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="wraper-effect"></div>
+                    <div class="icon-content">
+                        <h4 class="dlab-title m-b15">VAS Services</h4>
+                        <p>VAS is a prevalent telecommunications sector term for non-core services, or, in essence, all services afar standard voice calls and fax transmissions. Here, at @Firm_Name we offer world-class customer support to answer all your queries.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="icon-bx-wraper style-3 m-b30 box-hover wow fadeInUp">
+                    <div class="icon-bx-sm radius bgl-primary">
+                        <a class="icon-cell" href="/#">
+                            <div class="icon-img">
+                                <img src="~/images/img10/BBPS Bill Payment.png" alt="Services">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="wraper-effect"></div>
+                    <div class="icon-content">
+                        <h2 class="dlab-title m-b15">BBPS Bill Payment</h2>
+                        <p>(BBPS) is an RBI-commanded structure that provides unified and compatible bill payment services to consumers across the countryside with assurance, dependability, and protection of transactions. It is a convenient, easy and cheap way to pay your bills.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="blog-section mb-1 pt-3 mt-5 dvblogall" style="" id="blog">
+    <div class="container-fluid">
+        <div class="section-heading center-holder pt-50 mb-5">
+            <h2>Latest Blog</h2>
+            <div class="section-heading-line"></div>
+        </div>
+        <div class="row ml-5 mr-5 dvBlogs" id="dvBlogs">
+            <div class="col-md-4">
+                <div class="post">
+                    <a class="post-img" href="@Url.Action("blog_detail","Home",new { id= 1 })" aria-label="blog">
+                        <img src="~/images/img10/seo-strategies.png" alt="" width="358" height="140" class="blogimage">
+                    </a>
+                    <div class="post-body">
+                        <h3 class="post-title">
+                            Unlocking the Secrets of SEO: Your Ultimate Guide
+                        </h3>
+                        <p style="font-weight:normal;color:black; font-size: 15px; line-height: 25px;margin-top:5px;text-align:justify;">Ever wondered how some websites magically appear at the top of your search results? That's where Search Engine Optimization (SEO) comes into play. It's like a powerful tool that he  <a target="_blank" aria-label="blog" href="@Url.Action("blog_detail","Home",new { id= 1 })"><span>read more....</span></a></p>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="post">
+                    <a class="post-img" href="@Url.Action("blog_detail","Home",new { id= 2 })" aria-label="blog">
+                        <img src="~/images/img10/Digital Marketing.png" alt="" width="358" height="140" class="blogimage">
+                    </a>
+                    <div class="post-body">
+                        <h3 class="post-title">
+                            10 Essential Digital Marketing Strategies That Can
+                        </h3>
+                        <p style="font-weight:normal;color:black; font-size: 15px; line-height: 25px;margin-top:5px;text-align:justify;">In today's fast-paced digital landscape, having a strong digital marketing strategy is crucial for success. With new technologies and platforms constantly emerging, it can be chall  <a target="_blank" aria-label="blog" href="@Url.Action("blog_detail","Home",new { id= 2 })"><span>read more....</span></a></p>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="post">
+                    <a class="post-img" href="@Url.Action("blog_detail","Home",new { id= 3 })" aria-label="blog">
+                        <img src="~/images/img10/Unveiling the Ultimate.png" alt="" width="358" height="140" class="blogimage">
+                    </a>
+                    <div class="post-body">
+                        <h3 class="post-title">
+                            Unveiling the Ultimate Money Remittance Software:
+                        </h3>
+                        <p style="font-weight:normal;color:black; font-size: 15px; line-height: 25px;margin-top:5px;text-align:justify;">Hey there, money movers and shakers! Let's dive into the thrilling world of hassle-free money transfers that can make your financial life smoother than a silk tie. Buckle up, becau  <a target="_blank" aria-label="blog" href="@Url.Action("blog_detail","Home",new { id= 3 })"><span>read more....</span></a></p>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rs-achievement style1 relative md-pt-80 mt-5 mb-5 pb-3 pt-2">
+    <div class="container-fluid">
+        <div class="row ml-5 mr-5 rs-vertical-middle">
+            <div class="col-lg-5 position-relative">
+                <div class="btn btn-circle btn-primary img-UP-but disabled position-absolute counter-wrapper flex-column d-none d-md-flex">
+                    <h2 class="text-white mb-1 mt-n2"><span class="counter counter-lg" style="visibility: visible;">10+</span></h2>
+                    <p>Year Experience</p>
+                </div>
+                <div class="row gx-md-5 gy-5 align-items-center">
+                    <div class="col-md-6">
+                        <div class="row gx-md-5 gy-5">
+                            <div class="col-md-10 offset-md-2 img-maT">
+                                <figure class="rounded">
+                                    <img src="~/images/img10/Complete.jpg" style="height: 210px;" alt="@Firm_Name" class="img-fluid rounded w-100 mob-none">
+                                </figure>
+                            </div>
+
+                            <div class="col-md-12 img-maT">
+                                <figure class="rounded">
+                                    <img src="~/images/img10/large-experience.jpg" style="height: 200px;" alt="@Firm_Name" class="img-fluid rounded w-100 mob-none">
+                                </figure>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <figure class="rounded">
+                            <img src="~/images/img10/wikimedia-image.jpg" width="225" style="height: 341px; " alt="@Firm_Name" class="img-fluid rounded w-100">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7 md-pl-50">
+                <div class="sec-title4 mb-25">
+                    <div class="sub-title mb-1">Our Mission</div>
+                    <h2 class="title">Complete assurance about quality & timely execution</h2>
+                    <div class="desc left-line-v">
+                        <div class="draw-line start-draw"></div>
+                        Our aim is to develop applications with latest technology that meet best with the customer's expectation and satisfaction at all levels. We provide complete assurance about the work quality, capital, and timely execution of the projects and services.
+                    </div>
+                </div>
+                <ul class="estimate-info">
+                    <li>
+                        <p class="margin-0">10 +Years Experience in Telecom and Fintech Industry.</p>
+                    </li>
+                    <li>
+                        <p class="margin-0">Round the Clock Support.</p>
+                    </li>
+                    <li>
+                        <p class="margin-0">1000+ Software delivered in Last 10 Years.</p>
+                    </li>
+                    <li>
+                        <p class="margin-0">All Supporting Services for Fintech and Recharge industry are under 1 roof.</p>
+                    </li>
+                    <li>
+                        <p class="margin-0">24*7 Billing Available for Recharge Bill Payment and Money Transfer Service.</p>
+                    </li>
+                    <li>
+                        <p class="margin-0">Best Revenue Sharing of Industry.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <img class="pattern-img" src="~/images/img10/pattern4.png" alt="@Firm_Name">
+    </div>
+</div>
+<section id="Android_id" class="testimonials" style="">
+    <div class="container-fluid">
+        <div class="row ml-5 mr-5 rs-vertical-middle">
+            <div class="col-sm-12 mb-5">
+                <div class="section-heading center-holder pt-5">
+                    <h2>Download Our App</h2>
+                    <div class="section-heading-line"></div>
+
+                    <p>To download the Android application directly from the website, the download button is given below, to download the application, open the website in the Android device.</p>
+
+
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+
+
+                    <div style="float: left; width: 100%; margin-top: 70px;">
+
+
+                        <div class="apk_d">
+                            <div class="apk_ikon">
+                                <span><i class="fa fa-download"></i></span>
+                            </div>
+                            <div class="apk_button">
+                                @if (!string.IsNullOrEmpty(urllinks))
+                                {
+                                    <a href="@Url.Action("DownloadAPK", "Home")">Download Android App </a>
+                                }
+                                else
+                                {
+                                    <a class="">App Link Not Available</a>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="apk_d">
+                            <div class="apk_button">
+                                <a href="javascript:void(0);" onclick="myFunction()" onmouseout="outFunc()" style="margin:0px 10px;">Copy Download Link</a>
+                            </div>
+                            <div class="apk_ikon">
+                                <span><i class="fa fa-android"></i></span>
+                            </div>
+
+                        </div>
+
+                        <div class="apk_d">
+                            <div class="apk_ikon">
+                                <span><i class='fa fa-play'></i></span>
+                            </div>
+                            <div class="apk_button"><a href="#">Download Play Store Link</a></div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+
+                    <div class="aap_image" style="text-align: end;">
+                        <img src="~/images/img10/main_app.png" alt="Download app" />
+
+                        <h5>Version = @Apk_Version</h5>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+<div id="Div1" class="rs-services chooseus-style pt-5 md-pt-70 pb-5">
+    <div class="container-fluid">
+        <div class="row ml-5 mr-5">
+            <div class="col-lg-4 md-mb-30">
+                <div class="services-item">
+                    <div class="services-icon">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    <div class="services-text">
+                        <h3 class="title"><a href="#">24X7 Care</a></h3>
+                        <p class="services-txt">Need help? Click here. You can also talk to us on @CustCareNo our Team is available round the clock to resolve your query.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 md-mb-30">
+                <div class="services-item">
+                    <div class="services-icon">
+                        <i class="fa fa-shield"></i>
+                    </div>
+                    <div class="services-text">
+                        <h3 class="title"><a href="#">@Firm_Name Trust</a></h3>
+                        <p class="services-txt">@Firm_Name’s brand Personality and transparency are the two cornerstones of its trust building approach.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="services-item">
+                    <div class="services-icon">
+                        <i class="fa fa-thumbs-up"></i>
+                    </div>
+                    <div class="services-text">
+                        <h3 class="title"><a href="#">Our Promise</a></h3>
+                        <p class="services-txt">We promise to deliberately join forces with each customer. we are managed the chance to work with requirements .</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="blog-section mb-1 pb-5" style="" id="Team">
+        <div class="container-fluid">
+            <div class="section-heading center-holder pt-50 mb-5">
+                <h2> Management </h2>
+                <div class="section-heading-line"></div>
+            </div>
+            <div class="row ml-5 mr-5">
+                <div class="column">
+                    <div class="team-9">
+                        <div class="team-img">
+                            <img src="~/images/Team_user-png.png" alt="Team Image">
+
+                        </div>
+                        <div class="team-content">
+                            <h2>User 1</h2>
+                            <h3>CEO &amp; Founder</h3>
+                        </div>
+                        <div class="team-overlay">
+                            <p>Some text goes here that describes about team member</p>
+                            <div class="team-social">
+                                <a class="social-tw" href=""><i class="fab fa-twitter"></i></a>
+                                <a class="social-fb" href=""><i class="fab fa-facebook-f"></i></a>
+                                <a class="social-li" href=""><i class="fab fa-linkedin-in"></i></a>
+                                <a class="social-in" href=""><i class="fab fa-instagram"></i></a>
+                                <a class="social-yt" href=""><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="team-9">
+                        <div class="team-img">
+                            <img src="~/images/Team_user.png" alt="Team Image">
+
+                        </div>
+                        <div class="team-content">
+                            <h2>User 2</h2>
+                            <h3>Managing Director</h3>
+                        </div>
+                        <div class="team-overlay">
+                            <p>Some text goes here that describes about team member</p>
+                            <div class="team-social">
+                                <a class="social-tw" href=""><i class="fab fa-twitter"></i></a>
+                                <a class="social-fb" href=""><i class="fab fa-facebook-f"></i></a>
+                                <a class="social-li" href=""><i class="fab fa-linkedin-in"></i></a>
+                                <a class="social-in" href=""><i class="fab fa-instagram"></i></a>
+                                <a class="social-yt" href=""><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="team-9">
+                        <div class="team-img">
+                            <img src="~/images/Team_user-png.png" alt="Team Image">
+
+                        </div>
+                        <div class="team-content">
+                            <h2>User 3</h2>
+                            <h3> Chief Technical Officer</h3>
+                        </div>
+                        <div class="team-overlay">
+                            <p>Some text goes here that describes about team member</p>
+                            <div class="team-social">
+                                <a class="social-tw" href=""><i class="fab fa-twitter"></i></a>
+                                <a class="social-fb" href=""><i class="fab fa-facebook-f"></i></a>
+                                <a class="social-li" href=""><i class="fab fa-linkedin-in"></i></a>
+                                <a class="social-in" href=""><i class="fab fa-instagram"></i></a>
+                                <a class="social-yt" href=""><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="team-9">
+                        <div class="team-img">
+                            <img src="~/images/Team_user.png" alt="Team Image">
+                        </div>
+                        <div class="team-content">
+                            <h2>User 4</h2>
+                            <h3> Art Director </h3>
+                        </div>
+                        <div class="team-overlay">
+                            <p>Some text goes here that describes about team member</p>
+                            <div class="team-social">
+                                <a class="social-tw" href=""><i class="fab fa-twitter"></i></a>
+                                <a class="social-fb" href=""><i class="fab fa-facebook-f"></i></a>
+                                <a class="social-li" href=""><i class="fab fa-linkedin-in"></i></a>
+                                <a class="social-in" href=""><i class="fab fa-instagram"></i></a>
+                                <a class="social-yt" href=""><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>*@
+<div class="modal fade" id="myModal" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content transparent-bg">
+            <div class="modal-body transparent-bg">
+                <button type="button" class="close" @*onclick="document.getElementById('myModal').style.display = 'none';"*@ onclick="myFunction()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <form method="post" action="./" id="form1">
+                    <div class="aspNetHidden">
+                        <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET">
+                        <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT">
+                        <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKMTAzMjU1NjUyOGRkKFTINQ38xHaOYzRgUhCv+WPyFyca1RQ9lzvd0sMtT64=">
+                    </div>
+
+                    <div class="aspNetHidden">
+                        <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="90059987">
+                        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAATx5Iv7A0tiT8CCFl4nl2YxITAC/yfRjqZIixmnZPRfi+axsTbMT64+bGJC9mAR3STEutyp67ZWJDUOG4Hx2XEnGDExGLPWYdErtB1P4yxSqDCo/aJ/hPSfhSwcD3UvdNU=">
+                    </div>
+                    <div id="ContentPlaceHolder1_UpdatePanel1">
+
+                        <div class="circle-form">
+                            <div class="circle-body">
+                                <h1 class="modal-title">Drop us a line Our Fintech Expert will get back to you shortly !</h1>
+                                <div class="form-1">
+                                    <div class="form-group mb-2">
+                                        <input name="ctl00$ContentPlaceHolder1$txtname" id="ContentPlaceHolder1_txtname" class="form-control" type="text" describedby="emailHelp" placeholder="Enter Name">
+                                        <span class="name error-text"></span>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <input name="ctl00$ContentPlaceHolder1$Email4" id="ContentPlaceHolder1_Email4" type="email" class="form-control" describedby="emailHelp" placeholder="Enter Email">
+                                        <span class="emailid error-text"></span>
+                                    </div>
+                                    <input name="ctl00$ContentPlaceHolder1$txtphone" type="text" maxlength="10" id="ContentPlaceHolder1_txtphone" class="form-control" placeholder="Enter number">
+                                    <span class="mobileno error-text"></span>
+                                </div>
+                                <input type="submit" value="Send Message" class="btn btn-lg btn-default">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="floating-chat">
+    <i class="fa fa-comments fa-2x" aria-hidden="true"></i>
+    <div class="chat">
+        <div class="header chatbox-popup__header">
+            <aside style="flex: 3">
+                <i class="fa fa-user-circle fa-4x chatbox-popup__avatar" aria-hidden="true"></i>
+            </aside>
+            <aside style="flex: 8">
+                <h2 class="chat-header-title">John Austin</h2>
+                <small>Sales Manager (Online)</small>
+            </aside>
+            <button aria-label="chat">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <ul class="messages">
+            <li class="other">Looking for the best offer? I'm happy to tell you about our fantastic sale discount! Let me know if you've got questions.</li>
+        </ul>
+        <div class="footer">
+            <div class="text-box" contenteditable="true" disabled="true" style="display: none"></div>
+            <a href="" class="btn btn-chat"><i class="fa fa-whatsapp"></i> Chat with John </a>
+        </div>
+    </div>
+</div>
+
+@* =========================== Desktop Model Start ============================ *@
+
+@{
+
+    var desktopimgurl = (from img in db.message_popup select img.imageurl).FirstOrDefault() ?? "";
+    var headercontent = (from content in db.message_popup select content.Heardercontent).FirstOrDefault() ?? "";
+    var imgsts = (from img in db.message_popup select img.sts).FirstOrDefault() ?? "N";
+    <input type="button" value="login" id="btn111" data-toggle="modal" data-target="#desktoppopup-modal" style="display:none;">
+    
+    <div style="display:block;">
+      @if (imgsts == "Y")
+       {
+          <div class="modal fade" id="desktoppopup-modal" role="dialog" style="display: block;">
+
+            <div class="modal-dialog modal-lg" style="margin-top:85px;">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p class="modal-title" style="font-size:20px;color:#000000a6;text-align:center;">@headercontent</p>
+                        <button type="button" class="close ppopup" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body" style="text-align:center;">
+
+                        <img src="@Url.Content("~/" + @desktopimgurl)" class="img-responsive" />
+                        <script type="text/javascript">
+
+                            $(document).ready(function () {
+                                $('#btn111').click();
+                            });
+
+                        </script>
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                        <script>
+                            $(document).ready(function () {
+                                $(".close.ppopup").click(function () {
+                                    $("#desktoppopup-modal").toggle();
+                                });
+                            });
+                        </script>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+          </div>
+        }
+       else
+        {
+
+        }
+   </div>
+
+}
+
+@* =========================== Desktop Model End ============================ *@
+
+@* ============================================================== *@
+
+<script>
+
+    const myTimeout = setTimeout(myGreeting, 2000);
+
+    function myGreeting() {
+        document.getElementById("myModal").style.display = "block";
+    }
+
+</script>
+
+<script>
+
+    function myFunction() {
+        document.getElementById("myModal").style.display = "none";
+    }
+
+</script>

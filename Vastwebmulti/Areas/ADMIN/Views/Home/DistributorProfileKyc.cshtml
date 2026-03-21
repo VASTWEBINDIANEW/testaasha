@@ -1,0 +1,298 @@
+﻿@model IEnumerable<Vastwebmulti.Models.select_dealer_profileKycdetails_Result>
+@{
+    ViewBag.Title = "DistributorProfileKyc";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .list-group-item {
+        padding: 2px 4px;
+    }
+
+    .table-bordered tbody tr td, .table-bordered tbody tr th {
+        padding: 16px 0px 0px 0px;
+    }
+
+    .badge {
+        background-color: whitesmoke;
+        color: #5b5a5b;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-7">
+                        <div style="margin-left:-13px;">
+                            @Html.Partial("Profilekycpartial")
+                        </div>
+
+                    </div>
+                    @using (Html.BeginForm("DistributorProfileKyc", "Home", FormMethod.Post))
+                    {
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <div class="" style="border:1px solid #bfbebe;margin-top:4px;margin-left:-13px;width:108%;">
+                                    @Html.DropDownList("ddl_top", new List<SelectListItem>
+               {
+              new SelectListItem{ Text="TOP 10",Value="10"},
+               new SelectListItem{ Text="TOP 50",Value="50"},
+               new SelectListItem{Text="TOP 100",Value="100"},
+                new SelectListItem{Text="TOP 200",Value="200"},
+               new SelectListItem{Text="TOP 500",Value="500"},
+               new SelectListItem{Text="TOP 1000",Value="1000"},
+               new SelectListItem{Text="TOP 1500",Value="1500"},
+               new SelectListItem{Text="ALL ENTRY",Value="All"}
+                }, new { @class = "form-control", @style = "height:33px;padding:0px;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group" style="margin-top:4px;">
+                                <div class="" style="border:1px solid #dddddd ;height:36px;">
+                                    <input type="text" id="txtsearch" name="txtsearch" class="form-control" placeholder="Enter Registered No" style="padding-left:12px;" />
+                                </div>
+                                <span class="input-group-addon">
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top:-6px; margin-left:0px; height:36px;">
+                                        <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                        <span style="top:-2px;color:black;">Search</span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-30px;">
+                <div class="card">
+                    <div class="body" style="margin-top:13px;padding:1px;">
+                        <div class="table-responsive" style="position:inherit;padding-top:8px;">
+                            <table class="table table-bordered " style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>User&nbsp;Information</th>
+                                        <th>KYC&nbsp;Status</th>
+                                        <th>Basic&nbsp;Information</th>
+                                        <th>Bank&nbsp;Details</th>
+                                        <th>Full&nbsp;Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Count() > 0)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            var sts = "";
+                                            var color = "grey";
+                                            var icon = "";
+                                            var txt = "";
+                                            if (item.PSAStatus == "P" || item.PSAStatus == "N")
+                                            {
+                                                color = "#FF9800";
+                                                icon = "fa fa-thumbs-o-down";
+                                                txt = "I am waiting";
+                                            }
+                                            if (item.AadhaarStatus == "P" || item.AadhaarStatus == "N")
+                                            {
+                                                color = "#FF9800";
+                                                icon = "fa fa-thumbs-o-down";
+                                                txt = "I am waiting";
+                                            }
+                                            if (item.PSAStatus == "Y" && item.AadhaarStatus == "Y")
+                                            {
+                                                color = "green";
+                                                icon = "fa fa-thumbs-o-up";
+                                                txt = "I am verified";
+                                            }
+                                            <tr>
+                                                <td>
+                                                    <center>
+                                                        @if (item.Photo != "")
+                                                        {
+                                                            <img src="@Url.Content("~/" + item.Photo)" class="img-circle" style="height:68px;" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>
+                                                                <i class="fa fa-user-circle-o" style="font-size:75px;color:#777777;"></i>
+                                                            </p>
+                                                        }
+
+                                                        <p style="background-color:#f5f5f5;padding:4px 4px 4px 4px;width:108px;color:@color;border-radius:5px;">@txt</p>
+                                                        <p style="font-weight:700;text-transform:uppercase;">@item.DealerName</p>
+                                                        <p style="text-transform:uppercase;font-size:11px;">@item.Position</p>
+                                                    </center>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="body" style="width:300px;">
+                                                            <ul class="list-group" style="margin-top:-24px;">
+
+                                                                <li class="list-group-item" style="background-color:whitesmoke;">
+                                                                    Pancard&nbsp;<span style="font-size:11px;">[compulsory]</span>
+                                                                    @if (item.pancardPath != null || item.PSAStatus == "Y")
+                                                                    {
+                                                                        if (item.PSAStatus == "Y")
+                                                                        {
+                                                                            <a href="@Url.Content("~/" + item.pancardPath)" style="margin-left:35px;border:1px solid white;background-color:white;padding:2px 2px; cursor:pointer;" target="_blank"><span style="font-size:9px;color:#FF9800;">View</span></a>
+                                                                            <a href="@Url.Action("PancardDealersts","Home",new {Dealerid=item.DealerId ,status="Rejected"})" style="margin-left:0px;border:1px solid white;background-color:white;padding:2px 2px; cursor:pointer;" onclick="return confirm('Are you sure?')"><span style="font-size:9px;color:red;">Reject</span></a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <a href="@Url.Content("~/" + item.pancardPath)" style="margin-left:35px;border:1px solid white;background-color:white;padding:2px 2px; cursor:pointer;" target="_blank"><span style="font-size:9px;color:#FF9800;">View</span></a>
+                                                                            <a href="@Url.Action("PancardDealersts","Home",new {Dealerid=item.DealerId ,status="Verify"})" style="margin-left:0px;border:1px solid white;background-color:white;padding:2px 2px; cursor:pointer;"><span style="font-size:9px;color:green;">Verify</span></a>
+                                                                            <a href="@Url.Action("PancardDealersts","Home",new {Dealerid=item.DealerId ,status="Rejected"})" style="margin-left:0px;border:1px solid white;background-color:white;padding:2px 2px; cursor:pointer;" onclick="return confirm('Are you sure?')"><span style="font-size:9px;color:red;">Reject</span></a>
+                                                                        }
+                                                                    }
+
+                                                                    @if (item.PSAStatus == "P" || item.pancardPath == null || item.PSAStatus == "N")
+                                                                    {
+
+                                                                    }
+                                                                </li>
+                                                                <li class="list-group-item" style="margin-top:12px;background-color:whitesmoke;">
+                                                                    Aadhaar<span style="font-size:11px;">&nbsp;[compulsory]</span>
+                                                                    @if (item.aadharcardPath != null || item.AadhaarStatus == "Y")
+                                                                    {
+                                                                        if (item.AadhaarStatus == "Y")
+                                                                        {
+                                                                            <a href="@Url.Content("~/" + item.aadharcardPath)" style="margin-left:35px;border:1px solid white;background-color:white;padding:2px 2px; cursor:pointer;"><span style="font-size:9px;color:#FF9800;">View</span></a>
+                                                                            <a href="@Url.Action("AadhaarsDealersts","Home",new {Dealerid=item.DealerId ,status="Rejected"})" style="margin-left:0px;border:1px solid white;background-color:white;padding:2px 2px; cursor:pointer;" onclick="return confirm('Are you sure?')"><span style="font-size:9px;color:red;">Reject</span></a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <a href="@Url.Content("~/" + item.aadharcardPath)" style="margin-left:35px;border:1px solid white;background-color:white;padding:2px 2px; cursor:pointer;"><span style="font-size:9px;color:#FF9800;">View</span></a>
+                                                                            <a href="@Url.Action("AadhaarsDealersts","Home",new {Dealerid=item.DealerId ,status="Verify"})" style="margin-left:0px;border:1px solid white;"><span style="font-size:9px;color:green;background-color:white;padding:2px 2px; cursor:pointer;">Verify</span></a>
+                                                                            <a href="@Url.Action("AadhaarsDealersts","Home",new {Dealerid=item.DealerId ,status="Rejected"})" style="margin-left:0px;border:1px solid white;" onclick="return confirm('Are you sure?')"><span style="font-size:9px;color:red;background-color:white;padding:2px 2px; cursor:pointer;">Reject</span></a>
+                                                                        }
+                                                                    }
+
+                                                                    @if (item.AadhaarStatus == "P" || item.aadharcardPath == null || item.AadhaarStatus == "N")
+                                                                    {
+
+                                                                    }
+
+                                                                </li>
+                                                                <li class="list-group-item" style="margin-top:12px;background-color:whitesmoke;"> Registration C/F<span style="font-size:11px;">&nbsp;[optional]</span>
+                                                                    @if (item.Registractioncertificatepath != null)
+                                                                    {
+                                                                        <a href="@Url.Content("~/" + item.Registractioncertificatepath)" style="margin-left:4px;border:1px solid white;background-color:white;padding:2px 11px; cursor:pointer;" target="_blank"><span style="font-size:9px;color:#FF9800;">View</span></a>
+                                                                        <a href="@Url.Action("Registractiondealersts","Home",new {Dealerid=item.DealerId })" style="margin-left:0px;border:1px solid white;" onclick="return confirm('Are you sure?')"><span style="font-size:9px;color:red;background-color:white;padding:6px 9px; cursor:pointer;">Reject</span></a>
+                                                                    }
+                                                                    @if (item.Registractioncertificatepath == null)
+                                                                    {
+
+                                                                    }
+
+                                                                </li>
+                                                                <li class="list-group-item" style="margin-top:10px;background-color:whitesmoke;">Service Agreement<span style="font-size:11px;">&nbsp;[opt]</span>
+                                                                    @if (item.serviceagreementpath != null)
+                                                                    {
+                                                                        <a href="@Url.Content("~/" + item.serviceagreementpath)" style="margin-left:12px;border:1px solid white;background-color:white;padding:2px 11px; cursor:pointer;" target="_blank"><span style="font-size:9px;color:#FF9800;">View</span></a>
+                                                                        <a href="@Url.Action("Servicesdealersts","Home",new {Dealerid=item.DealerId })" style="margin-left:0px;border:1px solid white;" onclick="return confirm('Are you sure?')"><span style="font-size:9px;color:red;background-color:white;padding:6px 9px; cursor:pointer;">Reject</span></a>
+                                                                    }
+                                                                    @if (item.serviceagreementpath == null)
+                                                                    {
+
+                                                                    }
+
+                                                                </li>
+                                                                <li class="list-group-item" style="margin-top:12px;background-color:whitesmoke;">Address Proof<span style="font-size:11px;">&nbsp;[optional]</span>
+
+                                                                    @if (item.AddressProofpath != null)
+                                                                    {
+                                                                        <a href="@Url.Content("~/" + item.AddressProofpath)" style="margin-left:15px;border:1px solid white;background-color:white;padding:2px 11px; cursor:pointer;" target="_blank"><span style="font-size:9px;color:#FF9800;">View</span></a>
+                                                                        <a href="@Url.Action("Addressproofdealersts","Home",new {Dealerid=item.DealerId })" style="margin-left:0px;border:1px solid white;" onclick="return confirm('Are you sure?')"><span style="font-size:9px;color:red;background-color:white;padding:6px 9px; cursor:pointer;">Reject</span></a>
+                                                                    }
+                                                                    @if (item.AddressProofpath == null)
+                                                                    {
+
+                                                                    }
+                                                                </li>
+
+                                                            </ul>
+                                                        </div>
+
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <ul class="list-group" style="margin-top:-14px;">
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">Pancard<span class="badge" style="float:none;margin-left:23px;">@item.PanCard</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">Aadhaar<span class="badge" style="float:none;margin-left:22px;">@item.adharcard</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">Reg&nbsp;/&nbsp;GST<span style="margin-left:16px;font-weight:700;">@item.gst</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">Frim Name<span style="margin-left:6px;font-size:12px;font-weight:700;">@item.FarmName</span></li>
+                                                        <li class="list-group-item" style="padding:6px 5px;border:none;">Mobile&nbsp;No<span style="margin-left:12px;font-weight:700;">@item.Mobile</span></li>
+                                                        <li class="list-group-item" style="padding:6px 5px;border:none;">Email<span style="margin-left:42px;font-weight:700;">@item.Email</span></li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul class="list-group" style="width:265px;margin-top:-14px;">
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">Account No<span class="" style="float:none; margin-left:15px;font-weight:700;">@item.Bankaccountno</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">Holder Name<span class="" style="float:none;margin-left:7px;font-weight:700;">@item.accountholder</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">IFSC Code<span class="" style="float:none;margin-left:25px;font-weight:700;">@item.Ifsccode</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">Bank Name<span class="" style="float:none;margin-left:18px;font-weight:700;">@item.bankname</span></li>
+                                                        <li class="list-group-item" style="padding:6px 5px;border:none;">Branch Add<span class="" style="float:none;margin-left:20px;font-weight:700;">@item.bankAddress</span></li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul class="list-group" style="width:304px;margin-top:-14px;">
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">State<span class="" style="float:none; margin-left:29px;font-weight:700;">@item.State_name</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">District<span class="" style="float:none;margin-left:18px;font-weight:700;">@item.Dist_Desc</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">City<span class="" style="float:none;margin-left:40px;font-weight:700;">@item.city</span></li>
+                                                        <li class="list-group-item" style="padding:8px 5px;border:none;">Zip Code<span class="" style="float:none;margin-left:8px;font-weight:700;">@item.Pincode</span></li>
+                                                        <li class="list-group-item" style="padding:6px 5px;border:none;">Address<span class="" style="float:none;margin-left:12px;font-weight:700;">@item.Address</span></li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td><p style="font-size:22px;margin-top:-5px;text-align:center;color:#e0dddd;font-weight:700;">No Data Found !</p></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        var succ = '@ViewBag.success';
+        var error = '@ViewBag.error';
+        if(succ !="")
+        {
+            swal("Good job!", succ, "success");
+        }
+        if(error !="")
+        {
+            swal("Oops...", error, "error");
+        }
+    })
+</script>
+
+

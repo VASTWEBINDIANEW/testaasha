@@ -1,0 +1,319 @@
+﻿@using Vastwebmulti.Models;
+@model IEnumerable<Vastwebmulti.Areas.ADMIN.Models.RetailerCreationTokenVM>
+@{
+    ViewBag.Title = "TokenPurchase";
+    Layout = "~/Areas/DEALER/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var usernname = DB1.Usernicknames.Where(aa => aa.Role == "Dealer").ToList();
+    if (usernname.Count() > 0)
+    {
+        if (usernname.SingleOrDefault().Role == "Dealer")
+        {
+            var favimage = usernname.SingleOrDefault().NickName;
+            ViewBag.nickname = favimage;
+        }
+    }
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .form-inline .bootstrap-select.btn-group, .form-horizontal .bootstrap-select.btn-group, .form-group .bootstrap-select.btn-group {
+        height: 20px;
+    }
+
+    .slab-setting-menu li a.activee {
+        background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;
+    }
+
+    @@media screen and (max-width:768px) {
+        .content-tokenpurchase .table-responsive {
+            border: 0;
+        }
+    }
+
+    @@media screen and (max-width:520px) {
+        .content-tokenpurchase .card .col-md-2 {
+            position: static;
+        }
+
+        .col-md-4 {
+            width: 100% !important;
+            float: left;
+        }
+
+            .col-md-4 ul li {
+                width: 47%;
+                float: left;
+            }
+
+            .col-md-4 ul {
+                width: 100%;
+                float: left;
+            }
+
+        .col-md-2 {
+            float: left !important;
+            padding-left: 15px !important;
+        }
+
+            .col-md-2.recharge-report-dealer {
+                float: right !important;
+                padding-right: 15px !important;
+                padding-left: 0px !important;
+            }
+    }
+</style>
+<section class="content content-tokenpurchase full-dealer-secondanimation">
+    <div class="container-fluid">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Token Purchase</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Account Active&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Token Purchase</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="row" style="text-align:center;display:block ruby;">
+                        <div class="col-md-4" style="width:auto;float:left;">
+                            <div>
+                                @Html.Partial("TokenSetting")
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6" style="width:auto;padding:0px;float:none;">
+                            <p style="font-size:20px; margin-top:0px; color:red;">Per Token Prize Set By Admin :- @ViewBag.dealervalue</p>
+                        </div>
+                        <div class="col-md-2 recharge-report-dealer" style="width:auto;float:right;padding-left:5px;">
+                            <div class="form-group" style="margin-bottom:0px;width:100%;float:left;">
+                                <div style="padding-top:0px;float:right">
+                                    @*<button class="white-success-button" style="height:32px;border:1px solid #b1a6a638;background:#b1a6a638;float: right;padding: 0px 4px;margin-top:-1px;" onclick="findtotal()">Total</button>*@
+                                    <div class="web-white-filter fil" style="float: left;margin-right: 0px;margin-top:0px;">
+                                        <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 20px;">
+                                        <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);
+                                background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="width:auto;padding:0px;float:right;">
+                            <center>
+                                <button type="button" class="btn fullbodydycolorbg" style="float:right; height:32px;border:1px solid #c7c2c2;" data-toggle="modal" data-target="#defaultModal">
+
+                                    <span style="top:-1px;color:#fff;">Add&nbsp;Token's</span>
+                                </button>
+                            </center>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card all-reporttable-css reporttable-css-token" style="margin-top:-17px;">
+                    <div class="body" style="padding:0px;">
+                        <div class="table-responsive tableseconddes-dealer" style="position:inherit;margin-top:7px;">
+                            <table class="table table-bordered example-second third-design-table" style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Purchasing&nbsp;By</th>
+                                        <th>@ViewBag.nickname</th>
+                                        <th>Purchase&nbsp;Tokens</th>
+                                        <th>Token&nbsp;Pre</th>
+                                        <th>Token&nbsp;Post</th>
+                                        <th>@ViewBag.nickname&nbsp;Pre</th>
+                                        <th>@ViewBag.nickname&nbsp;Post</th>
+                                        <th>Admin&nbsp;Pre</th>
+                                        <th>Admin&nbsp;Post</th>
+                                        <th>Per&nbsp;Token&nbsp;Value</th>
+                                        <th>Total&nbsp;Debit</th>
+                                        <th>Purchase&nbsp;Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            @if (item.Role == "Self")
+                                            {
+                                                <td>By Self</td>
+                                            }
+                                            else if (item.Role == "Admin")
+                                            {
+                                                <td>By Administrator</td>
+                                            }
+                                            else
+                                            {
+                                                <td>By Master</td>
+                                            }
+                                            @*<td>@Html.DisplayFor(modelItem => item.Role)</td>*@
+                                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Tokens)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.pre)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.post)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.DealerPre)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.DealerPost)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.AdminPre)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.AdminPost)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.PerTokenValue)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TotalDebit)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.CteatedOn)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+<!--Add New  modal-->
+<div class="modal fade defaultModal-tokenreport" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="background:#f5f5f5;float:right;margin:0px;">
+        <div class="modal-content" style="box-shadow:none;">
+            <div class="modal-header" style="background-color:#ddd;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:#555;">Add&nbsp;New&nbsp;Sign&nbsp;Up&nbsp;Token&nbsp;(Distributor)</h4>
+            </div>
+            @using (Html.BeginForm("TokenPurchase", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Enter Token</label>
+                                </div>
+                                <input type="hidden" name="tokenCount" id="tokenCount" value="1" />
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group" style="border:1px solid #bfbebe;">
+                                        <ul class="" style="min-width:250px;list-style-type:none;margin-bottom:7px;">
+                                            <li>
+                                                <ul style="display:-webkit-box;list-style:none;">
+                                                    <li style="margin-top:11px;margin-left:-67px;margin-right:68px;"><span id="showPhysicalCount" style="padding-right:4px;padding-left:4px;">1</span> Retailer&nbsp;Creation&nbsp;Token</li>
+                                                    <li style="margin-top:6px;">
+                                                        <button type="button" id="btnChildMinus" class="btn  waves-effect btmPlusMinus" style="margin-right: 0px;margin-left: 58px; background:white; border:1px solid #cdcecf;box-shadow:none;" onclick="onPluseMinus(-1)" disabled="disabled">
+                                                            <i class="fa fa-minus" aria-hidden="true" style="font-size:10px;color:#757979;top:0px;"></i>
+                                                        </button>
+                                                    </li>
+                                                    <li style="margin-top:6px;">
+                                                        <button type="button" id="btnChildPlus" class="btn  waves-effect btmPlusMinus" onclick="onPluseMinus(1)" style="background:white; border:1px solid #cdcecf;box-shadow:none;margin-left:8px;">
+                                                            <i class="fa fa-plus" aria-hidden="true" style="font-size:10px;color:#757979;top:0px;"></i>
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn bg-grey waves-effect" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                                <button type="submit" class="btn fullbodydycolorbg waves-effect">
+                                    <span style="top:-2px;color:#fff;">Save Change</span>
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script>
+    $(document).ready(function () {
+        $("button.shownextrow").click(function () {
+            $(this).closest("tr").next().show();
+            $(this).closest("tr").hide();
+        });
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+
+        var message = '@ViewData["success"]';
+        var error = '@ViewData["error"]';
+        if (message != "") {
+                swal("Good job!", message, "success");
+        }
+        if (error != "") {
+            swal("Ooops!", error, "error");
+        }
+    });
+
+
+</script>
+
+
+<script>
+    function onPluseMinus(v) {
+        //alert(v);
+        event.stopPropagation();
+        var digiCount = parseInt($('#tokenCount').val());
+        if (v >= 0) {
+            $('#tokenCount').val(digiCount + v);
+            $('#showPhysicalCount').html(digiCount + v);
+        } else {
+            $('#tokenCount').val(digiCount - 1);
+            $('#showPhysicalCount').html(digiCount - 1);
+        }
+        if (parseInt($('#tokenCount').val()) >= 1) {
+            $('#btnChildMinus').prop('disabled', false);
+        }
+        if (parseInt($('#tokenCount').val()) == 0) {
+            $('#btnChildMinus').prop('disabled', true);
+        }
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('.second-design-dealer .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>

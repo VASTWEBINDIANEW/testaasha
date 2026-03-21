@@ -1,0 +1,104 @@
+﻿
+@model Vastwebmulti.Areas.ADMIN.Models.UPI_status_setting
+<style>
+    .wallet-bank-input input[readonly="readonly"] {
+        background: transparent;
+        border: 0px;
+    }
+</style>
+
+
+<table class="table table-bordered wallet-bank-input" style="width: 100%;margin-top:5px;">
+    <thead>
+        <tr>
+            <th style="width: 42%;">Minimum Amount (Rs)</th>
+            <th style="width: 42%;">Maximum Amount (Rs)</th>
+            <th style="width: 16%;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @*@if (@Model.Upi_Qr_codeGeneratorss.status == true)
+        {*@
+            <tr style="background:#fff;">
+                <td><input style="width: 80%;" type="number" id="txtminbalUPIQRCODE" name="txtminbalUPIQRCODE" value="@Model.Upi_Qr_codeGeneratorss.minmium" readonly="readonly" /></td>
+                <td><input style="width: 80%;" type="number" id="txtmaxbalUPIQRCODE" name="txtmaxbalUPIQRCODE" value="@Model.Upi_Qr_codeGeneratorss.maximium" readonly="readonly" /></td>
+                <td style="width: 80%">
+                    <button type="submit" class="fullbodydycolorbg waves-effect bt btnssl  special-iii deleteCharged1" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                        Edit
+                    </button>
+                    <button type="submit" id="SaveChargeUPIQRCODE" class="fullbodydycolorbg waves-effect bt btnssl special-iii deleteCharge" style="background:transparent;border:1px solid #bbb;padding:2px;margin-left: 4px;color:#fff;display:none;width:61px;">
+                        Save
+                    </button>
+                    @*<button type="submit" onclick="DeleteChrg()" class="fullbodydycolorbg waves-effect bt btnssl special-iii deleteCharge" style="background:transparent;border:1px solid #bbb;padding:2px;margin-left: 4px;color:#fff;display:none;width:61px;">
+                            Save
+                        </button>*@
+                </td>
+            </tr>
+        @*}
+        else
+        {
+            <tr style="background:#fff;">
+                <td colspan="3">
+                    No Minimium Amount Set
+                </td>
+            </tr>
+        }*@
+    </tbody>
+</table>
+@*@if (Model.msg != "DONE")
+    {
+        <label style="color:red;">@Model.msg</label>
+    }*@
+@*<script>
+        function DeleteChrg() {
+                var url = '@Url.Action("DeleteUpiQRMINMAXSLAB", "Home")';
+                $.ajax({
+                    url: url,
+                    cache: false,
+                    type: "GET",
+                    success: function (data) {
+                        $('#RemTblQRCODE').html(data);
+                    }
+                });
+            }
+    </script>*@
+<script>
+    $('.wallet-edit').click(function () {
+        /* $(this).closest('tr').find('input').removeAttr('readonly');*/
+        $(this).closest('tr').find('.wallet-save').css('display', 'block');
+        $(this).css('display', 'none');
+    });
+</script>
+<script>
+    $('.deleteCharged1').click(function () {
+        $(this).hide();
+        $('#txtminbalUPIQRCODE').attr("readonly", false);
+        $('#txtmaxbalUPIQRCODE').attr("readonly", false);
+        $(this).next('.deleteCharge').show();
+    });
+    $('#EditChrg').click(function () {
+        $(this).next('.deleteCharged1').hide();
+
+    });
+</script>
+<script>
+    $('#SaveChargeUPIQRCODE').click(function () {
+        debugger;
+      /* $('#lblmsg').text('')*/
+        $.ajax({
+            url: '@Url.Action("AddUpiQRCODEMINMAX","Home")',
+            type: 'POST',
+            data: { min: $("#txtminbalUPIQRCODE").val(), max: $("#txtmaxbalUPIQRCODE").val()},
+            success: function (response) {
+                toastr.success('UPI QR Range Set Successfully', 'UPI QR LIMIT');
+                $('#txtminbalUPIQRCODE').attr("readonly", true);
+                $('#txtmaxbalUPIQRCODE').attr("readonly", true);
+                $('#RemTblQRCODE').html(response);
+            },
+            error: function (xhr, status, error) {
+                //alert(error);
+
+            }
+        });
+    })
+</script>

@@ -1,0 +1,331 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.prepaid_card1
+@using (Ajax.BeginForm("_prepaid_card_slab", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess1", OnFailure = "onfailed", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+{
+
+    <style>
+        span.range_one_1 {
+            font-size: 12px !important;
+            font-weight: bold;
+            color: var(--main-bg-lcolor) !important;
+            border-bottom: 1px solid var(--main-bg-lcolor) !important;
+            border-width: thin;
+            padding-bottom: 3px;
+        }
+
+        #updatecolm p {
+            font-size: 9px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .slab-table input {
+           
+            width: 100% !important;
+          
+        }
+
+        .model-bar {
+            width: 260px;
+            float: left;
+        }
+
+        .model_all {
+            padding: 7px 10px;
+            border: 1px solid #ccc;
+            margin: 10px 0px;
+            width: 200px;
+            float: left;
+        }
+        tbody {
+            background: #f1f1f1;
+        }
+
+    </style>
+
+    @*<input id="btnsubmituser" type="submit" name="Button" value="Update For Existing Users" class="btn  waves-effect" style="display:none;" />*@
+    <input id="btnsubmitusercommon" onclick="otpsend1()"  name="Button" value="Save Data" class="btn  waves-effect" style="display:none;" />
+    @*<input id="btnsubmitusercommondlmrem" type="submit" name="Button" value="Update Existing & New Users" class="btn  waves-effect" style="display:none;" />*@
+
+
+    @*<div class="slab-master-block-left">*@
+    @*<div id="allshow" class="row">
+            <div class="col-md-12" style="padding-right:20px;">
+                <div class="custom-district-img">
+                    <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                </div>
+                @Html.DropDownList("ddlUserId", Model.UserId, "All Users", new { @class = "form-control for-select2", @onchange = "ddlUserIdChange()" })
+            </div>
+        </div>*@
+    @*<div id="retailerdrop" class="row" style="display:none;">
+
+            <div class="col-md-6" style="padding-right:0px;">
+                <div>
+                    <div class="custom-district-img">
+                        <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                    </div>
+                    @Html.DropDownList("ddldealer", Model.UserId, "All Distributor", new { @class = "form-control for-select2", @onchange = "ddlretailerid()" })
+                </div>
+            </div>
+            <div class="col-md-6" style="padding-left:5px;padding-right:20px;">
+                <div>
+                    <div class="custom-district-img">
+                        <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+                    </div>
+                    @Html.DropDownList("ddlUserIdrem", Model.RetailerId, "All Retailer", new { @class = "form-control for-select2", @onchange = "ddlUserIdChangerem()" })
+
+                </div>
+            </div>
+
+        </div>*@
+    @*</div>*@
+    <input type="hidden" value="@Model.role" id="role" />
+    <div class="" style="padding-right:20px;">
+        @*<div class="custom-district-img">
+            <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+        </div>*@
+        <div class="model-bar">
+            @Html.DropDownList("ddlUserId", Model.UserId, "All Users", new { @class = "form-control for-select2", @onchange = "ddlUserIdChange()" })
+        </div>
+    </div>
+    if (Model.role == "Retailer")
+    {
+    <div class="" style="padding-left:5px;padding-right:20px;">
+        <div class="model-bar" style="margin-left:10px;">
+           @* <div class="custom-district-img">
+                <img src="~/AdminDesign/images/slab-user.svg" style="width:18px;">
+            </div>*@
+            @Html.DropDownList("ddlUserIdrem", Model.RetailerId, "All Retailer", new { @class = "form-control for-select2", @onchange = "ddlUserIdChangerem()" })
+
+        </div>
+    </div>
+    }
+
+    <div style="width: 100%; float: left;">
+
+        <div class="model_all">
+            @Html.DisplayFor(Model => Model.Name)
+        </div>
+
+        <div class="model_all" style=" margin-left: 10px;">
+            @Html.DisplayFor(Model => Model.Phone)
+        </div>
+
+    </div>
+
+    <div class="slab-table">
+        <table id="updatecolm" class="table table-bordered example-second third-design-table" style="margin-top: 15px;">
+            @*@if (Model.role == "Master")*@
+            @*{*@
+            <div id="allshow" class="row">
+
+            </div>
+            <thead class="navbar" style="position:initial;">
+                <tr>
+                    <th style="text-align:center">User</th>
+                    <th style="text-align:center">comm&nbsp;%</th>
+
+                </tr>
+
+                @*<tr>
+                @{
+                    var range1 = Convert.ToInt32(@Model.AmountRange[0].maximum1);
+                    var range2 = Convert.ToInt32(@Model.AmountRange[0].maximum2);
+                    var rangee1 = range1 + 1;
+                    var rangee = range2 + 1;
+                }
+                <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+                <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+                <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+            </tr>*@
+            </thead>
+            <tbody id="tbodyshow">
+                @foreach (var item in Model.usersd)
+                {
+                    <tr>
+                        <td class="text-center">@item.Email</td>
+
+                        <td class="text-center" id="text12">@item.Comm</td>
+
+
+                    </tr>
+
+                }
+
+            </tbody>
+            <tbody id="tbodyedit" style="display:none;">
+                @for (int i = 0; i < Model.updateset.Count; i++)
+                {
+                    <tr>
+                        @Html.HiddenFor(a => a.updateset[i].idno, new { id = "idnoset" })
+                        <td>
+                            @Html.TextBoxFor(a => a.updateset[i].Email, new { @readonly = "readonly", id = "EMailSet"  })
+                        </td>
+                      
+                            @Html.HiddenFor(a => a.updateset[i].Role, new { id = "RoleSet"  })
+                        
+                        <td>
+                            @Html.TextBoxFor(a => a.updateset[i].Comm,  new { id = "Commset", @style = "width:70px !important"   })
+                            @Html.ValidationMessageFor(a => a.updateset[i].Comm)
+                        </td>
+
+
+                    </tr>
+                }
+            </tbody>
+           
+
+
+
+        </table>
+    </div>
+}
+
+<script>
+    function otpsend1() {
+
+
+           var id = $('#idnoset').val();
+           var com = $('#Commset').val();
+           var role = $('#RoleSet').val();
+        var email = $('#EMailSet').val();
+
+
+        $.ajax({
+            url:   '@Url.Action("updatesetpccomm", "Home")',
+
+            type: 'POST',
+            data: { id: id, comm: com, roles: role, Emails: email },
+
+        dataType: "JSON",
+
+
+        })
+        $('#btnsubmitusercommon').hide();
+        $('#btnEdit').show();
+
+        $('#tbodyshow').show();
+        $('#tbodyeditAll').show();
+        $('#tbodyedit').hide();
+
+  
+        document.getElementById('text12').innerHTML = com;
+    
+
+    }
+
+
+
+</script>
+
+
+<script>
+    function OnSuccess() {
+        $('#btnsubmit').hide();
+        $('#btnEdit').show();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.second-design .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>
+
+@*<script>
+        $('.third-design .third-design-table tbody td').mouseenter(function () {
+            var colIndex = $(this).parent().children().index($(this)) + 1;
+            var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+            $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+            $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+            $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        });
+
+        $('.third-design .third-design-table tbody td').mouseleave(function () {
+            var colIndex = $(this).parent().children().index($(this)) + 1;
+            var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+            $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+            $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+            $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+        });
+    </script>*@
+
+<script>
+    $('.for-select2').select2();
+</script>
+<script>
+    checkcomm = (e) => {
+        var userid = $('#ddlUserId').val();
+        if (userid != "") {
+            $('#txtvalheader').text("Status " + e);
+            $('#txtmaster').val(userid)
+            $('#exampleModal').modal()
+        }
+    }
+</script>
+<script>
+        function OnSuccess1(data) {
+            $('#btnsubmituser').hide();
+            $('#btnsubmitusercommon').hide();
+            $('#btnEdit').show();
+            var chk = '@Model.role';
+            if (chk == "Retailer") {
+                $('#retailerdrop').show();
+                $('#allshow').hide();
+            }
+            else {
+                $('#retailerdrop').hide();
+                $('#allshow').show();
+            }
+        }
+        function onfailed(error) {
+            alert(error.responseText);
+        }
+</script>
+<script>
+        function OnSuccess1M(data) {
+            $('#btnsubmituser').hide();
+            $('#btnsubmitusercommon').hide();
+            $('#btnEdit').show();
+            $('.modal-backdrop.in').hide();
+           // $('#exampleModal').modal('hide');
+            var chk = '@Model.role';
+            if (chk == "Retailer") {
+                $('#retailerdrop').show();
+                $('#allshow').hide();
+            }
+            else {
+                $('#retailerdrop').hide();
+                $('#allshow').show();
+            }
+        }
+</script>
+
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>
+

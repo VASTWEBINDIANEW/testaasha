@@ -1,0 +1,83 @@
+﻿@model Vastwebmulti.Areas.ADMIN.ViewModel.GetAllDeviceinfo
+@{
+    Layout = null;
+}
+
+
+<thead>
+    <tr>
+        <th>Device&nbsp;ID</th>
+        <th>Plan&nbsp;Name</th>
+        <th>
+            @if (Model.msg != "DONE")
+            {
+                <label style="color:red;">@Model.msg</label>
+            }Firm&nbsp;Name
+        </th>
+        <th>Mobile</th>
+        <th>Inserted&nbsp;Date</th>
+        <th>Start&nbsp;Date</th>
+        <th>Expire&nbsp;Date</th>
+        <th>Remain&nbsp;Days</th>
+        <th>Charge&nbsp;Type</th>
+        <th>Edit</th>
+
+    </tr>
+</thead>
+
+<tbody id="body">
+
+    @foreach (var item in Model.devicelist)
+    {
+        string paymenttype = "";
+        int totalremainday = 0;
+        System.TimeSpan diffResult;
+        if (item.expdate == null)
+        {
+            paymenttype = "Full Payment Mode";
+
+        }
+        else
+        {
+            diffResult = item.expdate.Value - DateTime.Now.Date;
+            if (diffResult.Days < 1)
+            {
+                paymenttype = "Full Payment";
+
+            }
+            else
+            {
+                paymenttype = "";
+                totalremainday = diffResult.Days;
+            }
+        }
+
+        <tr class="tr">
+            <td>@item.deviceid</td>
+            <td>@item.planname</td>
+            <td>@item.Frm_Name </td>
+            <td>@item.Mobile</td>
+            <td>@item.inseteddate</td>
+            <td>@item.startdate</td>
+            <td>@item.expdate</td>
+            <td>
+                @if (paymenttype == "")
+                {
+                    <span>@totalremainday</span>
+                }
+                else
+                {
+                    <span>@paymenttype</span>
+
+                }
+            </td>
+            <td>@item.chargetype</td>
+            <td>
+                <button type="button" class="switch-edit-button" onclick="Editbyamount(@item.idno)">
+                    Edit
+                </button>
+            </td>
+        </tr>
+    }
+
+</tbody>

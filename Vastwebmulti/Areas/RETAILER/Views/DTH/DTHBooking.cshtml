@@ -1,0 +1,289 @@
+﻿@{
+    ViewBag.Title = "DTHBooking";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content" style="margin:90px 0px 0px 0px; overflow-x:hidden;">
+    <div class="row clearfix">
+       <div class="col-md-8">
+@using (Html.BeginForm("DoPayment", "DTH", FormMethod.Post))
+{
+            <div class="card">
+                <div class="header">
+                    <h2>
+                       <span style="font-size:21px;">&#128225;</span>   DTH  CONNECTION
+                    </h2>
+                  </div>
+                 <div class="row">
+                    <div class="body">
+                        <div class="col-md-6">
+                            <label for="email_address">Service Provider</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <select class="selectpicker form-control" data-live-search="true" name="ConOpt" id="ConOpt" required="">
+                                        <option>-- Select Operator --</option>
+                                        <option value="ATK">Airtel Digital TV</option>
+                                        <option value="DTK">Dish TV</option>
+                                        <option value="TTK">Tata Sky</option>
+                                        <option value="VTK">Videocon d2h</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="setbox">Set Top Box</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <select class="form-control" data-live-search="true" name="STB" id="STB" required=""></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="package">Package</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <select class="form-control" data-live-search="true" name="ddlPackage" id="ddlPackage" required=""></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="amount">Price</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" name="packageAmt" id="packageAmt" class="form-control" readonly="readonly" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fullname">Full Name</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" name="txtName" id="txtName" class="form-control" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                             <label for="mobileno">Mobile Number</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" name="txtMobile" id="txtMobile" class="form-control" required="" onkeypress="return isNumber(event)" maxlength="10">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="pincode">Pincode</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" name="txtPIN" id="txtPIN" class="form-control" required="" onkeypress="return isNumber(event)" maxlength="6">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="address">Address</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <textarea name="customerAddress" id="customerAddress" class="form-control" rows="3" placeholder="Enter Installation Address " style="height:34px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-info">Proceed To Pay</button>
+                            <a href="~/RETAILER/Home/Index" class="btn btn-primary">Back To Home</a>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+}
+        </div>
+        <div class="col-md-4">
+            <center>
+                <img src="~/offerimg/A1.png" class="img-responsive" />
+            </center>
+        </div>
+    </div>
+    </section>
+
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!--Swal alert script-->
+<script type="text/javascript">
+    var output = '@TempData["Output"]';
+    var OutputMessage = '@TempData["OutputMessage"]';
+    if (output == "Success") {
+        //alert(OutputMessage);
+        swal("Wow...", OutputMessage, "success");
+    }
+    if (output == "Failed") {
+        swal("Oops...", OutputMessage, "error");
+    }
+</script>
+<!--Service Provider Javascript-->
+<script>
+    var OptDetails = [];
+    $("#ConOpt").on("change", function () {
+
+        var Opt = $(this).val();
+        var url = '@Url.Action("GetPackageDetails","DTH")';
+        var UniqueSetTopBox = [];
+        $.post(url, { Code: Opt }, function (data) {
+
+
+            var respo = JSON.parse(data);
+              //OptDetails = JSON.parse(data);
+            $("#STB").parent().show();
+            $("#ddlPackage").parent().show();
+
+            var options = "";
+            //////////////////    Remove dupligates  ////////////////////////
+            $.each(respo.data.sub_services, function (index, item) {
+                OptDetails.push(item);
+             if ($.inArray(item.parent_name, UniqueSetTopBox) == -1) {
+                    UniqueSetTopBox.push(item.parent_name);
+               
+                }
+
+
+            });//////////////////    END  ////////////////////////
+
+            //////////////////    SET TOP BOX  ////////////////////////
+            $.each(UniqueSetTopBox, function (index, item) {
+
+                options = options + '<option value="' + item + '">' + item + '</option>';
+       
+            });
+
+            $("#STB").html(options);
+
+            //////////////////    plan or package  ////////////////////////
+            options = "<option> -- Select Package -- </option>";
+            $.each(OptDetails, function (index, item) {
+                if (item.parent_name == $("#STB").val()) {
+                    options = options + '<option value="' + item.package_key + '|' + item.amount + '">' + item.sub_product + '</option>';
+                }
+
+            });
+
+            $("#ddlPackage").on("change", function () {
+                var djfnvd = $(this).val();
+                var tukdey = djfnvd.split('|');
+
+                $("#packageAmt").val(tukdey[1]);
+            });
+
+            $("#ddlPackage").html(options);
+
+
+
+
+
+
+        }, 'json');
+    });
+    //alert(OptDetails.ipay_errordesc);
+</script>
+<!--Only digit script-->
+<script>
+function isNumber(evt) {
+evt = (evt) ? evt : window.event;
+var charCode = (evt.which) ? evt.which : evt.keyCode;
+if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+return false;
+}
+return true;
+}
+</script>
+<!--Mobile and Pincode Validation script-->
+<script>
+    $(document).ready(function (e) {
+       /*Mobile validation*/ 
+        $("#txtMobile").on('keypress keyup blur', function(e)
+        {
+              var k = e.keyCode||e.which;
+            var id = $(this)[0].id;
+            var str = $(this)[0].value;
+            var length = str.length;
+            if(e.type == 'keypress')
+            {
+                if(k != 8 && k != 9)
+                {
+                    k = String.fromCharCode(k);
+                    var regex=/[0-9]/;
+                    if(!regex.test(k))
+                    {
+                        return false;
+                    }
+				
+                    if(length <= 0)
+                    {
+                        regex=/[6-9]/;
+                        if(!regex.test(k))
+                        {
+                            return false;
+                        }
+                    }
+
+                    if(length == 10)
+                    {
+                        return false;
+                    }				
+                }
+			
+                if(length >= 1)
+                {
+                    error({'id':id, 'action':'remove'});
+                }						
+                return true;
+            }
+            else if(e.type == 'blur')
+            {
+                validate({'id':id,'type':'MOBILE','data':str});
+            }
+        });
+        /*Pincode Validation*/
+        $("#txtPIN").on('keypress keyup blur', function (e) {
+            var k = e.keyCode || e.which;
+            var id = $(this)[0].id;
+            var str = $(this)[0].value;
+            var length = str.length;
+            if (e.type == 'keypress') {
+                if (k != 8 && k != 9) {
+                    k = String.fromCharCode(k);
+                    var regex = /[0-9]/;
+                    if (!regex.test(k)) {
+                        return false;
+                    }
+
+                    if (length <= 0) {
+                        regex = /[1-9]/;
+                        if (!regex.test(k)) {
+                            return false;
+                        }
+                    }
+
+                    if (length == 6) {
+                        return false;
+                    }
+                }
+
+                if (length >= 1) {
+                    error({ 'id': id, 'action': 'remove' });
+                }
+                return true;
+            }
+            else if (e.type == 'blur') {
+                validate({ 'id': id, 'type': 'PINCODE', 'data': str });
+            }
+        });
+    });
+</script>
+
+

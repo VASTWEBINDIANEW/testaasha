@@ -1,0 +1,287 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Whitelabel_WalletToBankAmountTransferRequestsToAdmin>
+@{
+    ViewBag.Title = "WalletUnloadReportWhitelabel";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+
+
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .btn-group, .btn-group-vertical {
+        box-shadow: none;
+    }
+
+    .ppp {
+        margin-top: -20px !important;
+    }
+
+    .form-inline .bootstrap-select.btn-group, .form-horizontal .bootstrap-select.btn-group, .form-group .bootstrap-select.btn-group {
+        height: 29px;
+    }
+</style>
+<style>
+    .slab-setting-menu li a.activee {
+
+    background:linear-gradient(to right, @PageData["Globalfirst"],@PageData["GlobalSecond"]);
+
+    }
+.web-white-filter .dt-buttons a.buttons-excel{
+    display:none;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-3">
+
+                            @Html.Partial("_partial_unload_wallet")
+                        </div>
+                        <div class="col-md-4">
+
+
+
+                            @using (Ajax.BeginForm("AddWalletToBankRequest", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailed" }))
+                            {
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group" style="">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                <input class="form-control" id="Amount" name="Amount" onkeypress="return isNumber(event)" placeholder="Enter Value" required="required" style="padding-top:4px;height:32px;" type="text">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4" style="padding:0px;">
+                                        <div class="form-group" style="">
+                                            <div class="" style="border:1px solid #dddddd;">
+                                                <select id="Type" name="Type" class="form-control" required="" style="height:32px;-webkit-appearance:none;-moz-appearance:textfield;">
+                                                    <option value="General">General</option>
+                                                    <option value="Tatkal">Tatkal</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="submit" id="submit" class="btn  waves-effect" style="width:100%; height:34px;border:1px solid #c7c2c2;background:transparent;" onclick="return confirm('Are you sure to unload this amount from wallet into your bank account?');">
+
+                                                <span style="color:black;">Transfer</span>
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+
+                        </div>
+                        <div class="col-md-4">
+                            @using (Html.BeginForm("WalletUnloadReportWhitelabel", "Home", FormMethod.Post))
+                            {
+                                <div class="">
+
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-9" style="padding:0px;">
+                                                <div class="form-group for-web-date" style="margin-bottom:0px;width:100%;">
+                                                    <div class="input-daterange input-group">
+                                                        <div class="custom-date-icon" style="height: 34px;">
+                                                            <i class="fa fa-calendar tmw-total-color-one" aria-hidden="true" style="color: #46c837;"></i>
+                                                        </div>
+                                                        @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; height:34px;padding-left:20px;", autocomplete = "off" })
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-exchange" style="padding-top:5px;"></i>
+                                                        </span>
+                                                        <div class="custom-date-icon" style="height: 34px;">
+                                                            <i class="fa fa-calendar tmw-total-color-one" aria-hidden="true" style="color: #46c837;"></i>
+                                                        </div>
+                                                        @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;height:34px;padding-left:20px;", autocomplete = "off" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <center>
+                                                    <button type="submit" class="btn  waves-effect" style="  height:34px;border:1px solid #c7c7c7;background:transparent;">
+
+                                                        <span style="top:-2px;color:black;">Search</span>
+                                                    </button>
+                                                </center>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-1">
+                            <div class="web-white-filter" style="float:right;">
+                                <table class="dataTable js-exportable ">
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div style="margin-top:-26px;">
+                        <div class="table-responsive   web-white-table" style="position:inherit;padding:0px">
+                            <table id="example" class="table table-bordered table-striped   ">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Bank&nbsp;Name</th>
+                                        <th>Bank&nbsp;Account</th>
+                                        <th>Ifsc&nbsp;Code</th>
+                                        <th>₹&nbsp;Value</th>
+                                        <th>₹&nbsp;Charge</th>
+                                        <th>Type</th>
+                                        <th>Remain&nbsp;Pre</th>
+                                        <th>Remain&nbsp;Post</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Wallet&nbsp;Type</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in Model)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.BankName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.BankAccount)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.IfscCode)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.ProcessingCharge)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TransferType)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.RemPre)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.RemPost)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.RequestDate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.type)</td>
+                                        </tr>
+                                    </tbody>
+                                }
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/Scripts/PageScript/Retailer/FundRecive.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+<!--Calendar Javascript-->
+<script>
+    $(document).ready(function()
+    {
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        var succ = '@ViewData["success"]';
+        var error = '@ViewData["error"]';
+        if (succ != null && succ != "")
+        {
+            swal("Good job!", succ,"success");
+        }
+        if (error != null && error != "")
+        {
+            swal("Oops!", error, "error");
+        }
+
+    });
+    function OnSuccess(data)
+    {
+        var respose = JSON.parse(data);
+        console.log(data);
+        if (respose.status == "Success")
+        {
+            swal("Good job!", respose.Message, "success");
+        } else if (respose.status == "Failed") {
+            swal("Oops!", respose.Message, "error");
+        }
+        setTimeout(function () {
+            location.reload();
+        }, 2000);
+    }
+    function OnFailed()
+    {
+        swal("Oops!", "Internal Error,contact to admin", "error");
+    }
+</script>
+
+
+
+
+
+

@@ -1,0 +1,158 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.PostpaidUtilitySlab
+@using (Ajax.BeginForm("_common_utility_comm", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+{
+    <style>
+        .abc11 {
+            outline: none !important;
+            padding: 4px 8px;
+            margin: auto;
+            height: auto;
+            display: flow-root;
+            background: rgb(255 255 255 / 95%);
+            border-radius: 2px;
+            border: 1px solid #cbc4c4;
+            color: var(--main-bg-lcolor);
+            margin: 0px;
+            width: 100%;
+        }
+            .abc11:hover {
+                background: rgb(239 239 239 / 97%);
+            }
+    </style>
+    <input id="btnsubmit" type="submit" value="Save Data" class="btn btnsubmit-custom  waves-effect" style="display:none;" />
+    <div class=" slab-table">
+        <table class="table table-bordered third-design-table" style="margin:0px;">
+            <thead class="navbar" style="position:initial;">
+                <tr>
+                    <th>Operator&nbsp;Name</th>
+                    <th class="table-select thdesign-secondcl">
+                        <span class="for-slab-b">
+                            <span>Operator&nbsp;Type</span>
+                            <div class="utility-slab-select">
+                                @Html.DropDownList("ddlOPttype", Model.OPttype.Distinct(), new { @class = "form-control", @onchange = "ddlopttypeChange()" })
+                            </div>
+                        </span>
+                    </th>
+                    <th>Master&nbsp;(M/D)</th>
+                    <th>Distributor</th>
+                    <th>Retailer </th>
+                    <th>Api User</th>
+                    <th>Whitelabel</th>
+                    @*<th>Retailer > Common</th>*@
+                    
+                </tr>
+                <tr style=" background: floralwhite;">
+                    <th></th>
+                    <th></th>
+                    <th colspan="3" style=" text-align: center;">
+                        <button onclick="extraretailer()" class="abc11">Reduce Commission by Categsory</button>
+                    </th>
+                    <th>
+                        <button onclick="extraapi()" class="abc11">Reduce..</button>
+                    </th>
+                    <th>
+                        <button  class="abc11">Reduce..</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tbodyshow">
+                @foreach (var item in Model.common)
+                {
+                    <tr>
+                        <td><p>@item.OperatorName</p></td>
+                        <td><p>@item.opttype</p></td>
+                        <td>@item.mastercomm</td>
+                        <td>@item.dlmcomm</td>
+                        <td>@item.dlm_rem_comm</td>
+                        <td>@item.apicomm</td>
+                        <td>@item.whitelabelcomm</td>
+                        @*<td>@item.retailercomm</td>*@
+                    </tr>
+                }
+            </tbody>
+            <tbody id="tbodyedit" style="display:none;">
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="Reduce Comm by Categsory" class="btn btn-default" onclick="commonreplace()" style="background: #fbb773 !important; color: #000;width:100% !important;" />
+                    </td>
+                    <td>
+                        <input type="text" id="common1" placeholder="Master Comm" />
+                    </td>
+                    <td>
+                        <input type="text" id="common2" placeholder="Distributor Comm" />
+                    </td>
+                    <td>
+                        <input type="text" id="common3" placeholder="Retailer Comm"  />
+                    </td>
+                    <td>
+                        <input type="text" id="common4" placeholder="Api Comm" />
+                    </td>
+                    <td>
+                        <input type="text" id="common5" placeholder="Whitelabel Comm" />
+                    </td>
+                </tr>
+                @for (int i = 0; i < Model.common.Count; i++)
+                {
+                <tr>
+                    @Html.HiddenFor(a => a.common[i].idno)
+                    <td>
+                        @Html.DisplayFor(a => a.common[i].OperatorName)
+                    </td>
+                    <td>
+                        
+                        @Html.DisplayFor(a => a.common[i].opttype)
+                    </td>
+                    <td style=" width: 10%; text-align: center;">
+                        @Html.EditorFor(a => a.common[i].mastercomm, new { htmlAttributes = new { @style = "width:100%; border:1px solid #ccc; text-align:center;", @class="commonmaster" } })
+                        @Html.ValidationMessageFor(a => a.common[i].mastercomm)
+                    </td>
+                    <td style=" width: 10%; text-align: center;">
+                        @Html.EditorFor(a => a.common[i].dlmcomm, new { htmlAttributes = new { @style = "width:100%; border:1px solid #ccc; text-align:center;", @class = "commondlm" } })
+                        @Html.ValidationMessageFor(a => a.common[i].dlmcomm)
+                    </td>
+                    <td style=" width: 10%; text-align: center;">
+                        @Html.EditorFor(a => a.common[i].dlm_rem_comm, new { htmlAttributes = new { @style = "width:100%; border:1px solid #ccc; text-align:center;", @class = "commonrem" } })
+                        @Html.ValidationMessageFor(a => a.common[i].dlm_rem_comm)
+                    </td>
+                    <td style=" width: 10%; text-align: center;">
+                        @Html.EditorFor(a => a.common[i].apicomm, new { htmlAttributes = new { @style = "width:100%; border:1px solid #ccc; text-align:center;", @class = "commonapi" } })
+                        @Html.ValidationMessageFor(a => a.common[i].apicomm)
+                    </td>
+                    <td style=" width: 10%; text-align: center;">
+                        @Html.EditorFor(a => a.common[i].whitelabelcomm, new { htmlAttributes = new { @style = "width:100%; border:1px solid #ccc; text-align:center;", @class = "commonwhite" } })
+                        @Html.ValidationMessageFor(a => a.common[i].whitelabelcomm)
+                    </td>
+                </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+}
+
+
+<script>
+    function OnSuccess() {
+        $('#btnsubmit').hide();
+        $('#btnEdit').show();
+    }
+</script>
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

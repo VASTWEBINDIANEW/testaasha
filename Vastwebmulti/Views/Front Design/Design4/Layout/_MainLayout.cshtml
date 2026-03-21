@@ -1,0 +1,1088 @@
+﻿<!DOCTYPE html>
+@using Vastwebmulti.Models;
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>@ViewBag.compnay</title>
+    @{
+        var favimage = "";
+        VastwebmultiEntities db2 = new VastwebmultiEntities();
+        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+        if (faviconlogo.Count() > 0)
+        {
+            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+            {
+                favimage = faviconlogo.SingleOrDefault().faviconimage;
+            }
+        }
+        else
+        {
+            <link rel="icon" href="" type="image/x-icon" />
+        }
+        var admindetail = db2.Admin_details.ToList();
+        var mailid = admindetail.SingleOrDefault().email;
+        var mobile = admindetail.SingleOrDefault().mobile;
+        var Address = admindetail.SingleOrDefault().Address;
+        var Firm_Name = admindetail.SingleOrDefault().Companyname;
+        var SupportMail = admindetail.SingleOrDefault().email1;
+        var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
+        var PinCode = admindetail.SingleOrDefault().pincode;
+
+        int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
+        int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
+        var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
+        var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+
+        var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+        var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+        var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+
+    }
+    <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/fonticons.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/fonts/stylesheet.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/jquery.fancybox.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/plugins.css" />
+    <link rel="stylesheet" href="~/MainFrontDesign/css/style.css">
+    <link rel="stylesheet" href="~/MainFrontDesign/css/responsive.css" />
+    <link href="~/CSS/model.css" rel="stylesheet" />
+    <link href="~/MainFrontDesign/css/slick.css" rel="stylesheet" />
+
+
+    <link href="~/MainFrontDesign/css/Custom-style.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+    <script src="~/MainFrontDesign/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    @if (!HttpContext.Current.Request.IsLocal)
+    {
+        <!-- To Disable Inspect Element -->
+        <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+    }
+    @{
+        var selectedcolor = "";
+        var menucolor = "";
+        VastwebmultiEntities db1 = new VastwebmultiEntities();
+        var allcolor = db1.tblMenuColors.ToList();
+        if (allcolor.Count > 0)
+        {
+            selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+            menucolor = allcolor.SingleOrDefault().MenuColor;
+        }
+        else
+        {
+            selectedcolor = "Green";
+            menucolor = "White";
+        }
+
+        //var selectedcolor = allcolor.SingleOrDefault().SelectedColor;
+        //var menucolor = allcolor.SingleOrDefault().MenuColor;
+    }
+    <style type="text/css">
+             .for-blink{color:#fff;
+		animation: blink 2s linear infinite;
+        }
+        @@keyframes blink{
+        0%{color: #fff;}
+        50%{color: Yellow;}
+        100%{color: red;}
+        }
+        .main_menu_bg .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus
+        {
+          color:@selectedcolor;
+          padding-bottom:8px;
+
+          border-bottom:2px solid var(--main-bg-lcolor);
+          background:transparent;
+        }
+        .main_menu_bg .navbar-nav>li>a
+        {
+
+        text-transform:uppercase;
+        font-size:0.875rem;
+        color:@menucolor;
+        font-family:'robotoblack';
+        }
+        .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus
+        {
+        color:@selectedcolor;
+        }
+        .popover-content p{
+            color:#000;
+        }
+
+
+    </style>
+    <style>
+        /*third design*/
+        .Header-section header {
+            background: #000;
+            width: 200px;
+            position: fixed;
+            -webkit-transition: all 0.3s;
+            -o-transition: all 0.3s;
+            transition: all 0.3s;
+            height: 100vh;
+        }
+
+            .Header-section header .navbar-nav > li {
+                width: 100%;
+            }
+
+            .Header-section header .navbar-brand {
+                height: auto;
+            }
+
+        .navbar-toggle.collapsed.my-button {
+            position: absolute;
+            right: -28px;
+            background: #000;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        header .navbar-right {
+            margin-top: 30px;
+            padding-left: 0px;
+            float: left !important;
+        }
+
+        .navbar-fixed-top.active .navbar-toggle.collapsed.my-button {
+            right: -70px;
+        }
+
+        .navbar-fixed-top.active {
+            margin-left: -200px;
+        }
+
+        .navbar-default .navbar-toggle .icon-bar {
+            background-color: #fff;
+        }
+
+        .main_menu_bg .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+            border-bottom: 0px;
+            padding-bottom: 15px;
+        }
+
+        .Header-section header .navbar-nav > li.active {
+            background: var(--main-bg-lcolor);
+        }
+
+        .navbar-default .custom-control-font .navbar-nav > li > a:hover, .navbar-default .custom-control-font .navbar-nav > li > a:focus {
+            color: #fff !important;
+        }
+
+        .custom-control-font .footer-social li a {
+            background: transparent;
+            color: inherit !important;
+        }
+
+        .footer-social {
+            padding: 0px;
+            margin-left: -20px;
+        }
+
+            .footer-social li i {
+                font-size: 20px;
+                border: 1px solid;
+                padding: 5px;
+                width: 30px;
+            }
+
+            .footer-social li {
+                margin-bottom: 10px;
+            }
+
+        .main_menu_bg .navbar-nav1 > li > a {
+            font-size: 14px !important;
+            padding: 10px 15px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            text-transform: uppercase;
+            line-height: 20px;
+            display: block;
+        }
+
+            .main_menu_bg .navbar-nav1 > li > a:hover {
+                background: var(--main-bg-lcolor);
+            }
+
+            .main_menu_bg .navbar-nav1 > li > a:hover {
+                background: transparent !important;
+            }
+
+        #footer {
+            margin-left: 200px;
+            -webkit-transition: all 0.3s;
+            -o-transition: all 0.3s;
+            transition: all 0.3s;
+            position: relative;
+            width: auto;
+            background: rgba(0,0,0,.8);
+        }
+
+            #footer.active {
+                margin-left: 0px;
+            }
+
+        .footer-service-four li ul li {
+            display: inline-block;
+            font-size: 17px !important;
+            margin: 0px 10px;
+        }
+
+        .footer-service-four li ul {
+            float: left;
+            margin-top: -1px;
+        }
+
+        .footer-service-four > li {
+            width: 100%;
+            float: left;
+            border-bottom: 2px dotted #fff;
+            margin-bottom: 10px;
+        }
+
+        .footer-service-four li h5 {
+            float: left;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        #footer::after {
+            background-image: url(../AdminDesign/images/pattern-second.png);
+            background-repeat: repeat;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        }
+
+        .four-footer-top {
+            background: url(../AdminDesign/images/footer-service-to.jpg)no-repeat top center;
+            background-size: cover;
+            padding: 50px;
+            margin-bottom: 20px;
+        }
+
+        @@media (max-width:767px) {
+            header .collapse {
+                display: block;
+                visibility: visible;
+            }
+
+            .Header-section header {
+                margin-left: -200px;
+            }
+
+            .navbar-toggle.collapsed.my-button {
+                right: -70px;
+            }
+
+            .navbar-fixed-top.active {
+                margin-left: 0px;
+            }
+
+                .navbar-fixed-top.active .navbar-toggle.collapsed.my-button {
+                    right: -28px;
+                }
+
+            .main_menu_bg .navbar-nav1 > li > a {
+                font-size: 13px !important;
+            }
+
+            header .navbar-default .navbar-collapse {
+                text-align: left;
+            }
+
+            #footer {
+                margin-left: 0px;
+            }
+
+            .four-footer-top {
+                padding: 20px;
+            }
+
+            .footer-service-four li h5 {
+                width: 22%;
+            }
+
+            .footer-service-four li ul {
+                width: 78%;
+            }
+
+                .footer-service-four li ul li {
+                    margin-left: 0px;
+                }
+
+                .footer-service-four li ul li {
+                    font-size: 15px !important;
+                }
+
+            .four-footer-top {
+                padding: 10px;
+            }
+
+            .main_footer {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    var col = "";
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "#da097d";
+    }
+    if (col == "")
+    {
+        col = "#da097d";
+    }
+    var color = col;
+
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var logoimage = "";
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    var vv = from tbl in db.tblMenus
+             where tbl.Status == "Y" && tbl.Role == "ADMIN"
+             select new
+             {
+                 tbl.MenuName
+             };
+    ViewBag.menuname = vv;
+
+
+
+    List<Vastwebmulti.JsonData.Hlp_TC_Privacy> people = new List<Vastwebmulti.JsonData.Hlp_TC_Privacy>();
+    JSONReadWrite readWrite = new JSONReadWrite();
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("PrivacyAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Privacy = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("OutHelpForAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var Help = people.ToList();
+
+    people = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.JsonData.Hlp_TC_Privacy>>(readWrite.Read("TnCAdmin.json", "~/Areas/ADMIN/Models/JsonData/"));
+    var TC = people.ToList();
+
+    var Great_Help_News = db.Message_top.Where(a => a.users == "Outer").ToList();
+
+    var statuschkGreat = Great_Help_News.Where(aa => aa.name == "Great News" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+    var statuschkNeed = Great_Help_News.Where(aa => aa.name == "Need Help" && aa.status == "Y" && aa.users == "Outer").FirstOrDefault();
+
+    JSONReadWrite readWrit1e = new JSONReadWrite();
+    dynamic people1 = Newtonsoft.Json.JsonConvert.DeserializeObject(readWrit1e.Read("LogoBackgroundColor.json", "~/Areas/ADMIN/Models/JsonData/"));
+    string logoBgColor = people1.ColorCode;
+}
+<body data-spy="scroll">
+    @*<div class='preloader'><div class='loaded'>&nbsp;</div></div>*@
+    @*Header Section Start*@
+    <section class="Header-section">
+        <header class="navbar-fixed-top">
+            <div class="main_menu_bg">
+                <nav class="navbar navbar-default">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <button type="button" class="navbar-toggle collapsed my-button" data-toggle="collapse" aria-expanded="false" style="display:block;">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <div class="collapse navbar-collapse custom-control-font">
+                                <ul class="nav1 navbar-nav1 navbar-right">
+                                    <li style="display:inline-block;">
+                                        <a class="navbar-brand site-logo" href='@Url.Action()'>
+                                            <img src="@Url.Content("~/"+@logoimage)" class="img-responsive" style="background-color:@logoBgColor;padding:2px;" />
+                                            @* <img src="http:/~.in/Outside_logo/3607f5b0-e684-48c0-80df-90dc063156ff_1af0efba-1a03-42f4-8db9-239b7695c0cf_try.png" alt="site logo" />*@
+                                        </a>
+                                    </li>
+                                    <li><a href='@Url.Action()'><img src="~/AdminDesign/images/home-nav.svg" style="width:14px;margin-top:-1px;" />&nbsp;home</a></li>
+                                    <li><a href='#our-app'><img src="~/AdminDesign/images/android-menu.svg" style="width:14px;margin-top:-1px;" />&nbsp;Android</a></li>
+                                    <li><a href="#ABOUT"><img src="~/AdminDesign/images/about-nav.svg" style="width:14px;margin-top:-1px;" />&nbsp;about</a></li>
+                                    <li><a href="#SERVICES"><img src="~/AdminDesign/images/service-nav.svg" style="width:14px;margin-top:-1px;" />&nbsp;service</a></li>
+                                    @*<li><a href="#PRODUCTS">product</a></li>*@
+                                    @if (Card != "Y")
+                                    {
+                                        <li><a href="#CARDS">cards</a></li>
+                                    }
+                                    @if (Travel != "Y")
+                                    {
+                                        <li><a href="#TRAVEL">travel</a></li>
+                                    } @*<li><a href="#CONTACTUS">contact us</a></li>*@
+                                    <li><a href="#WHYCHOOSEUS"><img src="~/AdminDesign/images/why-nav.svg" style="width:14px;margin-top:-1px;" />&nbsp;why choose us</a></li>
+
+
+                                    @*@foreach (var item in ViewBag.menuname)
+        {
+            <li><a href="#@item.MenuName">@item.MenuName</a></li>
+        }*@
+                                    <li><a href='@Url.Action("Login","Home",new { id="singin" })'><span style="background: #fff; padding: 3px 10px; color: #000; width: 100%; float: left; text-align: center; margin-top: -17px;">LOGIN</span></a></li>
+                                    @*<li><a href='@Url.Action("Login","Home",new { id="singup" })'><span style="background:#fff;padding: 3px 8px;border-radius: 40px;color:var(--main-bg-rcolor);">SIGN&nbsp;UP</span></a></li>*@
+                                    @*<li><a href='@Url.Action("Login","Home")'>LOGIN / SIGNUP</a></li>*@
+                                </ul>
+                                <ul class="footer-social">
+                                    @if (ViewBag.Afac != "")
+                                    {
+                                        <li><a href="@ViewBag.Afac" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><i class="fa fa-facebook" aria-hidden="true"></i></li>
+                                    }
+
+
+                                    @if (ViewBag.Atwi != "")
+                                    {
+                                        <li><a href="@ViewBag.Atwi" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><i class="fa fa-twitter" aria-hidden="true"></i></li>
+                                    }
+
+
+                                    @if (ViewBag.AInstagra != "")
+                                    {
+                                        <li><a href="@ViewBag.AInstagra" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><i class="fa fa-instagram" aria-hidden="true"></i></li>
+                                    }
+
+
+                                    @if (ViewBag.Alinked != "")
+                                    {
+                                        <li><a href="@ViewBag.Alinked" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><i class="fa fa-linkedin" aria-hidden="true"></i></li>
+                                    }
+
+
+                                    @if (ViewBag.APinteres != "")
+                                    {
+                                        <li><a href="@ViewBag.APinteres" target="_blank"><i class="fa fa-pinterest-p" aria-hidden="true"></i></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><i class="fa fa-pinterest-p" aria-hidden="true"></i></li>
+                                    }
+
+
+                                    @if (ViewBag.AYoutub != "")
+                                    {
+                                        <li><a href="@ViewBag.AYoutub" target="_blank"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><i class="fa fa-youtube-play" aria-hidden="true"></i></li>
+                                    }
+
+
+                                    @if (ViewBag.ABlogge != "")
+                                    {
+                                        <li><a href="@ViewBag.ABlogge" target="_blank"><i class="fa fa-rss" aria-hidden="true"></i></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><i class="fa fa-rss" aria-hidden="true"></i></li>
+                                    }
+
+
+                                    @if (ViewBag.ATumbl != "")
+                                    {
+                                        <li><a href="@ViewBag.ATumbl" target="_blank"><i class="fa fa-tumblr" aria-hidden="true"></i></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><i class="fa fa-tumblr" aria-hidden="true"></i></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+    </section>
+    @*Header Section End*@
+
+
+    @RenderBody()
+
+    @*Footer Section Start*@
+    <section id="footer" class="footer_widget bottom-footer ">
+        <div class="four-footer-top">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 custom-control-font">
+                    <h3>Services</h3>
+                    <div>
+                        <ul class="footer-service-four">
+                            <li>
+                                <h5>Prepaid :-</h5>
+                                <ul>
+
+                                    <li>Airtel</li>
+                                    <li>Idea</li>
+                                    <li>Jio</li>
+                                    <li>Vodafone</li>
+                                    <li>BSNL</li>
+                                    <li>MTNL</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <h5>DTH :-</h5>
+                                <ul>
+                                    <li>Airtel Dth</li>
+
+                                    <li>Dish Tv</li>
+                                    <li>Tata Sky</li>
+                                    <li>Videocon D2h</li>
+                                    <li>Sun Tv</li>
+
+                                </ul>
+                            </li>
+                            <li>
+                                <h5>Utilities :-</h5>
+                                <ul>
+                                    <li>Postpaid</li>
+                                    <li>Landline</li>
+                                    <li>Broadband</li>
+                                    <li>Electricity</li>
+                                    <li>Gas</li>
+                                    <li>Water</li>
+                                    <li>Cable Tv</li>
+                                    <li>Insurance</li>
+                                    <li><span class="for-blink">Fastag</span></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <h5>Financial :-</h5>
+                                <ul>
+                                    @*<li>Money Transfer</li>*@
+
+                                    <li>AEPS</li>
+                                    <li>m-Pos&nbsp;(micro ATM)</li>
+                                    <li>Pancard</li>
+
+
+                                </ul>
+                            </li>
+                            @if (Travel != "Y")
+                            {
+                                <li>
+
+                                    <h5>Travels & Hotel</h5>
+                                    <ul>
+                                        <li>Flight Booking</li>
+                                        <li>Bus Booking</li>
+                                        <li>Hotel Booking</li>
+
+                                    </ul>
+
+                                </li>
+                            }
+                            <li>
+                                <h5>Others :-</h5>
+                                <ul>
+                                    @if (Card != "Y")
+                                    {
+                                        <li>Digital Gift Cards</li>
+
+                                    }
+                                    <li>Security</li>
+                                    <li>Ecommerce</li>
+                                    <li>Services</li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-4 col-xs-12 custom-control-font">
+                <h3>Location</h3>
+                <div class="for-fotter-b">
+                    <ul class="full-address">
+
+
+
+                        <li class="footer-phone">
+                            <h4 style="font-size:18px;">
+                                <img src="~/AdminDesign/images/customer-support.svg" style="width:20px;" />&nbsp;24&nbsp;x&nbsp;7 Customer Care
+                            </h4>
+                            <a href="tel:+91+@CustCareNo" style="letter-spacing: 2px;">
+                                <img src="~/AdminDesign/images/india.svg" style="width: 30px;padding: 0px 4px;background: #fff;border-radius: 3px;" />&nbsp;@CustCareNo
+                            </a>
+                        </li>
+                        <li class="footer-phone">
+                            <h4 style="font-size:18px;margin-top: 10px;">
+                                <img src="~/AdminDesign/images/chat-box.svg" style="width:20px;" />&nbsp;24&nbsp;x&nbsp;7 Support Email Id
+                            </h4>
+                            <a href="mailto:@SupportMail" style="font-size:20px;">@SupportMail</a>
+                        </li>
+                        <li class="footer-phone">
+                            <h4 style="font-size:18px;margin-top: 10px;">
+                                <img src="~/AdminDesign/images/address-home.svg" style="width:20px;" />&nbsp; Office Address
+                            </h4>
+                            <p id="paddress" style="font-size:16px;font-weight:600;color:#fff;margin-top:15px;"></p>
+
+                        </li>
+                        <li class="footer-phone">
+                            <h4 style="font-size:18px;margin-top: 10px;">
+                                <img src="~/AdminDesign/images/zip.svg" style="width:20px;" />&nbsp; zip Code
+                            </h4>
+                            <p style="font-size:18px;font-weight:600;">@PinCode</p>
+                        </li>
+                        <li class="footer-phone">
+                            <h4 style="font-size:18px;margin-top: 10px;">
+                                <img src="~/AdminDesign/images/area-pin.svg" style="width:20px;" />&nbsp; City&nbsp;&&nbsp;State
+                            </h4>
+                            <p id="pcity" style="font-size:18px;font-weight:600;"></p>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12 custom-control-font">
+                <h3>News&nbsp;&&nbsp;Updates</h3>
+                <div class="for-fotter-b">
+                    <div class="footer-news">
+                        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                            <div class="">
+                                <div class="item-one-1 active">
+                                    @if (statuschkGreat != null)
+                                    {
+                                        <h2 class="news">
+                                            <img src="~/AdminDesign/images/great-news.svg" style="width:16px;margin-top:2px;margin-left:12px;" /> @statuschkGreat.name
+
+                                        </h2>
+                                        <span>
+                                            @statuschkGreat.message
+                                        </span>
+                                    }
+                                </div>
+                                <div class="item-two-2">
+                                    @if (statuschkNeed != null)
+                                    {
+                                        <h2 class="help">
+                                            <img src="~/AdminDesign/images/question.svg" style="width:16px;margin-top:2px;margin-left:12px;" />  @statuschkNeed.name
+                                        </h2>
+                                        <span>
+                                            @statuschkNeed.message
+                                        </span>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+            <div class="col-md-4 col-sm-4 col-xs-12 custom-control-font">
+                <h3>badges</h3>
+                <div class="for-fotter-b">
+                    @if (ViewBag.checkBadge != null)
+                    {
+                        <ul class="footer-social badges-footer">
+                            @if (ViewBag.AppfuturA != "")
+                            {
+                                <li><a href="@ViewBag.AppfuturA" target="_blank"><img src="~/AdminDesign/images/Appfutura.png" /></a></li>
+                            }
+
+                            @if (ViewBag.ApplancheA != "")
+                            {
+                                <li><a href="@ViewBag.ApplancheA" target="_blank"><img src="~/AdminDesign/images/applancher.png" /></a></li>
+                            }
+
+                            @if (ViewBag.BadusA != "")
+                            {
+                                <li><a href="@ViewBag.BadusA" target="_blank"><img src="~/AdminDesign/images/badush1.png" /></a></li>
+                            }
+
+                            @if (ViewBag.ExtracA != "")
+                            {
+                                <li><a href="@ViewBag.ExtracA" target="_blank"><img src="~/AdminDesign/images/extract-badge-black.png" /></a></li>
+                            }
+
+                            @if (ViewBag.GoodfirmA != "")
+                            {
+                                <li><a href="@ViewBag.GoodfirmA" target="_blank"><img src="~/AdminDesign/images/good-firms.png" /></a></li>
+                            }
+
+                            @if (ViewBag.MobileapA != "")
+                            {
+                                <li><a href="@ViewBag.MobileapA" target="_blank"><img src="~/AdminDesign/images/mobile-app.png" /></a></li>
+                            }
+
+                            @if (ViewBag.TrustpiloA != "")
+                            {
+                                <li><a href="@ViewBag.TrustpiloA" target="_blank"><img src="~/AdminDesign/images/trustpilot-posst-80-1a.png" /></a></li>
+                            }
+                            @if (ViewBag.FreelancerA != "")
+                            {
+                                <li><a href="@ViewBag.FreelancerA" target="_blank"><img src="~/AdminDesign/images/freelancer.png" /></a></li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div style="padding:10px;">
+                            <img src="~/AdminDesign/images/guarantee.svg" style="margin-top:5%;" />
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+
+        </div>
+        <div class="main_footer">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <ul class="right_menu list-inline">
+                        @*@if (Help.Count > 0)
+                            {
+                                <li><a id="Helpbutton">Help</a></li>
+                            }*@
+                        <li><a id="Helpbutton" style=" cursor:pointer;">Help</a></li>
+                        @*<li><a id="Tcbutton" style=" cursor:pointer;">Terms & Conditions</a></li>*@
+                        <li><a href="@Url.Action("termsconditions", "Home")" style="float:right;">Terms & Conditions</a></li>
+                        <li><a href="@Url.Action("privacy", "Home")" style="float:right;">Privacy</a></li>
+                        @*@if (TC.Count > 0)
+                            {
+                                <li><a id="Tcbutton">Terms & Conditions</a></li>
+                            }*@
+                        @*@if (Privacy.Count > 0)
+                            {
+                                <li><a id="Privacybutton">Privacy</a></li>
+                            }*@
+                    </ul>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="copyright_text text-right">
+                        <p>© 2019 - @DateTime.Now.Year All Rights Reserved | @Firm_Name </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="term-pop for-help-pop" style="display:none;">
+        <div class="term-pop-in">
+            <h2 class="help-foot-head">Help</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p id="helpContent"></p>
+        </div>
+
+    </div>
+    <div class="term-pop for-term-pop" style="display:none;">
+        <div class="term-pop-in" style="overflow-y:scroll;">
+            <h2 class="help-foot-head">Terms & Conditions</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p id="TcContent"></p>
+        </div>
+
+    </div>
+    <div class="term-pop for-privacy-pop" style="display:none;">
+        <div class="term-pop-in">
+            <h2 class="help-foot-head">Privacy</h2>
+            <div class="term-pop-close">&#10006; </div>
+            <p id="Privacycontent"></p>
+        </div>
+
+    </div>
+
+
+    @*Footer Section End*@
+    <div class="scrollup fullbodydycolorbg" href="#"><i class="fa fa-chevron-up"></i></div>
+    <script>
+        $(document).ready(function () {
+            var url = '@Url.Action("Officeaddress", "Home")'
+            $.ajax({
+                url: url,
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    $('#pfirmname').text(data.Firmname);
+                    $('#paddress').text(data.address);
+                        $('#pcity').text(data.DistirictName + " , " + data.StateName);
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        });
+    </script>
+    <script>
+        // scrolltop
+        $('.scrollup').click(function () {
+            $("html,body").animate({
+                scrollTop: 0
+            }, 1000);
+            return false;
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#Helpbutton').click(function () {
+                $('.for-help-pop').fadeIn();
+            });
+            $('#Tcbutton').click(function () {
+                $('.for-term-pop').fadeIn();
+            });
+            $('#Privacybutton').click(function () {
+                $('.for-privacy-pop').fadeIn();
+            });
+
+
+
+            $('.term-pop-close').click(function () {
+                $('.term-pop').fadeOut();
+            });
+        });
+    </script>
+
+    <script>
+        //$(document).ready(function () {
+        //    // Add smooth scrolling to all links
+        //    $(".mouse").on('click', function (event) {
+
+        //        // Make sure this.hash has a value before overriding default behavior
+        //        if (this.hash !== "") {
+        //            // Prevent default anchor click behavior
+        //            event.preventDefault();
+
+        //            // Store hash
+        //            var hash = this.hash;
+
+        //            // Using jQuery's animate() method to add smooth page scroll
+        //            // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+        //            $('html, body').animate({
+        //                scrollTop: $(hash).offset().top
+        //            }, 800, function () {
+
+        //                // Add hash (#) to URL when done scrolling (default click behavior)
+        //                window.location.hash = hash;
+        //            });
+        //        } // End if
+        //    });
+        //});
+
+
+
+
+
+        //bottom to top
+
+        // fadeIn fadeOut
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 400) {
+                $('.scrollup').fadeIn();
+            } else {
+                $('.scrollup').fadeOut();
+            }
+        });
+    </script>
+
+
+    @*<div class="scrollup">
+            <a href="#"><i class="fa fa-chevron-up"></i></a>
+        </div>*@
+
+    @{
+        <input type="button" value="sleep" id="btnsleep" data-toggle="modal" data-target="#sleep-modal" style="display:none;">
+        <div class="modal fade" id="sleep-modal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img src="@Url.Content("~/Deskrop Sleep Mode.png")" id="mImage" class="img-responsive" />
+                    </div>
+                    <div>
+                        <span style="font-size:15px; margin-left:15px;">Mail-id :-<b style="color:red;"> @mailid</b> </span>
+                        <br />
+                        <span style="font-size:15px; margin-left:15px;">Mobile No :-<b style="color:red;"> @mobile</b></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color:darkgray; font-size:16px;">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+    @*<script src="~/MainFrontDesign/js/vendor/jquery-1.11.2.min.js"></script>*@
+    <script src="~/MainFrontDesign/js/vendor/bootstrap.min.js"></script>
+    @*<script src="~/MainFrontDesign/js/jquery.magnific-popup.js"></script>*@
+    <script src="~/MainFrontDesign/js/jquery.mixitup.min.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.easing.1.3.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.masonry.min.js"></script>
+    <script src="~/MainFrontDesign/js/jquery.fancybox.pack.js"></script>
+    <script src="~/MainFrontDesign/js/plugins.js"></script>
+    <script src="~/MainFrontDesign/js/main.js"></script>
+    <script src="~/MainFrontDesign/js/slick.js"></script>
+
+
+    <script>
+        var HelpElement = @Html.Raw(Json.Encode(Help.SingleOrDefault().Name));
+        $('#helpContent').html(decodeURIComponent(HelpElement))
+
+        var TcElement = @Html.Raw(Json.Encode(TC.SingleOrDefault().Name));
+        $('#TcContent').html(decodeURIComponent(TcElement))
+
+        var PrivacyElement = @Html.Raw(Json.Encode(Privacy.SingleOrDefault().Name));
+        $('#Privacycontent').html(decodeURIComponent(PrivacyElement))
+
+    </script>
+
+    <script type="text/javascript">
+        var val1 = "";
+        function animation(type) {
+
+            var url = '@Url.Action("pagecontetn","Home")'
+            $.ajax({
+                url: url,
+                data: { type: type },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    if (data != "") {
+                        document.getElementById("shoppingBasket").innerHTML = data;
+                        $('#defaultModal').modal('show');
+                    }
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+
+        }
+    </script>
+    <script>
+        window.onload=function()
+        {
+            var block = '@ViewData["msg"]';
+            if (block == "websiteblock") {
+                $('#btnsleep').click();
+                $("#sleep-modal").modal('show');
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyALrSTy6NpqdhIOUs3IQMfvjh71td2suzY&ver=3.exp"></script>
+    <script type="text/javascript">
+        navigator.geolocation.getCurrentPosition(
+            function (position) { // success cb
+                console.log(position);
+
+            },
+            function () { // fail cb
+            }
+        );
+
+        $(document).ready(function () {
+
+            /* HTML5 Geolocation */
+            navigator.geolocation.getCurrentPosition(
+                function (position) { // success cb
+
+                    /* Current Coordinate */
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+
+                    var google_map_pos = new google.maps.LatLng(lat, lng);
+
+                    /* Use Geocoder to get address */
+                    var google_maps_geocoder = new google.maps.Geocoder();
+
+                    google_maps_geocoder.geocode(
+                        { 'latLng': google_map_pos },
+                        function (results, status) {
+                            if (status == google.maps.GeocoderStatus.OK && results[0]) {
+                                console.log(results[0].formatted_address);
+                                alert(results[0].formatted_address)
+                            }
+                        }
+                    );
+                },
+                function () { // fail cb
+                }
+            );
+        });
+    </script>
+
+    @*Sticky Script*@
+    @*<script>
+            $(window).scroll(function () {
+                var sticky = $('.Header-section'),
+                    scroll = $(window).scrollTop();
+
+                if (scroll >= 40) {
+                    sticky.addClass('fixed');
+                }
+                else {
+                    sticky.removeClass('fixed');
+
+                }
+            });
+        </script>*@
+    <script>
+        $('.my-button').click(function () {
+            $('.navbar-fixed-top').toggleClass('active');
+            $('.first-home-page').toggleClass('active');
+            $('#footer').toggleClass('active');
+
+        })
+    </script>
+</body>
+</html>
+

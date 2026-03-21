@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Vastwebmulti.Models.RechargeB2CStatus>
+
+<style>
+    .on {
+        padding: 0 22px;
+        color: white;
+        background: #1abd1a;
+    }
+    .off {
+        padding: 0 22px;
+        color: white;
+        background: #c82424;
+    }
+    .sures {
+        padding: 0 22px;
+        color: white;
+        background: #2b682b;
+    }
+    .budd {
+        text-align: center;
+    }
+</style>
+<section class="content fourdesign-section-admin">
+    <div class="container-fluid ">
+        <div class="page-header-third">
+
+            @using (Ajax.BeginForm("RechargeB2C", "Home", new AjaxOptions
+            {//GetPatients is name of method in PatientController
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace, //target element(#patientList) will be replaced
+                UpdateTargetId = "patientList",
+                LoadingElementId = "loader" // div with .gif loader - that is shown when data are loading
+            }))
+            {
+                <select id="Dlmids" class="select-s form-control" style="width: 20%; float: left;" name="dlrid" onchange="remfindbydlm()" required>
+                    <option>ALL Dealer</option>
+                </select>
+                <select id="remid" name="remid" style="width: 20%; float: left; margin: 0 7px;" class="select-s form-control" required>
+                    <option>Retailer</option>
+                </select>
+                <input type="submit" class="btn input-back-second" style=" height: 32px; border: 1px solid #b1a6a638; background: #fff; margin-top: 1px; background: #f9f9f9; width: 7%;" value="Search" />
+            }
+
+
+        </div>
+
+   
+    <div class="page-header-third">
+        <table class="table table-bordered table-striped table-hover table-background-second third-design-table">
+            <thead>
+                <tr>
+
+                    <th>Retailer</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="patientList">
+                @Html.Partial("_RechargeB2C", Model)
+                </tbody>
+        </table>
+    </div>
+   </div>
+</section>
+
+<script>
+
+            var url = '@Url.Action("DealerALLNAME", "Home")';
+        $.ajax({
+   type: "GET",
+   url: url,
+  success: function (result) {
+
+
+
+      var selectElement = document.getElementById("Dlmids");
+      console.log(result.Dlmid.length);
+      for (var i = 0; i < result.Dlmid.length; i++) {
+
+          var newOption = document.createElement("option");
+
+          // Set the value and text of the new option based on your data
+          newOption.value = result.Dlmid[i];
+
+          newOption.text = result.dlmname[i];
+
+          // Append the new option to the select element
+          selectElement.add(newOption);
+      }
+      //// Set the value and text of the new option
+      //newOption.value = "newOption";
+      //newOption.text = "New Option";
+
+      //// Append the new option to the select element
+      //selectElement.add(newOption);
+   },
+
+        });
+</script>
+<script>
+    function remfindbydlm() {
+        var dlmiss = document.getElementById('Dlmids').value;
+        console.log(dlmiss);
+         var url = '@Url.Action("REtailerALLNAME", "Home")';
+        $.ajax({
+   type: "GET",
+            url: url,
+            data: { Dlmid: dlmiss},
+  success: function (result) {
+
+
+
+      var selectElement = document.getElementById("remid");
+      selectElement.innerHTML = "";
+      var newOption1 = document.createElement("option");
+      newOption1.value = "";
+
+      newOption1.text = "Retailer";
+
+      selectElement.add(newOption1);
+      console.log(result.Remid.length);
+      for (var i = 0; i < result.Remid.length; i++) {
+
+          var newOption = document.createElement("option");
+
+          // Set the value and text of the new option based on your data
+          newOption.value = result.Remid[i];
+
+          newOption.text = result.Remname[i];
+
+          // Append the new option to the select element
+          selectElement.add(newOption);
+      }
+      //// Set the value and text of the new option
+      //newOption.value = "newOption";
+      //newOption.text = "New Option";
+
+      //// Append the new option to the select element
+      //selectElement.add(newOption);
+   },
+
+        });
+
+    }
+</script>

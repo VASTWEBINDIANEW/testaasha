@@ -1,0 +1,333 @@
+﻿@model List<Vastwebmulti.Models.Aeps_Report_New_Result>
+@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity
+@{
+    Layout = null;
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var currentuser = User.Identity.GetUserId();
+    var iswritepermision = DB1.tbl_permission_Services.Where(x => x.Employee_ID == currentuser && x.Servicename == "AEPS" && x.iswrite == true).Any();
+
+}
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+
+        var color = "";
+        var fontweight = "";
+        var text = "";
+        var emailid = "";
+        var Retailername = "";
+        var framname = "";
+        var mobile = "";
+        var icon = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var sts = "";
+        var refundcolor = "";
+        var rolename = "";
+
+
+        if (item.ApplicationType == "web")
+        {
+            rchtypeicon = "fa fa-globe";
+        }
+        if (item.ApplicationType == "app")
+        {
+            rchtypeicon = "fa fa-android";
+        }
+        if (item.Role == "Retailer")
+        {
+            emailid = item.Email;
+            Retailername = item.RetailerName;
+            mobile = item.Mobile;
+            framname = item.Frm_Name;
+            rolename = "Retailer";
+
+
+        }
+        if (item.Role == "WRetailer")
+        {
+            emailid = item.Email;
+            Retailername = item.RetailerName;
+            framname = item.Frm_Name;
+            mobile = item.Mobile;
+            rolename = "Whitelabel";
+
+        }
+
+
+
+
+        if (item.Status.ToUpper().Contains("SETTLEMENT"))
+        {
+            color = "#9C27B0";
+            sts = "Settlement";
+        }
+        var type = "";
+        if (item.Type == "")
+        {
+            if (item.Status.ToUpper().Contains("M_"))
+            {
+                type = "Mini StateMent";
+            }
+            else if (item.Status.ToUpper().Contains("BALANCE"))
+            {
+                type = "Balance";
+            }
+            else
+            {
+                type = "Fund Transfer";
+            }
+        }
+        else
+        {
+            type = item.Type;
+        }
+        var colorrole = ""; var font = "";
+        if (item.Role == "WhitelabelRetailer")
+        {
+            colorrole = "blue";
+            font = "800";
+        }
+        <tr>
+
+            <td>
+                @if (item.Status.ToUpper().Contains("PENDING"))
+                {<img style='height: 20px;width: 18px;margin-right: 5px;max-width: 100%;padding: 0; border-radius:50%; background-color:#ffc107' src='../../ashok-images/clkk.png' /><span>@type</span>;
+            }
+                @if (item.Status.ToUpper().Contains("FAILED"))
+                {<img style='height: 20px;width: 18px;margin-right: 5px;max-width: 100%;padding: 0; border-radius:50%; background-color:red' src='../../ashok-images/closes.svg' /><span>@type</span>;
+            }
+                @if (item.Status.ToUpper().Contains("SUCCESS"))
+                {<img style='height: 20px;width: 18px;margin-right: 5px;max-width: 100%;padding: 0; border-radius:50%; background-color:green' src='../../ashok-images/correct.svg' /><span>@type</span>;
+            }
+                @if (item.Status.ToUpper().Contains("BALANCE"))
+                {<span class="fullbodydycolorbg" style='height: 18px;margin-right: 5px;max-width: 100%; border-radius:50%; display: inline-block;padding: 0px 5px;font-weight: 800;color: #fff;font-size:14px;'>B</span><span>@type</span>;
+            }
+                @if (item.Status.ToUpper().Contains("Refund"))
+                {<img style='height: 20px;width: 18px;margin-right: 5px;max-width: 100%;padding: 0; border-radius:50%; background-color:#9C27B0' src='../../ashok-images/closes.svg' /><span>@type</span>;
+            }
+            </td>
+
+
+            <td>
+                <p style="color:@colorrole;font-weight:@font">
+                    <span style="margin-right: 2px;background: #bbb;text-transform: uppercase;font-size: 9px;padding: 1px 3px;padding-bottom: 0px;color:#000; "> @item.ApplicationType</span>
+                    @item.Frm_Name
+                </p>
+
+            </td>
+            <td>
+                @if (item.devicename != null && item.devicename != "")
+                {
+                    <p>@item.devicename&nbsp;@item.deviceserialno</p>
+                }
+                else
+                {
+                    <p></p>
+                }
+
+            </td>
+            <td>
+                <p>@item.BankName</p>
+            </td>
+            <td>
+                <p>@item.customerremain</p>
+
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(@item.AccountHolderAadhaar))
+                {
+                    <p>******@item.AccountHolderAadhaar</p>
+                }
+                else
+                {
+                    <p></p>
+                }
+            </td>
+            <td>
+                <p>@item.Mobile</p>
+
+            </td>
+            <td>
+                <p>@item.username</p>
+
+            </td>
+            <td>
+                <p>@item.Amount</p>
+            </td>
+            <td>
+                @if (item.Role == "Retailer")
+                {
+                    <p>@item.RemIncome</p>
+                }
+                else
+                {
+                    <p>@item.WLIncome</p>
+                }
+            </td>
+            <td>
+                @if (item.Role == "Retailer")
+                {
+                    <p>@item.RemPre</p>
+                }
+                else
+                {
+                    <p>@item.WLPre</p>
+                }
+            </td>
+            <td>
+                @{
+                    decimal amount = 0;
+                    decimal remincome = 0;
+                    decimal usercredit = 0;
+                    if (item.Role == "Retailer")
+                    {
+                        amount = Convert.ToDecimal(item.Amount);
+                        remincome = Convert.ToDecimal(item.RemIncome);
+                        if (item.Type == "Aadhar Pay")
+                        {
+
+                            usercredit = (amount - remincome);
+                        }
+                        else
+                        {
+                            usercredit = (amount + remincome);
+                        }
+
+                    }
+                    if (item.Role == "Whitelabelretailer")
+                    {
+                        amount = Convert.ToDecimal(item.Amount);
+                        remincome = Convert.ToDecimal(item.RemIncome);
+                        usercredit = (amount + remincome);
+                    }
+                }
+                <p>@usercredit</p>
+            </td>
+
+            <td>
+                @if (item.Role == "Retailer")
+                {
+                    <p>@item.RemPost</p>
+                }
+                else
+                {
+                    <p>@item.WLPost</p>
+                }
+            </td>
+            <td>
+                @if (item.Status.ToUpper() == "SUCCESS")
+                {
+                    <p style="font-size:12px;">@item.BankRRN&nbsp;</p>
+                }
+                else
+                {
+                    <p style="font-size:12px;">@item.Remark&nbsp;</p>
+                }
+            </td>
+            <td>
+                <p>
+                    @String.Format("{0:dd-MMM HH:mm:ss}", item.Txn_Date)&nbsp;&nbsp;
+                    @if (iswritepermision)
+                    {
+                    if (item.Status != "Balance")
+                    {
+                        <span class="fftt" data-toggle="modal" data-target="#defaultModal222" onclick="mdActionBtn('@item.idno')"><img src="~/ashok-images/rightaeps.svg" style="border: 1px solid #c7c2c2;padding: 3px 5px;font-size: 10px;">  </span>
+                        if (item.Status.ToUpper().Contains("PENDING"))
+                        {
+
+                            <button class="ss" data-toggle="modal" data-target="#defaultModal2" onclick="setTxnValue('@item.idno')" style="border:none; background:transparent;" title="Success">
+                                <i class="fa fa-check" style="top:1px;border: 1px solid #c7c2c2;padding: 3px;font-size: 10px;"></i>
+                            </button>
+
+                            <button type="button" class="ff" style="background-color:transparent; color:#c7c2c2;border:none;" data-toggle="modal" title="Refund" data-target="#defaultModal1" onclick="refundshow('@item.MerchantTxnId','@item.Mobile')">
+                                <i class="fa fa-times" style="top:1px;border: 1px solid #c7c2c2;padding: 3px 4px;font-size: 10px;"></i>
+                            </button>
+                        }
+                        if (item.Status.ToUpper() == "FAILED")
+                        {
+                            <button class="ss" data-toggle="modal" data-target="#defaultModal2" onclick="Failedtosuccess('@item.idno')" style="border:none; background:transparent;" title="Success">
+                                <i class="fa fa-check" style="top:1px;border: 1px solid #c7c2c2;padding: 3px;font-size: 10px;"></i>
+                            </button>
+                        }
+
+                    }
+                    }
+                </p>
+            </td>
+
+
+
+            @*<td>
+                        <p style="font-size:13px;">&nbsp;@rolename&nbsp;⇒&nbsp;@emailid</p>
+                    </td>
+
+                <td>
+                        <p style="font-size:12px;margin-left:-8px;margin-top:-2px;">&nbsp;@item.MerchantTxnId&nbsp;</p>
+                    </td>
+                <td>
+                        @{
+                            decimal usercredit1 = 0;
+                            if (item.Role == "Retailer")
+                            {
+
+                                usercredit1 = (Convert.ToDecimal(item.Amount) + Convert.ToDecimal(item.RemIncome));
+                            }
+                            if (item.Role == "Whitelabelretailer")
+                            {
+                                usercredit1 = (Convert.ToDecimal(item.Amount) + Convert.ToDecimal(item.RemIncome));
+                            }
+
+                        }
+                        <p style="font-size:13px;">@item.RemPre&nbsp;│&nbsp;@usercredit1&nbsp;│&nbsp;@item.RemPost</p>
+                    </td>
+                    <td>
+                        @if (item.Role == "Retailer")
+                        {
+                            <p style="font-size:13px;">@item.AdminPre&nbsp;│&nbsp;@item.AdminPost</p>
+                        }
+                        else
+                        {
+                            <p style="font-size:13px;">@item.WLPre&nbsp;│&nbsp;@item.WLPost</p>
+                        }
+
+                    </td>
+                    <td>
+                        <p style="font-size:13px;">@item.MdPre&nbsp;│&nbsp;@item.MdPost</p>
+                    </td>
+                    <td>
+                        <p style="font-size:13px;">@item.DlmPre&nbsp;│&nbsp;@item.DlmPost</p>
+                    </td>
+                    <td>
+                        <p style="font-size:13px;">@item.TerminalId</p>
+                    </td>
+                    <td>
+                        <p style="font-size:13px;">@item.Remark</p>
+                    </td>
+                    <td>
+                        <p style="font-size:13px;">@item.SettleType</p>
+                    </td>
+                    <td>
+                        @if (item.Issettled == true)
+                        {
+                            <p style="font-size:13px;">True</p>
+                        }
+                        else
+                        {
+                            <p style="font-size:13px;">False</p>
+                        }
+                    </td>*@
+        </tr>
+
+    }
+}
+else
+{
+    <tr>
+        <td colspan="14"><h2 style="text-align:center;">Data Not Found</h2></td>
+
+    </tr>
+
+}

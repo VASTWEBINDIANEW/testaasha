@@ -1,0 +1,274 @@
+﻿@model IEnumerable<Vastwebmulti.Models.BankAccountForAep>
+@{
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+<style>
+   /* New css */
+    .loadingio-spinner-ripple-92ar2pfqk5j {
+        width: 200px;
+        height: 200px;
+        display: inline-block;
+        overflow: hidden;
+        background: transparent;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+
+    .ldio-zdyd6mf6t5 {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform: translateZ(0) scale(1);
+        backface-visibility: hidden;
+        transform-origin: 0 0;
+    }
+
+        .ldio-zdyd6mf6t5 div {
+            position: absolute;
+            border-width: 4px;
+            border-style: solid;
+            opacity: 1;
+            border-radius: 50%;
+            animation: ldio-zdyd6mf6t5 1s cubic-bezier(0,0.2,0.8,1) infinite;
+            box-sizing: content-box;
+        }
+
+            .ldio-zdyd6mf6t5 div:nth-child(1) {
+                border-color: var(--main-bg-lcolor);
+            }
+
+            .ldio-zdyd6mf6t5 div:nth-child(2) {
+                border-color: #c7c7c7;
+                animation-delay: -0.5s;
+            }
+
+    @@keyframes ldio-zdyd6mf6t5 {
+        0% {
+            top: 96px;
+            left: 96px;
+            width: 0;
+            height: 0;
+            opacity: 1;
+        }
+
+        100% {
+            top: 18px;
+            left: 18px;
+            width: 156px;
+            height: 156px;
+            opacity: 0;
+        }
+    }
+
+
+    .login-slider-status {
+        width: 100%;
+        float: left;
+        border-bottom: 3px solid var(--main-bg-lcolor);
+        background: var(--nav-tab-bg);
+        margin-bottom: 20px;
+        text-align: left;
+    }
+        .login-slider-status h2 {
+            border-bottom: 3px solid var(--main-bg-lcolor);
+            font-size: 18px;
+            margin: 0px;
+            padding: 15px;
+            background: var(--nav-tab-bg);
+            width: 50%;
+            float: left;
+            margin-bottom: 0px !important;
+            border-bottom: 0px !important;
+            width: 100%;
+        }
+    form {
+        text-align: left;
+    }
+    .set_but {
+        padding: 6px 100px;
+        border-radius: 20px !important;
+        background: var(--main-bg-lcolor) !important;
+        margin-top: 12px;
+    }
+
+   /* New css */
+
+    .layoutt-retailer section.content {
+        margin-top: 95px;
+        padding-top: 5px;
+    }
+
+    .Account_Loder {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: #0000002e;
+        z-index: 9999999;
+        text-align: center;
+    }
+
+    .form-group input {
+        border: 1px solid #ccc !important;
+    }
+
+    .form-group {
+        padding: 7px 0;
+    }
+</style>
+
+<section class="content content-margin-second content-fourdesign-page allpage-four-design-section" style=" overflow-x:hidden;">
+    <div class="container-fluid alldiv-back-change-four">
+        <div class="row clearfix">
+            <div class="col-md-12" style=" padding: 0;">
+                <div class="col-md-6">
+                    <div class="page-header-third" style=" height: 80vh; text-align: center;">
+                        <div class="login-slider-status">
+                            <h2>Add Bank Account For Aeps Integration</h2>
+                        </div>
+                        @using (Html.BeginForm("AddAepsAccount", "Home", FormMethod.Post))
+                        {
+                            <div class="form-group">
+                                <label class="form-label" for="BankName">Bank Name</label>
+                                @Html.TextBox("BankName", Model.FirstOrDefault()?.BankName, new { @class = "form-control", @placeholder = "Enter Bank Name", @id = "BankName" })
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="accountno">Account Number</label>
+                                @Html.TextBox("accountno", Model.FirstOrDefault()?.AccountNO, new { @class = "form-control", @placeholder = "Enter Account Number", @id = "accountno" })
+                                <span id="accountnoError" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="ifscCode">IFSC Code</label>
+                                @Html.TextBox("ifscCode", Model.FirstOrDefault()?.IFSC_CODE, new { @class = "form-control", @placeholder = "Enter IFSC Code", @id = "ifscCode" })
+                                <span id="ifscCodeError" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="remiterName">Account Holder Name</label>
+                                @Html.TextBox("AccountHolderName", Model.FirstOrDefault()?.AccountHolder, new { @class = "form-control", @placeholder = "Enter Account Holder Name", @id = "AccountHolderName" })
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="BankAddres">Bank Address</label>
+                                @Html.TextBox("BankAddress", Model.FirstOrDefault()?.BankAddress, new { @class = "form-control", @placeholder = "Enter Bank Address", @id = "BankAddress" })
+                            </div>
+                            <div class="form-group" id="OTPShow" style="display: none;">
+                                <label class="form-label" for="remiterName">OTP</label>
+                                @Html.TextBox("OTP", null, new { @class = "form-control", @placeholder = "Enter OTP", @id = "OTP" })
+                            </div>
+                            <p style="color: red;">@ViewBag.message</p>
+                            <button id="SubmitBankDetails" type="submit" class="btn btn-primary set_but" style="display: none; margin: auto;">Submit</button>
+                        }
+                        <button class="btn btn-primary set_but" id="ShowOtpBox" onclick="validateForm()">Send Otp</button>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="page-header-third" style=" height: 80vh;">
+                        <div class="login-slider-status">
+                            <h2>Added Bank Account For Aeps</h2>
+                        </div>
+                        <table class="table">
+                            <tbody>
+                                @if (Model.Count() > 0)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <th>Bank Name</th>
+                                            <td>@item.BankName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Account Number</th>
+                                            <td>@item.AccountNO</td>
+                                        </tr>
+                                        <tr>
+                                            <th>ifsc Code</th>
+                                            <td>@item.IFSC_CODE</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Account Holder Name</th>
+                                            <td>@item.AccountHolder</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Bank Address</th>
+                                            <td>@item.BankAddress</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="2">
+                                            Account Not Add Yet!
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<div id="Account_Loder" class="Account_Loder" style="display: none;">
+    @*<img src="~/icegif-1263.gif" style="position: relative; top: 40%;" />*@
+    <div id="loadredmodel" style="display:block;">
+        <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);" class="loadingio-spinner-ripple-92ar2pfqk5j">
+            <div class="ldio-zdyd6mf6t5">
+                <div></div><div></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function validateForm() {
+        const accountno = document.getElementById("accountno").value.trim();
+        const ifscCode = document.getElementById("ifscCode").value.trim();
+
+        const accountnoError = document.getElementById("accountnoError");
+        const ifscCodeError = document.getElementById("ifscCodeError");
+
+        accountnoError.innerText = "";
+        ifscCodeError.innerText = "";
+
+        let isValid = true;
+        if (accountno === "") {
+            accountnoError.innerText = "Account Number is required.";
+            isValid = false;
+        } else if (!/^\d+$/.test(accountno)) {
+            accountnoError.innerText = "Account Number must be numeric.";
+            isValid = false;
+        }
+        if (ifscCode === "") {
+            ifscCodeError.innerText = "IFSC Code is required.";
+            isValid = false;
+        } else if (ifscCode.length !== 11) {
+            ifscCodeError.innerText = "IFSC Code must be 11 characters long.";
+            isValid = false;
+        }
+        if (isValid) {
+            document.getElementById('Account_Loder').style.display = 'block';
+            $.ajax({
+                url: '@Url.Action("SentBankOtp", "Home")',
+                type: 'POST',
+                success: function () {
+                    document.getElementById('OTPShow').style.display = 'block';
+                    document.getElementById('ShowOtpBox').style.display = 'none';
+                    document.getElementById('SubmitBankDetails').style.display = 'block';
+                    document.getElementById('Account_Loder').style.display = 'none';
+
+                }
+            })
+        }
+    }
+</script>
+
+

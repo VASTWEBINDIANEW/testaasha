@@ -1,0 +1,210 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.UPI_status_setting
+<style>
+    .wallet-bank-input input[readonly="readonly"] {
+        background: transparent;
+        border: 0px;
+    }
+</style>
+
+<table class="table table-bordered wallet-bank-input" style="width: 100%;margin-top:5px;">
+    <thead>
+        <tr>
+
+            <th style="width: 28%">Minimum (Rs)</th>
+            <th style="width: 28% ">Maximum (Rs)</th>
+            <th style="width: 28% ">
+                Perday Txn. Count <br />
+                <span style="color:red;font-size:11px;">(Set no. of txn. in a day)</span>
+            </th>
+            <th colspan="2" style="width: 16%">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model.Admin_UPIs != null && Model.Admin_UPIs.Count() > 0)
+        {
+            foreach (var item in Model.Admin_UPIs)
+            {
+                <tr style="background:#fff;">
+                    <td class=""><input style="width: 80%" type="number" id="txtminbal" name="txtminbal" value="@item.minamount" readonly="readonly" /></td>
+                    <td class=""><input style="width: 80% " type="number" id="txtmaxbal" name="txtmaxbal" value="@item.maxamount" readonly="readonly" /></td>
+                    <td class=""><input style="width: 80% " type="number" id="txtpercount" name="txtpercount" value="@item.PerdayTxnCount" readonly="readonly" /></td>
+                    @*<td class="classhide" style="display:none;" colspan="2">
+                            <input id="txtotp" name="txtotp" type="text" placeholder="Enter OTP" class="form-control" required />
+                        </td>*@
+
+                    <td class="classshow" style="width: 80%">
+                        <button type="submit" class="fullbodydycolorbg waves-effect bt btnssl  special-iii deleteCharged11" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                            Edit
+                        </button>
+                        @*<button type="submit" id="SaveChargeminbal" class="fullbodydycolorbg waves-effect bt btnssl  special-iii deleteCharge" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;display:none;">
+                                Send&nbsp;OTP
+                            </button>*@
+
+                    </td>
+                    <td class="classhide" style="width: 80%">
+                        <button type="submit" id="Saveupiminmax" class="fullbodydycolorbg waves-effect bt btnssl  special-iii " style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                            Save
+                        </button>
+
+                    </td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <tr style="background:#fff;">
+                @*<td><input type="text" id="txtupiid" name="txtupiid" value="" readonly="readonly" /></td>*@
+                <td><input style="width: 80%" type="number" id="txtminbal" name="txtminbal" value="" readonly="readonly" /></td>
+                <td><input style="width: 80%" type="number" id="txtmaxbal" name="txtmaxbal" value="" readonly="readonly" /></td>
+                <td><input style="width: 80%" type="number" id="txtpercount" name="txtpercount" value="" readonly="readonly" /></td>
+                @*<td class="classhide" style="display:none;" colspan="2">
+                        <input id="txtotp" name="txtotp" type="text" placeholder="Enter OTP" class="form-control" required />
+                    </td>*@
+                <td class="classshow" style="width: 80%">
+                    <button type="submit" class="fullbodydycolorbg waves-effect bt btnssl  special-iii deleteCharged11" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                        Edit
+                    </button>
+
+                    @*<button type="submit" id="SaveChargeminbal" class="fullbodydycolorbg waves-effect bt btnssl  special-iii deleteCharge" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;display:none;">
+                            Send OTP
+                        </button>*@
+                </td>
+                <td class="classhide" style="display: none; width: 80%; ">
+                    <button type="submit" id="Saveupiminmax" class="fullbodydycolorbg waves-effect bt btnssl  special-iii" style="background:transparent;border:1px solid #bbb;padding: 2px 10px;margin-left: 4px;padding-bottom: 3px;color:#fff;">
+                        Save
+                    </button>
+
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.msg != "DONE")
+{
+    <label style="color:red;">@Model.msg</label>
+}
+else if (Model.msg == "DONE")
+{
+    <label style="color:green;">@Model.msg</label>
+}
+@*<script>
+        function DeleteSelf() {
+                var url = '@Url.Action("DeleteUpiself", "Home")';
+                $.ajax({
+                    url: url,
+                    cache: false,
+                    type: "GET",
+                    success: function (data) {
+                        $('#RemTbl11').html(data);
+                    }
+                });
+            }
+    </script>*@
+<script>
+    $(document).ready(function () {
+        $(".classshow").show();
+        $(".classhide").hide();
+
+    })
+</script>
+
+
+<script>
+    $('.wallet-edit').click(function () {
+        /*  $(this).closest('tr').find('input').removeAttr('readonly');*/
+        $(this).closest('tr').find('.wallet-save').css('display', 'block');
+        $(this).css('display', 'none');
+    });
+</script>
+<script>
+    $('.deleteCharged11').click(function () {
+        // $(this).hide();
+        // $('#txtupiid').attr("readonly", false);
+        $('#txtminbal').attr("readonly", false);
+        $('#txtmaxbal').attr("readonly", false);
+        $('#txtpercount').attr("readonly", false);
+        $(".classshow").hide();
+        $(".classhide").show();
+        // $(this).next('.deleteCharge').show();
+    });
+    //$('#EditChrg').click(function () {
+    //    $(this).next('.deleteCharged11').hide();
+    //});
+</script>
+
+@*<script>
+        $('#SaveChargeminbal').click(function () {
+            $('#lblmsg').text('')
+
+            $("#hideupiid").val($("#txtupiid").val());
+            $("#hidemin").val($("#txtminbal").val());
+            $("#hidemax").val($("#txtmaxbal").val());
+
+            $(this).html('<i class="fa fa-circle-o-notch fa-spin" style="font-size:14px"></i>');
+
+            $.ajax({
+                url: '@Url.Action("SENDOTP","Home")',
+                type: 'POST',
+                success: function (response) {
+
+                    //$('#form_validation11').hide();
+                    //$('#form_validation1').show();
+                    $('#txtupiid').attr("readonly", true);
+                    $('#txtminbal').attr("readonly", true);
+                    $('#txtmaxbal').attr("readonly", true);
+                  //  $('#RemTbl11').html(response);
+                    $("#txtupiid").val('');
+                    $("#txtminbal").val('');
+                    $("#txtmaxbal").val('');
+                  // $(this).html('Save Change');
+                    //$("#Saveotp").show();
+                    //$("#SaveChargeminbal").hide();
+
+                    $('.classshow').hide();
+                    $('.classhide').show();
+
+                },
+                error: function () {
+                    //alert(error);
+                }
+            });
+        })
+    </script>*@
+
+<script>
+    $('#Saveupiminmax').click(function () {
+
+
+       $('#lblmsg').text('')
+        $.ajax({
+            url: '@Url.Action("AddUpiSelf","Home")',
+            type: 'POST',
+            data: { min: $("#txtminbal").val(), max: $("#txtmaxbal").val(), PerdayTxnCount: $("#txtpercount").val()},
+            success: function (response) {
+               // $('#SaveChargeminbal').text('save')
+                //$('#form_validation11').show();
+                //$('#form_validation1').hide();
+                $("#txtupiid").val('');
+                $("#txtminbal").val('');
+                $("#txtmaxbal").val('');
+                $("#txtpercount").val('');
+              $('#RemTbl111').html(response);
+               //$("#txtupiid").val(''),
+               //$("#txtminbal").val('')
+               // $("#txtmaxbal").val('')
+                //$("#Saveotp").hide();
+                //$("#SaveChargeminbal").show();
+                $('.classshow').show();
+                $('.classhide').hide();
+                },
+            error: function () {
+                //alert(error);
+            }
+        });
+    })
+</script>
+

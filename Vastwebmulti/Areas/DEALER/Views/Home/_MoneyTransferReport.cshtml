@@ -1,0 +1,139 @@
+﻿@model IEnumerable<Vastwebmulti.Models.money_transfer_report_paging_Result>
+@{
+    Layout = null;
+}
+
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        var color = "";
+        var fontsize = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var dmtytpe = "";
+        var icon = "";
+        var pendingColor = "";
+
+        if (item.status.Contains("REFUND") || item.status.Contains("REFUND AGAINST"))
+        {
+            color = "#673AB7";
+            fontsize = "9px;";
+        }
+        if (item.status.ToUpper().Contains("PENDING"))
+        {
+            double difftime = DateTime.Now.Subtract(item.trans_time.Value).TotalMinutes;
+            if (difftime < 2)
+            {
+                pendingColor = "#ffbf00";
+            }
+            else
+            {
+                pendingColor = "#fff8d1";
+            }
+            icon = "../../ashok-images/clock.svg";
+        }
+        if (item.status.ToUpper().Contains("SUCCESS"))
+        {
+            color = "green";
+            icon = "../../ashok-images/correct.svg";
+        }
+        if (item.status.ToUpper().Contains("FAILED"))
+        {
+            color = "red";
+            icon = "../../ashok-images/closes.svg";
+        }
+        if (item.trans_from == "ONLINE")
+        {
+            rchtype = "WEB";
+            rchtypeicon = "../../images/wwwBlack.svg";
+        }
+        if (item.trans_from == "API")
+        {
+            rchtype = "WEB";
+            rchtypeicon = "../../images/wwwBlack.svg";
+
+        }
+        if (item.trans_from == "Apps")
+        {
+            rchtype = "APP";
+            rchtypeicon = "../../images/android-logo.svg";
+        }
+        if (item.DmtType == "DMT1")
+        {
+            dmtytpe = "➊";
+        }
+        if (item.DmtType == "DMT2")
+        {
+            dmtytpe = "➋";
+        }
+    <tr style="background-color:@pendingColor">
+        <td style="color:@color;font-weight:700;font-size:@fontsize;">
+            <img style="height: 20px;width: 18px;margin:5px;max-width: 100%;padding: 0; border-radius:50%; background-color:@color" src="@icon" />
+
+            <span style="color:black;font-weight;">@item.frm_name</span>
+
+        </td>
+        <td>
+            @if (item.Trans_type == "IMPS")
+            {
+                <i><img style="height: 20px;width: 18px;margin-right:3px;max-width: 100%;padding: 0; border-radius:50%;" src="@rchtypeicon" /></i>
+                <span style="font-size:12px;font-weight:bold;">IMPS</span>
+
+            }
+            else if (item.Trans_type == "NEFT")
+            {
+                <i><img style="height: 20px;width: 18px;margin-right:3px;max-width: 100%;padding: 0; border-radius:50%;" src="@rchtypeicon" /></i>
+                <span style="font-size:12px;font-weight:bold">NEFT</span>
+
+            }
+            else
+            {
+                <i><img style="height: 20px;width: 18px;margin-right:3px;max-width: 100%;padding: 0; border-radius:50%;" src="@rchtypeicon" /></i>
+                <span style="font-size:12px;font-weight:bold">Verify</span>
+
+            }
+        </td>
+
+        <td>@item.accountno</td>
+        <td>@item.senderno</td>
+        <td>@item.totalamount</td>
+        <td>
+            @{
+                decimal amount = 0;
+                decimal customerfee = 0;
+                decimal total = 0;
+                decimal debit = 0;
+                decimal remcomm = 0;
+                if (item.Trans_type.Contains("IMPS_VERIFY"))
+                {
+                    amount = Convert.ToDecimal(item.amount);
+                    customerfee = Convert.ToDecimal(item.rem_comm);
+                    customerfee = customerfee - amount;
+                    total = amount + customerfee;
+                    debit = Convert.ToDecimal(item.rem_comm);
+                }
+                else
+                {
+                    amount = Convert.ToDecimal(item.amount);
+                    customerfee = Convert.ToDecimal(item.customer_fee);
+                    total = amount + customerfee;
+                    remcomm = Convert.ToDecimal(item.rem_comm);
+                    debit = amount + remcomm;
+
+                }
+            }
+            @debit
+        </td>
+        <td>@item.income</td>
+        <td>@item.dlm_remain_pre</td>
+        <td>@item.dlm_income</td>
+        <td>@item.dlm_remain</td>
+
+
+        @*<td>@item.totalamount</td>*@
+        <td>@item.response_time</td>
+    </tr>
+    }
+}

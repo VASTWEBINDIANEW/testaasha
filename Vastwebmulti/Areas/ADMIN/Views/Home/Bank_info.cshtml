@@ -1,0 +1,401 @@
+﻿@model IEnumerable<Vastwebmulti.Models.bank_info>
+@{
+    ViewBag.Title = "Bank_info";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-10" style="margin-left:-12px;">
+                        @Html.Partial("cashbankpartialmenu")
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn bg-grey waves-effect" style="float:right;height:32px;margin-top:4px;" data-toggle="modal" data-target="#defaultModal">
+                            <i class="fa fa-plus" style="top:1px;font-size:14px;color:black;"></i>
+                            <span style="top:-1px;color:black;">Add New</span>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-14px;">
+                <div class="card">
+
+                    <div class="body" style="margin-top:-3px;padding:7px;">
+                        <div class="table-responsive" style="position:inherit;margin-top:-9px;">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable " style="width:100%;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Bank&nbsp;Name</th>
+                                        <th>Branch&nbsp;Name</th>
+                                        <th>IFSC&nbsp;Code</th>
+                                        <th>Account&nbsp;Number</th>
+                                        <th>Account&nbsp;Type</th>
+                                        <th>Account&nbsp;Holder</th>
+                                        <th>Branch&nbsp;Address</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td style="padding:4px;">@item.banknm.ToUpper()</td>
+                                            <td style="padding:4px;">@item.branch_nm.ToUpper()</td>
+                                            <td style="padding:4px;">@item.ifsccode.ToUpper()</td>
+                                            <td style="padding:4px;">@item.acno</td>
+                                            <td style="padding:4px;">@item.actype.ToUpper()</td>
+                                            <td style="padding:4px;">@item.holdername.ToUpper()</td>
+                                            <td style="padding:4px;">@item.address.ToUpper()</td>
+                                            <td style="padding:4px;">
+                                                <center>
+                                                    <button id="but" onclick="animation('@item.idno', '@item.ifsccode','@item.banknm','@item.branch_nm','@item.acno','@item.actype','@item.holdername','@item.address')" style="background-color:transparent;color:#555a5f; border:none;" data-toggle="modal" data-target="#defaultModal1">
+                                                        <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Edit</p>
+                                                    </button>
+                                                </center>
+                                            </td>
+                                            <td style="padding:4px;">
+                                                <center>
+                                                    <button type="button" style="background-color:transparent; border:none;margin-top:-1px;" onclick="delmessage('@item.idno')">
+                                                        <p style="padding:1px 11px 1px 11px;border:1px solid #dddddd;color:black;">Delete</p>
+                                                    </button>
+                                                </center>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Add New  modal-->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add New Bank Detail</h4>
+            </div>
+            @using (Html.BeginForm("Insert_bankinfo", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Bank Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtbanknm", "", new { @class = "form-control", placeholder = "Enter Bank Name", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Branch Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtbranchnm", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Branch Name" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">IFSC Code</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtifsc", "", new { @class = "form-control", @placeholder = "Enter Ifsc Code", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Account Number</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtacno", "", new { @class = "form-control", @placeholder = "Enter Account Number", @required = "required", onkeypress = "javascript:return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Account Type</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtacctype", "", new { @class = "form-control", @placeholder = "Enter Account Type", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Account Holder</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtname", "", new { @class = "form-control", placeholder = "Enter Holder Name ", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Branch Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtaddress", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Branch Address" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Edit   modal-->
+<div class="modal fade" id="defaultModal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Edit Bank Information</h4>
+            </div>
+            @using (Html.BeginForm("Edit_Bankinfo", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                @Html.Hidden("txtidno")
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Bank Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtbanknmedit", "", new { @class = "form-control", required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Branch Name</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtbranchedit", "", new { @class = "form-control", required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">IFSC Code</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtifscedit", "", new { @class = "form-control", required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Account Number</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtaccnoedit", "", new { @class = "form-control", @placeholder = "Enter Account Number", @required = "required", onkeypress = "javascript:return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Account Type</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtactypedit", "", new { @class = "form-control", @placeholder = "Enter Account Type", @required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Account Holder</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtacnameedit", "", new { @class = "form-control", placeholder = "Enter Holder Name ", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Branch Address</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtaddedit", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Branch Address" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<!--Insert Popuop-->
+<script>
+    $(document).ready(function () {
+
+        var message = '@TempData["add"]'
+        if (message != "" && message != null) {
+            swal("Good job!", message, "success");
+
+        }
+        //Edit Message
+        var editdata = '@TempData["edit"]'
+        if (editdata != null && editdata != "") {
+            swal("Good job!", editdata, "success");
+        }
+
+    });
+</script>
+
+<script type="text/javascript">
+    var val1 = "";
+    function animation(id, ifsccode, banknm, branchnm, acno, actype, holdername, address) {
+        $("#txtbanknmedit").val(banknm);
+        $("#txtidno").val(id);
+        $("#txtbranchedit").val(branchnm);
+        $("#txtifscedit").val(ifsccode);
+        $("#txtaccnoedit").val(acno);
+        $("#txtactypedit").val(actype);
+        $("#txtaddedit").val(address);
+        $("#txtacnameedit").val(holdername);
+    }
+</script>
+<!--Delete-->
+<script type="text/javascript">
+
+    function delmessage(e) {
+
+
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Bank Details " + e + " !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("delbankinfo", "Home")', data: { idno: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("Deleted!", "Bank Details Deleted Successfully.", "success");
+                var url = '@Url.Action("Bank_info", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Bank_info", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>
+<script type="text/javascript">
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+

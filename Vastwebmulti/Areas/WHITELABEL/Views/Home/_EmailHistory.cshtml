@@ -1,0 +1,92 @@
+﻿@model Vastwebmulti.Areas.WHITELABEL.Models.Email_ViewModel
+
+<div class="card">
+    <div class="body">
+        <div class="table-responsive">
+            <table class="table  dataTable js-exportable" style="width:100%;">
+                <thead>
+
+                </thead>
+                <tbody>
+
+                    @if (Model.Sent_Mail_History.Count == 0)
+                    {
+                        <div class="no-data-found-img">
+                            <img src="~/img/NoDatall.svg" />
+                        </div>
+                    }
+                    else
+                    {
+                        var ii = 1;
+                        foreach (var item in Model.Sent_Mail_History)
+                        {
+
+                            var urole = item.UserId == "Master" ? "MD" : item.UserId == "Dealer" ? "Distributor" : item.UserId == "Retailer" ? "Retailer" : item.UserId == "API" ? "API" : item.UserId == "Whitelabel" ? "W/L" : item.UserId == "Admin" ? "Admin" : item.UserId == null ? "I" : string.Empty;
+
+
+                            <tr>
+                                <td class="mytext">
+                                    @*<span>@urole</span>*@
+                                    @item.Mail_Id
+                                    <span> <i class="btn " style="border: 0px;background: #bbb;padding: 2px;line-height: 12px;height: auto;font-style: normal;font-weight: 600;text-transform: uppercase;" aria-hidden="true">@urole</i>@item.SentDate</span>
+
+                                </td>
+
+                                <td  class="mytext">
+                                    <p>
+                                        @if (item.SentMsg.ToUpper().Contains(".CO") || item.SentMsg.ToUpper().Contains(".NET") || item.SentMsg.ToUpper().Contains(".IN"))
+                                        {
+                                            var msg = item.SentMsg.ToUpper().Replace("WWW.", "").Replace("HTTPS://", "").Replace("HTTP://", "");
+                                            msg = "http://" + msg;
+                                            <a href="@msg" target="_blank" style="color: #4d4db7 !important;">@msg</a>
+                                        }
+                                        else
+                                        {
+                                            @item.SentMsg
+                                        }
+                                    </p>
+                                
+
+                                    <div style="word-break:break-all" id="demo-@item.Idno" class="collapse">
+                                        @item.SentMsg
+                                    </div>
+                                </td>
+                            </tr>
+
+                            ii++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<style>
+  
+
+        .mytext p {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+</style>
+<script>
+    //function expenddata(id) {
+    //    $(id).text('hello');
+
+    //}
+    function changeText(btn) {
+        
+        $(btn).text(function (i, text) {
+
+            if (text == "Show More") {
+                $(btn).prev().hide()
+            }
+            else {
+                $(btn).prev().show()
+            }
+            return text === "Show More" ? "Show Less" : "Show More";
+        });
+    };
+
+
+</script>

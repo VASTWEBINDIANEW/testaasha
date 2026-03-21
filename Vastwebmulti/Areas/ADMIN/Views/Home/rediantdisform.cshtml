@@ -1,0 +1,209 @@
+﻿@using Vastwebmulti.Areas.ADMIN.Models;
+@using Vastwebmulti.Models;
+@{
+    ViewBag.Title = "rediantdisform";
+}
+
+<style>
+    #myForm input, #myForm select {
+        max-width: 100%;
+        width: 100%;
+        border: 1px solid #ccc;
+        height: 36px;
+        margin: 10px 0;
+        padding: 10px;
+        background: #f1f1f1;
+    }
+
+    #myForm input {
+        padding: 6px 10px;
+    }
+    .from_redset {
+        padding: 50px 0;
+        width: 60%;
+        margin: auto;
+    }
+    .from_redset label {
+        margin:0;
+    }
+
+</style>
+@{ 
+
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var chej = db.rediantdistresponses.ToList();
+    var admin = db.Admin_details.ToList();
+
+    var adminfirst = admin[0].Name.Split(' ');
+    var firstname = adminfirst[0];
+    var lastname = "";
+    for(int i = 1; i < adminfirst.Length; i++)
+    {
+        lastname += adminfirst[i]+" ";
+    }
+    var email = admin[0].email;
+    var phoneno = admin[0].mobile;
+    var address = admin[0].Address;
+    var pincode = admin[0].pincode;
+    var lendmark = admin[0].landmarkaddress;
+    
+}
+<section class="content" style=" ">
+    <div class="container-fluid">
+        
+        <div class="from_redset">
+          
+
+                    <form id="myForm" class="page-header-third" action="@Url.Action("rediantdisform", "Home")" method="post" enctype="multipart/form-data">
+
+                        <div class="logo-change" style="margin-top:0px;">
+                            <h2>
+                                Radiant Form of the Master
+                            </h2>
+
+                        </div>
+
+                        <div class="col-md-12">
+
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="firstname" value="@firstname" placeholder="Enter First Name" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="lastname" value="@lastname.Trim()" placeholder="Enter Last Name" required />
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="email" value="@email" placeholder="Enter Email" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="phoneno" value="@phoneno" placeholder="Enter Mobile no." required />
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="address" value="@address" placeholder="Enter Address" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="date" name="dob" placeholder="Enter Date Of Birth" required />
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="pincode" value="@pincode" placeholder="Enter Pincode" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="landmark" value="@lendmark" placeholder="Enter Landmark" required />
+                                </div>
+
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @*<input type="text" name="state" />*@
+                                    @Html.DropDownList("state", ViewBag.state as List<SelectListItem>, "Select State", new { @class = "form-control", onchange = "districtChanged(this.value);", required = "required" })
+
+                                </div>
+                                <div class="col-md-6">
+                                    <select name="district" id="disss" required>
+                                        <option value="">Select District</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <label>Aadhar Front</label>
+                                    <input type="file" name="file" accept=".jpg" onchange="validateFile(this)" required />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Aadhar Back</label>
+                                    <input type="file" name="file1" accept=".jpg" onchange="validateFile(this)" required />
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <input type="submit" value="Save" />
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
+
+
+
+
+                        <script>
+                            function validateFile(input) {
+                                var maxSize = 500000; // 500 KB
+
+                                // Check if a file is selected
+                                if (input.files.length > 0) {
+                                    // Check file size (in bytes)
+                                    if (input.files[0].size > maxSize) {
+                                        alert("File size exceeds the maximum allowed size of 500 KB.");
+                                        // Clear the file input to allow selecting a new file
+                                        input.value = '';
+                                    }
+                                }
+                            }
+                        </script>
+
+
+
+
+                    </form>
+                    <label style="color:red">    @ViewBag.message</label>
+               
+        </div>
+        </div>
+    </section>
+
+ 
+
+<script>
+    function districtChanged(id)
+    {
+         $.ajax({
+           url: '@Url.Action("readiantdstss","Home")',
+            type: 'POST',
+              data: { state: id },
+           cache: false,
+             success: function (response) {
+                 var sel = document.getElementById('disss');
+                 sel.innerHTML = "";
+                 var opt1 = document.createElement("option");
+                 opt1.value = "";
+                 opt1.text = "Select District";
+                 sel.appendChild(opt1);
+                 for (var i = 0; i < response.length; i++) {
+                     var opt = document.createElement("option");
+                     opt.value = response[i].id;
+                     opt.text = response[i].dist;
+                     sel.appendChild(opt);
+                 }
+              }
+            });
+    }
+    function onSuccessFunction(data) {
+        console.log(data);
+    }
+</script>

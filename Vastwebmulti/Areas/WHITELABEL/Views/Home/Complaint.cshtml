@@ -1,0 +1,184 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.ChattingModel
+@{
+    ViewBag.Title = "Complaint";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+<link href="~/Swalalert/chatting.css" rel="stylesheet" />
+<style>
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-4">
+                <div class="card" style="margin-top:0px;">
+                    <div class="panel-heading" style="border:0px solid #dddddd;background:@PageData["Globalfirst"];text-align: center;color: #fff;">
+                        <span style="color: #fff;" class="fa fa-user-circle-o"></span> User's List
+
+                    </div>
+                    <div class="panel-collapse collapse" style="display:block;">
+                        <div class="panel-body" style="height:495px;">
+
+                            <ul class="chat">
+
+                                @foreach (var item in Model.WChatuser)
+                                {
+                                <li style="cursor:pointer;border: 1px solid @PageData["GlobalSecond"];padding: 7px;border-radius: 10px;position: relative;" onclick="getval('@item.Userid')">
+                                    <div class="row">
+
+                                        <div class="col-xs-3">
+                                            <div class="chat-body clearfix">
+                                                <div class="header" style="border-bottom:none;padding: 0;">
+                                                    <p class="text-muted" style="">
+                                                        <center>
+                                                            @if (item.Photo != null && item.Photo != "")
+                                                            {
+                                                            <img src="@Url.Content("~/" + item.Photo)" style="height:44px;border:1px solid @PageData["GlobalSecond"];width:44px;" class="img-circle" />
+                                                            }
+                                                            else
+                                                            {
+                                                        <img class="img-circle" src="~/images/reportimage/chatuserimage.png" style="height:44px;width:44px; border:1px solid @PageData["Globalfirst"];" />
+                                                            }
+                                                        </center>
+
+                                                    </p>
+                                                    <strong class="pull-right primary-font"></strong>
+                                                </div>
+                                                <p style="text-align:center;font-size:13px;">
+                                                    @item.Role
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-9" style="position: static;">
+                                            <span class="chat-img">
+                                                @if (item.count != 0)
+                                                {
+                                                <p style="float:right;background-color: @PageData["GlobalSecond"]; padding: 0px 6px 0px 6px;  border-radius: 50pc; margin: 0;color: white;position: absolute;right: -8px;top: -8px;" title="Complain Request Pending">@item.count</p>
+                                                }
+                                                else
+                                                {
+                                            <p style="float:right;background-color: @PageData["Globalfirst"]; padding: 0px 6px 0px 6px;  border-radius: 50pc; margin: 0;color: white;position: absolute;right: -8px;top: -8px;">@item.count</p>
+                                                }
+
+                                                <p style="margin-right:22px;margin-top:9px;">@item.Email&nbsp;&nbsp;</p>
+                                                <p style="margin-right:22px;margin-top: -9px;">@item.Name&nbsp;&nbsp;</p>
+                                            </span>
+                                        </div>
+                                    </div>
+
+
+                                </li>
+                                }
+
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-8">
+
+                <div class="card" style="margin-top:0px;">
+                    <div class="panel-heading" style="border:0px solid #dddddd;background: @PageData["GlobalSecond"];text-align: center;color: #fff;">
+                        <span style="color: #fff;" class="fa fa-comments-o"></span> Chatting Details
+
+                    </div>
+                    <div class="panel-collapse collapse" style="display:block;">
+                        <div class="panel-body" style="height:495px;">
+
+                            <ul class="chat">
+
+                                @foreach (var item in Model.WComplainreq)
+                                {
+
+                                    if (item.rdate != null)
+                                    {
+
+                                <li class="left clearfix" style="border:1px solid @PageData["Globalfirst"];border-radius:10px;padding: 5px 0;box-shadow: 0px 3px 5px 0px #555;margin-bottom: 20px;">
+                                    <div class="chating-left" style="width: 50%;float: left;text-align: center; padding: 10px 15px;">
+                                        <img class="img-circle" src="/images/reportimage/chatuserimage.png" style="height:44px;width:44px; border:1px solid #08a187;">
+                                        <p style="color:#000;margin: 5px 0 0;">@item.Email</p>
+                                    </div>
+                                    <div class="chating-right" style="float: right;padding: 10px 15px;width: 50%;display: flex;flex-wrap: wrap;align-items: center;height: 100px;justify-content: right;">
+                                        <div class="chat-body clearfix" style="margin: 0;">
+                                            <strong class="primary-font"></strong>
+                                            <p class="pull-right text-muted" style="">
+                                                <span class="fa fa-clock-o"></span>&nbsp;@item.rdate
+                                            </p>
+                                            <p style="width: 100%;float: right;text-align: right;">@item.complant </p>
+                                            @if (item.resdate == null)
+                                            {
+                                                <div class="input-group" style="margin-bottom:0px;">
+                                                    <input type="text" id="@item.idno" name="txtcomment" class="form-control" placeholder="Insert reply" style="border:2px solid #dedddd;height:30px;padding-left:4px;" />
+                                                    <span class="input-group-addon" style="background-color:#dedddd;cursor:pointer;" onclick="submitdata('@item.idno','@item.userid')" title="Reply for this complain request">
+                                                        <i class="fa fa-send" style="margin-top:-2px;margin-right:-6px;margin-left:6px;"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </li>
+                                    }
+                                    if (item.resdate != null)
+                                    {
+                            <li style="border:1px solid @PageData["GlobalSecond"];border-radius:10px;padding: 5px 0;box-shadow: 0px 3px 5px 0px #555;margin-bottom: 20px;">
+                                <div class="chating-left" style="width: 50%;float: left;text-align: center; padding: 10px 15px;">
+                                    <img class="img-circle" src="/images/reportimage/chatuserimage.png" style="height:44px;width:44px; border:1px solid #08a187;">
+                                    <p style="color:#000;margin: 5px 0 0;">WAdmin</p>
+                                </div>
+                                <div class="chating-right" style="float: right;padding: 10px 15px;width: 50%;display: flex;flex-wrap: wrap;align-items: center;height: 100px;justify-content: right;">
+                                    <div class="chat-body clearfix" style="margin: 0;">
+                                        <p class="text-muted" style="width: 100%; float: right; text-align: right;">
+                                            <span class="fa fa-clock-o"></span>&nbsp;@item.resdate
+                                        </p>
+                                        <strong class="pull-right primary-font"></strong>
+                                        <p style="width: 100%; float: right; text-align: right;">@item.response</p>
+                                    </div>
+                                </div>
+                            </li>
+
+                                    }
+                                }
+
+
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script>
+    function getval(userid)
+    {
+        var url = '@Url.Action("Complaint","Home")?type=User&userid=' + userid + '';
+        window.location.href = url;
+    }
+</script>
+
+<script>
+    function submitdata(idno,userid)
+    {
+        comment = document.getElementById(idno).value;
+        var url = '@Url.Action("Complaint_edit", "Home")?type=User&useridd=' + userid + '&id=' + idno + '&response=' + comment + '';
+        window.location.href = url;
+    }
+</script>
+

@@ -1,0 +1,883 @@
+﻿@using Vastwebmulti.Areas.RETAILER.ViewModels
+@model Vastwebmulti.Areas.RETAILER.ViewModels.AirSearchResultVM
+@{
+    ViewBag.Title = "Travel";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+    bool isDomestic = true;
+    isDomestic = ViewBag.IsDomestic;
+}
+<style>
+    .scrollypy {
+        overflow-y: auto !important;
+        height: 250px;
+    }
+
+    .btmPlusMinus {
+        padding: 3px 6px;
+        margin-right: 4px;
+        padding-bottom: 6px;
+        border-radius: 5px;
+    }
+
+        .btmPlusMinus i {
+            font-size: 10px;
+        }
+
+    .table {
+        display: table; /* Allow the centering to work */
+        margin: 0 auto;
+    }
+
+    ul#horizontal-list {
+        min-width: 696px;
+        list-style: none;
+        padding-top: 20px;
+    }
+
+        ul#horizontal-list li {
+            display: inline;
+            text-align: center;
+            padding: 20px;
+        }
+    /*======================================
+    =            NO GUTTER CODE            =
+    ======================================*/
+    .no-gutter > [class*='col-'] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    #topSection {
+        position: fixed;
+        z-index: 99;
+        background-color: lavender;
+        padding: 5px;
+    }
+</style>
+<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/AdminDesign/Retailer_Slider/Slieder.css" rel="stylesheet" />
+<link href="~/CSS/PageCss/AirSearch.css" rel="stylesheet" />
+@Html.Action("_AirFilter")
+<section class="content" style="">
+    <div class="container-fluid">
+
+        @if (ViewBag.ShowCalanderFare)
+        {
+            @Html.Action("_CalanderFare", new { txtSource = Model.Content.Addinfo.Origin, txtDestination = Model.Content.Addinfo.Destination, txt_frm_date = ViewBag.txt_frm_date })
+
+        }
+        @if (Model.Content.Addinfo.Results.Count == 2)
+        {
+            Vastwebmulti.Areas.RETAILER.Models.AirTopSectionModel obj = new Vastwebmulti.Areas.RETAILER.Models.AirTopSectionModel();
+            List<Result> lst = new List<Result>();
+            lst.Add(Model.Content.Addinfo.Results[0].First());
+            lst.Add(Model.Content.Addinfo.Results[1].First());
+            obj.Results = lst;
+            <div id="topSection">
+                @Html.Action("_TypeReturnAirTopSection", new { model = obj })
+            </div>
+        }
+
+
+        <!-- No Header Card -->
+        <div class="block-header" style="padding: 12px 0 22px 1px;margin-bottom: 20px;margin-top:120px;">
+            @*<h2>NO HEADER CARDS</h2>*@
+            <div class="col-md-6 pull-left"><h2>Found @Model.Content.Addinfo.Results.FirstOrDefault().Count<sup>+</sup> &nbsp;Flights</h2></div>
+            <div class="col-md-6 pull-left">
+                <button type="button" class="btn bg-purple waves-effect pull-right">
+                    <i class="material-icons">search</i>
+                    <span>Modify Search</span>
+                </button>
+            </div>
+        </div>
+        <div class="row no-gutter">
+            <div id="sortingRow" class="">
+                @if (Model.Content.Addinfo.Results.Count == 2)
+                {
+                    <div class="col-lg-6 m-b-15 clearfix">
+                        @*<div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Airline</a>
+                                <a href="javascript:void(0);" style="padding-left: 60px;" class="btn bg-gray waves-effect" role="button">Departure</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Arrival</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Duaration</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Price</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button"></a>
+                            </div>*@
+                        <div class="col-md-3" style="text-align:center">Airline</div>
+                        <div class="col-md-9">
+                            <div class="col-md-2">Diparture</div>
+                            <div class="col-md-2">Arrival</div>
+                            <div class="col-md-2">Duaration</div>
+                            <div class="col-md-3" style="text-align:right;">Price</div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6 m-b-15 clearfix">
+                        @*<div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Airline</a>
+                                <a href="javascript:void(0);" style="padding-left: 60px;" class="btn bg-gray waves-effect" role="button">Departure</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Arrival</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Duaration</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Price</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button"></a>
+                            </div>*@
+                        <div class="col-md-3" style="text-align:center">Airline</div>
+                        <div class="col-md-9">
+                            <div class="col-md-2">Diparture</div>
+                            <div class="col-md-2">Arrival</div>
+                            <div class="col-md-2">Duaration</div>
+                            <div class="col-md-3" style="text-align:right;">Price</div>
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="col-lg-12 m-b-15 clearfix">
+                        @*<div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Airline</a>
+                                <a href="javascript:void(0);" style="padding-left: 60px;" class="btn bg-gray waves-effect" role="button">Departure</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Arrival</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Duaration</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button">Price</a>
+                                <a href="javascript:void(0);" class="btn bg-gray waves-effect" role="button"></a>
+                            </div>*@
+                        <div class="col-md-3" style="text-align:center">Airline</div>
+                        <div class="col-md-9">
+                            <div class="col-md-2">Diparture</div>
+                            <div class="col-md-2">Arrival</div>
+                            <div class="col-md-2">Duaration</div>
+                            <div class="col-md-3" style="text-align:right;">Price</div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+            @if (Model.Content.Addinfo.Results.Count == 2)
+            {
+                <div class="col-md-6 no-gutter">
+
+                    @foreach (var item in Model.Content.Addinfo.Results[0])
+                    {
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card">
+                                <div class="body bg-white" style="padding-bottom:0px; padding-right:0;padding-left:0;">
+                                    <div class="table">
+                                        <div class="col-md-3" style="padding-right:0px;">
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <a href="javascript:void(0);">
+                                                        @if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "AI")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.airindia.com?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "6E")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.goindigo.in?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "SG")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.spicejet.com/?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "9W")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "9W")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "UK")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.airvistara.com?size=64" width="32" height="32">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="media-object" src="http://placehold.it/64x64" width="32" height="32">
+                                                        }
+
+                                                    </a><br />
+                                                </div>
+                                                <div class="media-body" style="text-align:left;">
+                                                    <h4 class="media-heading">@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineName</h4>
+                                                    @item.AirlineCode - @item.Segments.FirstOrDefault().FirstOrDefault().Airline.FlightNumber
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeDiv col-md-9">
+                                            <div class="col-md-2" style="padding-left:5px;">
+                                                @foreach (var segment in item.Segments.FirstOrDefault())
+                                                {
+                                                    <strong> (@segment.Origin.Airport.AirportCode)@Convert.ToDateTime(segment.Origin.DepTime).ToString("HH:mm")</strong> <br />
+                                                }
+                                            </div>
+                                            <div class="col-md-2">
+                                                @foreach (var segment in item.Segments.FirstOrDefault())
+                                                {
+                                                    <strong>
+                                                        (@segment.Destination.Airport.AirportCode)@Convert.ToDateTime(segment.Destination.ArrTime).ToString("HH:mm")<br />
+                                                    </strong>
+                                                }
+                                            </div>
+                                            <div class="col-md-2">
+                                                @{
+                                                    TimeSpan spWorkMin = TimeSpan.FromMinutes(item.Segments.FirstOrDefault().FirstOrDefault().Duration);
+                                                }
+                                                @string.Format("{0:00}:{1:00}", (int)spWorkMin.TotalHours, spWorkMin.Minutes)
+                                            </div>
+                                            <div class="col-md-3 push-s2" style="text-align:right;padding-right:0px;">
+                                                @if (ViewBag.JourneyType != 4)
+                                                {
+                                                    <span title="Publish Price">@item.Fare.PublishedFare &nbsp; @item.Fare.Currency</span>
+                                                    <br />
+                                                    <span title="Offer Price" id="showOfferedPrice">
+                                                        @*@string.Format("{0:C2}", item.Fare.OfferedFare) (O.P.)*@
+                                                        <i class="fa fa-eye" onclick="getOfferedFare('@item.Fare.OfferedFare','@item.Fare.PublishedFare','true',this)"></i>
+                                                    </span>
+                                                    if (item.IsRefundable)
+                                                    {
+                                                        <br />    <span> 🆁🅴🅵🆄🅽🅳🅰🅱🅻🅴</span>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col-md-2">
+                                                @*<button class="btn btn-primary bg-dark-green" onclick="bookNow('@item.ResultIndex','@Model.Content.Addinfo.TraceId')">Book Now</button>*@
+                                                @*<a class="btn btn-primary bg-dark-green" href="@Url.Action("FlightDetails","Home",new { TraceId= Model.Content.Addinfo.TraceId,ResultIndex=item.ResultIndex})">Book Now</a>*@
+                                                <input name="SourceRadio" type="radio" id="radio_@item.ResultIndex" value="@item.ResultIndex" class="with-gap radio-col-red" checked="" onclick="GetSourceByIndex('@item.ResultIndex')">
+
+                                                <label for="radio_@item.ResultIndex">RED</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                                    }
+                </div>
+                <div class="col-md-6 no-gutter">
+                    @foreach (var item in Model.Content.Addinfo.Results[1])
+                    {
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card">
+                                <div class="body bg-white" style="padding-bottom:0px; padding-right:0;padding-left:0;">
+                                    <div class="table">
+                                        <div class="col-md-3" style="padding-right:0px;">
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <a href="javascript:void(0);">
+                                                        @if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "AI")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.airindia.com?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "6E")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.goindigo.in?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "SG")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.spicejet.com/?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "9W")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "9W")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="32" height="32">
+                                                        }
+                                                        else if (@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode == "UK")
+                                                        {
+                                                            <img class="media-object" src="https://logo.clearbit.com/www.airvistara.com?size=64" width="32" height="32">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="media-object" src="http://placehold.it/64x64" width="32" height="32">
+                                                        }
+
+                                                    </a><br />
+                                                </div>
+                                                <div class="media-body" style="text-align:left;">
+                                                    <h4 class="media-heading">@item.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineName</h4>
+                                                    @item.AirlineCode - @item.Segments.FirstOrDefault().FirstOrDefault().Airline.FlightNumber
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="timeDiv col-md-9">
+                                            <div class="col-md-2" style="padding-left:5px;">
+                                                @foreach (var segment in item.Segments.FirstOrDefault())
+                                                {
+                                                    <strong> (@segment.Origin.Airport.AirportCode)@Convert.ToDateTime(segment.Origin.DepTime).ToString("HH:mm")</strong> <br />
+                                                }
+                                            </div>
+                                            <div class="col-md-2">
+                                                @foreach (var segment in item.Segments.FirstOrDefault())
+                                                {
+                                                    <strong>
+                                                        (@segment.Destination.Airport.AirportCode)@Convert.ToDateTime(segment.Destination.ArrTime).ToString("HH:mm")<br />
+                                                    </strong>
+                                                }
+                                            </div>
+                                            <div class="col-md-2">
+                                                @{
+                                                    TimeSpan spWorkMin = TimeSpan.FromMinutes(item.Segments.FirstOrDefault().FirstOrDefault().Duration);
+                                                }
+                                                @string.Format("{0:00}:{1:00}", (int)spWorkMin.TotalHours, spWorkMin.Minutes)
+                                            </div>
+                                            <div class="col-md-3 push-s2" style="text-align:right;padding-right:0px;">
+                                                @if (ViewBag.JourneyType != 4)
+                                                {
+                                                    <span title="Publish Price">@item.Fare.PublishedFare &nbsp; @item.Fare.Currency</span>
+                                                    <br />
+                                                    <span title="Offer Price" id="showOfferedPrice">
+                                                        @*@string.Format("{0:C2}", item.Fare.OfferedFare) (O.P.)*@
+                                                        <i class="fa fa-eye" onclick="getOfferedFare('@item.Fare.OfferedFare','@item.Fare.PublishedFare','true',this)"></i>
+                                                    </span>
+                                                    if (item.IsRefundable)
+                                                    {
+                                                        <br />    <span> 🆁🅴🅵🆄🅽🅳🅰🅱🅻🅴</span>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col-md-2">
+                                                @*<button class="btn btn-primary bg-dark-green" onclick="bookNow('@item.ResultIndex','@Model.Content.Addinfo.TraceId')">Book Now</button>*@
+                                                @*<a class="btn btn-primary bg-dark-green" href="@Url.Action("FlightDetails","Home",new { TraceId= Model.Content.Addinfo.TraceId,ResultIndex=item.ResultIndex})">Book Now</a>*@
+                                                <input name="DestinationRadio" type="radio" id="radio_@item.ResultIndex" value="@item.ResultIndex" class="with-gap radio-col-red" checked="" onclick="GetDestinationByIndex('@item.ResultIndex')">
+                                                <label for="radio_@item.ResultIndex">RED</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                                    }
+                </div>
+                                                    }
+
+                                                    else
+                                                    {
+                                                        foreach (var result in Model.Content.Addinfo.Results)
+                                                        {
+                                                            foreach (var item in result)
+                                                            {
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="card">
+                                                                        <div class="body bg-white" style="padding-bottom:0px;">
+                                                                            <div class="table">
+                                                                                <div class="row">
+                                                                                    @{ int counter = 1;}
+                                                                                    @foreach (var m_Item in item.Segments)
+                                                                                    {
+                                                                                        <div class="col-md-3" style="padding-right:0px;">
+
+                                                                                            <div class="media" style="margin:0px;">
+                                                                                                <div class="media-left">
+                                                                                                    <a href="javascript:void(0);">
+                                                                                                        @if (m_Item.FirstOrDefault().Airline.AirlineCode == "AI")
+                                                                                                        {
+                                                                                                            <img class="media-object" src="https://logo.clearbit.com/www.airindia.com?size=32" width="32" height="32">
+                                                                                                        }
+                                                                                                        else if (m_Item.FirstOrDefault().Airline.AirlineCode == "6E")
+                                                                                                        {
+                                                                                                            <img class="media-object" src="https://logo.clearbit.com/www.goindigo.in?size=32" width="32" height="32">
+                                                                                                        }
+                                                                                                        else if (m_Item.FirstOrDefault().Airline.AirlineCode == "SG")
+                                                                                                        {
+                                                                                                            <img class="media-object" src="https://logo.clearbit.com/www.spicejet.com/?size=32" width="32" height="32">
+                                                                                                        }
+                                                                                                        else if (m_Item.FirstOrDefault().Airline.AirlineCode == "9W")
+                                                                                                        {
+                                                                                                            <img class="media-object" src="https://logo.clearbit.com/www.jetairways.com?size=32" width="32" height="32">
+                                                                                                        }
+                                                                                                        else if (m_Item.FirstOrDefault().Airline.AirlineCode == "9W")
+                                                                                                        {
+                                                                                                            <img class="media-object" src="https://logo.clearbit.com/www.jetairways.com?size=32" width="32" height="32">
+                                                                                                        }
+                                                                                                        else if (m_Item.FirstOrDefault().Airline.AirlineCode == "UK")
+                                                                                                        {
+                                                                                                            <img class="media-object" src="https://logo.clearbit.com/www.airvistara.com?size=32" width="32" height="32">
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            <img class="media-object" src="http://placehold.it/32x32" width="32" height="32">
+                                                                                                        }
+                                                                                                    </a><br />
+                                                                                                </div>
+                                                                                                <div class="media-body" style="text-align:left;">
+                                                                                                    <h4 class="media-heading">@m_Item.FirstOrDefault().Airline.AirlineName</h4>
+                                                                                                    @m_Item.FirstOrDefault().Airline.AirlineCode - @m_Item.FirstOrDefault().Airline.FlightNumber
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                        <div class="timeDiv col-md-9">
+                                                                                            <div class="row">
+                                                                                                <div class="col-md-6">
+                                                                                                    <div class="col-md-12">
+                                                                                                        <div class="row clearfix">
+                                                                                                            <div class="col-md-4" style="padding-left:5px;">
+                                                                                                                @foreach (var sgmtItem in m_Item)
+                                                                                                                {
+                                                                                                                    <strong> (@sgmtItem.Origin.Airport.AirportCode)@Convert.ToDateTime(sgmtItem.Origin.DepTime).ToString("HH:mm")</strong> <br />
+                                                                                                                }
+                                                                                                            </div>
+                                                                                                            <div class="col-md-4">
+                                                                                                                @foreach (var sgmtItem in m_Item)
+                                                                                                                {
+                                                                                                                    <strong>
+                                                                                                                        (@sgmtItem.Destination.Airport.AirportCode)@Convert.ToDateTime(sgmtItem.Destination.ArrTime).ToString("HH:mm")<br />
+                                                                                                                    </strong>
+                                                                                                                }
+                                                                                                            </div>
+                                                                                                            <div class="col-md-4">
+                                                                                                                @foreach (var sgmtItem in m_Item)
+                                                                                                                {
+                                                                                                                    TimeSpan spWorkMin = TimeSpan.FromMinutes(sgmtItem.Duration);
+                                                                                                                    @Html.Raw(string.Format("{0:00}:{1:00}", (int)spWorkMin.TotalHours, spWorkMin.Minutes));<br />
+                                                                                                                }
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="row clearfix">
+                                                                                                            <div class="col-md-12">
+                                                                                                                <div class="demo-radio-button">
+                                                                                                                    <div id="SeatAvailRadios">
+                                                                                                                        @foreach (var sgmtItem in m_Item)
+                                                                                                                        {
+                                                                                                                            if (sgmtItem.Availability != null)
+                                                                                                                            {
+                                                                                                                                foreach (var SeatAvail in sgmtItem.Availability)
+                                                                                                                                {
+                                                                                                                                    <input name="radio_@item.ResultIndex" type="radio" id="@string.Concat(item.ResultIndex,"_",SeatAvail.Class)" value="@SeatAvail.Class" class="with-gap radio-col-red" checked="">
+                                                                                                                                    <label for="@string.Concat(item.ResultIndex,"_",SeatAvail.Class)">@SeatAvail.Class (@SeatAvail.Seats)</label>
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                @if (ViewBag.JourneyType != 4 && counter == 1)
+                                                                                                {
+                                                                                                    <div class="col-md-3 push-s2" style="text-align:right;padding-right:0px;">
+                                                                                                        <span title="Publish Price">@item.Fare.PublishedFare &nbsp; @item.Fare.Currency</span>
+                                                                                                        <br />
+                                                                                                        <span title="Offer Price" id="showOfferedPrice">
+                                                                                                            @*@string.Format("{0:C2}", item.Fare.OfferedFare) (O.P.)*@
+                                                                                                            <i class="fa fa-eye" onclick="getOfferedFare('@item.Fare.OfferedFare','@item.Fare.PublishedFare','true',this)"></i>
+                                                                                                        </span>
+                                                                                                        @if (item.IsRefundable)
+                                                                                                        {
+                                                                                                            <br />    <span> 🆁🅴🅵🆄🅽🅳🅰🅱🅻🅴</span>
+                                                                                                        }
+                                                                                                    </div>
+                                                                                                }
+                                                                                                <div class="col-md-2" id="booklink">
+                                                                                                    @*<button class="btn btn-primary bg-dark-green" onclick="bookNow('@item.ResultIndex','@Model.Content.Addinfo.TraceId')">Book Now</button>*@
+                                                                                                    @if (counter == 1)
+                                                                                                    {
+                                                                                                        if (ViewBag.JourneyType == 4)
+                                                                                                        {
+                                                                                                            <button class="btn btn-primary bg-dark-green" id="btnShowPrice" onclick="btnShowPrice('@Json.Encode(item)')">Show Price</button>
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            <a class="btn btn-primary bg-dark-green" href="@Url.Action("FlightDetails", "Home", new { TraceId = Model.Content.Addinfo.TraceId, ResultIndex = item.ResultIndex, JourneyType = ViewBag.JourneyType })">Book Now</a>
+                                                                                                        }
+                                                                                                    }
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        counter++;
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                                                }
+                                                                                            }
+                                                                                        }
+
+        </div>
+        <!-- #END# No Header Card -->
+    </div>
+    <!--Slider div-->
+    <br />
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<!-- Start Rechargepaybill js-->
+<script src="~/Retailerjavascript/Rechargepaybill/electricityl.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Landline.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Dth.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/gas.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Insurance.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/mobileperpaidandpostpaid.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Water.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/broadband.js"></script>
+<!--End-->
+<script src="~/AdminDesign/Retailer_Slider/multislider.js"></script>
+<script src="~/Scripts/PageScript/Retailer/AirSearch.js"></script>
+@*<script>
+        $('#basicSlider').multislider({
+            continuous: true,
+            duration: 2000
+        });
+        $('#mixedSlider').multislider({
+            duration: 750,
+            interval: 3000
+        });
+    </script>*@
+<!--Calendar Javascript-->
+<script type="text/javascript">
+    $(function () {
+        $('#date').bootstrapMaterialDatePicker
+       ({
+           clearButton: false
+       });
+        $('#txt_to_date').bootstrapMaterialDatePicker
+        ({
+            weekStart: 0, format: 'DD/MM/YYYY'
+        });
+        $('#txt_frm_date').bootstrapMaterialDatePicker
+        ({
+            weekStart: 0, format: 'DD/MM/YYYY'
+        }).on('change', function (e, date) {
+            $('#txt_to_date').bootstrapMaterialDatePicker('setMinDate', date);
+        });
+
+        $('#min-date').bootstrapMaterialDatePicker({ format: 'DD/MM/YYYY HH:mm', minDate: new Date() });
+
+        @*var from = '@ViewBag.fromdate';
+        var to = '@ViewBag.todate';
+        if (from != "" && to != "") {
+            $('#txt_frm_date').val(from);
+            $('#txt_to_date').val(to);
+        }*@
+        //     else {
+        //         var month = new Array("Jan", "Feb", "Mar",
+        //"Apr", "May", "Jun", "Jul", "Aug", "Sep",
+        //"Oct", "Nov", "Dec");
+        //         var d = new Date();
+        //         var curr_date = d.getDate();
+        //         var curr_month = d.getMonth();
+        //         var curr_year = d.getFullYear();
+
+        //         var tt = curr_date + "-" + month[curr_month]
+        //         + "-" + curr_year;
+        //         document.getElementById("txt_frm_date").value = tt;
+        //         document.getElementById("txt_to_date").value = tt;
+        //         document.getElementById("txt_frm_date_bus").value = tt;
+        //         document.getElementById("txt_frm_date_hotel").value = tt;
+        //         document.getElementById("txt_to_date_hotel").value = tt;
+        //     }
+
+        $('[data-toggle="tooltip"]').tooltip();
+        //var radiobtn = "Oneway";
+        //if (radiobtn != "" && radiobtn != null) {
+        //    $('input:radio[name="JourneyType"][value= ' + radiobtn + ']').prop('checked', true);
+        //    document.getElementById("txt_to_date").disabled = true;
+        //}
+    });
+
+</script>
+@*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+      rel="Stylesheet" type="text/css" />
+<script>
+
+
+    function GetSourceByIndex(src)
+    {
+
+        var data = @Html.Raw(Json.Encode(Model));
+        var results = data.Content.Addinfo.Results;
+        var srcItem = results[0];
+
+        var DstnItem = results[1];
+
+        var DstnRadionValue = $('[name=DestinationRadio]:checked').val();
+        var SourceRadioValue = $('[name=SourceRadio]:checked').val();
+        //alert('SourceRadioValue : '+SourceRadioValue);
+        // console.log(srcItem);
+        // $('#radio_'+SourceRadioValue).attr("checked",false);
+
+
+        var ResultItem1 = new Object();
+        var ResultItem2 = new Object();
+        var arrItem = [];
+        ///
+        for(var i =0 ;i<srcItem.length;i++)
+        {
+            var selectedItem = srcItem[i];
+            // console.log(selectedItem);
+            if(selectedItem.ResultIndex == src)
+            {
+                ResultItem1 = selectedItem;
+                break;
+            }
+        }
+
+        for(var i =0 ;i<DstnItem.length;i++)
+        {
+            var selectedItem = DstnItem[i];
+
+            if(selectedItem.ResultIndex == DstnRadionValue)
+            {
+                //console.log(selectedItem);
+                ResultItem2 = selectedItem;
+                break;
+            }
+
+        }
+
+        var AirTopSectionModel = {};
+        arrItem.push(ResultItem1);
+        arrItem.push(ResultItem2);
+
+        AirTopSectionModel.Results = arrItem;
+        AirTopSectionModel.JourneyType = '@ViewBag.JourneyType';
+        AirTopSectionModel.TraceId = '@Model.Content.Addinfo.TraceId';
+
+
+        console.log("model Json stingfy: " + JSON.stringify(AirTopSectionModel));
+        $.ajax({
+            url : '@Url.Action("ShowSelectedFlightItinarary", "Home")',
+            type : 'POST',
+            data: JSON.stringify(AirTopSectionModel),
+            dataType:'html',
+            contentType: "application/json; charset=utf-8",
+            success : function(data) {
+                // alert("Kamyab ho chuka");
+                // alert('Data: '+data);
+                $("#topSection").html(data);
+                //$('#radio_'+DstnRadionValue).click();
+                $('#radio_'+DstnRadionValue).attr("checked",true);
+            },
+            error : function(request,error)
+            {
+                // alert("Error mojood hai");
+                // alert("Request: "+JSON.stringify(request));
+                console.log("Request: "+JSON.stringify(request));
+            }
+        });
+    }
+    function GetDestinationByIndex(dstn) {
+        try
+        {
+            var data = @Html.Raw(Json.Encode(Model));
+            var results = data.Content.Addinfo.Results;
+            var srcItem = results[0];
+            var DstnItem = results[1];
+
+            var SrcRadionValue = $('[name=SourceRadio]:checked').val();
+            //alert("SrcRadionValue : " + SrcRadionValue);
+            var ResultItem1 = new Object();
+            var ResultItem2 = new Object();
+            var arrItem = [];
+            for(var i =0 ;i<DstnItem.length;i++)
+            {
+                var selectedItem = DstnItem[i];
+                if(selectedItem.ResultIndex == dstn)
+                {
+                    ResultItem2 = selectedItem;
+                    break;
+                }
+
+            }
+            //alert(FirstTripPbFare);
+            for(var i =0 ;i<srcItem.length;i++)
+            {
+                var selectedItem = srcItem[i];
+                if(selectedItem.ResultIndex == SrcRadionValue)
+                {
+                    ResultItem1 = selectedItem;
+                    break;
+                }
+            }
+            var AirTopSectionModel = {};
+            arrItem.push(ResultItem1);
+            arrItem.push(ResultItem2);
+
+            AirTopSectionModel.Results = arrItem;
+            AirTopSectionModel.JourneyType = '@ViewBag.JourneyType';
+            AirTopSectionModel.TraceId = '@Model.Content.Addinfo.TraceId';
+
+            console.log("model Json stingfy: " + JSON.stringify(AirTopSectionModel));
+            $.ajax({
+                url : '@Url.Action("ShowSelectedFlightItinarary", "Home")',
+                type : 'POST',
+                data: JSON.stringify(AirTopSectionModel),
+                dataType:'html',
+                contentType: "application/json; charset=utf-8",
+                success : function(data) {
+                    // alert("Kamyab ho chuka");
+                    // alert('Data: '+data);
+                    $("#topSection").html(data);
+
+                    $('#radio_'+SrcRadionValue).attr("checked",true);
+                },
+                error : function(request,error)
+                {
+                    // alert("Error mojood hai");
+                    // alert("Request: "+JSON.stringify(request));
+                    console.log("Request: "+JSON.stringify(request));
+                }
+            });
+        }
+        catch(err){
+            alert(err.message);
+        }
+    }
+    function btnShowPrice(item) {
+        //alert("Show Price");
+        //alert(item);
+        //console.log(item);
+        //console.log(JSON.parse(item));
+        var SelectedItem = JSON.parse(item);
+        var ResultIndex = SelectedItem.ResultIndex;
+        //alert("ResultIndex " +ResultIndex);
+        var isFareClassSelected = $('[name=radio_'+ResultIndex+']:checked').val();
+        if(isFareClassSelected != null && isFareClassSelected != '')
+        {
+            var adltcount = '@TempData.Peek("AdultCount")'
+            var childcount = '@TempData.Peek("ChildCount")'
+            var infantcount = '@TempData.Peek("InfantCount")'
+            var RequestObject = {};
+            var AirSearchResult =[];
+            var AirSearchResultObject ={};
+            var Segments = [];
+            var NestedSegments = [];
+            var SegmentItem = {};
+            var Airline ={};
+            Airline =SelectedItem.Segments[0][0].Airline;
+            Airline.FareClass = isFareClassSelected;
+            SegmentItem.TripIndicator = 1;
+            SegmentItem.TripIndicator = 2;
+            SegmentItem.Airline = Airline;
+            NestedSegments.push(SegmentItem);
+            Segments.push(NestedSegments);
+            AirSearchResultObject.ResultIndex = ResultIndex;
+            AirSearchResultObject.Source = SelectedItem.Source;
+            AirSearchResultObject.IsLCC = SelectedItem.IsLCC;
+            AirSearchResultObject.IsRefundable = SelectedItem.IsRefundable;
+            AirSearchResultObject.AirlineRemark = SelectedItem.AirlineRemark;
+            AirSearchResultObject.Segments = Segments;
+            AirSearchResult.push(AirSearchResultObject);
+            //alert();
+            RequestObject.AdultCount = adltcount;
+            RequestObject.ChildCount = childcount;
+            RequestObject.InfantCount = infantcount;
+            //alert();
+            RequestObject.TraceId = '@Model.Content.Addinfo.TraceId';
+            RequestObject.AirSearchResult = AirSearchResult;
+            console.log(JSON.stringify(RequestObject));
+            $.ajax({
+                url : '@Url.Action("PRICERBD", "Home")',
+                type : 'POST',
+                data: JSON.stringify(RequestObject),
+                dataType:'json',
+                contentType: "application/json; charset=utf-8",
+                success : function(data) {
+                    console.log("PRICERBD Succes");
+                     //alert("Kamyab ho chuka");
+                     //alert('Data: '+data);
+                     var respo = JSON.parse(data);
+                    //$("#topSection").html(data);
+
+                    //$('#radio_'+SrcRadionValue).attr("checked",true);
+                     if(respo.Status == "Success")
+                     {
+                         var redirectUrl = '@Url.Action("FlightDetails", "Home")'+"?TraceId="+'@Model.Content.Addinfo.TraceId'+'&ResultIndex='+respo.ResultIndex+'&JourneyType=4';
+                         console.log(redirectUrl);
+                         //alert(redirectUrl);
+                         window.location.replace(redirectUrl);
+                     }
+                     else{
+                         alert(respo.Message);
+                     }
+                },
+                error : function(request,error)
+                {
+                     //alert("Error mojood hai");
+                    // alert("Request: "+JSON.stringify(request));
+                    console.log("Request: "+JSON.stringify(request));
+                }
+            })
+
+        }else{
+            alert("Select atleat a class!!!");
+        }
+
+    };
+
+    $(function () {
+
+
+
+        if(@Model.Content.Addinfo.Results.Count == 2) //Domestic
+        {
+            $('#radio_@Model.Content.Addinfo.Results.First().First().ResultIndex').click();
+            $('#radio_@Model.Content.Addinfo.Results.First().Last().ResultIndex').click();
+        }
+        //alert("Ready");
+    })
+    @*$.noConflict();
+    jQuery(document).ready(function ($) {
+        $("#txtSource").autocomplete({
+            source: '@Url.Action("GetSourceName")',
+            minLength: 3
+        })
+        $("#txtDestination").autocomplete({
+            source: '@Url.Action("GetSourceName")',
+            minLength: 3
+        })
+    });*@
+    function getOfferedFare(ofare,pfare,countryFlag,obj)
+    {
+        //alert(ofare);
+        var jdon = {OfferedFare:ofare,publishedFare:pfare,isDomestic: countryFlag};
+        $.ajax({
+            url : '@Url.Action("getAirSurcharge", "Home")',
+            type : 'POST',
+            data: JSON.stringify(jdon),
+            dataType:'json',
+            contentType: "application/json; charset=utf-8",
+            success : function(data) {
+                // alert("Kamyab ho chuka");
+                //alert('Data: '+data);
+                //$("#showOfferedPrice").html(data);
+                $(obj).html(data);
+            },
+            error : function(request,error)
+            {
+                //alert("Error maujood hai");
+                // alert("Request: "+JSON.stringify(request));
+                console.log("Request: "+JSON.stringify(request));
+            }
+        });
+    }
+</script>
+
+

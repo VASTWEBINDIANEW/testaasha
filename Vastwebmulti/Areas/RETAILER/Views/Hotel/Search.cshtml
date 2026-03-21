@@ -1,0 +1,1106 @@
+﻿@using Vastwebmulti.Areas.RETAILER.ViewModels
+@model Vastwebmulti.Areas.RETAILER.ViewModels.HotelSearchResultVm
+@{
+    ViewBag.Title = "Travel";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+    var markup = ViewBag.RetailerMarkup;
+    var charge = ViewBag.charge;
+
+    decimal vast_international_charge = ViewBag.vastinternational;
+    decimal vast_domestic_charge = ViewBag.vastdomestic;
+}
+<style>
+    .scrollypy {
+        overflow-y: auto !important;
+        height: 250px;
+    }
+
+    .btmPlusMinus {
+        padding: 3px 6px;
+        margin-right: 4px;
+        padding-bottom: 6px;
+        border-radius: 5px;
+    }
+
+        .btmPlusMinus i {
+            font-size: 10px;
+        }
+
+    .table {
+        display: table; /* Allow the centering to work */
+        margin: 0 auto;
+    }
+
+    ul#horizontal-list {
+        min-width: 696px;
+        list-style: none;
+        padding-top: 20px;
+    }
+
+        ul#horizontal-list li {
+            display: inline;
+            text-align: center;
+            padding: 20px;
+        }
+    /*======================================
+    =            NO GUTTER CODE            =
+    ======================================*/
+    .no-gutter > [class*='col-'] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    #topSection {
+        position: fixed;
+        z-index: 99;
+        background-color: lavender;
+        padding: 5px;
+    }
+
+    .loader_innner {
+        position: fixed;
+        z-index: 999999;
+        height: 100%;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+    }
+
+    .filterHeader {
+        background: #eee;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 8px 16px;
+        margin-bottom: 10px;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .price {
+        font-size: xx-large;
+        font-weight: bold;
+        color: black;
+        margin-top: 50px;
+        margin-left: 50px;
+    }
+</style>
+<style type="text/css">
+    .loadermoney {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 199999;
+        background: url('../../images/mmmm.svg') 50% 50% no-repeat rgba(249, 249, 249, 0.9);
+    }
+</style>
+<style>
+    .loaderssee {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loaderssee::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+</style>
+<style>
+    .datepicker-orient-bottom{
+        top:40%;
+    }
+</style>
+
+
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/AdminDesign/Retailer_Slider/Slieder.css" rel="stylesheet" />
+<link href="~/CSS/PageCss/AirSearch.css" rel="stylesheet" />
+<!-- Range Slider Css -->
+<!--Plugin CSS file with desired skin-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css" />
+<!--Plugin JavaScript file-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js"></script>
+@Html.Action("_HotelFilter", new { model = Model })
+<div id="loadermoney" class="loadermoney" style="display:none;"></div>
+<section id="search-filtershow" class="content hotel-contentsection contentsectionewqty contentsectionewqtyfdfdf yfdfdfnffd yfdfdfnffd-respon content-fourdesign-page allpage-four-design-section" style="margin-left:20%;">
+    <div class="container-fluid">
+        <!-- No Header Card -->
+        <div id="block-headermy1" class="block-header fullbodydycolorbg headermy1-hotel headermy1-hotel-responshive" style="padding: 12px 0 22px 1px;margin-bottom: 20px;">
+            @*<h2>NO HEADER CARDS</h2>*@
+
+            <div class="col-md-9 showhotelvalue">
+                <div class="add-hotelvalue">
+                    <ul style="list-style:none;">
+                        <li>
+                            <span> City/Country Name</span>
+
+                            <input type="text" id="CityIdshow" name="CityIdshow" value="@ViewBag.city" class="form-control" placeholder="Hotel or City Name" readonly="readonly" style="padding-left:10px;font-size:16px;z-index:1052;" />
+                        </li>
+                        <li style="width:15%">
+                            <span> Check-In Date</span>
+                            @Html.TextBox("CheckInDateshow", Model.Content.Addinfo.CheckInDate.Date.ToShortDateString(), new { @class = "form-control", @placeholder = "Check-In", @readonly = "readonly", style = "" })
+                        </li>
+                        <li style="width:15%">
+                            <span> Check-Out Date</span>
+                            @Html.TextBox("CheckOutDateshow", Model.Content.Addinfo.CheckOutDate.Date.ToShortDateString(), new { @class = "form-control", @placeholder = "Check-Out", @readonly = "readonly", style = "" })
+                        </li>
+                        <li style="width:10%;">
+                            <span><i>Total&nbsp;</i>Room</span>
+                            @Html.TextBox("totalroomshow", Model.Content.Addinfo.NoOfRooms, new { @class = "form-control", @placeholder = "Check-Out", @readonly = "readonly", style = "" })
+                        </li>
+
+                        @{ int adult = 0; int child = 0; int adulttotal = 0; int childtotal = 0;}
+                        @foreach (var guest in Model.Content.Addinfo.RoomGuests)
+                        {
+                            adult = Convert.ToInt32(guest.NoOfAdults);
+                            child = Convert.ToInt32(guest.NoOfChild);
+                            adulttotal = adult + adulttotal;
+                              childtotal = child + childtotal;
+                        }
+                        <li style="width:10%;">
+                            <span><i>Total&nbsp;</i>Adult </span>
+                            @Html.TextBox("totalroomadult", adulttotal, new { @class = "form-control", @placeholder = "Check-Out", @readonly = "readonly", style = "" })
+                        </li>
+                        <li style="width:10%;">
+                            <span><i>Total&nbsp;</i>Child </span>
+                            @Html.TextBox("totalroomchild", childtotal, new { @class = "form-control", @placeholder = "Check-Out", @readonly = "readonly", style = "" })
+                        </li>
+                    </ul>
+                </div>
+            </div>
+  
+
+                <div class="col-md-6 pull-left hotel-totals" id="spancssid">
+                    <span>Total Hotels</span>
+                    <h2> <img src="~/ashok-images/search(41).svg" style="height:18px;margin-right:7px;" /> @Model.Content.Addinfo.HotelResults.Count<sup>+</sup>&nbsp;Found&nbsp;Hotels</h2>
+                </div>
+                <div class="col-md-6 pull-left hotel-modify hotel-totals">
+                    <span class="editmodify">Edit Details</span>
+                    <button type="button" id="hotelclickshow" class="btn bg-purple waves-effect pull-right">
+                        <img src="~/ashok-images/search(4).svg" style="width:20px;margin-right: 3px;" />
+                        <span style="top:-2px;">MODIFY SEARCH</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="fullbodydycolorbg " id="defaultnonehotel" style="display:none;">
+                <div class="modal-body">
+                    @using (Html.BeginForm("Search", "Hotel", FormMethod.Get))
+                    {
+                        <form method='post'>
+                            <input type="hidden" id="txtPassengerCountHotel" value="1" />
+                            @*<input type="hidden" name="txtAdultCountHotel" id="txtAdultCountHotel" value="1" />
+                        <input type="hidden" name="txtChildCountHotel" id="txtChildCountHotel" value="0" />*@
+                            <input type="hidden" name="NoOfRooms" id="NoOfRooms" value="1" />
+                            <input type="hidden" name="roomsDetails" id="roomsDetails" />
+                            <div class="row" style="margin-left:0px;margin:0;">
+                                <div class="col-md-12 hotel-modifyclass">
+                                    <div class="row" style="margin-bottom:-29px;margin:0;">
+                                        <div class="col-md-8 p-r-0 modify-colmd">
+                                            <div style="">
+                                                <span id="" style="font-size:11px; float:left;">City/Country Name</span>
+                                            </div>
+                                            <div class="form-group" style="margin-bottom:0px;">
+                                                <div class="input-group" style="margin-bottom:0px; margin-top:-2px;border:1px solid #dddddd; height:37px;margin-left:1px;">
+                                                    <input type="text" id="CityId" name="CityId" value="@ViewBag.city" class="form-control" placeholder="Hotel or City Name" style="padding-left:10px;font-size:16px;z-index:1052;" />
+
+                                                </div>
+                                                <!-- /.input group -->
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12 modifyclasssecond" style="margin-top:20px;">
+                                    <div class="row" style="margin:0;">
+                                        <div class="input-daterange input-group pp" style="">
+                                            <div class="col-md-3 p-r-0 modifyone modifyones" style="width:20%;">
+                                                <div style="">
+                                                    <span id="" style="font-size:11px; float:left;">Check-In Date</span>
+                                                </div>
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class="input-group" style="margin-bottom:0px; margin-top:-6px; margin-left:1px;">
+                                                        <div class="form-iconmy form-iconmycust"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i></div>
+                                                        @Html.TextBox("CheckInDate", Model.Content.Addinfo.CheckInDate.Date.ToShortDateString(), new { @class = "form-control", @placeholder = "Check-In", style = "border:1px solid #dddddd; margin-top:4px;height:37px;" })
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 p-r-0 nightmodify">
+                                                <div style="">
+                                                    <span id="" style="font-size:11px; float:left;">Days</span>
+                                                </div>
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div style="margin-bottom:0px; margin-top:-2px; height:37px;margin-left:1px;">
+                                                        <input type="text" id="txtNights" value="@ViewBag.noofdays" name="txtNights" class="form-control" placeholder="Days" readonly="readonly" style="padding-left:10px;font-size:16px;" />
+                                                    </div>
+                                                    <!-- /.input group -->
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 p-r-0 modifyone modifyones" style="width:20%;">
+                                                <div style="">
+                                                    <span id="" style="font-size:11px; float:left;">Check-Out Date</span>
+                                                </div>
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class="input-group" style="margin-bottom:0px; margin-top:-6px; margin-left:1px;">
+                                                        <div class="form-iconmy form-iconmycust"><i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg"></i></div>
+                                                        @Html.TextBox("CheckOutDate", Model.Content.Addinfo.CheckOutDate.Date.ToShortDateString(), new { @class = "form-control", @placeholder = "Check-In", style = "border:1px solid #dddddd; margin-top:4px;height:37px;" })
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 p-r-0 modifyonetwo modifyones" style="width:20%;display:none;">
+                                                <div style="">
+                                                    <span id="" style="font-size:11px; float:left;">Guest Nationality</span>
+                                                </div>
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class="input-group" style="margin-bottom:0px; margin-top:-6px;margin-left:1px;">
+                                                        @Html.TextBox("guestNationality", "India(IN)", new { @class = "form-control", @placeholder = " Nationality", style = "border:1px solid #dddddd; margin-top:4px;height:37px;z-index:1052;" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 p-r-0 modifythree modifyones modifyonesnewclass">
+                                                <div style="">
+                                                    <div style="">
+                                                        <span id="" style="font-size:11px; float:left;">Star&nbsp;Rating</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style="margin-bottom:0px;border:1px solid #dddddd;border-top:1px solid #dddddd;">
+                                                    <div class="input-group" style="margin-bottom:-3px;  height:37px;margin-left:1px;">
+                                                        <select id="starRating" name="starRating" class="selectpicker form-control" data-live-search="true">
+                                                            <option value="0">ALL</option>
+                                                            <option value="1">1 Star</option>
+                                                            <option value="2">2 Star</option>
+                                                            <option value="3">3 Star</option>
+                                                            <option value="4">4 Star</option>
+                                                            <option value="5">5 Star</option>
+                                                        </select>
+                                                    </div>
+                                                    <!-- /.input group -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-1 p-r-0">
+                                        <div style="height:28px;margin-top:22px;">
+                                            <span id="" style="font-size:11px;  float:left;">Travellers</span>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0px;">
+                                            <div class="input-group" style="margin-bottom:0px; margin-top:-2px;border:1px solid #dddddd; height:37px;margin-left:1px;">
+                                                <div class="header" style="padding:6px; border-bottom:none;">
+                                                    <span id="showPassengerCountHotel" style="padding-right:10px;">1</span>
+
+                                                    <ul class="header-dropdown" style="top:7px;right:3px;">
+                                                        <li class="dropdown">
+                                                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="material-icons">arrow_drop_down</i>
+                                                            </a>
+                                                            <ul class="dropdown-menu" style="min-width:250px;">
+                                                                <li style="margin-top:15px;">
+                                                                    <ul style="display:flex;list-style:none;">
+                                                                        <li><span id="showAdultCountHotel" style="padding-right:4px;padding-left:4px;">1</span>Adult</li>
+                                                                        <li class="">
+                                                                            <button type="button" id="btnAdultMinusHotel" class="btn  waves-effect btmPlusMinusHotel" style="margin-right: 0px;margin-left: 120px; background:white; border:1px solid #cdcecf;box-shadow:none;" onclick="onPluseMinusHotel('Adult', -1)" disabled="disabled">
+                                                                                <i class="fa fa-minus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                                            </button>
+                                                                        </li>
+                                                                        <li class="">
+                                                                            <button type="button" id="btnAdlutPlusHotel" class="btn  waves-effect btmPlusMinusHotel" onclick="onPluseMinusHotel('Adult', 1)" style="background:white; border:1px solid #cdcecf;box-shadow:none; border-left:none;">
+                                                                                <i class="fa fa-plus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                                            </button>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+                                                                <hr />
+                                                                <li>
+                                                                    <ul style="display:-webkit-box;list-style:none;">
+                                                                        <li><span id="showChildCountHotel" style="padding-right:4px;padding-left:4px;">0</span> Child 2-12 YRS</li>
+                                                                        <li>
+                                                                            <button type="button" id="btnChildMinusHotel" class="btn  waves-effect btmPlusMinusHotel" style="margin-right: 0px;margin-left: 58px; background:white; border:1px solid #cdcecf;box-shadow:none;" onclick="onPluseMinusHotel('child', -1)" disabled="disabled">
+                                                                                <i class="fa fa-minus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                                            </button>
+                                                                        </li>
+                                                                        <li>
+                                                                            <button type="button" id="btnChildPlusHotel" class="btn  waves-effect btmPlusMinusHotel" onclick="onPluseMinusHotel('child', 1)" style="background:white; border:1px solid #cdcecf;box-shadow:none; border-left:none;">
+                                                                                <i class="fa fa-plus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                                            </button>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>*@
+                                        @*<div class="col-md-2 p-r-0">
+                                        <div style="height:28px; margin-top:22px;">
+                                            <span id="" style="font-size:11px; float:left;">Rooms</span>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0px;">
+                                            <div class="input-group" style="margin-bottom:0px; margin-top:-2px;border:1px solid #dddddd; height:37px;margin-left:1px;">
+                                                <input type="text" class="form-control" id="NoOfRooms" value="1" name="NoOfRooms" placeholder="Room" style="padding-left:10px;font-size:16px; background-color:white; " />
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-hotel"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+
+                                    </div>
+                                </div>
+
+                                <div class="modifay-totalrooms" style="padding-left:12px;">
+
+                                    <div class="row">
+                                        <div class="col-md-4 total-rooms" id="totalmodiyrooms">
+                                            <img src="~/ashok-images/bed11.svg" style="width:30px;float:left;margin-top:-4px;">   <p>
+                                                <span id="totalRoomsToShow" style="padding-left:2px;">1</span> Rooms
+                                            </p>
+                                            <ul class="startulwidth startulwidthss" id="startulwidthssww" style="display:flex;list-style:none;padding:7px;">
+                                                <li>
+                                                    <div class="form-group" style="margin-bottom:0px;">
+                                                        <button type="button" onclick="AddHotelTextBox()" class="btn bg-blue-grey waves-effect" style="height:37px; float:left;margin-left: 26px;">+</button>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-12" id="roomGuestDynamic">
+                                            <div class="row">
+                                                <div class="adult-full">
+                                                    <ul class="startulwidth" style="display:flex;list-style:none;" data-room="1">
+                                                        <!--  Adult-->
+                                                        <li style="padding-top:7px;"><span class="showHotelAdultCount" style="padding-right:4px;padding-left:4px;">1</span>Adult</li>
+                                                        <li class="btnHotelAdultMinus" onclick="btnHotelAdultMinus(this)">
+                                                            <button type="button" class="btn  waves-effect btmPlusMinus" style="margin-right: 0px;background:white; border:1px solid #cdcecf;box-shadow:none;">
+                                                                <i class="fa fa-minus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li class="btnHotelAdlutPlus" onclick="btnHotelAdlutPlus(this)">
+                                                            <button type="button" class="btn  waves-effect btmPlusMinus" style="background:white; border:1px solid #cdcecf;box-shadow:none; border-left:none;">
+                                                                <i class="fa fa-plus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                    <!--  Child-->
+                                                    <ul class="satediv" style="display:flex;list-style:none;" data-room="1">
+                                                        <li style="padding-top:7px;"><span id="showAdultCount" style="padding-right:4px;padding-left:4px;">0</span>Child</li>
+                                                        <li class="btnHotelChildMinus" onclick="btnHotelChildMinus(this)">
+                                                            <button type="button" class="btn  waves-effect btmPlusMinus" style="margin-right: 0px;background:white; border:1px solid #cdcecf;box-shadow:none;">
+                                                                <i class="fa fa-minus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li class="btnHotelChildPlus" onclick="btnHotelChildPlus(this)">
+                                                            <button type="button" class="btn  waves-effect btmPlusMinus" style="background:white; border:1px solid #cdcecf;box-shadow:none; border-left:none;">
+                                                                <i class="fa fa-plus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li class="chbck" data-child-age="0" style="display:none;">
+                                                            <lable>Child 1 Age</lable>
+                                                            <i class="fa fa-chevron-down downselect"></i>
+                                                            <select class="ddlChildAge chks" style="padding:6px;" onchange="ddlChildAge(this)">
+                                                                <option value="0">0</option>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5</option>
+                                                                <option value="6">6</option>
+                                                                <option value="7">7</option>
+                                                                <option value="8">8</option>
+                                                                <option value="9">9</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                            </select>
+                                                        </li>
+                                                        <li class="chbck" data-child-age="1" style="margin-left:10px;display:none;">
+                                                            <lable>Child 2 Age</lable>
+                                                            <i class="fa fa-chevron-down downselect"></i>
+                                                            <select class="ddlChildAge chks" style="padding:6px;" onchange="ddlChildAge(this)">
+                                                                <option value="0">0</option>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5</option>
+                                                                <option value="6">6</option>
+                                                                <option value="7">7</option>
+                                                                <option value="8">8</option>
+                                                                <option value="9">9</option>
+                                                                <option value="10">10</option>
+                                                                <option value="11">11</option>
+                                                                <option value="12">12</option>
+                                                            </select>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                            </div>
+                                            <div class="roomConfigClone roomConfigCloneopen" style="display:none;">
+
+                                                <ul class="openmodifytoggle" style="display:block;list-style:none;padding:7px;">
+                                                    <!--  Adult-->
+                                                    <li class="vrrrrrrr" style="padding-top:2px !important;">
+                                                        <span class="showHotelAdultCount" style="padding-right:4px;padding-left:4px;">1</span>Adult
+                                                    </li>
+                                                    <li class="btnHotelAdultMinus" onclick="btnHotelAdultMinus(this)">
+                                                        <button type="button" class="btn  waves-effect btmPlusMinus" style="margin-right: 0px;background:white; border:1px solid #cdcecf;box-shadow:none;">
+                                                            <i class="fa fa-minus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                        </button>
+                                                    </li>
+                                                    <li class="btnHotelAdlutPlus" onclick="btnHotelAdlutPlus(this)">
+                                                        <button type="button" class="btn  waves-effect btmPlusMinus" style="background:white; border:1px solid #cdcecf;box-shadow:none; border-left:none;">
+                                                            <i class="fa fa-plus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                        </button>
+                                                    </li>
+                                                    <!--  Child-->
+                                                    <li style="padding-top:2px !important;padding-right: 14px !important;padding-left: 26px;">
+                                                        <span id="showAdultCount" style="padding-right:4px;padding-left:4px;">0</span>Child
+                                                    </li>
+                                                    <li class="btnHotelChildMinus" onclick="btnHotelChildMinus(this)">
+                                                        <button type="button" class="btn  waves-effect btmPlusMinus" style="margin-right: 0px;background:white; border:1px solid #cdcecf;box-shadow:none;">
+                                                            <i class="fa fa-minus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                        </button>
+                                                    </li>
+                                                    <li class="btnHotelChildPlus" onclick="btnHotelChildPlus(this)">
+                                                        <button type="button" class="btn  waves-effect btmPlusMinus" style="background:white; border:1px solid #cdcecf;box-shadow:none; border-left:none;">
+                                                            <i class="fa fa-plus" aria-hidden="true" style="font-size:10px;color:#757979;"></i>
+                                                        </button>
+                                                    </li>
+                                                    <li data-child-age="0" style="display:none;left: -35%;margin-top:7px;width:49% !important;float:left !important;padding-left:5px;">
+                                                        <lable style="position: relative;top: 3px;">Child 1 Age</lable>
+                                                        <select class="ddlChildAge" style="padding:6px;" onchange="ddlChildAge(this)">
+                                                            <option value="0">0</option>
+                                                            <option value="1">1</option>
+                                                            <option value="2">2</option>
+                                                            <option value="3">3</option>
+                                                            <option value="4">4</option>
+                                                            <option value="5">5</option>
+                                                            <option value="6">6</option>
+                                                            <option value="7">7</option>
+                                                            <option value="8">8</option>
+                                                            <option value="9">9</option>
+                                                            <option value="10">10</option>
+                                                            <option value="11">11</option>
+                                                            <option value="12">12</option>
+                                                        </select>
+                                                    </li>
+                                                    <li data-child-age="1" style="margin-left:10px;display:none;left: -35%;margin-top:7px;width:44% !important;float:left !important;">
+                                                        <lable style="position: relative;top: 3px;">Child 2 Age</lable>
+                                                        <select class="ddlChildAge" style="padding:6px;" onchange="ddlChildAge(this)">
+                                                            <option value="0">0</option>
+                                                            <option value="1">1</option>
+                                                            <option value="2">2</option>
+                                                            <option value="3">3</option>
+                                                            <option value="4">4</option>
+                                                            <option value="5">5</option>
+                                                            <option value="6">6</option>
+                                                            <option value="7">7</option>
+                                                            <option value="8">8</option>
+                                                            <option value="9">9</option>
+                                                            <option value="10">10</option>
+                                                            <option value="11">11</option>
+                                                            <option value="12">12</option>
+                                                        </select>
+                                                    </li>
+                                                </ul>
+                                                <ul class="openmodifytoggless">
+                                                    <li style="margin-top: 7px;">
+                                                        <div class="col-md-1 p-r-0 p-l-0" onclick="RemoveHotelTextBox(this)" style="width: 100%;margin-top: 9px;">
+                                                            <span><i class="fa fa-times"></i></span>
+                                                        </div>
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-3 p-r-0 modifay-search">
+                                            <div class="form-group" style="margin-bottom:0px;">
+                                                <div style="border-bottom:none;">
+                                                    <div class="icon-and-text-button-demo">
+                                                        <button type="submit" id="searchmodify-block" class="btn bg-blue-grey waves-effect" style="width:100%;height:37px; float:left;">
+                                                            <i class="fa fa-search noneiconclick" style="top:-2px;"></i> <span class="noneSpan" style="">SEARCH</span>
+                                                            <div class="nextloaderessqq nextloaderessqqss" style="display:none">
+                                                                <div class="loader1 loader--style2" title="1">
+                                                                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                                                                    <rect x="0" y="0" width="4" height="20" fill="#ff0048">
+                                                                    <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+                                                                 </rect>
+                                                                    <rect x="7" y="0" width="4" height="20" fill="#ff0048">
+                                                                    <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0.2s" dur="0.6s" repeatCount="indefinite"></animate>
+                                                                </rect>
+                                                                    <rect x="14" y="0" width="4" height="20" fill="#ff0048">
+                                                                    <animate attributeName="opacity" attributeType="XML" values="1; .2; 1" begin="0.4s" dur="0.6s" repeatCount="indefinite"></animate>
+</rect>
+  </svg>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        
+        </div>
+            <div class="row hotelfirstrow" style="margin-top: 104px !important;margin-left:0;margin-right:0;padding-right: 24px;">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hotel-col-lg-12 fullbodydycolorbg fgfgfgfgfgf" style="color:white; height:;">
+                    <div class="col-md-9 hotel-heading customeheadingclass" style="padding-right:0px;margin-bottom:0px;">
+                        <div class="headingimage"><strong>Image</strong></div>
+                        <div class="headingdescription"><strong>Description</strong></div>
+                    </div>
+                    <div class="col-md-3 hotel-pricesecond pricesecondclassacvdf pricechangerespo">
+                        <span class="ofrrs-sh" style="cursor:pointer; color:white;">Offer Fare </span>
+                        <strong style="text-align:right;">Fare</strong>
+
+                    </div>
+                </div>
+
+                @foreach (var hotel in Model.Content.Addinfo.HotelResults)
+                {
+                    var priceToShow = hotel.Price.PublishedPriceRoundedOff + markup;
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hotel-col-lg-12 hotel-css hotel-css-responshive" data-star-rating="@hotel.StarRating" data-hotel-price="@priceToShow">
+                        <div class="card">
+                            <div class="body bg-white bg-white-black" style="padding-bottom:0px;">
+                                <div class="row">
+                                    <div class="col-md-9 hotel-heading headingnewclass headuyfhgfgfh" style="padding-right:0px;margin-bottom:0px;">
+                                        <div class="media" style="margin:0px;">
+                                            <div class="media-left">
+                                                @if (!string.IsNullOrWhiteSpace(hotel.HotelPicture))
+                                                {
+                                                    <a href="javascript:void(0);">
+                                                        <img class="media-object" src="@hotel.HotelPicture" width="150" height="150">
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="javascript:void(0);">
+                                                        <img class="media-object" src="http://placehold.it/32x32" width="32" height="32">
+                                                    </a>
+                                                }
+
+                                            </div>
+                                            <div class="media-body" style="text-align:left;">
+                                                <h4 class="media-heading">
+                                                    <a href="javascript:void(0);" style="color:#052258;"> @hotel.HotelName</a>
+                                                </h4>
+
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    var isChecked = "";
+                                                    if (i <= hotel.StarRating)
+                                                    {
+                                                        isChecked = "checked";
+                                                    }
+                                                    <span class="fa fa-star @isChecked"></span>
+                                                }
+                                                <br /><span><i class="fa fa-map-marker" aria-hidden="true" style="color: orangered;"></i></span>
+                                                @hotel.HotelAddress<br />
+                                                <div>
+                                                    <div class="smri">Show Hotel Description</div>
+                                                    <div class="bndp bndpchangeclass" style="display:none;">
+                                                        <p class="togp">@Html.Raw(hotel.HotelDescription)</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 hotel-pricesecond priceseconddcfdfdsw">
+
+                                        <div class="ofrpraiz">
+                                            <span class="ofrrs" style="display:none;">
+                                                <span><i class="fa fa-inr" aria-hidden="true"></i></span>
+                                                @{
+                                                    var totalcharge = (hotel.Price.OfferedPriceRoundedOff * charge) / 100;
+                                                    var totalchargevast = (hotel.Price.OfferedPriceRoundedOff * vast_domestic_charge) / 100;
+                                                    totalcharge = hotel.Price.OfferedPriceRoundedOff + totalcharge - totalchargevast;
+
+                                                    var publishfare = hotel.Price.PublishedPriceRoundedOff;
+                                                    if (publishfare <= totalcharge)
+                                                    {
+                                                        totalcharge = hotel.Price.OfferedPriceRoundedOff;
+                                                    }
+                                                }
+                                                @totalcharge
+
+                                            </span>
+
+                                        </div>
+
+                                        <div class="hotel-bookbutton">
+                                            <span class="price pricehotelss">
+                                                <span><i class="fa fa-inr" aria-hidden="true"></i></span>
+                                                @String.Format("{0:n0}", priceToShow)
+                                            </span>
+                                            <a href="@Url.Action("HotelInfo","Hotel",new { RIndex = hotel.ResultIndex, HCode = hotel.HotelCode, TId =Model.Content.Addinfo.TraceId, Srate = hotel.StarRating})" class="hotelbookloader">Book Now</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            
+            <!-- #END# No Header Card -->
+        </div>
+    <!--Slider div-->
+</section>
+<div class="loaderssee loaderpancard" id="loaderpancardss" style="display:none;"></div>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<!-- Start Rechargepaybill js-->
+<script src="~/Retailerjavascript/Rechargepaybill/electricityl.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Landline.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Dth.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/gas.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Insurance.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/mobileperpaidandpostpaid.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Water.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/broadband.js"></script>
+<!--End-->
+<script src="~/AdminDesign/Retailer_Slider/multislider.js"></script>
+<script src="~/Scripts/PageScript/Retailer/AirSearch.js"></script>
+@*<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>*@
+
+<script type="text/javascript">
+    var j = $.noConflict();
+    $(document).ready(function () {
+        var dateToday = new Date();
+               $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                'startDate': dateToday
+               });
+        var d = new Date();
+        var curr_date = d.getDate();
+        var curr_month = d.getMonth() + 1; //Months are zero based
+        var curr_year = d.getFullYear();
+        if (curr_month < 10) {
+            curr_month = "0" + curr_month;
+        }
+        var val = '@ViewBag.chk';
+        //alert(val);
+        //if (val != "post") { 
+            //$("#CheckInDate").datepicker("setDate", new Date());
+              $("#CheckInDate").on("change",function(){
+                  var fromdate = $(this).val();
+                  var todate = $("#CheckOutDate").val();
+                  if (fromdate == todate) {
+                        var datem = new Date(todate);
+                        $("#CheckOutDate").datepicker("setDate", datem.addDays(1));
+                  }
+                  todate = $("#CheckOutDate").val();
+                  var date1 = new Date(fromdate);
+                  var date2 = new Date(todate);
+                  var Difference_In_Time = date2.getTime() - date1.getTime();
+                  var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+                
+                  $("#txtNights").val(Difference_In_Days);
+              });
+            var date = new Date();
+            //$("#CheckOutDate").datepicker("setDate", date.addDays(1));
+             $("#CheckOutDate").on("change",function(){
+                  var fromdate = $(this).val();
+                 var todate = $("#CheckInDate").val();
+                 if (fromdate == todate) {
+                        var datem1 = new Date(todate);
+                        $("#CheckOutDate").datepicker("setDate", datem1.addDays(1));
+                  }
+                 todate = $("#CheckInDate").val();
+
+                  var date1 = new Date(fromdate);
+                  var date2 = new Date(todate);
+                  var Difference_In_Time = date1.getTime() - date2.getTime();
+                  var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+                 $("#txtNights").val(Difference_In_Days);
+                              
+              });
+             
+           //}
+    });
+
+
+          function dateFormat(d) {
+       return ((d.getMonth() + 1) + "").padStart(2, "0")
+          + "/" + (d.getDate() + "").padStart(2, "0")
+          + "/" + d.getFullYear();
+    }
+    Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+}
+</script>
+
+
+@*<script>
+        $('#basicSlider').multislider({
+            continuous: true,
+            duration: 2000
+        });
+        $('#mixedSlider').multislider({
+            duration: 750,
+            interval: 3000
+        });
+    </script>*@
+
+@*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+<link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+      rel="Stylesheet" type="text/css" />
+<script>
+    function OnSuccessGetLayout(data) {
+        $('[data-toggle="tooltip"]').tooltip();
+        console.log("Success");
+    }
+    function OnFailureGetLayout(data) {
+        console.log("Failure");
+        console.log(data.responseText);
+    }
+</script>
+
+<script>
+    function OnSeatClick(fare, seatid, isAvailable, isladiesSeat, dom) {
+        //alert(isAvailable);
+        // alert(isladiesSeat);
+        isAvailable = JSON.parse(isAvailable);
+        isladiesSeat = JSON.parse(isladiesSeat);
+        if (isAvailable) {
+            if (isladiesSeat) {
+                $(dom).css("background-color", "#c396a6");
+                $(dom).css("border", "#ed719e");
+            } else {
+                $(dom).css("background-color", "#CCE8B5");
+            }
+            // $(dom).setAttribute('onclick', 'writeLED(1,1)')
+            var str = "OnSeatDeSelect('" + fare + "','" + seatid + "','" + isAvailable + "','" + isladiesSeat + "',this)" + "";
+            //alert(str);
+            //ADD FARE
+            var totalFare = parseInt($('#TotalFare').val()) == NaN ? 0 : $('#TotalFare').val();
+            if (totalFare == "NaN" || totalFare == NaN || totalFare == "") {
+                totalFare = parseInt(0);
+            }
+            //alert(totalFare);
+            totalFare = parseInt(totalFare) + parseInt(fare);
+            $('#TotalFare').val(totalFare);
+            //ADD seats
+            var selectedSeats = $('#selectedSeats').val();
+            selectedSeats += ',' + seatid;
+            selectedSeats = selectedSeats.replace(/(^,)|(,$)/g, "");
+            selectedSeats = selectedSeats.replace(',,', ",");
+            $('#selectedSeats').val(selectedSeats);
+            $(dom).attr("onclick", str);
+
+        }
+        //$(this).css("background-color", "red");
+    }
+    function OnSeatDeSelect(fare, seatid, isAvailable, isladiesSeat, dom) {
+        //alert("deselect");
+        $(dom).css("background-color", "white");
+        $(dom).css("border", "1px solid gray");
+        var str = "OnSeatClick('" + fare + "','" + seatid + "','" + isAvailable + "','" + isladiesSeat + "',this)" + "";
+        $(dom).attr('onclick', str);
+        //remove seats
+        var selectedSeats = $('#selectedSeats').val();
+        selectedSeats = selectedSeats.replace(seatid, "");
+        selectedSeats = selectedSeats.replace(',,', ",");
+        selectedSeats = selectedSeats.replace(/(^,)|(,$)/g, "");
+        $('#selectedSeats').val(selectedSeats);
+        //recalculate FARE
+        var totalFare = parseInt($('#TotalFare').val()) == NaN ? 0 : $('#TotalFare').val();
+        if (totalFare == "NaN" || totalFare == NaN || totalFare == "") {
+            totalFare = parseInt(0);
+        }
+        //alert(totalFare);
+        totalFare = parseInt(totalFare) - parseInt(fare);
+        $('#TotalFare').val(totalFare);
+    }
+    function ShowLayoutClick(id) {
+        //alert();
+        $(".selectSeatRightCol").html('');
+        $(".selectSeatRightCol").hide();
+        //$("#" + id).show();
+        $("#" + id).fadeIn(3000).animate({ opacity: 1 }, { queue: false, duration: '4000' });
+    }
+</script>
+<!-- Filter Code -->
+<script>
+    $(".hotelOptStarRateFilter").on("click", function (e) {
+        $("#hotelLoader").show();
+        if ($(this).prop('checked') == true) {
+            $("div").find("[data-star-rating='" + $(this).val() + "']").show();
+            if ($(this).val() == "ALL") {
+                $(".hotel-col-lg-12").show();
+                $(".hotelOptStarRateFilter").prop('checked', true);
+            }
+        }
+        else {
+            $("div").find("[data-star-rating='" + $(this).val() + "']").hide();
+            if ($(this).val() == "ALL") {
+                $(".hotel-col-lg-12").hide();
+                $(".hotelOptStarRateFilter").prop('checked', false);
+            }
+        }
+        $("#hotelLoader").hide();
+    });
+</script>
+<!-- Search Modify-->
+<script>
+
+
+  function onPluseMinusHotel(check, v) {
+      event.stopPropagation();
+      var adltCount = parseInt($('#txtAdultCountHotel').val());
+      var childCount = parseInt($('#txtChildCountHotel').val());
+
+      var allCount = parseInt($('#txtPassengerCountHotel').val());
+      if (check == 'Adult') {
+
+          $('#txtAdultCountHotel').val(adltCount + v);
+          $('#txtPassengerCountHotel').val(allCount + v);
+          $('#showPassengerCountHotel').html(allCount + v);
+          $('#showAdultCountHotel').html(adltCount + v);
+          document.getElementById("showChildCountHotel").textContent = "0";
+          document.getElementById("txtChildCountHotel").value = "0";
+
+          if (parseInt($('#txtAdultCountHotel').val()) > 1) {
+              $('#btnAdultMinusHotel').prop('disabled', false);
+          }
+          var vv = document.getElementById("showPassengerCountHotel").textContent;
+          if (vv == 9) {
+              $('#btnAdlutPlusHotel').prop('disabled', true);
+              $('#btnChildPlusHotel').prop('disabled', true);
+          }
+          var adspan = document.getElementById("showAdultCountHotel").textContent;
+          if (adspan == 9) {
+              $('#btnAdlutPlusHotel').prop('disabled', true);
+              $('#btnChildPlusHotel').prop('disabled', true);
+              $('#btnAdultMinusHotel').prop('disabled', false);
+              $('#btnChildMinusHotel').prop('disabled', true);
+              document.getElementById("showChildCountHotel").textContent = "0";
+              document.getElementById("txtChildCountHotel").value = "0";
+          }
+          else if (vv != 1) {
+              $('#btnAdlutPlusHotel').prop('disabled', false);
+              $('#btnChildPlusHotel').prop('disabled', false);
+          }
+          else {
+              $('#btnAdultMinusHotel').prop('disabled', true);
+          }
+      }
+      else if (check == 'child') {
+
+          $('#txtChildCountHotel').val(childCount + v);
+          $('#txtPassengerCountHotel').val(allCount + v);
+          $('#showPassengerCountHotel').html(allCount + v);
+          //alert(parseInt($('#txtChildCount').val()));
+          $('#showChildCountHotel').html(childCount + v);
+          if (parseInt($('#txtChildCountHotel').val()) > 0) {
+              $('#btnChildMinusHotel').prop('disabled', false);
+          }
+          var vv = document.getElementById("showPassengerCountHotel").textContent;
+
+          if (vv == 9) {
+              $('#btnAdlutPlusHotel').prop('disabled', false);
+              $('#btnChildPlusHotel').prop('disabled', true);
+          }
+          var gg = document.getElementById("showChildCountHotel").textContent;
+          if (gg == 0) {
+              $('#btnChildMinusHotel').prop('disabled', true);
+              $('#btnChildPlusHotel').prop('disabled', false);
+              $('#btnAdlutPlusHotel').prop('disabled', false);
+
+          }
+      }
+  }
+
+$.noConflict();
+jQuery(document).ready(function ($) {
+
+    ////////////////Hotel///////////////////
+    $("#CityId").autocomplete({
+        source: '@Url.Action("GetHotelName")',
+       // minLength: 3
+    })
+    $("#guestNationality").autocomplete({
+        source: '@Url.Action("GetHotelCountryCode")',
+     //   minLength: 3
+    })
+
+});
+</script>
+
+
+<script>
+
+    $('#hotelclickshow').click(function () {
+        $('.headermy1-hotel').css('display', 'none');
+        $('#defaultnonehotel').css('display', 'block');
+    });
+</script>
+
+<script>
+    $('#searchmodify-block').click(function () {
+        $('.noneSpan ,.noneiconclick').css('display', 'none');
+        $('.nextloaderessqqss').css('display', 'block');
+    });
+</script>
+
+<script>
+        $('.hotelbookloader').click(function () {
+        $('#loaderpancardss').css('display', 'block');
+    });
+ </script>
+
+
+<script>
+    var $email = $("#emial");
+    var email = $email.val() + $email.next().text();
+
+    
+
+    var date = $("#CheckInDate").val() + $("#CheckInDate").next("#hoteldate").text();
+</script>
+<script>
+   
+
+
+    $('.ofrrs-sh').click(function () {
+       if ($('.ofrrs:visible').length == 0) {
+            $('.ofrrs').show();
+        }
+        else {
+            $('.ofrrs').hide();
+        }
+       });
+     $('.smri').click(function () {
+           $(this).hide();
+            $(this).next('.bndp').show();
+       });
+      $('.bndp').click(function () {
+          $(this).hide();
+          $(this).prev('.smri').show();
+    });
+
+    
+</script>
+
+
+
+<script src="~/Scripts/PageScript/Retailer/Travel.js"></script>
+
+
+
+@*Four-Design-Script-Start*@
+
+<script>
+    $(window).scroll(function () {
+        if ($(window).scrollTop() > 100) {
+            $(".fourthdesign-retailer-allnone #block-headermy1").addClass("hotelfilter-fixed-four");
+        }
+        else {
+            $(".fourthdesign-retailer-allnone #block-headermy1").removeClass("hotelfilter-fixed-four");
+        }
+    });
+    $(window).scroll(function () {
+        if ($(window).scrollTop() > 100) {
+            $(".fourthdesign-retailer-allnone .searchfilterhoteldddffdsd.dsdeqwtysd.dsdeqwtysd-respon .menu").addClass("hotel-starrating-fixclass");
+        }
+        else {
+            $(".fourthdesign-retailer-allnone .searchfilterhoteldddffdsd.dsdeqwtysd.dsdeqwtysd-respon .menu").removeClass("hotel-starrating-fixclass");
+        }
+    });
+
+    $(window).scroll(function () {
+        if ($(window).scrollTop() > 100) {
+            $(".fourthdesign-retailer-allnone #defaultnonehotel").addClass("hotelfilter-fixed-four");
+        }
+        else {
+            $(".fourthdesign-retailer-allnone #defaultnonehotel").removeClass("hotelfilter-fixed-four");
+        }
+    });
+
+</script>
+@*Four-Design-Script-End*@

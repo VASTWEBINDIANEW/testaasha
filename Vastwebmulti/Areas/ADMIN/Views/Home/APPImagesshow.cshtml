@@ -1,0 +1,120 @@
+﻿@using Vastwebmulti.Models;
+ 
+@{
+    ViewBag.Title = "APPImagesshow";
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var chk = db.sliderimages.ToList();
+    var s = 0;
+}
+<style>
+    .catagselect {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        border-top: 1px solid #d2d2d2;
+        padding: 6px 2px 1px 2px;
+        float: left;
+    }
+    .secdiv {
+        width: 25%;
+        padding: 5px;
+    }
+        .secdiv img {
+            float: left;
+            width: 100%;
+            border-radius: 4px;
+        }
+    .catagselect span {
+        background: var(--main-bg-lcolor);
+        padding: 4px 15px;
+        border-radius: 2px;
+        color: #fff;
+    }
+    .catagselect input {
+        margin: 0;
+        width: 25px;
+        height: 26px;
+        cursor: pointer;
+        
+    }
+
+/* New css  */
+
+    @@media only screen and (max-width:1024px){
+        #sidebar-open {
+            top: 30px;
+            left: -148px;
+        }
+    }
+
+    @@media only screen and (max-width:767px){
+        #sidebar-open {
+            top: -2px;
+            left: -5px;
+        }
+        .secdiv {
+            width: 50%;
+        }
+    }
+
+    @@media only screen and (max-width:480px){
+       .secdiv{
+           width:100%;
+       }
+    }
+
+/* New css end */
+</style>
+<section class="content outside-logo-page" style="position: relative;">
+    <div class="container-fluid">
+        @foreach (var i in chk)
+        {
+        <div class="secdiv" style="float: left;">
+            <div class="page-header-third">
+            <img src="@i.images"  />
+            <div class="catagselect">
+                <span>@i.Category</span>
+                <input type="checkbox" class="checkboxdata" checked onchange="checksave('@i.images', '@i.Category' ,'@i.Type','@i.Language', '@s')" style="opacity: 100%; position: static;">
+            </div>
+        </div>
+        </div>
+            s++;
+        }
+    </div>
+    </section>
+
+
+<script>
+    function checksave(img, c, t, l, d) {
+        console.log(d);
+        var s=0;
+        var check = document.getElementsByClassName('checkboxdata');
+
+            if (check[d].checked == true) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("sliderimagessave", "Home")',
+                    data: { img: img, cat: c, type: t, Lang: l },
+                    success: function (result) {
+                        if (result != "saved") {
+                            check[d].checked = false;
+                        }
+                        alert(result);
+                    }
+                });
+            }
+            else {
+                 $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("sliderimagesdelete", "Home")',
+                    data: { img: img, cat: c, type: t, Lang: l },
+                    success: function (result) {
+                        alert(result);
+                    }
+                });
+            }
+
+    }
+</script>

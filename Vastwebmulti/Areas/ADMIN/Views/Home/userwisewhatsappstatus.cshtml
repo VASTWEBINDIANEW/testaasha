@@ -1,0 +1,135 @@
+﻿@model IEnumerable<Vastwebmulti.Models.retailerwise_whatsappsts>
+
+@using System;
+@using Vastwebmulti.Models;
+@{
+   
+    ViewBag.Title = "userwisewhatsappstatus";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+    VastwebmultiEntities db = new VastwebmultiEntities();
+}
+
+<section class="content retailerList_Page fourdesign-section-admin">
+    <div class="container-fluid retailer-list-page">
+        <div>
+            @using (Html.BeginForm("userwisewhatsappstatus", "Home"))
+            {
+                @Html.DropDownList("Role", ViewBag.usersss as List<SelectListItem>
+   , "Select Retailer", new { @class = "form-control", style = " width: 20%; float: left;height: 34px;margin: 10px;" ,onchange = "rolewisefunction()" })
+               
+                <script>
+                    function rolewisefunction() {
+                        document.getElementById("setsubmit").click();
+
+
+                    }
+                </script>
+                @Html.DropDownList("user", ViewBag.userss as List<SelectListItem>
+        , "Select Retailer", new { @class = "form-control", onchange = "rolewisefunction();", style = " width: 20%; float: left;height: 34px;margin: 10px;" })
+                <input type="submit" name="Submit" id="setsubmit" style="width: 6%; height: 33px; margin: 10px;display:none "  />
+            }
+        </div>
+        <table class="table table-bordered table-striped table-hover  sspl table-background-second example-second">
+            <tr>
+                <th>
+                    Users
+                </th>
+                <th>
+                    Status
+                </th>
+            </tr>
+            @if (Model != null)
+                        {
+                            var dd = 0;
+                            foreach (var i in Model)
+                            {
+                   
+                                
+                    <tr>
+                        <td>
+                            @if (i.userid != "ALL")
+                            {
+                                var user = db.Retailer_Details.Where(s => s.RetailerId == i.userid).ToList();
+                                var user1 = db.Dealer_Details.Where(s => s.DealerId == i.userid).ToList();
+                                var user2 = db.Superstokist_details.Where(s => s.SSId == i.userid).ToList();
+                                if (user.Count > 0)
+                                {
+                            <div> @user[0].RetailerName => @user[0].Email</div>
+                                }
+                                else if(user1.Count > 0)
+                                {
+                        <div> @user1[0].DealerName => @user1[0].Email</div>
+                                }
+                                else if (user2.Count > 0)
+                                {
+                        <div> @user2[0].SuperstokistName => @user2[0].Email</div>
+                                }
+                            }
+                            else
+                            {
+                            <div>ALL</div>
+                    }
+                        </td>
+                        <td class="whtsts">
+                            @if (i.sts == true)
+                                        {
+                                <button style=" width: 39%; background: green; color: white;"  onclick='updwhtsts(false,@dd, "@i.userid")'>On</button>
+                }
+                            else
+                            {
+                                <button style=" width: 39%; background: red; color: white;"  onclick='updwhtsts(true,@dd, "@i.userid")'>OFF</button>
+                            }
+                        </td>
+                    </tr>
+                    dd++;
+                }
+            }
+        </table>
+
+
+        <script>
+
+            function updwhtsts(s, d , u) {
+                 var url = '@Url.Action("Whatsaapupdateuser","Home")'
+        $.ajax({
+            url: url,
+            data: {sts:s ,user: u},
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                console.log(data);
+                var upt = document.getElementsByClassName('whtsts');
+
+                if (data == true) {
+
+                    upt[d].innerHTML = "<button style=\" width: 39%; background: green; color: white;\" onclick='updwhtsts(false," + d + "," + "\"" + u + "\""+ ")'>On</button>";
+
+
+                }
+                else {
+                    upt[d].innerHTML = "<button style=\" width: 39%; background: red; color: white;\" onclick='updwhtsts(true," + d + "," + "\"" + u + "\"" + ")'>OFF</button>";
+
+                }
+            },
+
+        });
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+        </script>
+
+
+
+    </div>
+</section>
+

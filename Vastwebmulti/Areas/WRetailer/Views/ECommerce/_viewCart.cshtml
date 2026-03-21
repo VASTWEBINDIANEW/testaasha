@@ -1,0 +1,140 @@
+﻿@model List<Vastwebmulti.Areas.WRetailer.Models.CartVM>
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="col-md-offset-1 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        My Cart (@Model.Count)
+                    </h2>
+                    @*<ul class="header-dropdown m-r-0">
+                            <li>
+                                <a href="javascript:void(0);">
+                                    <i class="material-icons">info_outline</i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);">
+                                    <i class="material-icons">help_outline</i>
+                                </a>
+                            </li>
+                        </ul>*@
+                </div>
+                <div class="body">
+                    <div class="bs-example" data-example-id="media-alignment" style="padding-bottom: 40px;">
+                        @foreach (var item in Model)
+                {
+                            <div class="media">
+                                <div class="media-left">
+                                    <a href="javascript:void(0);">
+                                        <img class="media-object" src="@Url.Content("~" + item.imgUrl)" width="64" height="64">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">
+                                        @item.productName
+                                        <span class="pull-right">
+                                            <a href="javascript:void(0);" onclick="onRemoveItem('@item.productId')">
+                                                @*<i class="material-icons">delete_forever</i>*@
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:red;">
+                                                    <path fill="none" d="M0 0h24v24H0V0z" />
+                                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z" />
+                                                    <path fill="none" d="M0 0h24v24H0z" />
+                                                </svg>
+                                            </a>
+                                        </span>
+                                    </h4>
+                                    <small>Seller : @item.VenderFirmName</small>
+                                    <p><strong>@string.Format("{0:C2}", item.satandardPrice)</strong> &nbsp;&nbsp;<span style="text-decoration:line-through;">@string.Format("{0:C2}", item.ListPrice)</span></p>
+                                    <p>
+                                        <ul style="display:flex;list-style:none;">
+                                            <li>QTY :</li>
+
+                                            <li>
+                                                <a href="javascript:void(0);" onclick="onMinus('@item.Qty','@item.productId')">
+                                                    <span style="margin: 0px 4px 0px 4px">
+                                                        <i class="fa fa-minus-square fa-2x" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li><input type="text" value="@item.Qty" id="txtQTY" oninput="onChange(this,'@item.productId')" onkeypress="return isNumber(event)" /></li>
+                                            <li>
+                                                <a href="javascript:void(0);" onclick="onPluse('@item.Qty','@item.productId')">
+                                                    <span style="margin: 0px 4px 0px 4px">
+                                                        <i class="fa fa-plus-square fa-2x" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        }
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <a href="@Url.Action("Index","Home")" class="btn btn-block btn-lg btn-primary waves-effect">
+                                    <i class="material-icons">shopping_cart</i>
+                                    <span> Continue shopping ></span>
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                @using (Html.BeginForm("doPayment", "ECommerce"))
+                                {
+                                    <button type="submit" class="btn btn-block btn-lg btn-primary waves-effect">
+                                        <i class="material-icons">offline_bolt</i>
+                                        <span> Pay Now</span>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        PRICE DETAILS
+                    </h2>
+
+                </div>
+                <div class="body">
+                    <ul class="list-group">
+                        <li class="list-group-item" style="border:none;">
+                            Price(@Model.Count items) <span class="pull-right"><strong>@string.Format("{0:C2}", Model.Sum(a => a.satandardPrice * a.Qty))</strong></span>
+                        </li>
+                        <li class="list-group-item" style="border:none">
+                            Delivery Charges
+                            <span class="pull-right" style="color:#249409"><strong>FREE</strong></span>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Amount Payable</b>
+                            <span class="pull-right"><strong>@string.Format("{0:C2}", Model.Sum(a => a.satandardPrice * a.Qty))</strong></span>
+                        </li>
+                        <li class="list-group-item" style="border:none;color:#249409;border-top: 1px solid #ddd;">
+                            Your Total Savings on this order
+                            <span class="pull-right" style="color:#249409"><strong>@string.Format("{0:C2}", Model.Sum(a => a.ListPrice * a.Qty) - Model.Sum(a => a.satandardPrice * a.Qty))</strong></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <style>
+            #over img {
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+        </style>
+        <div class="col-sm-12 col-md-6" id="over" style="width:100%; height:100%">
+            <img src="~/images/emptyCart.png" />
+        </div>
+    }
+

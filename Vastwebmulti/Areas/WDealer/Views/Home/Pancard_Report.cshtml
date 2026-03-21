@@ -1,0 +1,252 @@
+﻿@model IEnumerable<Vastwebmulti.Models.proc_Whitelabel_PAN_CARD_IPAY_Token_report_Result>
+@{
+    ViewBag.Title = "Pancard_Report";
+    Layout = "~/Areas/WDealer/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+
+<section class="content" style="overflow-x:hidden;">
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+
+                    <div class="col-md-8">
+                        @using (Html.BeginForm("Pancard_report", "Home", FormMethod.Post))
+                        {
+                            <div class="row">
+                                <div class="col-md-2" id="rem">
+                                    <div class="form-line" style="margin-top:6px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                        @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <div class="" style="margin-top:6px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                            @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                {
+                        new SelectListItem{ Text="Status",Value="ALL",},
+                        new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                        new SelectListItem{Text="PENDING",Value="PENDING"},
+                        new SelectListItem{Text="FAILED",Value="FAILED"}
+                         }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;height:34px;" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <div class="" style="margin-top:6px;border:1px solid #dddddd;margin-left:-13px;width:108%;padding-bottom:10px;">
+                                            @Html.DropDownList("ddl_top", new List<SelectListItem>
+                                {
+                        new SelectListItem{ Text="TOP 50",Value="50",},
+                        new SelectListItem{Text="TOP 100",Value="100"},
+                        new SelectListItem{Text="TOP 500",Value="500"},
+                        new SelectListItem{Text="TOP 1500",Value="1500"},
+                            new SelectListItem{Text="ALL Entry",Value="All"}
+                         }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;height:34px;" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group" style="margin-bottom:0px;margin-left:-1px;width:108%;margin-top:2px;">
+                                        <div class="input-daterange input-group">
+                                            @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:33px;", autocomplete = "off" })
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-exchange"></i>
+                                            </span>
+                                            @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd; margin-top:4px;height:33px;", autocomplete = "off" })
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <center>
+                                        <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 7px; margin-left: -4px; height:33px;">
+                                            <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                            <span style="top:-2px;color:black;">Search</span>
+                                        </button>
+                                    </center>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" style="margin-top:-17px; ">
+                            <div style="padding-top: 22px;  padding-left: 10px; float:right;">
+                                <button type="button" class="btn btn-success waves-effect" style="margin-top:2px;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totals"]</button>
+                                <button type="button" class="btn btn-danger waves-effect" style="margin-top:2px;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalf"]</button>
+                                <button type="button" class="btn btn-warning waves-effect" style="margin-top:2px;" title="Total  Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i>&nbsp;@ViewData["Totalp"]</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card" style="margin-top:-27px;">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:9px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">PANCARD REPORT&nbsp;></li>
+                        </ol>
+                    </div>
+                    <div class="body" style="margin-top:-42px;padding:0px;">
+                        <div class="table-responsive " style="position:inherit;">
+                            <table id="example" class="table table-bordered table-striped table-hover dataTable js-exportable" cellspacing="0" style="width:100%;font-size:12px;">
+                                <thead style="background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Live&nbsp;Status</th>
+                                        <th>User&nbsp;Information</th>
+                                        <th>Merchant&nbsp;Id</th>
+                                        <th>Physical</th>
+                                        <th>Digital</th>
+                                        <th>Processing&nbsp;Fees</th>
+                                        <th>UTI&nbsp;Status</th>
+                                        <th>Date</th>
+                                        <th>UTI&nbsp;TXN&nbsp;ID</th>
+                                        <th>Retailer&nbsp;Remain Pre</th>
+                                        <th>Net&nbsp;Income</th>
+                                        <th>Retailer&nbsp;Remain&nbsp;Post</th>
+                                        <th>Dealer&nbsp;Remain&nbsp;Pre</th>
+                                        <th>Net&nbsp;Income</th>
+                                        <th>Dealer&nbsp;Remain&nbsp;Post</th>
+
+                                    </tr>
+
+                                </thead>
+                                <tbody id="myTable">
+
+                                    @foreach (var item in Model)
+                                    {
+                                        var sts = "";
+                                        var color = "";
+                                        if (item.Particulars.Contains("Pending"))
+                                        {
+                                            color = "#ff9600";
+                                            sts = "Pending";
+                                        }
+                                        if (item.Particulars.Contains("Success"))
+                                        {
+                                            color = "green";
+                                            sts = "Success";
+                                        }
+                                        if (item.Particulars.Contains("Failed"))
+                                        {
+                                            color = "red";
+                                            sts = item.Particulars;
+                                        }
+                                        if (item.Particulars.Contains("Refund"))
+                                        {
+                                            color = "#9C27B0";
+                                            sts = "Refund";
+                                        }
+                                        <tr>
+                                            <td><p style="color:@color;font-size:11px;font-weight:700;">@sts</p></td>
+                                            <td><p style="font-size:11px;"><span>@item.RetailerName</span>&nbsp;⇒&nbsp;@item.Email</p></td>
+                                            <td><p style="font-size:12px;">@item.MerchantTxnId</p></td>
+                                            <td><p style="font-size:12px;">@item.PhysicalCount</p></td>
+                                            <td><p style="font-size:12px;">@item.DigitalCount</p></td>
+                                            <td><p style="font-size:12px;">@item.ProcessingFees</p></td>
+                                            <td><p style="font-size:12px;">@item.CouponStatus</p></td>
+                                            <td><p style="font-size:11px;">@item.Date</p></td>
+                                            <td><p style="font-size:12px;">@item.UTI_TXN_ID</p></td>
+                                            <td><p style="font-size:11px;">@item.retailer_remain_pre</p></td>
+                                            <td><p style="font-size:11px;">@item.RetailerIncome</p></td>
+                                            <td><p style="font-size:11px;">@item.retailer_remain_post</p></td>
+                                            <td><p style="font-size:11px;">@item.retailer_dealer_pre</p></td>
+                                            <td><p style="font-size:11px;">@item.DealerIncome</p></td>
+                                            <td><p style="font-size:11px;">@item.retailer_dealer_post</p></td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Jquery Core Js -->
+<script src="~/Swalalert/datatablejquery.js"></script>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<script>
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 45 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+<!--Calendar Javascript-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "bottom auto",
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+    });
+
+</script>
+
+

@@ -1,0 +1,237 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Aeps_Report_New_Result>
+@{
+    Layout = null;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    int sno = 0;
+    foreach (var item in Model)
+    {
+        sno += 1;
+        var color = "";
+        var fontweight = "";
+        var text = "";
+        var emailid = "";
+        var Retailername = "";
+        var framname = "";
+        var mobile = "";
+        var icon = "";
+        var rchtype = "";
+        var rchtypeicon = "";
+        var sts = "";
+        var refundcolor = "";
+        var rolename = "";
+        var img = "";
+        var style = "";
+        var pendingColor = "";
+
+        if (item.ApplicationType == "web")
+        {
+            rchtypeicon = "fa fa-globe";
+        }
+        if (item.ApplicationType == "app")
+        {
+            rchtypeicon = "fa fa-android";
+        }
+
+        if (item.Status.Contains("Pending"))
+        {
+            color = "#ff9600";
+            fontweight = "700";
+            sts = item.Status;
+            img = "../../ashok-images/clkk.png";
+            style = "height:20px;width:20px;margin-right:3px;float:left;font-size:0px;";
+            pendingColor = "#fff8d1";
+
+        }
+        if (item.Status.Contains("Failed"))
+        {
+            color = "red";
+            fontweight = "700";
+            sts = item.Status;
+            img = "../../ashok-images/closes.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;font-size:0px;";
+
+        }
+        if (item.Status.Contains("Success"))
+        {
+            color = "green";
+            fontweight = "700";
+            sts = item.Status;
+            img = "../../ashok-images/correct.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;font-size:0px;";
+
+        }
+        if (item.Status.ToUpper().Contains("REFUND"))
+        {
+            color = "blue";
+            sts = "Refund";
+            img = "../../ashok-images/undo.svg";
+            style = "height:20px;width:20px;margin-right:3px;float:left;font-size:0px;";
+        }
+        if (item.Status.ToUpper().Contains("SETTLEMENT"))
+        {
+            color = "#9C27B0";
+            sts = "Settlement";
+        }
+        var type="";
+        if (item.Type == "")
+        {
+            if (item.Status.ToUpper().Contains("M_"))
+            {
+                type = "Mini StateMent";
+            }
+            else if (item.Status.ToUpper().Contains("BALANCE"))
+            {
+                type = "Balance";
+            }
+            else
+            {
+                type = "Fund Transfer";
+            }
+        }
+        else
+        {
+            type = item.Type;
+        }
+    <tr style="font-weight:700; background-color:@pendingColor">
+        <td>@sno</td>
+        <td>
+            @if (item.Status.ToUpper().Contains("PENDING"))
+            {
+                <img style='height: 18px;width: 18px;margin-right: 5px;max-width: 100%;padding: 3px; border-radius:50%; background-color:#ffc107' src='../../ashok-images/clkk.png' /><span>@type</span>;
+               }
+            @if (item.Status.ToUpper().Contains("FAILED"))
+            {<img style='height: 18px;width: 18px;margin-right: 5px;max-width: 100%;padding: 3px; border-radius:50%; background-color:red' src='../../ashok-images/closes.svg' /><span>@type</span>;
+        }
+            @if (item.Status.ToUpper().Contains("SUCCESS"))
+            {<img style='height: 18px;width: 18px;margin-right: 5px;max-width: 100%;padding: 3px; border-radius:50%; background-color:green' src='../../ashok-images/correct.svg' /><span>@type</span>;
+        }
+            @if (item.Status.ToUpper().Contains("BALANCE"))
+            {<span class="fullbodydycolorbg" style='height: 20px;margin-right: 5px;max-width: 100%; border-radius:50%; display: inline-block;padding: 0px 5.5px;font-weight: 800;color: #fff;'>B</span><span>@type</span>;
+        }
+            @if (item.Status.ToUpper().Contains("REFUND"))
+            {<img style='height: 18px;width: 18px;margin-right: 5px;max-width: 100%;padding: 3px; border-radius:50%; background-color:#9C27B0' src='../../ashok-images/closes.svg' /><span>@type</span>;
+        }
+
+
+        </td>
+        @*<td class="aepstablestatus">
+            <p style="font-size:13px;text-transform:uppercase;float:left;">
+                <img style="@style background-color:@color;" src=@img /><span style="color:@color;float:left;font-size:0px;">@sts</span><span class="withdrawal" style="">withdraw</span>
+            </p>
+        </td>*@
+        <td style="display:none;">
+            <p style="font-size:16px;">&nbsp;<i class="@rchtypeicon"></i>&nbsp;</p>
+        </td>
+        <td>
+            <p style="font-size:12px;">@item.BankName&nbsp;</p>
+        </td>
+        @*<td>
+           Ram
+        </td>*@
+        <td>@item.customerremain</td>
+        <td>
+            @if (item.AccountHolderAadhaar != null)
+            {
+                var input = item.AccountHolderAadhaar;
+                string firstPart = input.Substring(0, 6);
+                int len = input.Length;
+                string lastPart = input.Substring(len - 4, 4);
+                string middlePart = new String('X', 5);
+                var aadharcard = middlePart + lastPart;
+                <p style="font-size:13px;">@aadharcard&nbsp;</p>
+            }
+        </td>
+
+        <td>@item.Mobile</td>
+        <td>@item.username</td>
+        <td>@String.Format("{0:0.00#}", item.Amount)</td>
+        <td>@item.charge</td>
+        <td>@item.RemIncome</td>
+        <td>@item.RemGST</td>
+        <td>0</td>
+        <td style="display:none;">
+            <p style="font-size:12px;">&nbsp;@item.MerchantTxnId&nbsp;</p>
+        </td>
+
+        <td style="display:none;"><p style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.Txn_Date)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+        <td style="display:none;">
+            <p style="font-size:12px;">&nbsp;@String.Format("{0:0.00#}", item.Amount)&nbsp;</p>
+        </td>
+        <td style="display:none;"><p style="font-size:12px;">&nbsp;@item.Mobile&nbsp;</p></td>
+        <td style="display:none;">
+            @{
+                decimal amount = 0;
+                decimal remincome = 0;
+                decimal usercredit = 0;
+                if (item.Role == "Retailer")
+                {
+                    amount = Convert.ToDecimal(item.Amount);
+                    remincome = Convert.ToDecimal(item.RemIncome);
+                    usercredit = (amount + remincome);
+                }
+            }
+            <p style="font-size:12px;">@String.Format("{0:0.00#}", usercredit)&nbsp;</p>
+        </td>
+
+
+
+        <td>
+            @{
+                decimal usercredit1 = 0;
+                if (item.Role == "Retailer")
+                {
+
+                    usercredit1 = (Convert.ToDecimal(item.Amount) + Convert.ToDecimal(item.RemIncome));
+                }
+
+            }
+            <p style="font-size:13px;">@String.Format("{0:0.00#}", item.RemPre)</p>
+        </td>
+        <td><p style="font-size:13px;">@String.Format("{0:0.00#}", usercredit1)</p></td>
+        <td><p style="font-size:13px;">@String.Format("{0:0.00#}", item.RemPost)</p></td>
+
+        <td>
+            @if (item.Status.ToUpper() == "SUCCESS")
+            {
+                <p style="font-size:12px;">@item.BankRRN&nbsp;</p>
+            }
+            else
+            {
+                <p style="font-size:12px;">@item.Remark&nbsp;</p>
+            }
+        </td>
+        <td><p style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.Txn_Date)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+
+
+        <td style="display:none;">
+            <p style="font-size:13px;">@item.TerminalId</p>
+        </td>
+        <td style="display:none;">
+            <p style="font-size:13px;">@item.Remark</p>
+        </td>
+
+        <td class="aepsprintbutton nextaepsbutton">
+            <a href="@Url.Action("Aeps_print", "Home",new{id=item.MerchantTxnId})" target="_blank"> <i class="material-icons" data-toggle="modal" data-target="#aepsprintmodalmy" style="cursor:pointer;color:#555555;">print</i></a>
+        </td>
+    </tr>
+    }
+}
+else
+{
+<tr>
+    @if (@ViewBag.checkdata != null)
+    {
+        <td colspan="18"><h3 style="text-align:center;">No Data For Current Search</h3></td>
+    }
+    else
+    {
+        <td colspan="18"><h3 style="text-align:center;">Data Not Found</h3></td>
+    }
+
+
+</tr>
+
+}

@@ -1,0 +1,433 @@
+﻿<style>
+    .loader {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .wretailerfasttagpaymy .viewwretailer .form-group {
+        height: auto !important;
+    }
+
+        .wretailerfasttagpaymy .viewwretailer .form-group .form-line {
+            height: auto !important;
+        }
+
+            .wretailerfasttagpaymy .viewwretailer .form-group .form-line input {
+                height: auto !important;
+                padding: 5px !important;
+                background: transparent !important;
+                color: #555 !important;
+                font-size: 11px;
+            }
+
+    .wretailerfasttagpaymy .viewwretailer {
+        padding-right: 0;
+        top: 4px !important;
+    }
+    @@media screen and (max-width:767px) {
+        .wretailerfasttagpaymy .col-md-4, .wretailerfasttagpaymy .col-md-2, .wretailerfasttagpaymy .col-md-3, .wretailerfasttagpaymy .col-md-1 {
+            width: 100% !important;
+            padding: 0 !important;
+            
+        }
+    }
+</style>
+<div id="fasttagpay" class="row fasttagpaymyclass wretailerfasttagpaymy" style="padding-left:0px;margin:0;">
+    <div class="col-md-4 fasttagpay-first" style="padding-left:0;">
+        
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="wretailererrorclass">
+                <p id="fasttagpayoperator" style="position:static !important;"></p>
+            </div>
+            <div class="input-group">
+                @Html.DropDownList("fasttagddltype", ViewBag.Fastag as SelectList, "Select Your FASTag Issuing Bank", new { id = "fasttagddltype", @class = "form-control", required = "required" })
+                <div class="input-group-addon in-addon">
+
+                </div>
+
+            </div>
+            <!-- /.input group -->
+        </div>
+
+    </div>
+
+
+    <div class="col-md-3" id="divvichleno">
+        
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="wretailererrorclass">
+                <p id="fastagmessage" style="position:static !important;"></p>
+
+            </div>
+            <div class="txtfasttag1" style="margin-top:0px; height:37px;" id="fastt">
+                <input type="text" id="txtvehicle" name="txtvehicle" class="form-control" placeholder="Vehicle Number" style="border: 1px solid #ccc;height: 36px;">
+            </div>
+        </div>
+    </div>
+
+    <!--Paybillamount-->
+
+    <div class="col-md-3" id="divfasttagamount">
+        
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="wretailererrorclass">
+                <p id="amountfasttagMessage" style="position:static !important;"></p>
+            </div>
+            <div class="txtfasttag1" style="margin-top:0px; height:37px;">
+                <input type="text" id="FastTagAmount" name="FastTagAmount" class="form-control" placeholder="Amount" onkeypress="return AmountWithDecimal(this,event)" style="border: 1px solid #ccc;height: 36px;" />
+
+                <!--Add Button View-->
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 wamount-input-type viewwretailer" id="btngetfasttagviewbill">
+                    <div class="form-group" style="margin-bottom:0px;">
+                        <div class="form-line" style="border-bottom:none;">
+                            <input type="button" id="btnnn2" class="btn bg-blue-grey" value="View Bill" style="height:37px;float:left;" onclick="GetviewbillFasttag('fasttagddltype')" />
+                        </div>
+                    </div>
+                </div>
+                <!--Add Button View-->
+            </div>
+        </div>
+    </div>
+    <!--fasttagRefId in instantpay BBPS-->
+    <div class="col-md-1" id="divbillfastagRefId" style="display: none;">
+        
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="wretailererrorclass">
+                <p id="amountfasttagMessage" style="position:static !important;"></p>
+            </div>
+            <div class="" style="margin-top:0px; height:37px;">
+                <input type="text" id="fasttagRefId" name="fasttagRefId" class="form-control" style="display:none;" />
+            </div>
+        </div>
+    </div>
+
+    <!--Continue button-->
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" id="btncontinuefasttag" style="padding-right:0;">
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="form-line" style="margin-top:0px !important; border-bottom:none;">
+                <input type="submit" class="btn bg-blue-grey" value="Pay Bill" style="height:36px;float:left;margin-top:0px;" onclick="GetSelectedTextValuefasttage('fasttagddltype')" />
+            </div>
+        </div>
+    </div>
+    <!--View Bill button-->
+    <!--
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" id="btngetfasttagviewbill">
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="form-line" style="margin-top:25px !important; border-bottom:none;">
+                <input type="button" id="btnnn" class="btn bg-blue-grey" value="View Bill" style="height:37px;float:left;" onclick="GetviewbillFasttag('fasttagddltype')" />
+            </div>
+        </div>
+    </div>
+
+    -->
+
+</div>
+
+<table id="confirmfasttag" class="for-prepaid" style="width:100%;margin-top:-11px;display:none;">
+    <tr>
+        <th style="width:10%;"></th>
+        <th style="width:25%;">Operator</th>
+        <th style="width:25%;">Recharge to</th>
+        <th style="width:10%;">amount</th>
+        <th style="width:15%;">Service Fee </th>
+        <th style="width:15%;">Action</th>
+    </tr>
+    <tr>
+        <td>
+            <button style="padding: 5px 20px;" onclick="backfasttag()"><img src="~/AdminDesign/images/back.svg" style="width:18px;" /></button>
+        </td>
+        <td style="font-size: 18px;"><b><span id="showoptfasttag"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 24px;"><b> <span id="shownumberfasttag"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 24px;"><b><span id="showamountfasttag"></span></b></td>
+        <td style="padding-right:10px;"><input type="number" class="form-control" id="servicefeefasttag" placeholder="Enter Fee" style="-webkit-appearance: none;-moz-appearance: textfield;" /></td>
+        <td>
+            <button class="wretailer-buttonrecharge" style="float: right;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="fasttagrechargeconfirm()">
+                Procces To Pay
+            </button>
+        </td>
+    </tr>
+</table>
+<table id="rechargeconfirmfasttag" class="for-prepaid" style="width:100%;margin-top:-11px !important;display:none;">
+    <tr>
+        <th style="width:25%;">Recharge Status</th>
+        <th style="width:37%;">Message</th>
+        <th style="width:11%;"></th>
+    </tr>
+    <tr>
+        <td style="font-size: 20px;"><b> <span id="rchstatuschkfasttag"></span> </b></td>
+        <td class="border-centerbe border-centerbess" style="font-size: 20px;"><b><span id="rchmsgelec"></span></b></td>
+        <td><button class="wretailer-buttonrecharge" style="float: right;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="rchstatuschkfasttag()">Recharge Again</button></td>
+    </tr>
+</table>
+
+<div class="loader loaderwww"></div>
+<script>
+    j('#fasttagddltype').select2();
+</script>
+<!--View Bill-->
+<script type="text/javascript">
+    function GetviewbillFasttag(el) {
+        $('#fasttagCustomerTbl').empty();
+        debugger
+        var e = document.getElementById(el);
+        var eleddl = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var txtval = $("#txtvehicle").val();
+        var Amount = $("#FastTagAmount").val();
+        /* call function*/
+       var sts = continuebtnvalidation(eleddl, txtval, "", "", "10", "");
+
+        if (sts == true) {
+            viewbillfast(eleddl, eleddlvalue, txtval, "10", billunit, "", "", "");
+            event.preventDefault();
+            return false;
+        }
+        else {
+            event.preventDefault();
+            return false;
+        }
+    }
+</script>
+
+<script>
+    function viewbillfast(optname, optvalue, mobileno, amount, optional1, optional2, optional3, optional4) {
+         $('.loader').show();
+       $.ajax({
+           type: "POST",
+           url: "@Url.Action("viewbill", "Home")",
+           data: { OperatorName: optname, OptCode: optvalue, mobileno: mobileno, Amount: amount, optional1: "", optional2: "", optional3: "", optional4: "" },
+           cache: false,
+           dataType: 'json',
+           closeOnConfirm: true,
+           success: function (result) {
+
+               $('.loader').hide();
+
+               if (result.Response == 'SUCCESS') {
+               var displayValues = "";
+            $.each(JSON.parse(result.DisplayValues), function (key, val) {
+                if (!val.label.includes('Incentive')) {
+
+                    displayValues = displayValues + val.label + ' : ' + val.value + "</br>";
+                }
+            });
+                   //                          var newRow ="<div class='col-sm-4' style='text-align: left;'>" +
+                   //               ""+displayValues+""
+                   //"</div>";
+                   var newrow = "<table class='col-sm-4 table-responsive table-bordered'><tr>";
+                   newrow += "<td>" + displayValues +"</td></tr>";
+                   newrow += "<tr><td> Bill Amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp; ::  " + result.Price + "</td></tr>";
+                   newrow += "<tr><td> Due Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   ::  " + result.billduedate + "</td></tr>";
+                    newrow += "</table>";
+                   $('#fasttagCustomerTbl').append(newrow);
+                   $('#fasttagCustomerInfo').css('display', 'block');
+            var price = result.Price;
+                   var fasttagRefId = result.reference_id;
+                   if (fasttagRefId == "undefined" || fasttagRefId == "") {
+                       if (price != "") {
+                           //price = parseInt(price);
+                           $('#FastTagAmount').val(price);
+                           $('#fasttagRefId').val(fasttagRefId);
+                           // displayValues
+                       }
+                   }
+                   else {
+                       if (price != "") {
+                           //price = parseInt(price);
+                           $('#FastTagAmount').val(price);
+                           $('#fasttagRefId').val(fasttagRefId);
+                           // displayValues
+                       }
+                       else {
+                                 var message = result.Message;
+                            $('#FastTagAmount').val('');
+                           $('#fasttagRefId').val(message);
+                       }
+                   }
+               }
+               if (result.Response == 'ERROR') {
+                   $('.loader').hide();
+                                               var newRow ="<div class='col-sm-4' style='text-align: left;color:red'>" +
+                                  ""+result.Message+""
+                   "</div>";
+
+                    $('#FastTagAmount').val('');
+                   $('#fasttagCustomerTbl').append(newRow);
+                   $('#fasttagCustomerInfo').css('display', 'block');
+               }
+           }
+
+       })
+    }
+</script>
+<script>
+    function rchstatuschkfasttag() {
+        j('#fasttagddltype').val("");
+        j('#fasttagddltype').select2().trigger('change');
+        $('#txtvehicle').text("");
+        $('#FastTagAmount').text("");
+        $('#fasttagRefId').text("");
+        $('#fasttagpay').show();
+        $('#rechargeconfirmfasttag').hide();
+        $('#confirmfasttag').hide();
+    }
+</script>
+<script>
+    function backfasttag() {
+        $('#fasttagCustomerInfo').show();
+        $('#fasttagpay').show();
+        $('#confirmfasttag').hide();
+    }
+</script>
+<!--Electricity continueButton -->
+<script type="text/javascript">
+    function GetSelectedTextValuefasttage(el) {
+        var e = document.getElementById(el);
+        var eleddl = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var txtval = $("#txtvehicle").val();
+        var Amount = $("#FastTagAmount").val();
+        var fasttagRefId = $("#fasttagRefId").val();
+        /* call function*/
+        var sts = continuebtnvalidation(eleddl, txtval, "", "", Amount, "");
+        //Recharge1(eleddl, eleddlvalue, txtval, Amount, billunit, cycleno, "", "");
+        if (sts == true) {
+            $('#showoptfasttag').text(eleddl);
+            $('#shownumberfasttag').text(txtval);
+            $('#showamountfasttag').text(Amount);
+            $('#fasttagCustomerInfo').hide();
+            $('#fasttagpay').hide();
+            $('#confirmfasttag').show();
+
+            //if (ddlcity != "" && ddlcity != null) {
+            //   // Recharge(eleddl, eleddlvalue, txtval, Amount, ddlcity, cycleno, "", "", "0", fasttagRefId);
+            //}
+            //else {
+            //  //  Recharge(eleddl, eleddlvalue, txtval, Amount, billunit, cycleno, "", "", "0", fasttagRefId);
+            //}
+
+            event.preventDefault();
+            return false;
+        }
+
+        else {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+</script>
+
+<script>
+    function fasttagrechargeconfirm() {
+       var e = document.getElementById("fasttagddltype");
+        var eleddl = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var txtval = $("#txtvehicle").val();
+        var Amount = $("#FastTagAmount").val();
+
+        var fasttagRefId = $("#fasttagRefId").val();
+        var servicefeefasttag = $("#servicefeefasttag").val();
+        if (servicefeefasttag != "") {
+            /* call function*/
+            var sts = continuebtnvalidation(eleddl, txtval, "", "", Amount, "");
+            if (sts == true) {
+                  $("#servicefeefasttag").css("border-color", "#000000");
+                var optional1 = "";
+                $("#txtvehicle").val("");
+                $("#FastTagAmount").val("");
+                if (txtval != "" && Amount != "") {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Recharge","Home")",
+                        data: { OperatorName: eleddl, OptCode: eleddlvalue, mobileno: txtval, Amount: Amount, optional1: "", optional2: "", optional3: "", optional4: "", comm: "", fasttagRefId: fasttagRefId,servicefee: servicefeefasttag },
+                        cache: false,
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('.loader').show();
+                        },
+                        success: function (result) {
+                            var status = result.Response;
+                            var message = result.Message;
+                            $('#rchstatuschkfasttag').text(status);
+                            $('#rchmsgelec').text(message);
+                            $('#confirmfasttag').hide();
+                            $('#rechargeconfirmfasttag').show();
+                        },
+                        complete: function () {
+                            $("#remainretailer").load(location.href + " #remainretailer");
+                            $('.loader').hide();
+                            $.ajax({
+                                url: '@Url.Action("showrecentrecharge", "Home")',
+                                type: 'GET',
+                                dataType: "html",
+                                data: { type: "Fastag" },
+                                success: function (data) {
+                                    $('#reportchk').html(data);
+                                },
+                                error: function (data) {
+
+                                }
+                            });
+                        },
+                        error: function () {
+                            $("#remainretailer").load(location.href + " #remainretailer");
+                            $('.loader').hide();
+                        }
+                    })
+
+                }
+            }
+        }
+        else {
+              $("#servicefeefasttag").css("border-color", "#FF0000");
+        }
+    }
+</script>

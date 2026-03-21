@@ -1,0 +1,815 @@
+﻿@using Vastwebmulti.Areas.RETAILER.ViewModels
+@model Vastwebmulti.Areas.RETAILER.ViewModels.HotelBlockRoomResponseModel
+@{
+    ViewBag.Title = "Travel";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+    var HotelDetailedVM = (HotelDetailedVM)TempData.Peek("HotelDetailedVM");
+    var AdultCount = TempData.Peek("AdultCount");
+    var ChildCount = TempData.Peek("ChildCount");
+    List<RoomGuestMapping> guestInfo = (List<RoomGuestMapping>)TempData.Peek("guestsInfo");
+    if (HotelDetailedVM == null || guestInfo == null)
+    {
+        TempData["Status"] = "Failed";
+        TempData["Message"] = "Session expired,try again.";
+        Response.Redirect("~/RETAILER/Home/Travel");
+    }
+    var hotel = HotelDetailedVM.hotelInfo.Content.Addinfo.HotelDetails;
+    var markup = ViewBag.RetailerMarkup;
+}
+<style>
+    .scrollypy {
+        overflow-y: auto !important;
+        height: 250px;
+    }
+    /*======================================
+    =            NO GUTTER CODE            =
+    ======================================*/
+    .no-gutter > [class*='col-'] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .loader_innner {
+        position: fixed;
+        z-index: 999999;
+        height: 100%;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .price {
+        font-size: xx-large;
+        font-weight: bold;
+        color: black;
+        margin-top: 50px;
+        margin-left: 130px;
+    }
+</style>
+<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/AdminDesign/Retailer_Slider/Slieder.css" rel="stylesheet" />
+<link href="~/CSS/PageCss/AirSearch.css" rel="stylesheet" />
+<section class="content content-book-htelclass content-fourdesign-page allpage-four-design-section" style="margin-left:10px;">
+    <div class="container-fluid">
+
+        <!--Four-Design-Page-Header-Start-->
+
+        <div class="page-title-box-fourde">
+            <h3>Hotels</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard", "Home")" style="color:var(--fullbodybg-four);background: transparent;margin: 0;padding: 0;">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="@Url.Action("Travel", "Home")" style="color: var(--fullbodybg-four);background: transparent; margin: 0; padding: 0;">Hotels&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);" style="background: transparent; margin: 0; padding: 0;">Hotel Book</a></li>
+            </ul>
+        </div>
+
+        <!--Four-Design-Page-Header-End-->
+
+        <div class="row clearfix">
+            <div id="BusLoader" style="display:none;">
+                <div class="loader_innner">
+                    <img src="~/images/Busloader.gif" style="margin-top:15%;margin-left:46%;" />
+                </div>
+            </div>
+            <!-- FirstBox -->
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+
+                <div class="card changeback-four-design">
+                    <div class="header">
+                        <h2>
+                            Price Details
+                            @*<small>Add the badges component to any list group item and it will automatically be positioned on the right.</small>*@
+                        </h2>
+
+                    </div>
+                    <div class="body">
+                        @{
+                            var basePrice = Model.Content.Addinfo.HotelRoomsDetails.Sum(a => a.Price.RoomPrice);
+                            var TotalAmountPayable = Model.Content.Addinfo.HotelRoomsDetails.Sum(a => a.Price.PublishedPriceRoundedOff) + markup;
+                            var taxAndCharges = TotalAmountPayable - basePrice;
+                        }
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                Base Price : <span class="badge" style="background:none;color:black;">@basePrice</span>
+                            </li>
+                            <li class="list-group-item">
+                                Tax & Charges :<span class="badge" style="background:none;color:black;">@taxAndCharges</span>
+                            </li>
+                            <li class="list-group-item">
+                                Total Price : <span class="badge" style="background:none;color:black;">@TotalAmountPayable</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                <div class="card changeback-four-design">
+                    <div class="header">
+                        <h2>
+                            Hotel Details
+                            @*<small>Add the badges component to any list group item and it will automatically be positioned on the right.</small>*@
+                        </h2>
+                    </div>
+                    <div class="body">
+                        <div class="media">
+                            <div class="media-left">
+                                @if (!string.IsNullOrWhiteSpace(HotelDetailedVM.hotelInfo.Content.Addinfo.HotelDetails.HotelPicture))
+                                {
+                                    <a href="javascript:void(0);">
+                                        <img class="media-object" src="@HotelDetailedVM.hotelInfo.Content.Addinfo.HotelDetails.HotelPicture" width="150" height="150">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="javascript:void(0);">
+                                        <img class="media-object" src="http://placehold.it/32x32" width="32" height="32">
+                                    </a>
+                                }
+                                <br />
+                            </div>
+                            <div class="media-body" style="text-align:left;">
+                                <h4 class="media-heading">
+                                    <a href="#" style="color:#052258;"> @hotel.HotelName</a>
+                                </h4>
+                                <br />
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    var isChecked = "";
+                                    if (i <= hotel.StarRating)
+                                    {
+                                        isChecked = "checked";
+                                    }
+                                    <span class="fa fa-star @isChecked" style="font-size: 22px;"></span>
+                                }
+                                <br /><span><i class="fa fa-map-marker" aria-hidden="true" style="color: orangered;"></i></span>
+                                @hotel.Address<br />
+
+                                <details>
+                                    <summary>Show Hotel Description</summary>
+                                    <br />
+                                    <p>@Html.Raw(hotel.Description)</p>
+                                </details>
+                                <details>
+                                    <summary>Show Cancallation Policy</summary>
+                                    <br />
+                                    <p>@Html.Raw(Model.Content.Addinfo.HotelRoomsDetails.First().CancellationPolicy)</p>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- #END#  -->
+        </div>
+        <div class="row clearfix">
+            <!-- Passanger Details-->
+            @using (Html.BeginForm("BookHotel", "Hotel", FormMethod.Post))
+            {
+                @Html.ValidationSummary(true)
+                @Html.ValidationMessage("CustomError")
+
+                @Html.HiddenFor(m => m.RTypeCode)
+                @Html.HiddenFor(m => m.IsDomestic)
+                @Html.HiddenFor(m => m.Content.Addinfo.HotelRoomsDetails[0].RoomTypeName)
+                @Html.HiddenFor(m => m.Content.Addinfo.HotelRoomsDetails[0].RoomIndex)
+                @Html.HiddenFor(m => m.Content.Addinfo.HotelRoomsDetails[0].RoomId)
+                List<SelectListItem> Title = new List<SelectListItem>(){
+                              new SelectListItem {Text="MR",Value="Mr",Selected=false },
+                              new SelectListItem {Text="Ms",Value="Ms" },
+                              new SelectListItem {Text="Mrs",Value="Mrs"},
+                              new SelectListItem {Text="Miss",Value="Miss"}};
+                int PaxCounter = 1;
+                int adultCounter = 1;
+                int childCounter = 1;
+                int Roomcount = 1;
+                if (Model.Content.Addinfo.HotelRoomsDetails.First().RequireAllPaxDetails)
+                {
+                    for (var i = 0; i < guestInfo.Count; i++)
+                    {
+                        for (int a = 0; a < guestInfo[i].NoOfAdults; a++)
+                        {
+                            if (i == 0)
+                            {
+                                @Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].LeadPassenger, new { @Value = true })
+                            }
+                            else
+                            {
+                                @Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].LeadPassenger, new { @Value = false })
+                            }
+                            @Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PaxType, new { @Value = 1 })
+                            <!-- Adult Details-->
+
+
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 bookhotel-adult" style="">
+                                <div class="card changeback-four-design">
+                                    <div class="header">
+                                        <h2> @i Traveller Information  </h2>
+                                    </div>
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Title</div>
+                                                    <div class="form-line focused">
+                                                        @Html.DropDownListFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Title, Title, "Title", new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Title, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Pax First Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].FirstName, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].FirstName, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Pax Middle Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].MiddleName, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].MiddleName, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Last Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].LastName, new { @class = "form-control nospace" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].LastName, "")
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            @if (i == 0) //Email and phone is mandatory for lead pax in each room
+                                            {
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Email Address</div>
+                                                        <div class="form-line">
+                                                            @*<input type="text" class="form-control" name="minmaxlength" maxlength="10" minlength="3" required="" aria-required="true" aria-invalid="false">*@
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Email, new { @class = "form-control" })
+                                                            @*<label class="form-label">Email</label>*@
+                                                        </div>
+
+                                                        @*<label id="minmaxlength-error" class="error" for="minmaxlength" style="display: none;"></label>*@
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Email, "")
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Contact No</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].phoneno, new { @class = "form-control" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].phoneno, "")
+                                                    </div>
+                                                </div>
+                                            }
+                                            <div class="col-md-4">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Age</div>
+                                                    <div class="form-line">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Age, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Age, "")
+                                                </div>
+                                            </div>
+                                            @if (!Model.IsDomestic)
+                                            {
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Passport Number</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PassportNo, new { @class = "form-control" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PassportNo, "")
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Passport Expiry</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PassportExpDate, new { @class = "form-control", @type = "date" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PassportExpDate, "")
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            if (i == 0 && a == 0)
+                            {
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="header">
+                                            <h2>
+                                                Room Details
+                                                @*<small>Add the badges component to any list group item and it will automatically be positioned on the right.</small>*@
+                                            </h2>
+                                        </div>
+                                        <div class="body">
+                                            @{
+                                                var roomNode = Model.Content.Addinfo.HotelRoomsDetails.FirstOrDefault();
+                                            }
+                                            <ul class="list-group">
+                                                <li class="list-group-item">
+                                                    Room Type : <span class="badge" style="background:none;color:black;">@roomNode.RoomTypeName</span>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Inclusion :<span class="badge" style="background:none;color:black;">@roomNode.Inclusion.FirstOrDefault()</span>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Check-In : <span class="badge" style="background:none;color:black;">@HotelDetailedVM.CheckInDate</span>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Check-Out : <span class="badge" style="background:none;color:black;">@HotelDetailedVM.CheckOutDate</span>
+                                                </li>
+                                            </ul>
+                                            @*<input type="submit" class="btn btn-block btn-lg btn-primary waves-effect" name="BokingType" value="HOLD">
+                                            <input type="submit" class="btn btn-block btn-lg btn-primary waves-effect" name="BokingType" value="PAY NOW">*@
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            PaxCounter++;
+                            adultCounter++;
+                        }
+                        adultCounter = 1;
+                        for (int c = 0 + guestInfo[i].NoOfAdults; c < guestInfo[i].NoOfChild + guestInfo[i].NoOfAdults; c++)
+                        {
+                            @Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PaxType, "2")
+                            @*@Html.HiddenFor(m => m.HotelChildPassengers[i].PaxType, "2")*@
+                            <!-- Child Details-->
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 bookhotel-adult" style="">
+                                <div class="card changeback-four-design">
+                                    <div class="header">
+                                        <h2> @childCounter Child (Room @Roomcount)  </h2>
+                                    </div>
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Title</div>
+                                                    <div class="form-line focused">
+                                                        @Html.DropDownListFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].Title, Title, "Title", new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].Title, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Pax First Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].FirstName, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].FirstName, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Pax Middle Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].MiddleName, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].MiddleName, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Last Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].LastName, new { @class = "form-control nospace" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].LastName, "")
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-md-4">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Age</div>
+                                                    <div class="form-line">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].Age, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].Age, "")
+                                                </div>
+                                            </div>
+                                            @if (!Model.IsDomestic)
+                                            {
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Passport Number</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PassportNo, new { @class = "form-control" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PassportNo, "")
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Passport Expiry</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PassportExpDate, new { @class = "form-control", @type = "date" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PassportExpDate, "")
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            PaxCounter++;
+                            childCounter++;
+                        }
+                    }
+                }
+                else
+                {
+                    for (var i = 0; i < guestInfo.Count; i++)
+                    {
+                        for (int a = 0; a < guestInfo[i].NoOfAdults; a++)
+                        {
+                            @*@Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PaxType, "1")*@
+                            if (i == 0 && a == 0)
+                            {
+                                <div class="col-md-4">
+                                    <div class="card changeback-four-design">
+                                        <div class="header">
+                                            <h2>
+                                                Room Details
+                                                @*<small>Add the badges component to any list group item and it will automatically be positioned on the right.</small>*@
+                                            </h2>
+                                        </div>
+                                        <div class="body">
+                                            @{
+                                                var roomNode = Model.Content.Addinfo.HotelRoomsDetails.FirstOrDefault();
+                                            }
+                                            <ul class="list-group">
+                                                <li class="list-group-item">
+                                                    Room Type : <span class="badge" style="background:none;color:black;">@roomNode.RoomTypeName</span>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Inclusion :<span class="badge" style="background:none;color:black;">@roomNode.Inclusion.FirstOrDefault()</span>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Check-In : <span class="badge" style="background:none;color:black;">@HotelDetailedVM.CheckInDate</span>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Check-Out : <span class="badge" style="background:none;color:black;">@HotelDetailedVM.CheckOutDate</span>
+                                                </li>
+                                            </ul>
+                                            @*<input type="submit" class="btn btn-block btn-lg btn-primary waves-effect" name="BokingType" value="HOLD">
+                                            <input type="submit" class="btn btn-block btn-lg btn-primary waves-effect" name="BokingType" value="PAY NOW">*@
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            PaxCounter++;
+                            adultCounter++;
+                            @Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PaxType, new { @Value = 1 })
+
+                            @Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].LeadPassenger, new { @Value = true })
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 bookhotel-adult" style="">
+                                <div class="card changeback-four-design">
+                                    <div class="header">
+                                        <h2> @adultCounter Adult (Room @Roomcount)  </h2>
+                                    </div>
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Title</div>
+                                                    <div class="form-line focused">
+                                                        @Html.DropDownListFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Title, Title, "Title", new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Title, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Pax First Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].FirstName, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].FirstName, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Pax Middle Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].MiddleName, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].MiddleName, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Last Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].LastName, new { @class = "form-control nospace" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].LastName, "")
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            @if (a == 0)
+                                            {
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Email Address</div>
+                                                        <div class="form-line">
+                                                            @*<input type="text" class="form-control" name="minmaxlength" maxlength="10" minlength="3" required="" aria-required="true" aria-invalid="false">*@
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Email, new { @class = "form-control" })
+                                                            @*<label class="form-label">Email</label>*@
+                                                        </div>
+
+                                                        @*<label id="minmaxlength-error" class="error" for="minmaxlength" style="display: none;"></label>*@
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Email, "")
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Contact No</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].phoneno, new { @class = "form-control" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].phoneno, "")
+                                                    </div>
+                                                </div>
+
+                                            }
+                                            <div class="col-md-4">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Age</div>
+                                                    <div class="form-line">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Age, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].Age, "")
+                                                </div>
+                                            </div>
+                                            @if (!Model.IsDomestic)
+                                            {
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Passport Number</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PassportNo, new { @class = "form-control" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PassportNo, "")
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Passport Expiry</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PassportExpDate, new { @class = "form-control", @type = "date" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[a].PassportExpDate, "")
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Adult Details-->
+
+                        }
+                        adultCounter = 1;
+                        for (int c = 0 + guestInfo[i].NoOfAdults; c < guestInfo[i].NoOfChild + guestInfo[i].NoOfAdults; c++)
+                        {
+                            @Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PaxType, new { @Value = 2 })
+                            @*@Html.HiddenFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PaxType, "2")*@
+
+                            <!-- Child Details-->
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 bookhotel-adult" style="">
+                                <div class="card changeback-four-design">
+                                    <div class="header">
+                                        <h2> @childCounter Child (Room @Roomcount)  </h2>
+                                    </div>
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Title</div>
+                                                    <div class="form-line focused">
+                                                        @Html.DropDownListFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].Title, Title, "Title", new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].Title, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Pax First Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].FirstName, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].FirstName, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Pax Middle Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].MiddleName, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].MiddleName, "")
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Adult Last Name</div>
+                                                    <div class="form-line ">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].LastName, new { @class = "form-control nospace" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].LastName, "")
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-md-4">
+                                                <div class="form-group form-float">
+                                                    <div class="help-info">Age</div>
+                                                    <div class="form-line">
+                                                        @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].Age, new { @class = "form-control" })
+                                                    </div>
+
+                                                    @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].Age, "")
+                                                </div>
+                                            </div>
+                                            @if (!Model.IsDomestic)
+                                            {
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Passport Number</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PassportNo, new { @class = "form-control" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PassportNo, "")
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group form-float">
+                                                        <div class="help-info">Passport Expiry</div>
+                                                        <div class="form-line">
+                                                            @Html.TextBoxFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PassportExpDate, new { @class = "form-control", @type = "date" })
+                                                        </div>
+
+                                                        @Html.ValidationMessageFor(m => m.BookHotelRoomDetails[i].HotelPassenger[c].PassportExpDate, "")
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            PaxCounter++;
+                            childCounter++;
+                        }
+                        Roomcount++;
+                    }
+                }
+                <div class="hotel-booking-buttonlast">
+                    @*<input type="submit" class="btn btn-block btn-lg btn-primary waves-effect" name="BokingType" value="HOLD">*@
+                    <input type="submit" class="btn btn-block btn-lg btn-primary waves-effect" name="BokingType" value="PAY NOW">
+                </div>
+
+            }
+            <!-- Passanger Details End-->
+        </div>
+
+
+    </div>
+</section>
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<!-- Start Rechargepaybill js-->
+<script src="~/Retailerjavascript/Rechargepaybill/electricityl.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Landline.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Dth.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/gas.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Insurance.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/mobileperpaidandpostpaid.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/Water.js"></script>
+<script src="~/Retailerjavascript/Rechargepaybill/broadband.js"></script>
+<!--End-->
+<script src="~/AdminDesign/Retailer_Slider/multislider.js"></script>
+<script src="~/Scripts/PageScript/Retailer/AirSearch.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+@*<script>
+        $('#basicSlider').multislider({
+            continuous: true,
+            duration: 2000
+        });
+        $('#mixedSlider').multislider({
+            duration: 750,
+            interval: 3000
+        });
+    </script>*@
+<!--Calendar Javascript-->
+<script type="text/javascript">
+    $(function () {
+        $('#date').bootstrapMaterialDatePicker
+       ({
+           clearButton: false
+       });
+        $('#txt_to_date').bootstrapMaterialDatePicker
+        ({
+            weekStart: 0, format: 'DD/MM/YYYY'
+        });
+        $('#txt_frm_date').bootstrapMaterialDatePicker
+        ({
+            weekStart: 0, format: 'DD/MM/YYYY'
+        }).on('change', function (e, date) {
+            $('#txt_to_date').bootstrapMaterialDatePicker('setMinDate', date);
+        });
+        $('#min-date').bootstrapMaterialDatePicker({ format: 'DD/MM/YYYY HH:mm', minDate: new Date() });
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+@*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+      rel="Stylesheet" type="text/css" />
+<script>
+    function gotoRoomsTab(event) {
+        // alert('Hey i am calling');
+        event.preventDefault();
+        // $("#roomsLiTab").click();
+        alert();
+    }
+    $('input.nospace').keydown(function (e) {
+        if (e.keyCode == 32) {
+            return false;
+        }
+    });
+</script>
+
+
+

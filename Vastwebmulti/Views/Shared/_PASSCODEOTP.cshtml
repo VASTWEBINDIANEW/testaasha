@@ -1,0 +1,455 @@
+﻿@using Vastwebmulti.Models;
+@{
+
+    var OTPTYPE = Convert.ToString(TempData["PASSOCDETYPESETTING"]);
+    if (OTPTYPE == "PERDAY")
+    {
+        OTPTYPE = "Day ";
+    }
+    if (OTPTYPE == "WEAKS")
+    {
+        OTPTYPE = "Weekly ";
+    }
+    if (OTPTYPE == "MONTHS")
+    {
+        OTPTYPE = "MONTHLY ";
+    }
+}
+<link rel="stylesheet" href="~/MainFrontDesign/css/bootstrap.css">
+<link href="~/MainFrontDesign/css/globalallcss.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/MainFrontDesign/css/bootstrap.min.css">
+<link rel="stylesheet" href="~/MainFrontDesign/css/style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@300&family=Roboto:ital,wght@0,900;1,500&display=swap" rel="stylesheet">
+<style>
+    .navbar-default {
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+    .passcodeSection::before {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.4;
+    }
+
+    .container-fluid.fullbodydycolorbg.passcodeSection {
+        background: url('../../images/web-security.jpeg')no-repeat !important;
+        background-size: auto;
+        background-size: cover !important;
+        background-position: center;
+        position: relative;
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+
+    .otp-form {
+        width: 36%;
+        margin: auto;
+        border: 2px solid #fff;
+        padding: 0px 30px;
+        margin-bottom: 40px;
+    }
+
+    .submit-button-one input:hover {
+        background: #fff;
+        color: #ff0000 !important;
+    }
+
+    #otp-mess, #otp-mess2 {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 10px;
+        width: 100%;
+        float: left;
+        text-align: center;
+    }
+
+    #otp-mess2 {
+        margin-top: 0px;
+    }
+
+    .for-p-border {
+        font-size: 19px;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 30px !important;
+        font-weight: 600
+    }
+
+    .digit-group {
+        text-align: center;
+        border: 2px solid #fff;
+        padding: 7px 0px;
+    }
+
+        .digit-group input {
+            width: 15%;
+            height: 50px;
+            background-color: #fff;
+            border: none;
+            line-height: 50px;
+            text-align: center;
+            font-size: 30px;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 600;
+            color: #555;
+            margin: 0 2px;
+        }
+
+        .digit-group .splitter {
+            padding: 0 5px;
+            color: white;
+            font-size: 24px;
+        }
+
+    .prompt {
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: white;
+    }
+
+    .subm:hover {
+        background: none;
+    }
+
+    .subms:hover {
+        background: red !important;
+    }
+
+    .mg {
+        width: 96px;
+        height: 91px;
+        padding: 22px;
+        border-radius: 50px;
+        background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;
+    }
+
+    .subm:active {
+        background: none;
+        border: none !important;
+        box-shadow: none;
+    }
+
+    .submit-button-one input:hover {
+        background: #fff !important;
+        color: green !important;
+    }
+
+    .linktype input {
+        border: none;
+    }
+
+        .linktype input:hover {
+            background: #fff !important;
+            color: red !important;
+            border: none !important;
+        }
+
+        .linktype input:active {
+            background: none !important;
+        }
+
+    .back:focus {
+        background: none !important;
+    }
+
+    .loadingio-spinner-gear-94vo528ab8 {
+        width: 77%;
+        height: 35px;
+        overflow: hidden;
+        border: 3px solid var(--main-bg-lcolor);
+        text-align: center;
+        position: relative;
+        margin: auto;
+    }
+
+    .loader {
+        color: grey;
+        font-family: sans-serif;
+        height: 35px;
+        overflow-x: hidden;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+    }
+
+        .loader:before {
+            animation: left-to-right 3s alternate infinite linear;
+            background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor));
+            content: "";
+            height: 100%;
+            left: 0;
+            overflow: hidden;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+    @@keyframes left-to-right {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .dark {
+        font-family: 'Open Sans Condensed', sans-serif;
+    }
+</style>
+@{
+    VastwebmultiEntities DB = new VastwebmultiEntities();
+    var logoimage = "";
+    var logo = DB.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+}
+
+<header class="navbar-fixed-top fullbodydycolorbg">
+    <div class="main_menu_bg">
+        <nav class="navbar navbar-default" style="margin:0px;">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="navbar-header">
+
+                        <div class="for-mobile-log" style="display:none;"><a href="/Home/Login">LOGIN / SIGNUP</a></div>
+                        <a class="navbar-brand site-logo" href="/Home/Login">
+                            @* <img src="/Outside_logo/2c182cba-1ff8-4fc8-9760-1f4c970e9d9f_d7c04db5-ae0c-417e-aee2-466998bef6c9_Default_Logo.png" class="img-responsive" style="background-color:transparent;padding:2px;">*@
+                            <img src="@Url.Content("~/" + @logoimage)" class="img-responsive" style="background-color:transparent;padding:2px;width: 116px;height: 49px;margin-top: 16px;" />
+                        </a>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+
+                    <center>
+                        <p class="large-text dark" style="font-weight:700; font-size: 42px; padding: 32px 0px; color:#fff;">
+                            <b>Security Verification</b>
+                        </p>
+
+                    </center>
+                </div>
+                <div class="col-md-3">
+                    @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="pull-right subms" style="color: #fff;margin-right: 20px;border: 1px solid #fff;background:#fefefe;margin-top: 18px;width: 116px;height: 47px;">
+
+                            @*<span class="newimgspan"><i><img style="transform:none;text-align:center;margin:0px auto;position: static;float: none;margin-right: 2px;margin-top:1px;height: 15px;transform: rotate(-90deg);" src="~/ashok-images/signs.png" /></i><p>Logout</p></span>*@
+
+
+                            <img style="transform:none;margin:0px auto;position: static;float: none;height: 15px;" src="/AashaDigitalIndia24Testing/images/login.png">
+                            <input id="subHere" class="btn btn-default subm" type="submit" value="LOGOUT" style=" border: 0;margin: 0;padding: 0;min-width: auto;font-size: 16px;padding: 4px;color: #000;background: none;">
+                        </button>
+                    }
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+<div class="container-fluid fullbodydycolorbg passcodeSection" style="width: 100%; height: auto; padding: 6.2%; float: left; border-top: 5px solid #fff; border-bottom: 5px solid #fff;">
+
+    @using (Html.BeginForm("LogOff", "Account", new { Area = "", id = "logoutForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <!--<button type="submit" class="pull-right">-->
+        @*<span class="newimgspan"><i><img style="transform:none;text-align:center;margin:0px auto;position: static;float: none;margin-right: 2px;margin-top:1px;height: 15px;transform: rotate(-90deg);" src="~/ashok-images/signs.png" /></i><p>Logout</p></span>*@
+        <!--<input type="submit" id="subHere" class="btn btn-default" value="LOGOUT" style="padding:0px; height:35px;color:#fff;border-color:#fff; margin-right:5px;position:absolute;top:0;right:20px;" />
+        </button>-->
+    }
+
+    @*<input type="submit" id="subHere" class="btn btn-default" value="Submit" style="padding:0px; height:35px;color:#fff;border-color:#fff; margin-right:5px;position:absolute;top:0;right:20px;">*@
+    <center>
+        <div class="mg">
+            <img src="~/AdminDesign/images/encryption.svg" style="width:50px;padding-bottom: 23px;" />
+        </div>
+        <p class="large-text" style="font-weight:700; font-size: 42px; padding: 32px 0px; color:#fff;">
+            Enter @OTPTYPE PassCode
+        </p>
+
+    </center>
+
+    <div class="otp-form">
+        @using (Html.BeginForm("CHECKPASSCODEPASSWORD", "Home", FormMethod.Post, new { role = "form" }))
+        {
+
+
+            <div class="row" style="margin-top:40px; margin-bottom:40px;">
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @*<p class="for-p-border">One Time Password&nbsp;(OTP)</p>*@
+                        </div>
+                    </div>
+                    @*<div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                @Html.TextBox("Code", "", new { @class = "form-control", @placeholder = "Enter One Time Password", @required = "required", @style = "color:black; padding:0px 10px;box-shadow:none;border:0px;" })
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>*@
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <div class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
+                                <input type="text" id="digit-1" name="digit-1" data-next="digit-2" autocomplete="off" /><input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" autocomplete="off" /><input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" autocomplete="off" /><input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" autocomplete="off" /><input type="text" id="digit-5" name="digit-5" data-next="digit-6" data-previous="digit-4" autocomplete="off" /><input type="text" id="digit-6" name="digit-6" data-previous="digit-5" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        @*<div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-11" style="margin-top:5px;">
+                                        <span>@Html.CheckBox("RememberBrowser", new { @checked = "checked" })@Html.Label("RememberBrowser", new { @style = "font-size: 15px; color: #fff; font weight: 100; " })</span>
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span style="text-align: center;width: 100%;display: block;color: #fff;margin-top:10px; font-weight: 600;"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+
+
+                            <div class="col-md-12 submit-button-one" style="text-align:center; margin-top:20px">
+                                <div class="loadingio-spinner-gear-94vo528ab8 first-login" style="display:none;">
+                                    <div class="loader"></div>
+                                </div>
+                                <input type="hidden" id="Passscodes" name="Passscodes" autocomplete="off" />
+
+                                <input type="submit" id="subHere" class="btn btn-default submitotobtn" value="Submit OTP" style="padding:0px; height:35px;color:#fff;border-color:#fff;width: 77%;background: #3a2c1d;margin:0px;" />
+                                @* <input type="button" class="btn btn-primary" value="Resend OTP" onclick="resendotp()" style="padding:0px;color:#fff;border-color:#fff; height:35px;" />*@
+                            </div>
+
+                            <div class="col-md-12 submit-button-one linktype" style="text-align:center;">
+
+                                <input type="button" class="btn btn-primary back" value="OTP not received then click me" onclick="resendotp()" style="padding:0px;color:#fff;border-color:#fff; height:18px;min-width: 29%;text-transform: capitalize;padding: 0px 4px 0px 4px;float: right;margin-right: 53px;font-size: 14px;" />
+                            </div>
+
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span id="otp-mess"></span>
+                                <span id="otp-mess2"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+<script src="~/MainFrontDesign/js/vendor/bootstrap.min.js"></script>
+<script src="~/MainFrontDesign/js/main.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminDesign/plugins/sweetalert/sweetalert-dev.js"></script>
+
+<script>
+    function resendotp() {
+           window.location.href = '@Url.Action("ResendPASSCODEPASSWORD", "Home")';
+
+    }
+
+    $(document).ready(function () {
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, "", window.location.href);
+        };
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var resend = null;
+        var resend2 = null;
+        if (resend != null && resend != "") {
+            //swal("Good job!", resend, "success")
+            $('#otp-mess').text(resend);
+            $('#otp-mess2').text(resend2);
+        }
+    });
+</script>
+<script>
+    $("#digit-1, #digit-2, #digit-3, #digit-4, #digit-5, #digit-6").on("keyup", function () {
+        var OtpDigit = $("#digit-1").val() + $("#digit-2").val() + $("#digit-3").val() + $("#digit-4").val() + $("#digit-5").val() + $("#digit-6").val();
+        if (OtpDigit.length == 6) {
+            $('#Passscodes').val(OtpDigit);
+            //   $('#subHere').click();
+        }
+    });
+</script>
+
+<script>
+    $('.digit-group').find('input').each(function () {
+        $(this).attr('maxlength', 1);
+        $(this).on('keyup', function (e) {
+            var parent = $($(this).parent());
+
+            if (e.keyCode === 8 || e.keyCode === 37) {
+                var prev = parent.find('input#' + $(this).data('previous'));
+
+                if (prev.length) {
+                    $(prev).select();
+                }
+            } else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                var next = parent.find('input#' + $(this).data('next'));
+
+                if (next.length) {
+                    $(next).select();
+                } else {
+                    if (parent.data('autosubmit')) {
+                        parent.submit();
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+@if (!HttpContext.Current.Request.IsLocal)
+{
+    <!-- To Disable Inspect Element -->
+    <script src="~/Scripts/Disable_Inspect_Element/Disable_Inspect.js"></script>
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(".submitotobtn").click(function () {
+        debugger
+        $(".loadingio-spinner-gear-94vo528ab8").show();
+        $(this).hide();
+    });
+</script>

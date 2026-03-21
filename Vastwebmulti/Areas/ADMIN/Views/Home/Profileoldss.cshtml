@@ -1,0 +1,1793 @@
+﻿@model Vastwebmulti.Models.User
+
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .ribbon {
+        position: absolute;
+        right: -2px;
+        top: -2px;
+        z-index: 1;
+        overflow: hidden;
+        width: 75px;
+        height: 75px;
+    }
+
+        .ribbon span {
+            font-size: 11px;
+            color: #fff;
+            text-align: center;
+            font-weight: bold;
+            line-height: 20px;
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+            width: 100px;
+            box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+            position: absolute;
+            top: 19px;
+            right: -21px;
+        }
+
+    .list-group-item {
+        border: none;
+    }
+    .custom-off::before {
+    content: '';
+    width: 15px;
+    height: 15px;
+    
+    top: 8px;
+}
+
+    .field-validation-error {
+        color: red;
+    }
+    .firt {
+    -webkit-transform: rotate(-90deg);
+    position: absolute;
+    left: -46px;
+    top: 48px;
+}
+    .ons1 button {
+    font-size: 22px;
+text-align: center;
+padding: 5px 22px;
+font-weight: bold;
+margin: 0px auto;float:right;
+   
+margin-top: 22px;
+}
+    .ons1 input {
+width: 24%;
+float: right;
+border: 1px solid #c7c7c7;
+height: 28px;
+margin-left: 4px;
+padding: 0px 2px;
+font-size: 12px;
+}
+    .ons1 {
+    width: 100%;
+    float: left;
+    background: #fff;
+    border: 1px solid #c7c7c7;
+padding: 3px 5px;
+margin-bottom: 5px;
+}
+    .ons1 span {
+    font-size: 16px;
+    display: inline-block;
+    float: left;
+    width: 32%;margin-top: 3px;
+}
+    .ons1 select {
+    width: 17%;
+    height: 28px;
+    border: 1px solid #c7c7c7;float: left;
+background: #e1e1e1;
+}
+    .firt span {
+    color: var(--main-bg-lcolor);
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+}
+    .firt3, .firt4 {
+    margin-left: 5px;
+}
+    .firt2, .firt3, .firt4 {
+    padding: 0px;
+    width: 32%;
+}
+    .required:after {
+        color: red;
+        content: " *";
+    }
+
+    .profile-register-address .list-group-item {
+        background-color: #f5f5f5;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-4">
+                <div class="card " style="margin-bottom:0px;">
+                    <div class="ribbon"><span class="fullbodydycolorbg">ADMIN</span></div>
+
+                    <div class="body fullbodydycolorbg">
+                        <center>
+                            @if (ViewBag.image != null)
+                            {
+                                <div class="image" style="margin-top:24px;">
+                                    <img id="Adminimage" src="@Url.Content("~/"+ ViewBag.image )" class="img-circle" alt="User" width="100" height="100" title="Click Me Upload Profile Image" style="cursor:pointer;" onclick="uploadimage(@ViewBag.admin.ID)" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="image" style="margin-top:24px;">
+                                    <img id="Adminimage" src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle" alt="User" title="Click Me Upload Profile Image" style="cursor:pointer;" onclick="uploadimage(@ViewBag.admin.ID)">
+                                </div>
+                            }
+
+                            <div class="msg" style="padding-top:12px; font-size:19px; font-weight:600; color:#fff">@ViewBag.admin.Name</div>
+                            <p style="margin-top:5px;font-size:14px;text-transform:uppercase;color:#fff" ">Administrator</p>
+
+                        </center>
+                    </div>
+                </div>
+
+            </div>
+            <div id="saveaddressModal" class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <div class="card" style="margin-bottom:0px;">
+                    <div style="background-color:#c7c7c7;padding: 5px 10px; padding:10px;">
+                        @if (ViewBag.admin.Companyname != null)
+                        {
+                            <h1 style="color:#555;font-size:20px;font-weight:bold;text-transform:uppercase;margin:0px;">
+                                <span id="spncompny">  @ViewBag.admin.Companyname </span>
+                                <a style="float:right;font-size:14px; color:#555; border: 1px solid  #bbb;padding: 5px 15px;text-transform:capitalize; cursor: pointer;" onclick="editeaddress(@ViewBag.admin.ID)">Edit</a>
+                            </h1>
+                        }
+                        else
+                        {
+                            <h1 style="color:#555;font-size:24px;font-weight:bold;text-transform:uppercase;margin:0px;">
+                                <span id="spncompny">
+                                    No Data Found !
+                                </span>
+                                <a style="float:right;"><i class="fa fa-pencil-square-o" style="font-size:22px;margin-top:0px;" onclick="editeaddress(@ViewBag.admin.ID)"></i></a>
+                            </h1>
+                        }
+                    </div>
+                    <div class="body profile-register-address" style="background:#f5f5f5;padding-top: 0px;padding-bottom: 13px;  ">
+                        <ul class="list-group" style="margin-bottom:4px;">
+                            <li class="list-group-item">
+                                <i class="fa fa-map-marker"></i> <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Registered Business Address</span>
+                            </li>
+                            <li class="list-group-item">
+
+                                @if (ViewBag.admin.Address != null && ViewBag.admin.Address != "")
+                                {
+                                    <p style="text-align:justify;margin-top:-12px;"><span id="spnaddress"> @ViewBag.admin.Address </span></p>
+                                }
+                                else
+                                {
+                                    <p style="margin-top:-12px;"><span id="spnaddress"> ADDRESS NOT FOUND !  </span></p>
+                                }
+
+                            </li>
+                            <li class="list-group-item" style="margin-top:-19px;">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;Zip Code</span>
+                                @if (ViewBag.admin.pincode != null)
+                                {
+                                    <p style="float:right;margin-top:5px;"><span id="spnpincode"> @ViewBag.admin.pincode </span></p>
+                                }
+                                else
+                                {
+                                    <p style="float:right;margin-top:5px;"><span id="spnpincode"> ZIP CODE NOT FOUND ! </span></p>
+                                }
+                            </li>
+                            <li class="list-group-item">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;State</span>
+                                <p style="float:right;text-transform:uppercase;"><span id="spnstate">  @ViewBag.ddlstate </span></p>
+                            </li>
+                            <li class="list-group-item">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;District</span>
+                                <p style="float:right;text-transform:uppercase;"><span id="spndistrict"> @ViewBag.dddistrict </span></p>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="EditaddressModal" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" style="display:none;">
+                <div style="background:#f5f5f5;width:100%;float:left;">
+                    <div class="card" style="margin-bottom:0px;">
+                        @*@using (Html.BeginForm("UpdateAddressProfile", "Home", FormMethod.Post))*@
+
+                        @using (Ajax.BeginForm("UpdateAddressProfile", "Home", new AjaxOptions
+                        {
+                            InsertionMode = InsertionMode.Replace,
+                            OnSuccess = "OnSuccessEditAddress",
+                            OnFailure = "OnFailure",
+
+                            // LoadingElementId = "progress"
+                        }))
+
+                        {
+                            <input type="hidden" id="hdidadmin" name="hdidadmin" value="" />
+                            <div style="background-color:#c7c7c7;padding: 5px 10px; padding:10px;">
+
+                                <h1 style="color:#555;font-size:20px;font-weight:bold;text-transform:uppercase;margin:0px;">
+                                    @Html.TextBox("txtcompany", "", new { @class = "form-control", placeholder = "Enter Your Company Name", required = "required", @style = "width:300px;" })
+                                    <button type="submit" class="btn waves-effect" style="margin-top: 4px;background:#c7c7c7; margin-right:12px;position: absolute;right: -2px;top: 5px;height: 32px;padding: 5px 16px;">
+                                        <span style="color:#555;"> Save</span>
+                                    </button>
+                                </h1>
+
+                            </div>
+                            <div class="body profile-register-address" style="background:#f5f5f5;padding-top: 0px;padding-bottom: 13px;  ">
+                                <ul class="list-group" style="margin-bottom:0px;padding-bottom:4px;">
+                                    <li>
+                                        <i class="fa fa-map-marker"></i> <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Registered Business Address</span>
+                                    </li>
+                                    <li>
+
+
+                                        <p style="text-align:justify;">   @Html.TextBox("txtaddress", "", new { @class = "form-control", placeholder = "Enter Your Address", required = "required", @style = "width:100%;" })</p>
+
+
+                                    </li>
+                                    <li>
+                                        <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;Zip Code</span>
+
+                                        <p style="float:right;"> @Html.TextBox("txtzipcode", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Zip Code", onkeypress = "return isNumber(event)" })</p>
+
+                                    </li>
+                                    <li>
+                                        <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;State</span>
+                                        <p class="custom-district" style="float:right;text-transform:uppercase;"> @Html.DropDownList("State", (IEnumerable<SelectListItem>)ViewBag.Sate, "-- Select State--", new { @class = "form-control", @required = "required", @onchange = "FillDistict()" })</p>
+                                    </li>
+                                    <li>
+                                        <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;District</span>
+                                        <p class="custom-district" style="float:right;text-transform:uppercase;"> @Html.DropDownList("District", (IEnumerable<SelectListItem>)ViewBag.District, "-- Select District--", new { @class = "form-control", @required = "" })</p>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-md-4">
+                <div class="card ">
+                    <div class="" style="background-color:#c7c7c7;padding: 5px 10px;">
+                        <h1 style="color:#555;font-size:14px;font-weight:bold;text-transform:uppercase;margin:0px;">
+                            Website Launching Date
+                            <a style="float: right;border: 1px solid  #bbb;padding: 5px 15px;color:#555; text-transform:capitalize; cursor: pointer;" onclick="editemobileandpancard(@ViewBag.admin.ID)">Edit</a>
+                        </h1>
+                        <p style="text-transform:uppercase;margin-bottom:0px;">@ViewBag.admin.Date</p>
+
+                    </div>
+                    <div class="my-profile-save" style="background: #f5f5f5;padding:10px;">
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Name</p>
+                        <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminname">@ViewBag.admin.Name</label> </p>
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Email-ID</p>
+                        <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminemail">@ViewBag.admin.email </label> </p>
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Mobile</p>
+                        <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminmobile"> @ViewBag.admin.mobile </label></p>
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Aadharcard</p>
+                        @if (ViewBag.admin.Aadhar != null && ViewBag.admin.Aadhar != "")
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminaadhar"> @ViewBag.admin.Aadhar </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Pancard</p>
+                        @if (ViewBag.admin.pencardno != null && ViewBag.admin.pencardno != "")
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminpencard"> @ViewBag.admin.pencardno </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">GST No</p>
+                        @if (ViewBag.admin.Gstno != null && ViewBag.admin.Gstno != "")
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladmingst"> @ViewBag.admin.Gstno </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">TAN No.</p>
+                        @if (ViewBag.admin.tanno != null && ViewBag.admin.tanno != "")
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladmintan"> @ViewBag.admin.tanno </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+
+                        @*<p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">TAN No.</p>
+                    <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;">265498468</p>*@
+                    </div>
+                    <div id="EditnameandpancardModal" style="background: #f5f5f5;padding:10px; display:none;">
+                        @*@using (Html.BeginForm("UpdatePanccardandmobile", "Home", FormMethod.Post))*@
+                        @using (Ajax.BeginForm("UpdatePanccardandmobile", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateProfilesOnsucc", OnBegin = "ajaxValidate()" }))
+                        {
+                            <button type="submit" class="btn waves-effect " style="margin-top: 4px;background:#c7c7c7; margin-right:12px;position: absolute;right: -2px;top: -2px;height: 32px;padding: 5px 16px;">
+                                <span style="color:#555;"> Save</span>
+                            </button>
+                            <input type="hidden" id="hdid1" name="hdid1" value="0" />
+
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Name</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;">   @Html.TextBox("txtname", "", new { @class = "form-control", placeholder = "Enter Your Name", required = "required" })</p>
+
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Mobile</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtmobile", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Mobile Number", onkeypress = "return isNumber(event)", maxlength = "10" })</p>
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Aadharcard</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtaadhaarcard", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Aadhaar Number", onkeypress = "return isNumber(event)", maxlength = "12" })</p>
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Pancard</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;">@Html.TextBox("txtpancard", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Pancard Number", @style = "text-transform:uppercase", maxlength = 10 })</p>
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">GST No</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtgst", "", new { @required = "required", @class = "form-control", @placeholder = "Enter GST Number", maxlength = "15", @style = "text-transform:uppercase" })</p>
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">TAN No</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtTAN", "", new { @class = "form-control", @placeholder = "Enter TAN Number", maxlength = "15", @style = "text-transform:uppercase" })</p>
+                            <label id="lblmsg"></label>
+                        }
+                    </div>
+
+
+
+
+
+                </div>
+
+            </div>
+            <!--Otp security Password -->
+            <div class="col-md-8 otp-security">
+                <div class="card " style="margin-bottom: 0px;">
+                    <div style="background-color:#c7c7c7;padding:10px;">
+                        <h1 style="color:#555;font-size:20px;display: inline-block;font-weight:bold;text-transform:uppercase;margin:0px;">
+                            <i class="fa fa-lock"></i>&nbsp;One Time Password Security
+                        </h1>
+                        <div class="onoffswitch" style="float:right;cursor:pointer;width: 66px;font-size: 18px;">
+                            @if (Model.TwoFactorEnabled)
+                            {
+                                using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", new { area = "" }, FormMethod.Post, new { encType = "multipart/form-data" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    @*<span class="costom-on">on</span>*@
+                                    <button style="border:0px;" type="submit" class="costom-on" value="ON" id="btnon" name="btnon">ON</button>
+
+                                }
+                            }
+                            else
+                            {
+                                using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", new { area = "" }, FormMethod.Post, new { encType = "multipart/form-data" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @*<span class="custom-off">off</span>*@
+                                    <button style="border:0px;" type="submit" class="custom-off " value="Off" id="btnff" name="btnff">OFF</button>
+                                }
+                            }
+
+                        </div>
+                        <p style="color:var(--main-bg-lcolor);font-family:'Open Sans',sans-serif;font-weight:400;margin-bottom: 0px;margin-left: 19px;font-size:12px;">You Want Login (OTP) Security Purpose !</p>
+                    </div>
+
+                    <div  class="body" style="background:#f5f5f5; display:none;">
+                        <div class="row" style="margin-bottom:-20px;position: relative;">
+                            <div class="firt">
+                                <span>Support Time</span>
+                            </div>
+                            <div class="col-md-3 firt2" style="margin-left: 25px;">
+                                <div class="ons1">
+                                    <span>Monday</span>
+                                    
+                                    <select class="dropshow" style="display:none;" id="Mondayd" onchange="change('Monday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Mondayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Mondayto" type="text" placeholder="End Time"  readonly />
+                                </div>
+                                <div class="ons1">
+                                    <span>Tuesday</span>
+                                    <select class="dropshow" style="display:none;" id="Tuesdayd" onchange="change('Tuesday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Tuesdayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Tuesdayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                                <div class="ons1">
+                                    <span>Wednesday</span>
+                                    <select class="dropshow" style="display:none;" id="Wednesdayd" onchange="change('Wednesday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Wednesdayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Wednesdayto" type="text" placeholder="End Time" readonly />
+                                </div>
+
+                            </div>
+                            <div class="col-md-3 firt3">
+                                <div class="ons1">
+                                    <span>Thursday</span>
+                                    <select class="dropshow" style="display:none;" id="Thursdayd" onchange="change('Thursday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Thursdayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Thursdayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                                <div class="ons1">
+                                    <span>Friday</span>
+                                    <select class="dropshow" style="display:none;" id="Fridayd" onchange="change('Friday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Fridayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Fridayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                                <div class="ons1">
+                                    <span>Saturday</span>
+                                    <select class="dropshow" style="display:none;" id="Saturdayd" onchange="change('Saturday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Saturdayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Saturdayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3 firt4">
+                                <div class="ons1">
+                                    <span>Sunday</span>
+                                    <select class="dropshow" style="display:none;" id="Sundayd" onchange="change('Sunday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Sundayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Sundayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                               
+                                <div class="ons1" style="border: 0px;background: none;">
+                                   <button id="edittime" onclick="edittime()" style="display: block;">Edit Support Timing</button>
+                                   <button  id="Savetime" onclick="save()"  style="display: none;">Save Support Timing</button>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-md-8">
+                <div class="custmor-support fullbodydycolorbg">
+                    <div class="custmor-support-in ">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Customer Care No</label>
+                                <input type="hidden" id="IDd" value="@ViewBag.admin.ID" />
+                                @if (ViewBag.admin.email1 != null && ViewBag.admin.email1 != "")
+                                {
+                                    <input type="text" id="SupportEmail" readonly="readonly" value="@ViewBag.admin.email1" />
+                                }
+                            </div>
+                            <div class="col-md-5">
+                                <label>Customer Support Email Id</label>
+                                @if (ViewBag.admin.mobile1 != null && ViewBag.admin.mobile1 != "")
+                                {
+                                    <input type="text" id="SupportMobile" readonly="readonly" value="@ViewBag.admin.mobile1" />
+                                }
+                                
+                            </div>
+                            <div class="col-md-2">
+                                <button>Edit</button><button id="btnnnSave" style="display:none;" onclick="SavaDataSupport()">Save</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    <div class="col-md-8">
+                        <div class="card ">
+                            <div style="background-color:#c7c7c7;padding: 10px;">
+                                <h1 style="color:#555;font-size:18px;font-weight:bold;margin:0px;text-transform:uppercase;">
+                                    <i class="fa fa-file" style="font-size:17px;"></i>&nbsp;Upload Document
+                                </h1>
+
+                            </div>
+                            <div class="body profile-register-address upload-document" style="background:#f5f5f5;">
+                                <ul class="list-group" style="margin-bottom:-19px;">
+                                    <li class="list-group-item" style="">
+                                        <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Aadhaar Card :-</span>
+                                        <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                        <div class="save-aadhar" id="EditAadhaardocModal" style="display:none;">
+                                            @*@using (Html.BeginForm("UploadAadharcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {*@
+                                            <input type="file" id="filess" name="filess" />
+                                            <button type="button" id="btnsuploadfile" name="btnsuploadfile">Save</button>
+
+                                            @*}*@
+
+                                        </div>
+
+                                        <span id="upddelbtn"></span>
+                                        @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.Aadhaarpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>*@
+                                        @if (ViewBag.admin.Aadhaarpath == null)
+                                        {
+                                            <span id="aadharspnadivshow" style="display:none;">
+                                                <span class="badge" id="btndelservice" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Aadhaar')">Delete</span>
+                                                @*<span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                                <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Aadhaar" })">View</span>
+
+                                            </span>
+                                            <span id="aadharspnadivnotshow">
+                                                <span class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadaadhaarDoc(@ViewBag.admin.ID)">Upload</span>
+                                            </span>
+                                            @*<span class="badge " id="aadhrupld" style="border-radius:0px; background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadaadhaarDoc(@ViewBag.admin.ID)">Upload</span>*@
+
+
+                                        }
+                                        else
+                                        {
+
+                                            <span id="aadharspnadivshow">
+                                                <span class="badge" id="btndelpancrd" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Aadhaar')">Delete</span>
+                                                @*<span class="badge" id="btnviewpancrd" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                                <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Aadhaar" })">View</span>
+
+                                            </span>
+                                            <span id="aadharspnadivnotshow" style="display:none;">
+                                                <span id="btnupld" class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadaadhaarDoc(@ViewBag.admin.ID)">Upload</span>
+                                            </span>
+
+                                            @*<span class="badge " id="aadhrupld" style="border-radius:0px; background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;display:none;" onclick="uploadaadhaarDoc(@ViewBag.admin.ID)">Upload</span>
+                                        <span class="badge" id="aadhrView" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>
+                                        <span class="badge" id="aadhardel" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Aadhaar')">Delete</span>*@
+
+                                        }
+
+                                    </li>
+                                    <li class="list-group-item" style="">
+                                        <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Pancard :-</span>
+                                        <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                        <div class="save-aadhar" id="EditPancarddocModal" style="display:none;">
+                                            @*@using (Html.BeginForm("UploadPancardcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {*@
+                                            <input type="file" id="filepancrd" name="filepancrd" />
+                                            <button type="button" id="btnpncard" name="btnpncard">Save</button>
+                                            @*}*@
+                                        </div>
+                                        @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px; font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.pancardpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>*@
+                                        @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px; font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.pancardpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View </a></span>*@
+                                        @if (ViewBag.admin.pancardpath == null)
+                                        {
+                                            <span id="panspnadivshow" style="display:none;">
+                                                <span class="badge" id="btndelpancrd" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Pancard')">Delete</span>
+                                                @*<span class="badge" id="btnviewpancrd" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                                <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Pancard" })">View</span>
+
+                                            </span>
+                                            <span id="panspnadivnotshow">
+                                                <span class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadpancardDoc(@ViewBag.admin.ID)">Upload</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span id="panspnadivshow" style="float:right;">
+                                                <span class="badge" id="btndelpancrd" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Pancard')">Delete</span>
+                                                @*<span class="badge" id="btnviewpancrd" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                                <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Pancard" })">View</span>
+
+                                            </span>
+                                            <span id="panspnadivnotshow" style="display:none;">
+                                                <span id="btnupld" class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadpancardDoc(@ViewBag.admin.ID)">Upload</span>
+                                            </span>
+
+                                        }
+
+                                    </li>
+                                    <li class="list-group-item" style="">
+                                        <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Service Agreement :-</span>
+                                        <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                        <div class="save-aadhar" id="EditServicedocModal" style="display:none;">
+                                            @*@using (Html.BeginForm("UploadServiceAggrementdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {*@
+                                            <input type="file" id="filesserv" name="filesserv" />
+                                            <button type="button" id="btnuploadservice" name="btnuploadservice">Save</button>
+                                            @*}*@
+                                        </div>
+                                        @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.serciveaggrementpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>*@
+                                        @if (ViewBag.admin.serciveaggrementpath == null)
+                                        {
+
+                                            <span id="servicespnadivshow" style="display:none;float:right;">
+                                                <span class="badge" id="btndelservice" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>
+                                                <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="ServiceAgrrement" })">View</span>
+
+                                            </span>
+                                            <span id="servicespnadivnotshow">
+                                                <span class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadserviceDoc(@ViewBag.admin.ID)">Upload</span>
+                                            </span>
+
+                                        }
+                                        else
+                                        {
+                                            <span id="servicespnadivshow" style="float:right;">
+                                                <span class="badge" id="btndelservice" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>
+                                                @*<span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                                <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="ServiceAgrrement" })">View</span>
+
+                                            </span>
+                                            <span id="servicespnadivnotshow" style="display:none;">
+                                                <span id="251" class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadserviceDoc(@ViewBag.admin.ID)">Upload</span>
+                                            </span>
+
+                                            @*<span class="badge" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>*@
+                                        }
+                                    </li>
+                                    @*<li class="list-group-item" style="">
+                                    <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">GST No. :-</span>
+                                    <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                    <div class="save-aadhar" id="EditServicedocModal" style="display:none;">
+                                        @using (Html.BeginForm("UploadPancardcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {<input type="file" />
+                                            <button type="submit">Save</button>
+                                        }
+                                    </div>
+                                    <span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.serciveaggrementpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>
+                                    @if (ViewBag.admin.serciveaggrementpath == null)
+                                    {
+                                        <span class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadserviceDoc(@ViewBag.admin.ID)">Upload</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>
+                                    }
+                                </li>*@
+                                    @*<li class="list-group-item" style="">
+                                    <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">TAN No. :-</span>
+                                    <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                    <div class="save-aadhar" id="EditServicedocModal" style="display:none;">
+                                        @using (Html.BeginForm("UploadPancardcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {<input type="file" />
+                                            <button type="submit">Save</button>
+                                        }
+                                    </div>
+                                    <span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.serciveaggrementpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>
+                                    @if (ViewBag.admin.serciveaggrementpath == null)
+                                    {
+                                        <span class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadserviceDoc(@ViewBag.admin.ID)">Upload</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>
+                                    }
+                                </li>*@
+                                </ul>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+</section>
+<div class="modal fade" id="myModalUploadImg" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                @if (ViewBag.admin.Aadhaarpath == null)
+                {
+
+                    <img src="" id="imgAdharCard" alt="" class="img-responsive col-md-12" />
+                }
+                else
+                {
+                    <img src="../../@ViewBag.admin.Aadhaarpath" id="imgAdharCard" alt="" class="img-responsive col-md-12" />
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Edit Address and Pincode Modal Poppup popup-->
+<div class="modal fade" @*id="EditaddressModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Address</h4>
+            </div>
+            @using (Html.BeginForm("UpdateAddressProfile", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtid" name="txtid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Company Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtcompany", "", new { @class = "form-control", placeholder = "Enter Your Company Name", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <input type="text" id="txtid" name="txtid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Address</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtaddress", "", new { @class = "form-control", placeholder = "Enter Your Address", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Zip Code</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtzipcode", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Zip Code", onkeypress = "return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">State</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.DropDownList("State", (IEnumerable<SelectListItem>)ViewBag.Sate, "-- Select State--", new { @class = "form-control", @required = "required", @onchange = "FillDistict()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">District</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.DropDownList("District", (IEnumerable<SelectListItem>)ViewBag.District, "-- Select District--", new { @class = "form-control", @required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Edit Pancard nad Name and Gst Number Modal Popup-->
+<div class="modal fade" @*id="EditnameandpancardModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Profile</h4>
+            </div>
+            @using (Html.BeginForm("UpdatePanccardandmobile", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtid1" name="txtid1" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtname", "", new { @class = "form-control", placeholder = "Enter Your Name", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Mobile No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtmobile", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Mobile Number", onkeypress = "return isNumber(event)", maxlength = "10" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Aadhaar No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtaadhaarcard", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Aadhaar Number", onkeypress = "return isNumber(event)", maxlength = "12" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Pancard No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtpancard", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Pancard Number", @style = "text-transform:uppercase", maxlength = 10 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Gst No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtgst", "", new { @required = "required", @class = "form-control", @placeholder = "Enter GST Number", maxlength = "15", @style = "text-transform:uppercase" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--Edit Profile Image Modal Popup-->
+<div class="modal fade" id="EditprofileimageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Profile Image</h4>
+            </div>
+            @*@using (Html.BeginForm("Uploadprofileimage", "Home", FormMethod.Post,new {encType = "multipart/form-data" }))
+                {*@
+            <div class="modal-body" style="margin-top:0px;background:#f5f5f5;">
+                <div class="body">
+
+                    <div class="row clearfix">
+                        <input type="text" id="txtimgid" name="txtimgid" style="display:none;" />
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                            <label for="email_address_2">Upload Image</label>
+                        </div>
+
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="" style="border:1px solid #ddd;">
+                                    <input type="file" class="form-control" id="filess" name="filess" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                            <span style="color:black;">Close</span>
+                        </button>
+                        <button id="btnuploadimg" type="button" class="btn fullbodydycolorbg waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                            <span style="color:#fff;">Save Change</span>
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+            @*}*@
+
+        </div>
+    </div>
+</div>
+<input type="hidden" id="HDadminid" value="@ViewBag.admin.ID" name="HDadminid" />
+<!--Upload Aadhaar card Doc Moadl Popup-->
+<div class="modal fade" @*id="EditAadhaardocModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Aadhaar Card Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadAadharcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtaadharid" name="txtaadharid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Upload Pancard card Doc Moadl Popup-->
+<div class="modal fade" @*id="EditPancarddocModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Pancard Card Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadPancardcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtpancardid" name="txtpancardid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Upload Serviceaggremt card Doc Moadl Popup-->
+<div class="modal fade" @*id="EditServicedocModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Service Agreement Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadServiceAggrementdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtserviceid" name="txtserviceid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+            
+        </div>
+    </div>
+</div>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<script>
+    function change(val) {
+        var sts = $('#' + val + 'd').val();
+        if (sts == "ON") {
+            $('#' + val + 'from').prop('readonly', false);
+            $('#' + val + 'to').prop('readonly', false);
+        }
+        else {
+            $('#' + val + 'from').prop('readonly', true);
+            $('#' + val + 'to').prop('readonly', true);
+        }
+    }
+    function edittime() {
+        $('#edittime').hide();
+        $('#Savetime').show();
+        $('.dropshow').show();
+        $('#Mondayfrom').prop('readonly', false);
+        $('#Mondayto').prop('readonly', false);
+        $('#Tuesdayfrom').prop('readonly', false);
+        $('#Tuesdayto').prop('readonly', false);
+        $('#Thursdayfrom').prop('readonly', false);
+        $('#Thursdayto').prop('readonly', false);
+        $('#Wednesdayfrom').prop('readonly', false);
+        $('#Wednesdayto').prop('readonly', false);
+        $('#Fridayfrom').prop('readonly', false);
+        $('#Fridayto').prop('readonly', false);
+        $('#Saturdayfrom').prop('readonly', false);
+        $('#Saturdayto').prop('readonly', false);
+        $('#Sundayfrom').prop('readonly', false);
+        $('#Sundayto').prop('readonly', false);
+    }
+    function save() {
+         var Mondayd = $('#Mondayd').val();
+         var Tuesdayd = $('#Tuesdayd').val();
+         var Wednesdayd = $('#Wednesdayd').val();
+         var Thursdayd = $('#Thursdayd').val();
+         var Fridayd = $('#Fridayd').val();
+         var Saturdayd = $('#Saturdayd').val();
+         var Sundayd = $('#Sundayd').val();
+
+         $.ajax({  
+              type: "POST",
+              url: '@Url.Action("Addsupporttime","Home")',
+              data: { 'ID': ID, 'Email': email, 'Mobile': mobile  },  
+              success: function (data) {  
+                   
+                                 $('#imgAdharCard').attr('src', '../../' + data)
+                         
+                       $('#myModalUploadImg').modal('toggle');
+                    },  
+                    error: function() {  
+                        alert("Error occured!!")  
+                    }  
+                });  
+
+
+    }
+</script>
+
+<script>
+    $('.custmor-support-in button').click(function () {
+        $(this).hide();
+        $('#btnnnSave').css('display', 'block');
+        $('.custmor-support-in input').removeAttr('readonly');
+    });
+   
+</script>
+
+<script>
+    function ajaxValidate() {
+        
+        var aadhar = $('#txtaadhaarcard').val();//document.getElementById("adharcard").value;
+        var gst = $('#txtgst').val();
+        var pancard = $('#txtpancard').val();
+
+        
+        if (aadhar.length > 0) {
+
+
+
+            var res = validatesss(aadhar)
+
+            if (res == false) {
+                $('#lblmsg').text('Invalid AADHAR No.')
+
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+
+            }
+
+
+        }
+        if (pancard.length > 0) {
+            var regex = /([A-Z]){5}([0-9]){4}([A-Z]){1}$/;
+            if (!regex.test(pancard.toUpperCase())) {
+                // $('#error').text('Invalid Pan No')
+                // return false;
+                $('#lblmsg').text('Invalid PAN No')
+                RegisterSuccess.stopImmediatePropagation();
+
+                return false;
+            }
+
+
+
+        }
+
+
+        if (gst.length > 0) {
+            var gstinformat = new RegExp('^([0][1-9]|[1-2][0-9]|[3][0-5])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+            if (!gstinformat.test($('#gst').val())) {
+                //   $('#error').text('Invalid GST No')
+                //  return false;
+                $('#lblmsg').text('Invalid GST No')
+
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+            }
+
+
+        }
+
+
+    }
+    // multiplication table
+    const d = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+        [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+        [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+        [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+        [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+        [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+        [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+        [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+        [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    ]
+
+    // permutation table
+    const p = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+        [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+        [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+        [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+        [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+        [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+        [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+    ]
+
+    // validates Aadhar number received as string
+    function validatesss(aadharNumber) {
+        let c = 0
+        let invertedArray = aadharNumber.split('').map(Number).reverse()
+
+        invertedArray.forEach((val, i) => {
+            c = d[c][p[(i % 8)][val]]
+        })
+
+        return (c === 0)
+    }
+</script>
+
+<script>
+    function getAdharCard(current) {
+          $.ajax({  
+              type: "POST",
+              url: $(current).attr('data-href'),  
+                  
+              success: function (data) {  
+                   
+                                 $('#imgAdharCard').attr('src', '../../' + data)
+                         
+                       $('#myModalUploadImg').modal('toggle');
+                    },  
+                    error: function() {  
+                        alert("Error occured!!")  
+                    }  
+                });  
+      
+    }
+
+
+
+
+</script>
+
+
+
+<script>
+
+
+     $('#btnuploadimg').click(function () {
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+             var totalFiles = document.getElementById("filess").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("filess").files[i];
+
+                formData.append("FileUpload", file);
+            }
+          var id=  $("#txtimgid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("Uploadprofileimage","Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                         processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                         success: function (result) {
+                           $('#EditprofileimageModal').modal('toggle');
+                             $('#Adminimage').attr('src', '../../' + result)
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+    })
+
+</script>
+
+
+
+
+<script>
+
+    $('#btnuploadservice').click(function () {
+       debugger
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+             var totalFiles = document.getElementById("filesserv").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("filesserv").files[i];
+
+                formData.append("FileUpload", file);
+            }
+            
+          var id=  $("#HDadminid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("UploadServiceAggrementdoc","Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                   processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                      success: function (result) {
+                             debugger
+                             // $('#myModalUploadImg').modal('toggle');
+                             if (result != null || result) {
+
+                                 $('#servicespnadivshow').show();
+                                 $('#servicespnadivnotshow').hide();
+                                
+                                 $('#EditServicedocModal').hide();
+                               
+                                 $('#imgAdharCard').attr('src', '../../' + result)
+                                 $('#myModalUploadImg').modal('toggle');
+
+                             }
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+    })
+
+     $('#btnpncard').click(function () {
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+             var totalFiles = document.getElementById("filepancrd").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("filepancrd").files[i];
+
+                formData.append("FileUpload", file);
+            }
+            
+          var id=  $("#HDadminid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("UploadPancardcarddoc","Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                   processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                      success: function (result) {
+                             debugger
+                             // $('#myModalUploadImg').modal('toggle');
+                             if (result != null || result) {
+
+                                 $('#panspnadivshow').show();
+                                 $('#panspnadivnotshow').hide();
+                                
+                                 $('#EditPancarddocModal').hide();
+                               
+                                 $('#imgAdharCard').attr('src', '../../' + result)
+                                 $('#myModalUploadImg').modal('toggle');
+
+                             }
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+    })
+   
+    $( document ).ready(function() {
+    
+});
+
+    $('#btnsuploadfile').click(function () {
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+             var totalFiles = document.getElementById("filess").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("filess").files[i];
+
+                formData.append("FileUpload", file);
+            }
+            
+          var id=  $("#txtaadharid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("UploadAadharcarddoc","Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                         processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                      success: function (result) {
+                             debugger
+                             // $('#myModalUploadImg').modal('toggle');
+                             if (result != null || result) {
+
+                                 var htm = '';
+                                 html = '<span  class="badge" id="aadhrView" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View';
+                                 html += '</span>';// '<span class="badge" id="aadhrView" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>';
+                                  html += '<span   class="badge" id="aadhardel1" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;"  onclick="deleteDoc(' + id + ',"Aadhaar")">Delete';
+                                 html += '</span>';// '<span class="badge" id="aadhrView" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>';
+                                
+                                 // html += '<span class="badge" id="aadhardel" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc("' + id + '","Aadhaar")">Delete</span>';
+                                 //$('#upddelbtn').html(html)
+                                 //$('#aadhrupld').hide();
+                                   $('#aadharspnadivshow').show();
+                                 $('#aadharspnadivnotshow').hide();
+                                 $('#EditAadhaardocModal').hide();
+                                 $('#imgAdharCard').attr('src', '../../' + result)
+                                 $('#myModalUploadImg').modal('toggle');
+
+                             }
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+    })
+
+        //$('#btnuploadimg').click(function () {
+        //    debugger
+        //    // Checking whether FormData is available in browser
+        //    if (window.FormData !== undefined) {
+
+        //        var fileUpload = $("#file").get(0);
+        //        var files = fileUpload.files;
+
+        //        // Create FormData object
+        //        var fileData = new FormData();
+
+        //        // Looping over all files and add it to FormData object
+        //        for (var i = 0; i < files.length; i++) {
+        //            fileData.append(files[i].name, files[i]);
+        //        }
+
+        //        // Adding one more key to FormData object
+        //        fileData.append('username', ‘Manas’);
+
+        //        $.ajax({
+        //            url: '/Home/UploadFiles',
+        //            type: "POST",
+        //            contentType: false, // Not to set any content header
+        //            processData: false, // Not to process data
+        //            data: fileData,
+        //            success: function (result) {
+        //                alert(result);
+        //            },
+        //            error: function (err) {
+        //                alert(err.statusText);
+        //            }
+        //        });
+        //    } else {
+        //        alert("FormData is not supported.");
+        //    }
+        //});
+
+</script>
+
+
+<script>
+
+    function UpdateProfilesOnsucc(data) {
+     
+        $('#hdid1').val(data.ID)
+        $('#lbladminname').text(data.Name)
+        $('#lbladminemail').text(data.email)
+        $('#lbladminmobile').text(data.mobile)
+        $('#lbladminaadhar').text(data.Aadhar)
+        $('#lbladminpencard').text(data.pencardno)
+        $('#lbladmingst').text(data.Gstno)
+        $('#lbladmintan').text(data.tanno)
+        $('#EditnameandpancardModal').hide();
+        $('.my-profile-save').show();
+
+
+
+    }
+
+
+
+</script>
+<script>
+    function OnSuccessEditAddress(result) {
+     
+        $('#spncompny').text(result.admindetails.Companyname)
+        $('#spnaddress').text(result.admindetails.Address)
+        $('#spnpincode').text(result.admindetails.pincode)
+        $('#spnstate').text(result.statename)//(result.State)
+        $('#spndistrict').text(result.district)
+        $('#EditaddressModal').hide();
+        $('#saveaddressModal').show();
+
+    }
+</script>
+
+
+<script type="text/javascript">
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+<script>
+    function FillDistict() {
+        var State_id = $('#State').val();
+    $.ajax({
+        url: '@Url.Action("FillDistict", "Home")',
+        type: "GET",
+        dataType: "JSON",
+
+        data: { State: State_id },
+        success: function (cities) {
+            $("#District").html("");
+            $.each(cities, function (i, District) {
+                $("#District").append(
+                    $('<option></option>').val(District.Dist_id).html(District.Dist_Desc));
+            });
+        }
+    });
+  }
+</script>
+<!--edit address and prifile image -->
+<script>
+    function editeaddress(ID) {
+
+        var url = '@Url.Action("ShowAddressprofile", "Home")'
+        $.ajax({
+            url: url,
+            data: { ID: ID },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#hdidadmin').val(data[0].ID);
+                $("#txtid").val(data[0].ID);
+                $("#txtcompany").val(data[0].Companyname);
+                $("#txtaddress").val(data[0].Address);
+                $("#txtzipcode").val(data[0].pincode);
+                $("#State").val(data[0].State);
+                $("#District").val(data[0].District);
+
+                $('#EditaddressModal').show();
+                $('#saveaddressModal').hide();
+                saveaddressModal
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+
+</script>
+
+<!--edit Name and Pancrad and Gst Number  image -->
+<script>
+    function editemobileandpancard(ID) {
+
+        var url = '@Url.Action("Showmobileandpancardprofile", "Home")'
+        $.ajax({
+            url: url,
+            data: { ID: ID },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#hdid1').val(data[0].ID)
+                $("#txtid1").val(data[0].ID);
+                $("#txtname").val(data[0].Name);
+                $("#txtmobile").val(data[0].mobile);
+                $("#txtaadhaarcard").val(data[0].Aadhar);
+                $("#txtpancard").val(data[0].pencardno);
+                $("#txtgst").val(data[0].Gstno);
+                $("#txtTAN").val(data[0].tanno);
+                $('#EditnameandpancardModal').show();
+                 $('.my-profile-save').hide();
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+
+</script>
+<!--Upload image Profile-->
+
+<script>
+    function uploadimage(ID) {
+        $("#txtimgid").val(ID);
+        $('#EditprofileimageModal').modal('show');
+    }
+</script>
+<script>
+    $(document).ready(function()
+    {
+        var msg = '@ViewData["msg"]';
+        if(msg !="")
+        {
+            swal("File Uploaded!", msg, "success");
+        }
+    })
+</script>
+
+<!--Upload Aadhaar Card Doc Script-->
+<script>
+    function uploadaadhaarDoc(ID) {
+       
+        $("#txtaadharid").val(ID);
+        $('#EditAadhaardocModal').show();
+        $('#aadhrupld').hide();
+          $('#aadharspnadivnotshow').hide();
+
+    }
+</script>
+
+
+<!--Upload Pancard  Card Doc Script-->
+<script>
+    function uploadpancardDoc(ID) {
+        $("#txtpancardid").val(ID);
+        $('#EditPancarddocModal').show();
+            $('#panspnadivnotshow').hide();
+    }
+</script>
+
+<!--Upload Service Aggrement  Doc Script-->
+<script>
+    function uploadserviceDoc(ID) {
+        $("#txtserviceid").val(ID);
+        $('#EditServicedocModal').show();
+          $('#servicespnadivnotshow').hide();
+    }
+</script>
+
+<!--Delete Doc -->
+
+<script type="text/javascript">
+
+    function deleteDoc(ID, docname) {
+        
+         var html = '';
+        swal({
+            text: "<p style='color:#948f8b; font-size:20px;border-bottom:1px solid #dddddd;margin-top:-12px;padding-bottom:12px;'>Delete " + " " + docname + " !</p>" +
+                   "</br><i class='fa fa-trash'style='font-size:72px;color:red;'></i></br><p style=''>Are you sure ?</p>",
+             html: true,
+            title:"" ,
+            showCancelButton: true,
+            confirmButtonColor: "#f9a7a7",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("DelereprofileDoc", "Home")', data: { 'ID': ID, 'Docname': docname }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                debugger
+                swal("File Removed!", " Deleted Successfully.", "success");
+                if (docname == 'Pancard') {
+                    $('#panspnadivshow').hide();
+                    $('#panspnadivnotshow').show();
+                                
+                }
+                else if (docname == 'ServiceAgrrement') {
+                        $('#servicespnadivshow').hide();
+                    $('#servicespnadivnotshow').show();
+                }
+                else {
+                    $('#aadharspnadivshow').hide();
+                    $('#aadharspnadivnotshow').show();
+                }
+              
+              //  var url = '@Url.Action("Profile", "Home")';
+             //   window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Profile", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>
+
+<script>
+    function SavaDataSupport() {
+        
+        var ID = $("#IDd").val();
+        var email= $("#SupportEmail").val();
+        var mobile = $('#SupportMobile').val();
+
+        $.ajax({
+            type: "GET", url: '@Url.Action("UpdateSupportData", "Home")', data: { 'ID': ID, 'Email': email, 'Mobile': mobile  }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                
+                //swal("Good Job!", "Successfully Data Updated", "success");
+                
+                var url = '@Url.Action("Profile", "Home")';
+                window.location.href = url;
+            }
+            else {
+                //swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Profile", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+
+
+
+    }
+</script>

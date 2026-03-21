@@ -1,0 +1,520 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Aeps_Report_New_Result>
+@{
+    ViewBag.Title = "Aeps_Report";
+    Layout = "~/Areas/WMASTER/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+       .select2-container--default .select2-selection--single {
+        border: 1px solid #eee !important;
+border-radius: 0px !important;
+height: 32px !important;
+margin-top: 2px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-3" style="padding: 0px;">
+                        <div style="margin-left:0px;">
+                            @Html.Partial("_finicalmenureportMaster")
+                        </div>
+                    </div>
+                    <div class="col-md-7" style="padding: 0px;">
+                        <div class="card">
+                            @using (Html.BeginForm("Aeps_report", "Home", FormMethod.Post))
+                            {
+                                <div class="">
+                                    <div class="col-md-2 cltu" style="padding: 0px;">
+                                        <div class="">
+                                            @Html.DropDownList("ddlusers", new List<SelectListItem>
+                                      {
+                                    new SelectListItem{Text="ALL",Value="Master"},
+                                   new SelectListItem{Text="Distributor",Value="Dealer"},
+                                   new SelectListItem{Text="Retailer",Value="Retailer"},
+                                  }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;", @onchange = "answers()" })
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 " style="display:none;padding: 0px;padding-right:5px;" id="dlm">
+                                        <div class="form-line">
+                                            @Html.DropDownList("alldealer", ViewBag.alldealer as SelectList, " All Distubutor", new { id = "alldealer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 " style="display:none;padding: 0px;padding-right:5px;" id="rem">
+                                        <div class="form-line">
+                                            @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1 cltu" style="padding: 0px;">
+                                        <div class="form-line">
+                                            @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                        {
+                                new SelectListItem{ Text="Status",Value="ALL",},
+                                new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                                new SelectListItem{Text="Pending",Value="PENDING"},
+                                new SelectListItem{Text="FAILED",Value="FAILED"}
+                                 }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mrj" style="padding: 0px;width: auto;">
+                                        <div class="form-group jjp">
+                                            <div class="input-daterange input-group">
+                                                <div class="custom-date-icon ner">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;", autocomplete = "off" })
+
+                                                <div class="nrr3">
+                                                    <div class="custom-date-icon ner">
+                                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                    </div>
+                                                    @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;", autocomplete = "off" })
+                                                </div>
+                                                </div>
+                                                <!-- /.input group -->
+                                            </div>
+                                    </div>
+                                    <div class="col-md-2 mrj" style="width: auto;">
+
+                                        <button type="submit" class="btn" style="border:1px solid #c7c2c2;background: transparent;">
+                                            <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                            <span style="top:-2px;color:black;">Search</span>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    @*<div class="col-md-6">
+            <p style="font-size:21px;margin-top:6px;color:#00000070;">Aeps Report</p>
+        </div>*@
+
+                    <div class="col-md-2" style="padding: 0px;">
+                      
+                            <div class="form-group">
+                                <div style="float:right">
+
+                                    <input type="button" id="btnExport" value="Excel" style="margin-left:0px;font-size: 11px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;" />
+                                    <input type="button" id="btnPDF" value="PDF" style="margin-left:2px;font-size: 11px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;" />
+                                    <button class="white-success-button" style="height:32px;font-size: 11px;padding: 0px 4px;height: 32px;border: 1px solid #b1a6a638;float: left;margin-left: 2px;background: #b1a6a638;" onclick="findtotal()">Total</button>
+                                </div>
+                                <div class="white-success" style="display:none;position: absolute;width: auto;right: 40px;">
+                                    <span id="successtotal" class="btn btn-success waves-effect" style="font-size: 13px;float: left;padding:9px; color:white;font-weight:600;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Failedtotal" class="btn btn-danger waves-effect" style="font-size: 13px;float: left;padding:9px; color:white;font-weight:600;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Pendingtotal" class="btn btn-warning waves-effect" style="font-size: 13px;float: left;padding:9px;color:white; font-weight:600;" title="Total  Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i> </span>
+
+                                </div>
+                            </div>
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+           
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        
+                        <div class="body" style="padding:0px;">
+                            <div class="table-responsive" style="position:inherit;">
+                                <table id="apes" class="table table-bordered" style="width:100%;font-size:12px;">
+                                    <thead style="background-color:whitesmoke;">
+                                        <tr style="color: black;">
+                                            <th>Live&nbsp;Status</th>
+                                            <th>Merchant&nbsp;ID</th>
+                                            <th>Aadhaar&nbsp;Number</th>
+                                            <th>Customer&nbsp;Bank&nbsp;Name</th>
+                                            <th>T-Type</th>
+                                            <th>Transfer&nbsp;Amount</th>
+                                            <th>User&nbsp;Credit&nbsp;</th>
+                                            <th>MY&nbsp;Post&nbsp;</th>
+                                            <th>Bank&nbsp;UTR&nbsp;</th>
+                                            <th>Req&nbsp;Date</th>
+                                            <th>#</th>
+
+
+                                            @*<th style="width:300px; ">User&nbsp;Information</th>
+        <th>User&nbsp;Pre&nbsp;₹&nbsp;│&nbsp;Credit&nbsp;│&nbsp;Post&nbsp;Amt&nbsp;₹</th>
+        <th>Master&nbsp;Pre&nbsp;₹&nbsp;│&nbsp;Post&nbsp;Amt&nbsp;₹</th>
+        <th>Dealer&nbsp;Pre&nbsp;₹&nbsp;│&nbsp;Post&nbsp;Amt&nbsp;₹</th>
+        <th>Terminal ID</th>
+        <th>Remark</th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody id="trow" class="alin chnj">
+                                        @{
+                                            Html.RenderAction("_Aepsreport", "Home", new { Model = Model });
+                                        }
+                                    </tbody>
+                                </table>
+                                <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:20px;">
+                                    <img src="~/img/ajax-loader.gif" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal mastetr222Modal" id="defaultModal222" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div id="loadredmodel" style="display:none;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);" class="loadingio-spinner-ripple-92ar2pfqk5j">
+            <div class="ldio-zdyd6mf6t5">
+                <div></div><div></div>
+            </div>
+        </div>
+        <div id="userinfodiv" class="modal-content width100 float-left">
+            <div class="modal-header width100 float-left">
+                <div class="modal-back width100 float-left">
+                    @Html.Hidden("Idno")
+
+                    <div class="form-group" style="width: auto;float: left;margin-bottom: 0px;">
+                        <label>Status</label>
+                        <img id="img12" src="" style="height: 20px;width: 20px;margin:5px;max-width: 100%;padding: 2px; border-radius:50%;" />
+
+                    </div>
+                    <button type="button" class="btn waves-effect" data-dismiss="modal" style="padding: 0px;margin-top: 7px;background:transparent;">
+                        <i class="fa fa-times fulltextbodycolor fullbodydycolorbg" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div><!--.modal-header-->
+            <div class="modal-body width100 float-left">
+
+
+                <div class="float-left width100">
+
+                    <form class="first-form">
+                      
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Transfer Amount</label>
+                                    @Html.TextBox("Amount", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+
+                            <div class="col-md-12 col-sm-5 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Retailer Income</label>
+                                    @Html.TextBox("RemIncome", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Retailer Pre</label>
+                                    @Html.TextBox("Rempre", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-5 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Retailer Post</label>
+                                    @Html.TextBox("RemPost", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <!--.row-->
+                        <div class="row">
+
+                            <div class="col-md-12 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Master Income</label>
+                                    @Html.TextBox("MdIncome", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Master Pre</label>
+                                    @Html.TextBox("Mdpre", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Master Post</label>
+                                    @Html.TextBox("MdPost", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+
+                            <div class="col-md-12 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Distributor Income</label>
+                                    @Html.TextBox("DlmIncome", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Distributor Pre</label>
+                                    @Html.TextBox("DlmPre", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-4 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Distributor Post</label>
+                                    @Html.TextBox("DlmPost", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div><!--.row-->
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col">
+                                <div class="form-group">
+                                    <label>Remark</label>
+                                    @Html.TextBox("Remark", "", new { @class = "form-control", @style = "text-transform:uppercase", @readonly = "readonly" })
+                                </div>
+                            </div>
+
+                        </div><!--.row-->
+
+
+
+                    </form>
+
+                </div>
+            </div><!--.modal-body-->
+
+
+        </div>
+
+    </div>
+</div>
+<!-- Jquery Core Js -->
+<script src="~/Swalalert/datatablejquery.js"></script>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<link href="~/MainFrontDesign/css/Dashcustom.css" rel="stylesheet" />
+
+
+<script>
+    $("#alldealer").select2();
+    $("#allretailer").select2();
+
+</script>
+<script>
+    function mdActionBtn(Idno) {
+        $.ajax({
+            url: '@Url.Action("AepsReport_View", "Home")',
+            type: 'POST',
+            data: { Idno: Idno },
+            cache: false,
+            success: function (Response) {
+                
+                if (Response[0].Status == "Success") {
+                    status = "../../ashok-images/correct.svg";
+                    var color = "green";
+                }
+
+                if (Response[0].Status == "Failed") {
+                    status = "../../ashok-images/closes.svg";
+                    color = "red";
+                }
+                if (Response[0].Status == "Pending") {
+                    status = "../../ashok-images/clock.svg";
+                }
+                if (Response[0].Status == "Refund") {
+                    status = "";
+                    color = "blue";
+                }
+                document.getElementById("img12").src = status
+                document.getElementById("img12").style.backgroundColor = color
+                $('#Idno').val(Response[0].idno)
+                $('#Amount').val(Response[0].Amount)
+                $('#Rempre').val(Response[0].RemPre)
+                $('#RemIncome').val(Response[0].RemIncome)
+                $('#RemPost').val(Response[0].RemPost)
+                $('#Mdpre').val(Response[0].MdPre)
+                $('#MdIncome').val(Response[0].MdIncome)
+                $('#MdPost').val(Response[0].MdPost)
+                $('#DlmPre').val(Response[0].DlmPre)
+
+                $('#DlmIncome').val(Response[0].DlmIncome)
+                $('#DlmPost').val(Response[0].DlmPost)
+                $('#Remark').val(Response[0].Remark)
+                $('#Response').val(Response[0].response_output)
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+
+       $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "bottom auto",
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+            answers();
+    });
+</script>
+
+<script type="text/javascript">
+    function answers() {
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer") {
+            document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+        }
+
+        else if (answer == "Master") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+
+        }
+
+        else if (answer == "Retailer") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+
+        }
+    }
+</script>
+
+<script>
+    var pageindex = 2;
+        var NoMoredata = false;
+    var inProgress = false;
+    $(window).scroll(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+        var alldealer = $('#alldealer').val();
+        var allretailer = $('#allretailer').val();
+
+            if ($(window).scrollTop() > Number($("#apes").height()) / 4 && !NoMoredata && !inProgress) {
+                inProgress = true;
+                $("#loadingdiv").show();
+                $.post("@Url.Action("InfiniteScrollAeps", "Home")",
+                    { "pageindex": pageindex, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date, "ddlusers": ddlusers, "alldealer": alldealer, "allretailer": allretailer, "ddl_status": ddl_status},
+                    function (data) {
+                        pageindex = pageindex + 1;
+                        NoMoredata = data.NoMoredata;
+                        $("#trow").append(data.HTMLString);
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    });
+            }
+        });
+</script>
+<script>
+    function findtotal() {
+        
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+        var allretailer = $('#allretailer').val();
+        var alldealer = $('#alldealer').val();
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+             $.post("@Url.Action("TotalAepsreport", "Home")",
+                 { "ddlusers": ddlusers,"ddl_status": ddl_status, "allretailer": allretailer, "alldealer": alldealer, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date },
+                 function (data) {
+                     $('#successtotal').text("₹. " + data.success);
+                     $('#Failedtotal').text("₹. " + data.failed);
+                     $('#Pendingtotal').text("₹. " + data.pending);
+
+                 });
+    }
+</script>
+<script>
+
+    $('.white-success-button').click(function () {
+        $('.white-success').toggle();
+    });
+
+</script>
+<script>
+    $("#btnExport").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+        var allretailer = $('#allretailer').val();
+        var alldealer = $('#alldealer').val();
+        var url = '@Url.Action("ExcelAepsreport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers +'&ddl_status=' + ddl_status +  '&alldealer=' + alldealer + '&allretailer=' + allretailer;
+        location.href = url;
+});
+</script>
+<script>
+    $("#btnPDF").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+        var allretailer = $('#allretailer').val();
+        var alldealer = $('#alldealer').val();
+        var url = '@Url.Action("PDFAepsReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&ddl_status=' + ddl_status +  '&alldealer=' + alldealer + '&allretailer=' + allretailer;
+        window.open(url,'_blank');
+    });
+</script>
+
+
+
+<script>
+    $(function () {
+        var loc = window.location.href; // returns the full URL
+        if ('/~/MASTER/Home/m_Possreport') {
+            $('.menu.side-icon ul li:nth-child(8) a').addClass('activee');
+        }
+    });
+</script>
+

@@ -1,0 +1,286 @@
+﻿@using Vastwebmulti.Models;
+@model Tuple<ChangePasswordViewModel, ChangeTransactionViewModel, ChangeSecurityViewModel>
+@{
+    ViewBag.Title = "tran_passslabsetting";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+@{
+    VastwebmultiEntities DB = new VastwebmultiEntities();
+    string hspass = "OK";
+    var chksec = DB.admin_new_pass.SingleOrDefault();
+    DateTime currenttime = DateTime.Now;
+    DateTime lastchangedpassdss = Convert.ToDateTime(chksec.lastupdatesec);
+    lastchangedpassdss = lastchangedpassdss.AddDays(Convert.ToInt32(chksec.secexpdays));
+    if (chksec.securitypass == "lOW3n9XMM8fCuXPLyaQkkQ==" || (lastchangedpassdss <= currenttime))
+    {
+        hspass = "NOTOK";
+    }
+}
+<style type="text/css">
+    .loadermoney {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 199999;
+        background: url('../../images/mmmm.svg') 50% 50% no-repeat rgba(249, 249, 249, 0.9);
+    }
+
+    .icon-and-text-button-demo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        width: 346px;
+        height: 353px;
+        border-radius: 50%;
+    }
+
+    .icon-and-text-button-demo2 {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        width: 500px;
+        height: 475px;
+        border-radius: 60px;
+    }
+
+    #txtcode {
+        display: inline-block;
+        width: 100%;
+        padding: 6px 14px;
+        border-radius: 25px;
+        border: 0;
+        margin: 13px 0 8px;
+    }
+
+    section.content {
+        position: relative;
+        background: rgba(0,0,0,.7);
+        height: 100vh;
+        margin: 0px;
+        z-index: 999999;
+    }
+
+    p.requ {
+        position: absolute;
+        top: 13px;
+        right: 36px;
+        color: #8f0909 !important;
+    }
+
+    .form-control {
+        border: 1px solid #bfbebe;
+        height: 32px;
+        margin: 6px !important;
+        width: 97% !important;
+    }
+</style>
+
+<div id="loadermoney" class="loadermoney" style="display:none;"></div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="">
+            <div class="">
+                <div class="">
+
+                    <div class="body ">
+                        @if (hspass == "OK")
+                        {
+                            <div class="icon-and-text-button-demo fullbodydycolorbg highsecurity-fourdesign-ad">
+                                <div class="fourdesign-high-imgadd">
+                                    <img src="~/ashok-images/highsecurity-four2.gif" />
+                                </div>
+                                <div class="jumbotron vertical-center navbar fullbodydycolorbg" style="position:inherit;border-radius:50%;padding-left:30px;padding-right:30px;">
+                                    <div class="">
+                                        <div class="">
+                                            @using (Html.BeginForm("tran_passslabsetting", "Home", FormMethod.Post, new { id = "Formsubmit" }))
+                                            {
+                                                @*@using (Html.BeginForm(FormMethod.Post, new { id = "EditFormComm" }))*@
+
+                                                <center>
+
+                                                    <div><i class="material-icons" style="top:2px; font-size:100px;color:#fff; ">lock</i> </div>
+                                                    <div><span style="font-size:19px; margin-top:3px; font-weight:bold;color:#fff;"> High Security Password :-  </span> </div>
+
+
+                                                    <div class="form-group" style="margin-bottom:10px;">
+                                                        <div class="form-line">
+                                                            <input type="password" id="txtcode" name="txtcode" class="form-control" />
+                                                        </div>
+
+                                                    </div>
+                                                    <button type="button" class="btn btn-default waves-effect btnssl special-iii" data-loading-text="<i class='fa fa-spinner fa-spin'></i>" style="border-radius: 20px 0px 0px 20px;width:40%;margin:0px;">
+                                                        <a href="@Url.Action("Dashboard", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                                            Back To Home
+                                                        </a>
+                                                    </button><button type="button" id="btn" class="btn btn-default waves-effect" onclick="showloader()" style="width:38%;margin:0px;border-radius: 0px 20px 20px 0px; ">
+                                                        <center><i id="loaderfa" class="" style="top:0px;"></i></center>
+                                                        <span style="font-size:13px; top:0px;" id="submitbtn">Proceed Now</span>
+                                                    </button>
+                                                    <center><p id="errormsg" style="font-size:12px; color:#fff;text-align:center;"></p></center>
+                                                    <br />
+                                                    <span style="font-size:14px; font-weight:bold; color:#fff;">@ViewData["MSG"] </span>
+                                                </center>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="icon-and-text-button-demo2 fullbodydycolorbg highsecurity-fourdesign-ad">
+                                <div class="fourdesign-high-imgadd">
+                                    <img src="~/ashok-images/highsecurity-four2.gif" />
+                                </div>
+                                <div class="jumbotron vertical-center navbar fullbodydycolorbg" style="position:inherit;border-radius:50%;padding-left:30px;padding-right:30px;">
+                                    <div class="">
+                                        <div class="">
+                                            @using (Html.BeginForm("ReGenerateSecuritypasssecond", "Home", FormMethod.Post))
+                                            {
+                                                <center>
+                                                    <div> <img src="~/ashok-images/highsecurity-four2.gif" style="width:30%;" /> </div>
+                                                    <div style="margin-top:16px;"><span style="font-size: 19px; margin-top: 3px; font-weight: bold; color: #fff; font-family: Roboto;"> Your security pin is expired or have to be changed!! Please set new security pin </span> </div>
+
+
+                                                    <div class="body" style="margin-top: 20px; line-height: 2.1;">
+                                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                        <div class="row clearfix" style="line-height: 2.8;">
+
+                                                            <div class="col-md-12 required">
+                                                                <p class="requ" style="font-size:10px;">@Html.ValidationMessageFor(tuple => tuple.Item3.OldSecuritypass, "", new { @class = "text-danger" })</p>
+
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.PasswordFor(tuple => tuple.Item3.OldSecuritypass, new { @class = "form-control", required = "", placeholder = "Old Password" })
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row clearfix">
+
+                                                            <div class="col-md-12 required">
+                                                                <p class="requ" style="font-size:10px;">@Html.ValidationMessageFor(tuple => tuple.Item3.NewSecuritypass, "", new { @class = "text-danger" })</p>
+
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.PasswordFor(tuple => tuple.Item3.NewSecuritypass, new { @class = "form-control", @required = "", @maxlength = "6", placeholder = "New Password" })
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row clearfix">
+
+                                                            <div class="col-md-12 required">
+                                                                <p class="requ" style="font-size:10px">@Html.ValidationMessageFor(tuple => tuple.Item3.ConfirmSecuritypass, "", new { @class = "text-danger" })</p>
+
+                                                                <div class="" style="border:1px solid #dddddd;">
+                                                                    @Html.PasswordFor(tuple => tuple.Item3.ConfirmSecuritypass, new { @class = "form-control", @required = "", @maxlength = "6", placeholder = "Confirm Password" })
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row clearfix">
+                                                            <div class="col-md-12">
+
+                                                                <div class="" style="margin-top:30px;">
+                                                                    <button type="reset" class="btn  m-t-15 waves-effect" style=" width: 31%; margin-top: 0px; border: 1px solid #c7c2c2; background: #dedddd;">Reset</button>
+                                                                    <p class="btn  m-t-15 waves-effect fullbodydycolorbg password-change" style="width:68%;border:1px solid #c7c2c2;color:#fff;margin:0px;">Change Password</p>
+                                                                    <button type="submit" class="btn  m-t-15 waves-effect fullbodydycolorbg password-sure" data-loading-text="<i class='fa fa-spinner fa-spin'></i>" style="border: 1px solid #c7c2c2; color: #fff; width: 68%; display: none; font-size: 18px; line-height: 18px; margin: 0px;">Sure ?</button>
+
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <br />
+                                                    <span style="font-size:14px; font-weight:bold; color:red;">@ViewData["MSG1"] </span>
+                                                </center>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var errormsgval = '@ViewData["MSG"]'
+        if(errormsgval != null && errormsgval != "")
+        {
+            $("#loaderfa").addClass("");
+        }
+    });
+</script>
+<script>
+    function showloader() {
+        var txtcode = $("#txtcode").val();
+
+        if (txtcode != null && txtcode != "") {
+            $("#loaderfa").addClass("fa fa-circle-o-notch fa-spin");
+            document.getElementById("btn").disabled = true;
+            document.getElementById("submitbtn").style.display = "none";
+            document.getElementById("Formsubmit").submit();
+
+
+        }
+        else {
+
+            document.getElementById("errormsg").innerHTML = "Please Enter Security Password";
+            $("#loaderfa").addClass("");
+        }
+
+    }
+</script>
+
+<script>
+    $('.password-change').click(function () {
+        $(this).hide();
+        $(this).next('.password-sure').show();
+    });
+
+
+    $('.password-sure').on('click', function () {
+        var $this = $(this);
+        $this.button('loading');
+        setTimeout(function () {
+            $this.button('reset');
+        }, 200);
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var successmsg = '@ViewData["MSG1success"]'
+        if (successmsg != null && successmsg != "")
+        {
+            document.getElementById("errormsg").innerHTML = successmsg;
+        }
+    });
+</script>

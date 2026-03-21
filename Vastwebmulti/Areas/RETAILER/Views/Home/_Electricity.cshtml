@@ -1,0 +1,671 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.remmulti
+
+<style>
+    .loader {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+</style>
+<div id="elecpay" class="row elecpaymyclass" style="padding-left: 4px;">
+    <div class="col-md-4 elecpay-first">
+        <div>
+            <p id="electricityoperator" style="margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px; top:-16px !important;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="input-group">
+                @Html.DropDownList("eddltype", ViewBag.opeartor as SelectList, "Select Operators", new { id = "eddltype", @class = "form-control", required = "required", onchange = "electricityddl(this)" })
+                <div class="input-group-addon in-addon">
+
+                </div>
+
+            </div>
+            <!-- /.input group -->
+        </div>
+
+    </div>
+
+
+    <div class="col-md-2" id="divconsumerno">
+        <div>
+            <p id="electricitymessage" style="margin-top:10px; color:#E91E63; font-size:10px; padding-left:2px; top: -16px !important;"></p>
+
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="txtelectricity1" style="margin-top:-2px; height:37px;" id="elecity">
+                <input type="text" id="txtelectricity" name="txtelectricity" class="form-control" placeholder="Consumer Number">
+            </div>
+        </div>
+    </div>
+
+    <!--Paybillamount-->
+
+    <div class="col-md-1" id="divpayamount">
+        <div>
+            <p id="amountelectricityMessage" style="margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px; top: -16px !important;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="txtelectricity1" style="margin-top:-1px; height:37px;">
+                <input type="text" id="electricityAmount" name="electricityAmount" class="form-control" placeholder="Amount" onkeypress="return AmountWithDecimal(this,event)" />
+
+                <!--Add Button View-->
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 wamount-input-type" id="btngetviewbill">
+                    <div class="form-group" style="margin-bottom:0px;">
+                        <div class="form-line" style="border-bottom:none;">
+                            <input type="button" id="btnnn2" class="btn bg-blue-grey" value="View Bill" style="height:37px;float:left;" onclick="Getviewbill('eddltype')" />
+                        </div>
+                    </div>
+                </div>
+                <!--Add Button View-->
+            </div>
+        </div>
+    </div>
+    <!--billRefId in instantpay BBPS-->
+    <div class="col-md-1" id="divbillRefId" style="display: none;">
+        <div>
+            <p id="amountelectricityMessage" style="margin-top: 10px;
+        color: #E91E63;
+        font-size: 10px;
+        padding-left: 1px;
+        top: -15px !important;
+"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="" style="margin-top:-1px;border:1px solid #dddddd; height:37px;">
+                <input type="text" id="BillRefId" name="BillRefId" class="form-control" style="display:none;" />
+            </div>
+        </div>
+    </div>
+    <!--Processing cycle number-->
+    <div class="col-md-1" id="divprocessingcycle" style="display:none;padding-left: 4px;padding-right: 0;">
+        <div style="height:28px;">
+            <p id="processingcycle" style="margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;position: absolute;top: -16px;margin: 0;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="" style="margin-top:-29px;">
+                <input type="text" id="ProcessingCycle" name="ProcessingCycle" class="form-control" placeholder="Cycle Number" onkeypress="return isNumber(event)" style="border:1px solid #dddddd;" />
+            </div>
+        </div>
+    </div>
+    <!--Bill Uit-->
+    <div class="col-md-1" id="divbillunit" style="display:none;padding:0px;padding-left:4px;">
+        <div style="height:28px;position:absolute;top:-16px;">
+            <p id="billunitmessage" style="margin: 0px; color: #E91E63; font-size: 10px; padding-left: 1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="" style="margin-top: -2px; border: 1px solid #dddddd; height: 37px;">
+                <input type="text" id="billunit" name="billunit" class="form-control" placeholder="Bill Unit" onkeypress="return isNumber(event)" style="padding-left: 3px; font-size: 12px; padding-right: 0;" />
+            </div>
+        </div>
+    </div>
+    <!--City-->
+    <div class="col-md-3" style="display:none;" id="divcity">
+        <div style="height:28px;position:absolute;top:-16px;">
+            <p id="ddlcitymessage" style="margin:0px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="" id="ddlcty" style="border-bottom:1px solid red;border:1px solid #dddddd; height:37px;">
+                <select id="ddlcity" name="ddlcity" class="form-control">
+                    <option value="">Select City</option>
+                    <option value="Ahmedabad">Ahmedabad</option>
+                    <option value="Surat">Surat</option>
+                    <option value="Agra">Agra</option>
+                    <option value="Bhiwandi">Bhiwandi</option>
+                    <option value="Dahej">Dahej</option>
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-md-3" style="display:none;" id="divcitytamilnaduoperator">
+        <div style="height:28px;position:absolute;">
+            <p id="ddlcitymessage" style="margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="" id="ddlctytamil" style="margin-top:0px; border-bottom:1px solid red;border:1px solid #dddddd; height:37px;">
+                <select id="ddlcitytamilnadu" name="ddlcitytamilnadu" class="form-control">
+                    <option value="">Select City</option>
+                    <option value="ChennaiNorth">Chennai North</option>
+                    <option value="ChennaiSouth">Chennai South</option>
+                    <option value="Coimbatore">Coimbatore</option>
+                    <option value="Erode">Erode</option>
+                    <option value="Madurai">Madurai</option>
+                    <option value="Tirunelveli">Tirunelveli</option>
+                    <option value="Trichy">Trichy</option>
+                    <option value="Vellore">Vellore</option>
+                    <option value="Villupuram">Villupuram</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <!--Continue button-->
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" id="btncontinue">
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="form-line" style="margin-top:0px !important; border-bottom:none;">
+                <input type="submit" id="btn2" class="btn bg-blue-grey" value="Pay Bill" style="height:37px;float:left;" onclick="GetSelectedTextValue('eddltype')" />
+            </div>
+        </div>
+    </div>
+    <!--View Bill button-->
+    <!--
+    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" id="btngetviewbill">
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="form-line" style="margin-top:25px !important; border-bottom:none;">
+                <input type="button" id="btnnn" class="btn bg-blue-grey" value="View Bill" style="height:37px;float:left;" onclick="Getviewbill('eddltype')" />
+            </div>
+        </div>
+    </div>
+
+    -->
+
+</div>
+
+<div id="elecmsgBox" style="margin-top:10px;"></div>
+
+<table id="confirmelec" class="for-prepaid" style="width:100%;display:none;">
+    <tr>
+        <th style="width:10%;"></th>
+        <th style="width:25%;">Operator</th>
+        <th style="width:25%;">Recharge to</th>
+        <th style="width:10%;">amount</th>
+        <th style="width:15%;display:none;">Service Fee </th>
+
+        @if (Model.Ispin == true)
+        {
+            <th style="width:15%;">Pin</th>
+        }
+        <th style="width:15%;">Action</th>
+    </tr>
+    <tr>
+        <td>
+            <button style="padding: 5px 20px;" onclick="backelec()"><img src="~/AdminDesign/images/back.svg" style="width:18px;" /></button>
+        </td>
+        <td style="font-size: 18px;"><b><span id="showoptelec"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 24px;"><b> <span id="shownumberelec"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 24px;"><b><span id="showamountelec"></span></b></td>
+        <td style="display:none;">
+            <input type="number" class="form-control" id="servicefeelectricty" placeholder="Enter Fee" value="0" style="display:none;" />
+            <input type="hidden" name="electricityduedate" id="electricityduedate" />
+        </td>
+        @if (Model.Ispin == true)
+        {
+            <td style="font-size: 24px;">
+                <input style=" width: 120px; " type="password"
+                       id="elecRechargepin"
+                       name="elecRechargepin"
+                       class="form-control text-center"
+                       placeholder="Enter PIN"
+                       maxlength="6"
+                       autocomplete="off" />
+                <span id="elecpinError"
+                      style="color:red; font-size:13px; display:none; margin-top:5px;">
+                </span>
+            </td>
+        }
+
+
+        <td>
+            <button style="        float: right;
+        background: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important; border: 0px;color: #fff; padding: 4px 19px;font-size: 20px;" onclick="elecprocessToPay()">
+                Procces To Pay
+            </button>
+        </td>
+        @*<td>
+                <button style="        float: right;
+            background: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important; border: 0px;color: #fff; padding: 4px 19px;font-size: 20px;" onclick="elecrechargeconfirm()">
+                    Procces To Pay
+                </button>
+            </td>*@
+
+    </tr>
+</table>
+<table id="rechargeconfirmelec" class="for-prepaid" style="width:100%;margin-top:-11px !important;display:none;">
+    <tr>
+        <th style="width:25%;">Recharge Status</th>
+        <th style="width:37%;">Message</th>
+        <th style="width:11%;"></th>
+    </tr>
+    <tr>
+        <td style="font-size: 20px;"><b> <span id="rchstatuschkelec"></span> </b></td>
+        <td class="border-centerbe border-centerbess" style="font-size: 20px;"><b><span id="rchmsgelec"></span></b></td>
+        <td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="Rechargeagainelec()">Recharge Again</button></td>
+    </tr>
+</table>
+
+<div class="loader loaderwww"></div>
+
+
+
+<script>
+    var isPinOn = @Model.Ispin.ToString().ToLower();
+
+    function elecprocessToPay() {
+
+        if (isPinOn) {
+
+            var pin = $('#elecRechargepin').val();
+
+            if (!pin) {
+                alert('Please enter transaction PIN');
+                $('#elecRechargepin').focus();
+                return;
+            }
+
+            elecrechargeconfirm(pin);
+        }
+        else {
+            elecrechargeconfirm('');
+        }
+    }
+</script>
+
+
+
+<script>
+    function showMsg(msg, type) {
+
+        var color = (type === "success") ? "green" : "red";
+
+        $('#msgBox').html(
+            '<div style="color:' + color + '; font-weight:bold;">' + msg + '</div>'
+        );
+
+        setTimeout(function () {
+            $('#elecmsgBox').html('');
+        }, 5000);
+    }
+</script>
+
+
+
+
+
+<script>
+    j('#eddltype').select2();
+</script>
+<!--View Bill-->
+<script type="text/javascript">
+    function Getviewbill(el) {
+        $('#ElectricityCustomerTbl').empty();
+
+        var e = document.getElementById(el);
+        var eleddl = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var txtval = $("#txtelectricity").val();
+        var cycleno = $("#ProcessingCycle").val();
+        var billunit = $("#billunit").val();
+        var Amount = $("#electricityAmount").val();
+        var ddlcity = $("#ddlcity").val();
+        var ddlcitytamil = $("#ddlcitytamilnadu").val();
+
+
+        /* call function*/
+        if (eleddl == "TNEB-Tamil Nadu") {
+            var sts = continuebtnvalidation(eleddl, txtval, cycleno, billunit, "10", ddlcitytamil);
+        }
+        else {
+            var sts = continuebtnvalidation(eleddl, txtval, cycleno, billunit, "10", ddlcity);
+        }
+        if (sts == true) {
+            if (ddlcity != "" && ddlcity != null) {
+
+                viewbille(eleddl, eleddlvalue, txtval, "10", ddlcity, cycleno, "", "");
+            }
+            else if (ddlcitytamil != "" && ddlcitytamil != null) {
+                viewbille(eleddl, eleddlvalue, txtval, "10", ddlcitytamil, cycleno, "", "");
+            }
+            else {
+
+                viewbille(eleddl, eleddlvalue, txtval, "10", billunit, cycleno, "", "");
+            }
+            //viewbill(eleddl, eleddlvalue, txtval, "10", billunit, cycleno, "", "");
+            event.preventDefault();
+            return false;
+        }
+        else {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+</script>
+
+<script>
+    function viewbille(optname, optvalue, mobileno, amount, optional1, optional2, optional3, optional4) {
+         $('.loader').show();
+       $.ajax({
+           type: "POST",
+           url: "@Url.Action("viewbill", "Home")",
+           data: { OperatorName: optname, OptCode: optvalue, mobileno: mobileno, Amount: amount, optional1: optional1, optional2: optional2, optional3: optional3, optional4: optional4 },
+           cache: false,
+           dataType: 'json',
+           closeOnConfirm: true,
+           success: function (result) {
+               console.log(result)
+               $('.loader').hide();
+               if (result.Response == 'SUCCESS') {
+                   var displayValues = "";
+                   $.each(JSON.parse(result.DisplayValues), function (key, val) {
+                       if (!val.label.includes('Incentive')) {
+
+                           displayValues = displayValues + val.label + ' : ' + val.value + "</br>";
+                       }
+                   });
+
+                   var newrow = "<table class='col-sm-4 table-responsive table-bordered'><tr>";
+                   newrow += "<td>" + displayValues +"</td></tr>";
+                   newrow += "<tr><td> Bill Amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp; ::  " + result.Price + "</td></tr>";
+                   newrow += "<tr><td> Due Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   ::  " + result.billduedate + "</td></tr>";
+                    newrow += "</table>";
+                   $('#ElectricityCustomerTbl').append(newrow);
+                   $('#ElectricityCustomerInfo').css('display', 'block');
+                   var price = result.Price;
+                   var BillRefId = result.reference_id;
+                   var BIllduedate = result.billduedate;
+                   if (BillRefId == "undefined" || BillRefId == "") {
+                       if (price != "") {
+                           //price = parseInt(price);
+                           $('#electricityAmount').val(price);
+                           $('#BillRefId').val(BillRefId);
+                           $('#electricityduedate').val(BIllduedate);
+                           // displayValues
+                       }
+                   }
+                   else {
+                       if (price != "") {
+                           //price = parseInt(price);
+                           $('#electricityAmount').val(price);
+                           $('#BillRefId').val(BillRefId);
+                           $('#electricityduedate').val(BIllduedate);
+                           // displayValues
+                       }
+                       else {
+                           var message = result.Message;
+                           $('#electricityAmount').val('');
+                           $('#BillRefId').val(message);
+                           $('#electricityduedate').val(BIllduedate);
+                       }
+                   }
+               }
+               if (result.Response == 'ERROR') {
+                   $('.loader').hide();
+                                  var newRow ="<div class='col-sm-4' style='text-align: left;color:red'>" +
+                                  ""+result.Message+""
+                   "</div>";
+                   $('#electricityAmount').val('');
+                   $('#electricityduedate').val('');
+                   $('#ElectricityCustomerTbl').append(newRow);
+                   $('#ElectricityCustomerInfo').css('display', 'block');
+               }
+           }
+       })
+    }
+</script>
+<script>
+    function Rechargeagainelec() {
+        j('#eddltype').val("");
+        j('#eddltype').select2().trigger('change');
+        $('#txtelectricity').text("");
+        $('#electricityAmount').text("");
+        $('#BillRefId').text("");
+        $('#ProcessingCycle').text("");
+        $('#billunit').text("");
+        $('#elecpay').show();
+        $('#rechargeconfirmelec').hide();
+        $('#confirmelec').hide();
+    }
+</script>
+<script>
+    function backelec() {
+        $('#ElectricityCustomerInfo').show();
+        $('#elecpay').show();
+        $('#confirmelec').hide();
+    }
+</script>
+<!--Electricity continueButton -->
+<script type="text/javascript">
+    function GetSelectedTextValue(el) {
+        var e = document.getElementById(el);
+        var eleddl = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var txtval = $("#txtelectricity").val();
+        var cycleno = $("#ProcessingCycle").val();
+        var billunit = $("#billunit").val();
+        var Amount = $("#electricityAmount").val();
+        var duedate = $("#electricityduedate").val();
+        var ddlcity = $("#ddlcity").val();
+        var BillRefId = $("#BillRefId").val();
+        var ddlcitytamil = $("#ddlcitytamilnadu").val();
+
+        var sts = false;
+        /* call function*/
+        if (eleddl == "TNEB-Tamil Nadu") {
+            sts = continuebtnvalidation(eleddl, txtval, cycleno, billunit, Amount, ddlcitytamil);
+        }
+        else {
+            sts = continuebtnvalidation(eleddl, txtval, cycleno, billunit, Amount, ddlcity);
+        }
+        //Recharge1(eleddl, eleddlvalue, txtval, Amount, billunit, cycleno, "", "");
+        if (sts == true) {
+            $('#showoptelec').text(eleddl);
+            $('#shownumberelec').text(txtval);
+            $('#showamountelec').text(Amount);
+            $('#electricityduedate').text(duedate);
+            $('#ElectricityCustomerInfo').hide();
+            $('#elecpay').hide();
+            $('#confirmelec').show();
+
+            //if (ddlcity != "" && ddlcity != null) {
+            //   // Recharge(eleddl, eleddlvalue, txtval, Amount, ddlcity, cycleno, "", "", "0", BillRefId);
+            //}
+            //else {
+            //  //  Recharge(eleddl, eleddlvalue, txtval, Amount, billunit, cycleno, "", "", "0", BillRefId);
+            //}
+
+            event.preventDefault();
+            return false;
+        }
+
+        else {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+</script>
+
+<script>
+    function elecrechargeconfirm(pinValue) {
+
+            var e = document.getElementById("eddltype");
+        var eleddl = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var txtval = $("#txtelectricity").val();
+        var cycleno = $("#ProcessingCycle").val();
+        var billunit = $("#billunit").val();
+        var Amount = $("#electricityAmount").val();
+        var duedate = $("#electricityduedate").val();
+        var ddlcity = "";
+        if (eleddl === "TNEB-Tamil Nadu") {
+            ddlcity = $("#ddlcitytamilnadu").val();
+        }
+        else {
+            ddlcity = $("#ddlcity").val();
+        }
+        var BillRefId = $("#BillRefId").val();
+        var servicefeelectricty = $("#servicefeelectricty").val();
+        if (servicefeelectricty != "") {
+            /* call function*/
+            var sts = continuebtnvalidation(eleddl, txtval, cycleno, billunit, Amount, ddlcity);
+            if (sts == true) {
+                  $("#servicefeelectricty").css("border-color", "#000000");
+                var optional1 = billunit;
+                if (ddlcity != "" && ddlcity != null) {
+                    optional1 = ddlcity;
+                }
+
+                //$("#txtelectricity").val("");
+                //$("#electricityAmount").val("");
+                //if (txtval != "" && Amount != "") {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Recharge","Home")",
+                        data: { OperatorName: eleddl, OptCode: eleddlvalue, mobileno: txtval, Amount: Amount, optional1: optional1, optional2: cycleno, optional3: "", optional4: "", comm: "", BillRefId: BillRefId, servicefee: servicefeelectricty, billduedate: duedate, Rechargepin: pinValue },
+                        cache: false,
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('.loader').show();
+                        },
+                        success: function (result) {
+                            console.log(result);
+
+                            // 🔴 Clear old PIN error every time
+                            $('#elecpinError').hide().text("");
+
+                            /* 🔴 PIN ERROR — SAME PAGE */
+                            if (result.status && (
+                                result.status === "PIN_REQUIRED" ||
+                                result.status === "INVALID_PIN" ||
+                                result.status === "PIN_NOT_SET")) {
+
+                                $('#elecpinError').text(result.message).show();
+                                $('.loader').hide();
+                                return; // 🚫 STOP ONLY FOR PIN ERROR
+                            }
+
+
+                            var status = result.Response;
+                            var message = result.Message;
+
+                            console.log(status);
+                            console.log(message);
+
+                            if (status == "GATEWAY") {
+                                window.open(message, "_self");
+                                $('#rchstatuschkelec').text("Pending");
+                                $('#rchmsgelec').text("Please Wait While Redirect The Gateway");
+                            }
+                            else {
+                                $('#rchstatuschkelec').text(status);
+                                $('#rchmsgelec').text(message);
+
+                                $("#txtelectricity").val("");
+                                $("#electricityAmount").val("");
+
+                                if (status === "SUCCESS") {
+                                    // ✅ Fill popup form fields
+                                    document.querySelector("input[name='biller']").value = eleddl || "Not Available";
+                                    document.querySelector("input[name='billNumber']").value = txtval || "N/A";
+                                   /* document.querySelector("input[name='billDate']").value = new Date().toISOString().split("T")[0];*/
+                                    /*document.querySelector("input[name='dueDate']").value = duedate || new Date().toISOString().split("T")[0];*/
+                                    document.querySelector("input[name='txnId']").value = "TXN" + Date.now();
+                                    document.querySelector("input[name='amount']").value = Amount || 0;
+                                    document.querySelector("input[name='total']").value = Amount || 0;
+                                    document.querySelector("input[name='txnTime']").value = new Date().toISOString().split("T")[0];
+                                    document.querySelector("input[name='status']").value = status;
+
+                                    // ✅ Show popup
+                                    const popup = document.getElementById("payConfirmationPopup");
+                                    popup.style.display = "block";
+                                    popup.scrollIntoView({ behavior: "smooth" });
+                                }
+                            }
+
+                            // ✅ Always toggle sections
+                            $('#confirmelec').hide();
+                            $('#rechargeconfirmelec').show();
+                        },
+
+                        /*success: function (result) {
+                            console.log(result)
+
+                            var status = result.Response;
+                            var message = result.Message;
+                            console.log(status)
+                            console.log(message)
+                            if (status == "GATEWAY") {
+                                window.open(message, "_self");
+                                $('#rchstatuschkelec').text("Pending");
+                                $('#rchmsgelec').text("Please Wait While Redirect The Gateway");
+                            }
+                            else {
+                                $('#rchstatuschkelec').text(status);
+                                $('#rchmsgelec').text(message);
+                            }
+                            $('#confirmelec').hide();
+                            $('#rechargeconfirmelec').show();
+
+                        },*/
+                        complete: function () {
+                            $("#remainretailer").load(location.href + " #remainretailer");
+                            $('.loader').hide();
+                            $.ajax({
+                                url: '@Url.Action("showrecentrecharge", "Home")',
+                                type: 'GET',
+                                dataType: "html",
+                                data: { type: "Electricity" },
+                                success: function (data) {
+                                    $('#reportchk').html(data);
+                                },
+                                error: function (data) {
+
+                                }
+                            });
+                        },
+                        error: function () {
+                            $("#remainretailer").load(location.href + " #remainretailer");
+                            $('.loader').hide();
+                        }
+                    })
+
+               // }
+            }
+        }
+        else {
+              $("#servicefeelectricty").css("border-color", "#FF0000");
+        }
+    }
+</script>

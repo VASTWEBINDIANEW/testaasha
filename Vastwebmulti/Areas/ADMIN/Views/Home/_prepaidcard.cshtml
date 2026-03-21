@@ -1,0 +1,165 @@
+﻿
+@model Vastwebmulti.Areas.ADMIN.Models.prepaid_card1
+@using (Ajax.BeginForm("_fino_comm", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+{
+
+    <style>
+        span.range_one_1 {
+            font-size: 12px !important;
+            font-weight: bold;
+            color: var(--main-bg-lcolor) !important;
+            border-bottom: 1px solid var(--main-bg-lcolor) !important;
+            border-width: thin;
+            padding-bottom: 3px;
+        }
+
+        #updatecolm p {
+            font-size: 9px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        table {
+            text-align: center;
+            background: #f1f1f1;
+        }
+
+    </style>
+
+
+    <input id="btnsubmitusercommon" onclick="updatecommpc()" name="Button" value="Save Data" class="btn  waves-effect" style="display:none;" />
+
+
+    <input id="btnsubmit" type="submit" value="Save Now" class="btn  waves-effect" style="display:none;" />
+    <div class="slab-table">
+        <table id="updatecolm" class="table table-bordered example-second third-design-table" style="margin-top: 15px;">
+            <thead class="navbar" style="position:initial;">
+                <tr>
+                    <th style="text-align:center">Retailer&nbsp;%</th>
+                    <th style="text-align:center">Distributor&nbsp;%</th>
+                    <th style="text-align:center">Master&nbsp;%</th>
+                </tr>
+
+                @*<tr>
+                        @{
+                            var range1 = Convert.ToInt32(@Model.AmountRange[0].maximum1);
+                            var range2 = Convert.ToInt32(@Model.AmountRange[0].maximum2);
+                            var rangee1 = range1 + 1;
+                            var rangee = range2 + 1;
+                        }
+                        <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                        <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                        <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+                        <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                        <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                        <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+                        <th><span class="range_one_1">Range One</span><p>1 To @range1</p></th>
+                        <th><span class="range_one_1">Range Two</span><p>@rangee1 To @range2</p></th>
+                        <th><span class="range_one_1">Range Three</span><p>@rangee and Above</p></th>
+                    </tr>*@
+            </thead>
+            <tbody id="tbodyshow">
+                @foreach (var item in Model.common_common)
+                {
+                    <tr>
+                        <td id="text11">@item.rem_comm</td>
+                        <td class="text-center" id="text12">@item.dlm_comm</td>
+                        <td class="text-center" id="text13">@item.master_comm</td>
+
+                    </tr>
+                }
+            </tbody>
+            <tbody id="tbodyedit" style="display:none;">
+                @for (int i = 0; i < Model.common_common.Count; i++)
+                {
+                    <tr>
+                        @Html.HiddenFor(a => a.common_common[i].idno)
+                        <td>
+                            @Html.EditorFor(a => a.common_common[i].rem_comm , new { htmlAttributes = new { @style = "width:70px !important" , id= "remcom" } })
+                            @Html.ValidationMessageFor(a => a.common_common[i].rem_comm)
+                        </td>
+                        <td>
+                            @Html.EditorFor(a => a.common_common[i].dlm_comm, new { htmlAttributes = new { @style = "width:70px !important", id = "dlmcom" } })
+                            @Html.ValidationMessageFor(a => a.common_common[i].dlm_comm)
+                        </td>
+                        <td>
+                            @Html.EditorFor(a => a.common_common[i].master_comm, new { htmlAttributes = new { @style = "width:70px !important", id = "mastercomm" } })
+                            @Html.ValidationMessageFor(a => a.common_common[i].master_comm)
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<script>
+        function updatecommpc() {
+
+
+            var rmcom = $('#remcom').val();
+            var dlmcomc = $('#dlmcom').val();
+            var masterccomm = $('#mastercomm').val();
+        $.ajax({
+            url:   '@Url.Action("updatesetpccommcommon", "Home")',
+
+            type: 'POST',
+            data: { remcom: rmcom, dlmcom: dlmcomc, mastercomm: masterccomm },
+
+        dataType: "JSON",
+
+
+        })
+      $('#btnsubmitusercommon').hide();
+      $('#btnEdit').show();
+
+         $('#tbodyshow').show();
+        $('#tbodyeditAll').show();
+            $('#tbodyedit').hide();
+
+            document.getElementById('text11').innerHTML = rmcom;
+            document.getElementById('text12').innerHTML = dlmcomc;
+            document.getElementById('text13').innerHTML = masterccomm;
+
+    }
+
+
+
+
+</script>
+<script>
+    function OnSuccess() {
+        $('#btnsubmit').hide();
+        $('#btnEdit').show();
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.second-design .example-second').DataTable({
+
+
+            paging: false
+        });
+    });
+
+</script>
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

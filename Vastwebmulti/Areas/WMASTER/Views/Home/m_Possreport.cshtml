@@ -1,0 +1,386 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Mpos_Report_New_Result>
+@{
+    ViewBag.Title = "m_Possreport";
+    Layout = "~/Areas/WMASTER/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+       .select2-container--default .select2-selection--single {
+        border: 1px solid #eee !important;
+border-radius: 0px !important;
+height: 32px !important;
+margin-top: 2px;
+    }
+
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-3 fin1" style="padding: 0px;">
+                        <div>
+                            @Html.Partial("_finicalmenureportMaster")
+                        </div>
+                    </div>
+                    <div class="col-md-7 fin2" style="padding: 0px;">
+                        <div class="card">
+                            @using (Html.BeginForm("m_Possreport", "Home", FormMethod.Post))
+                            {
+                                <div class="">
+                                    <div class="col-md-2 cltu" style="padding: 0px;">
+                                        <div class="">
+                                            @Html.DropDownList("ddlusers", new List<SelectListItem>
+                                      {
+                                    new SelectListItem{Text="ALL",Value="Master"},
+                                   new SelectListItem{Text="Distributor",Value="Dealer"},
+                                   new SelectListItem{Text="Retailer",Value="Retailer"},
+                                  }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;", @onchange = "answers()" })
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 " style="display:none;padding: 0px;padding-right:5px;" id="dlm">
+                                        <div class="form-line">
+                                            @Html.DropDownList("alldealer", ViewBag.alldealer as SelectList, " All Distubutor", new { id = "alldealer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 " style="display:none;padding: 0px;padding-right:5px;" id="rem">
+                                        <div class="form-line">
+                                            @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "All Retailer", new { id = "allretailer", @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1 cltu" style="padding: 0px;">
+                                        <div class="form-line">
+                                            @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                        {
+                                new SelectListItem{ Text="Status",Value="ALL",},
+                                new SelectListItem{Text="SUCCESS",Value="SUCCESS"},
+                                new SelectListItem{Text="Pending",Value="PENDING"},
+                                new SelectListItem{Text="FAILED",Value="FAILED"}
+                                 }, new { @class = "selectpicker form-control", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mrj" style="padding: 0px;width: auto;">
+                                        <div class="form-group jjp">
+                                            <div class="input-daterange input-group">
+                                                <div class="custom-date-icon ner">
+                                                    <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                </div>
+                                                @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;", autocomplete = "off" })
+
+                                                <div class="nrr3">
+                                                    <div class="custom-date-icon ner">
+                                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg " aria-hidden="true"></i>
+                                                    </div>
+                                                    @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;", autocomplete = "off" })
+                                                </div>
+                                                </div>
+                                                <!-- /.input group -->
+                                            </div>
+                                    </div>
+                                    <div class="col-md-2 mrj" style="padding: 0px;width: auto;">
+                                       
+                                            <button type="submit" class="btn" style="border:1px solid #c7c2c2;background: transparent;">
+                                                <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;"></i>
+                                                <span style="top:-2px;color:black;">Search</span>
+                                            </button>
+                                       
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    @*<div class="col-md-6">
+            <p style="font-size:21px;margin-top:6px;color:#00000070;">Aeps Report</p>
+        </div>*@
+
+                    <div class="col-md-2 fin3 pploh" style="padding: 0px;">
+                      
+                            <div class="form-group">
+                                <div style="padding-top: 0px; float:right">
+
+                                    <input type="button" id="btnExport" value="Excel" style="margin-left:0px;font-size: 11px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;" />
+                                    <input type="button" id="btnPDF" value="PDF" style="margin-left:2px;font-size: 11px;float: left; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);background-repeat: no-repeat;background-position: 4px center;padding-left: 19px;" />
+                                    <button class="white-success-button" style="height:32px;font-size: 11px;padding: 0px 4px;height: 32px;border: 1px solid #b1a6a638;float: left;margin-left: 2px;background: #b1a6a638;" onclick="findtotal()">Total</button>
+                                </div>
+                                <div class="white-success" style="display:none;position: absolute;width: auto;right: 40px;">
+                                    <span id="successtotal" class="btn btn-success waves-effect" style="font-size: 13px;float: left;padding:9px; color:white;font-weight:600;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Failedtotal" class="btn btn-danger waves-effect" style="font-size: 13px;float: left;padding:9px; color:white;font-weight:600;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i> </span>
+
+                                </div>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+           
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        
+                        <div class="body" style="padding:0px;">
+                            <div class="table-responsive" style="position:inherit;">
+
+                                <table id="mpos" class="table table-bordered " style="width:100%; font-size:12px;">
+                                    <thead style="background-color:whitesmoke;">
+                                        <tr>
+                                            <th>Status</th>
+                                            <th>TransType</th>
+                                            <th>Card&nbsp;Type</th>
+                                            <th>Card&nbsp;Brand</th>
+                                            <th>Poss&nbsp;Id</th>
+
+                                            <th>Net&nbsp; Amount&nbsp;₹&nbsp;</th>
+                                            <th>User&nbsp;Comm</th>
+                                            <th>MY&nbsp;Comm</th>
+                                            <th>Distributor&nbsp;Comm</th>
+                                            <th>Debit&nbsp;Amount&nbsp;₹&nbsp;</th>
+                                            <th>BankRRN&nbsp;No</th>
+                                            <th>Date</th>
+                                            <th>Bank&nbsp;TerminalID</th>
+                                            @*<th>TxnId</th>
+        <th>TransType</th>
+        <th>Amount</th>
+
+        <th>Merchant&nbsp;ID</th>
+        <th>Bank&nbsp;Merchant&nbsp;ID</th>
+        <th>Bank&nbsp;Terminal&nbsp;ID</th>*@
+                                            @*<th>Status</th>*@
+                                            @*<th>Card&nbsp;Brand</th>
+        <th>Card&nbsp;Holder&nbsp;Name</th>
+        <th>Card&nbsp;Number</th>
+        <th>Card&nbsp;Type</th>
+        <th>Date</th>
+        <th>Invoice&nbsp;No</th>
+        <th>Payment&nbsp;Id</th>
+        <th>Merchant&nbsp;Address</th>
+        <th>Admin&nbsp;Pre</th>
+        <th>Admin&nbsp;Post</th>
+        <th>Master&nbsp;Pre</th>
+        <th>Master&nbsp;Post</th>
+        <th>Dealer&nbsp;Pre</th>
+        <th>Dealer&nbsp;Post</th>
+        <th>Retailer&nbsp;Pre</th>
+        <th>Retailer&nbsp;Post</th>
+        <th>Master&nbsp;Comm</th>
+        <th>Dealer&nbsp;Comm</th>
+        <th>Retailer&nbsp;Comm</th>
+        <th>Master&nbsp;GST</th>
+        <th>Dealer&nbsp;GST</th>
+        <th>Retailer&nbsp;GST</th>
+        <th>Master&nbsp;Income</th>
+        <th>Dealer&nbsp;Income</th>
+        <th>Retailer&nbsp;Income</th>
+        <th>Admin&nbsp;Income</th>
+        <th>Purchase</th>
+        <th>Response</th>*@
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="trow" class="alin chnj">
+                                        @{
+                                            Html.RenderAction("_m_Possreport", "Home", new { Model = Model });
+
+                                        }
+                                    </tbody>
+                                </table>
+                                <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:20px;">
+                                    <img src="~/img/ajax-loader.gif" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+     
+    </div>
+</section>
+<script src="~/Swalalert/datatablejquery.js"></script>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<link href="~/MainFrontDesign/css/Dashcustom.css" rel="stylesheet" />
+
+<script>
+    $("#alldealer").select2();
+    $("#allretailer").select2();
+    
+</script>
+<script>
+    $(document).ready(function () {
+
+       $('.input-daterange').datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "bottom auto",
+
+            });
+            var val = '@ViewBag.chk';
+            if (val != "post") {
+                $("#txt_frm_date").datepicker("setDate", new Date());
+                $("#txt_to_date").datepicker("setDate", new Date());
+            }
+            answers();
+    });
+</script>
+
+<script type="text/javascript">
+    function answers() {
+        var e = document.getElementById("ddlusers");
+        var answer = e.options[e.selectedIndex].value;
+        if (answer == "Dealer") {
+            document.getElementById("dlm").style.display = "block";
+            document.getElementById("rem").style.display = "none";
+        }
+
+        else if (answer == "Master") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "none";
+
+        }
+
+        else if (answer == "Retailer") {
+            document.getElementById("dlm").style.display = "none";
+            document.getElementById("rem").style.display = "block";
+
+        }
+    }
+</script>
+
+
+
+<script>
+        var pageindex = 2;
+        var NoMoredata = false;
+        var inProgress = false;
+    $(window).scroll(function () {
+        
+            var ddlusers = $('#ddlusers').val();
+            var alldealer = $('#alldealer').val();
+            var allretailer = $('#allretailer').val();
+            var ddl_status = $('#ddl_status').val();
+            var txt_frm_date = $('#txt_frm_date').val();
+            var txt_to_date = $('#txt_to_date').val();
+        if ($(window).scrollTop() > Number($("#mpos").height()) / 4 && !NoMoredata && !inProgress) {
+                inProgress = true;
+                $("#loadingdiv").show();
+                $.post("@Url.Action("InfiniteScroll_mpos", "Home")",
+                    { "pageindex": pageindex, "ddlusers": ddlusers, "alldealer": alldealer, "allretailer": allretailer,"ddl_status":ddl_status, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date },
+                    function (data) {
+                        pageindex = pageindex + 1;
+                        NoMoredata = data.NoMoredata;
+                        $("#loadingdiv").load("content.html");
+                        $("#trow").append(data.HTMLString);
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    });
+            }
+        });
+
+
+</script>
+
+<script>
+    function findtotal() {
+         var ddlusers = $('#ddlusers').val();
+
+            var alldealer = $('#alldealer').val();
+            var allretailer = $('#allretailer').val();
+            var ddl_status = $('#ddl_status').val();
+            var txt_frm_date = $('#txt_frm_date').val();
+            var txt_to_date = $('#txt_to_date').val();
+             $.post("@Url.Action("mpos_Total", "Home")",
+             {"ddlusers": ddlusers, "alldealer": alldealer, "allretailer": allretailer,"ddl_status":ddl_status, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date},
+                 function (data) {
+                     $('#successtotal').text("₹. " + data.success);
+                     $('#Failedtotal').text("₹. " + data.failed);
+                 });
+    }
+</script>
+<script>
+
+    $('.white-success-button').click(function () {
+        $('.white-success').toggle();
+    });
+</script>
+<script>
+    $("#btnExport").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+            var alldealer = $('#alldealer').val();
+            var allretailer = $('#allretailer').val();
+        var url = '@Url.Action("ExcelRechargereport_mpos", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&ddl_status=' + ddl_status + '&alldealer=' + alldealer + '&allretailer=' + allretailer;
+        location.href = url;
+});
+</script>
+
+
+<script>
+    $("#btnPDF").click(function () {
+
+     var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+            var alldealer = $('#alldealer').val();
+            var allretailer = $('#allretailer').val();
+        var url = '@Url.Action("PDFMposReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&ddl_status=' + ddl_status + '&alldealer=' + alldealer + '&allretailer=' + allretailer;
+        window.open(url,'_blank');
+    });
+</script>
+
+
+
+<script>
+    $(function () {
+        var loc = window.location.href; // returns the full URL
+        if ('/~/MASTER/Home/m_Possreport') {
+            $('.menu.side-icon ul li:nth-child(8) a').addClass('activee');
+        }
+    });
+</script>

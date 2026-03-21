@@ -1,0 +1,827 @@
+﻿@using Vastwebmulti.Models;
+@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    string urllinks = @ViewBag.urllink;
+
+    VastwebmultiEntities db2 = new VastwebmultiEntities();
+    var notshow = db2.tblMenus.Where(a => (a.MenuName == "CARDS" || a.MenuName == "TRAVEL") && a.Status == "Y" && a.Role == "ADMIN").ToList();
+
+    var Card = db2.tblMenus.Where(a => a.MenuName == "CARDS" && a.Role == "ADMIN").SingleOrDefault().Status;
+    var Travel = db2.tblMenus.Where(a => a.MenuName == "TRAVEL" && a.Role == "ADMIN").SingleOrDefault().Status;
+
+}
+
+@{
+    VastwebmultiEntities db = new VastwebmultiEntities();
+    var allcolor1 = db.tblMenuColors.ToList();
+    var selectedcolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().SelectedColor;
+    var menucolor1 = allcolor1.Count == 0 ? "" : allcolor1.SingleOrDefault().MenuColor;
+    var col = "";
+    var outercolor = db.changecolors.Where(p => p.Role == "ADMIN").ToList();
+    if (outercolor.Count > 0)
+    {
+        if (outercolor.SingleOrDefault().Role == "ADMIN")
+        {
+            col = outercolor.Where(p => p.Role == "ADMIN").SingleOrDefault().multipaloutercolor;
+        }
+    }
+    else
+    {
+        col = "";
+    }
+    var color = col;
+    var Apk_Version = "";
+    var apkversion = db.uploaded_apklink.SingleOrDefault();
+    if (apkversion != null)
+    {
+        if (!string.IsNullOrWhiteSpace(apkversion.Apk_Version))
+        {
+            Apk_Version = apkversion.Apk_Version;
+        }
+
+    }
+    var logoimage = "";
+    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
+    if (logo.Count > 0)
+    {
+        if (logo.SingleOrDefault().Role == "ADMIN")
+        {
+            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
+        }
+    }
+    else
+    {
+        logoimage = "images/Default_Logo.png";
+    }
+
+    var aboutbac = db.tblAboutUsBackgroundColorChanges.Where(p => p.Role == "ADMIN").ToList();
+    var aboutbaccolor = aboutbac.Count == 0 ? "" : aboutbac.SingleOrDefault().MultipalAboutUsColor;
+
+    var service = db.tblServiceOuterColors.Where(p => p.Role == "ADMIN").ToList();
+    var servicecolor = service.Count == 0 ? "" : service.SingleOrDefault().ServiceBackGroundcolor;
+
+    ViewBag.Services = db.tblServices.Where(p => p.Role == "ADMIN").ToList();
+
+    ViewBag.product = db.tblProducts.ToList();
+
+    var productcolor = db.tblProductBackColors.ToList();
+    var productbackcolor = productcolor.Count == 0 ? "" : productcolor.SingleOrDefault().ProductBackColor;
+
+    ViewBag.works = db.tblWorks.ToList();
+    var workbackcolor1 = db.tblWorkbackColors.ToList();
+    var workbackcolor = workbackcolor1.Count == 0 ? "" : workbackcolor1.SingleOrDefault().WorkBackColor;
+
+    var border = db.Admin_Outer_Border.ToList();
+    var bordersize = border.Count == 0 ? "" : border.SingleOrDefault().Border;
+
+    ViewBag.card = db.tblCards.Where(p => p.Role == "ADMIN").ToList();
+    var cardbackcolor1 = db.tblCardBackColors.Where(p => p.Role == "ADMIN").ToList();
+    var cardbackcolor = cardbackcolor1.Count == 0 ? "" : cardbackcolor1.SingleOrDefault().CardBackColor;
+    ViewBag.about = db.tblAboutUsContents.Where(p => p.Role == "ADMIN").ToList();
+    ViewBag.address = db.tblContects.ToList();
+    var st = db.tblMenus.Where(p => p.Role == "ADMIN").ToList();
+    var homests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "HOME").SingleOrDefault().Status;
+    var aboutsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "ABOUT").SingleOrDefault().Status;
+    var servicests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "SERVICES").SingleOrDefault().Status;
+    var productsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "PRODUCTS").SingleOrDefault().Status;
+    var worksts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "WORKS ").SingleOrDefault().Status;
+    //var cardsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "CARDS").SingleOrDefault().Status;
+    var travelsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "TRAVEL").SingleOrDefault().Status;
+    var dthsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "DTHCONNECTION").SingleOrDefault().Status;
+    var teamsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "TEAM").SingleOrDefault().Status;
+    var contactsts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "CONTACTUS").SingleOrDefault().Status;
+    var whychoosests = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "WHYCHOOSEUS").SingleOrDefault().Status;
+    var newupdatasts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "NEWUPDATE").SingleOrDefault().Status;
+
+
+}
+
+@{
+    var favimage = "";
+    var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
+    if (faviconlogo.Count() > 0)
+    {
+        if (faviconlogo.SingleOrDefault().Role == "ADMIN")
+        {
+            favimage = faviconlogo.SingleOrDefault().faviconimage;
+        }
+    }
+    else
+    {
+
+        <link rel="icon" href="" type="image/x-icon" />
+    }
+    var admindetail = db2.Admin_details.ToList();
+    var mailid = admindetail.SingleOrDefault().email;
+    var mobile = admindetail.SingleOrDefault().mobile;
+    var Address = admindetail.SingleOrDefault().Address;
+    var Firm_Name = admindetail.SingleOrDefault().Companyname;
+    var SupportMail = admindetail.SingleOrDefault().email1;
+    var CustCareNo = "+91" + admindetail.SingleOrDefault().mobile1;
+    var PinCode = admindetail.SingleOrDefault().pincode;
+
+    int state = Convert.ToInt32(admindetail.SingleOrDefault().State);
+    int district = Convert.ToInt32(admindetail.SingleOrDefault().District);
+    var City = db2.State_Desc.Where(a => a.State_id == state).SingleOrDefault().State_name;
+    var State = db2.District_Desc.Where(a => a.Dist_id == district && a.State_id == state).SingleOrDefault().Dist_Desc;
+
+
+}
+<section id="hero" class="d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+
+            <!-- Left Side with Framed Content -->
+            <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
+                <h1><i>Empower Your Goals</i></h1>
+                <h3>Personal Loans Tailored to Your Every Need</h3>
+
+                <div class="baner_input">
+                    <input type="text" name="name" value="" placeholder="I am looking for" disabled />
+                    <select>
+                        <option value="value">Instant Personal Loan</option>
+                        <option value="value">Personal Loan</option>
+                        <option value="value">Debt Consolidation</option>
+                        <option value="value">Home Loan</option>
+                        <option value="value">Business Loan</option>
+                    </select>
+                    <input type="number" name="name" placeholder="For (₹) * " value="" />
+                </div>
+
+                <div class="hero-content-frame">
+                    <!-- Adding a frame around the content -->
+                    <div class="d-flex justify-content-center justify-content-lg-start">
+                    </div>
+                    <!-- Apply Now and Check Status Buttons -->
+                    <div class="button-group">
+                        <a href="@Url.Action("Login", "Home")" button id="applyButton" class="btn-apply-now">Apply Now</a>
+                        <a href="#" button id="checkStatusButton" class="btn-apply-now">Check Status</a>
+                    </div>
+                    <!-- Terms and Conditions Checkbox -->
+                </div>
+            </div>
+            <!-- Right Side with Hero Image -->
+            <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+
+
+                <div class="baner_a animated">
+                    <a href="#contact"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="currentColor" d="M258 21.89c-.5 0-1.2 0-1.8.12c-4.6.85-10.1 5.1-13.7 14.81c-3.8 9.7-4.6 23.53-1.3 38.34c3.4 14.63 10.4 27.24 18.2 34.94c7.6 7.7 14.5 9.8 19.1 9c4.8-.7 10.1-5.1 13.7-14.7c3.8-9.64 4.8-23.66 1.4-38.35c-3.5-14.8-10.4-27.29-18.2-34.94c-6.6-6.8-12.7-9.22-17.4-9.22M373.4 151.4c-11 .3-24.9 3.2-38.4 8.9c-15.6 6.8-27.6 15.9-34.2 24.5c-6.6 8.3-7.2 14.6-5.1 18.3c2.2 3.7 8.3 7.2 20 7.7c11.7.7 27.5-2.2 43-8.8c15.5-6.7 27.7-15.9 34.3-24.3c6.6-8.3 7.1-14.8 5-18.5c-2.1-3.8-8.3-7.1-20-7.5c-1.6-.3-3-.3-4.6-.3m-136.3 92.9c-6.6.1-12.6.9-18 2.3c-11.8 3-18.6 8.4-20.8 14.9c-2.5 6.5 0 14.3 7.8 22.7c8.2 8.2 21.7 16.1 38.5 20.5c16.7 4.4 32.8 4.3 44.8 1.1c12.1-3.1 18.9-8.6 21.1-15c2.3-6.5 0-14.2-8.1-22.7c-7.9-8.2-21.4-16.1-38.2-20.4c-9.5-2.5-18.8-3.5-27.1-3.4m160.7 58.1L336 331.7c4.2.2 14.7.5 14.7.5l6.6 8.7l54.7-28.5zm-54.5.1l-57.4 27.2c5.5.3 18.5.5 23.7.8l49.8-23.6zm92.6 10.8l-70.5 37.4l14.5 18.7l74.5-44.6zm-278.8 9.1a40.33 40.33 0 0 0-9 1c-71.5 16.5-113.7 17.9-126.2 17.9H18v107.5s11.6-1.7 30.9-1.8c37.3 0 103 6.4 167 43.8c3.4 2.1 10.7 2.9 19.8 2.9c24.3 0 61.2-5.8 69.7-9C391 452.6 494 364.5 494 364.5l-32.5-28.4s-79.8 50.9-89.9 55.8c-91.1 44.7-164.9 16.8-164.9 16.8s119.9 3 158.4-27.3l-22.6-34s-82.8-2.3-112.3-6.2c-15.4-2-48.7-18.8-73.1-18.8" /></svg>Instant Loan</a>
+                    <a href="#contact"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M23.596 13.43H11.562a2.46 2.46 0 0 0-2.639 2.231l-.001.009a2.472 2.472 0 0 0 2.683 2.239l-.009.001h12a.57.57 0 0 0 .621-.527v-3.424a.61.61 0 0 0-.604-.529h-.018zm-12.034 3.638a1.43 1.43 0 1 1 1.43-1.43v.004c0 .788-.639 1.426-1.426 1.426zM3.295 0v6.404h1.368V3.668c.138.034.298.056.462.062h.004a1.871 1.871 0 0 0 1.866-1.865a2.098 2.098 0 0 0-.066-.481l.003.015h7.492a2.324 2.324 0 0 0-.062.462v.004a1.871 1.871 0 0 0 1.865 1.866c.168-.006.329-.028.483-.066l-.016.003v2.736h1.401V0zm15.389 5.626h1.741a2.266 2.266 0 0 0-1.727-1.49l-.014-.002z" /><path fill="currentColor" d="M11.471 12.684h11.938V9.047a2.066 2.066 0 0 0-2.217-1.865h.007h-18.96a.097.097 0 0 0-.062-.031a.814.814 0 0 1-.466-.682v-.002a.886.886 0 0 1 .647-.776l.006-.001V4.105C1.057 4.167 0 6.032 0 8.364v13.772A2.067 2.067 0 0 0 2.215 24h-.007h18.96a2.065 2.065 0 0 0 2.207-1.857l.001-.008v-3.637H11.504c-1.927 0-3.482-1.306-3.482-2.891c0-1.616 1.554-2.922 3.45-2.922z" /></svg>Personal Loan</a>
+                    <a href="#contact"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><defs><path id="solarHomeBold0" fill="currentColor" d="M10.75 9.5a1.25 1.25 0 1 1 2.5 0a1.25 1.25 0 0 1-2.5 0" /></defs><path fill="currentColor" d="M18.5 3H16a.5.5 0 0 0-.5.5v.059l3.5 2.8V3.5a.5.5 0 0 0-.5-.5" /><use href="#solarHomeBold0" fill-rule="evenodd" clip-rule="evenodd" /><path fill="currentColor" fill-rule="evenodd" d="m20.75 10.96l.782.626a.75.75 0 0 0 .936-1.172l-8.125-6.5a3.75 3.75 0 0 0-4.686 0l-8.125 6.5a.75.75 0 0 0 .937 1.172l.781-.626v10.29H2a.75.75 0 0 0 0 1.5h20a.75.75 0 0 0 0-1.5h-1.25zM9.25 9.5a2.75 2.75 0 1 1 5.5 0a2.75 2.75 0 0 1-5.5 0m2.8 3.75c.664 0 1.237 0 1.696.062c.492.066.963.215 1.345.597s.531.853.597 1.345c.058.43.062.96.062 1.573v4.423h-1.5V17c0-.728-.002-1.2-.048-1.546c-.044-.325-.114-.427-.172-.484c-.057-.057-.159-.128-.484-.172c-.347-.046-.818-.048-1.546-.048c-.728 0-1.2.002-1.546.048c-.325.044-.427.115-.484.172c-.057.057-.128.159-.172.484c-.046.347-.048.818-.048 1.546v4.25h-1.5v-4.3c0-.664 0-1.237.062-1.696c.066-.492.215-.963.597-1.345s.854-.531 1.345-.597c.459-.062 1.032-.062 1.697-.062z" clip-rule="evenodd" /><use href="#solarHomeBold0" fill-rule="evenodd" clip-rule="evenodd" /></svg>Home Loan</a>
+                    <a href="#contact"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M11 15v-2h2v2zm-1-9h4V4h-4zM4 21q-.825 0-1.412-.587T2 19v-4h7v1q0 .425.288.713T10 17h4q.425 0 .713-.288T15 16v-1h7v4q0 .825-.587 1.413T20 21zm-2-8V8q0-.825.588-1.412T4 6h4V4q0-.825.588-1.412T10 2h4q.825 0 1.413.588T16 4v2h4q.825 0 1.413.588T22 8v5h-7v-1q0-.425-.288-.712T14 11h-4q-.425 0-.712.288T9 12v1z" /></svg>Business Loan</a>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</section><!-- End Hero -->
+
+
+
+
+
+<main id="main">
+
+    <!-- ======= Cliens Section ======= -->
+    <section id="cliens" class="cliens section-bg" style="height: 80px; ">
+        <div class="container">
+            <div class="row" id="clientSlider">
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/client-1.png" alt="">
+                </div>
+                <div class="col-lg-2 col-md-4 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/client-2.jpg" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/client-3.png" alt="">
+                </div>
+
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/client-5.png" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/client-6.jpg" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/Faircent.png" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/finzy.png" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/idfc.jpg" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/IIFL.jpg" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/Indifi.png" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/IndusIndBank.jpg" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/Lendingkart.jpg" alt="">
+                </div>
+                <div class="col-lg-2 col-md-9 col-8   justify-content-center">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/clients/upwards.png" alt="">
+                </div>
+            </div>
+        </div>
+    </section><!-- End Cliens Section -->
+    <!-- ======= Why Us Section ======= -->
+    <section id="why-us" class="why-us section-bg">
+        <div class="container-fluid" data-aos="fade-up">
+
+            <div class="row">
+
+                <div class="col-lg-6 d-flex flex-column justify-content-center align-items-stretch  order-2 order-lg-1">
+
+                    <div class="content">
+                        <h4>@Firm_Name - INSTANT PERSONAL LOANS PLATFORM</h4>
+                        <p>
+                            <h4>At @Firm_Name, our mission is to build financial services that are  <strong>simple, affordable and accessible</strong>in digital way.</h4>
+                        </p>
+                    </div>
+
+                    <div class="accordion-list">
+                        <ul>
+                            <li>
+                                <a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1" href="#"><span>01</span> Why Chose us for Personal Loans? <svg class="icon-show" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z" /></svg></a>
+                                <div id="accordion-list-1" class="collapse show" data-bs-parent=".accordion-list">
+                                    <p>
+                                        Personal loans are collateral free loans which meet the personal needs of money for an individual. Since these loans are unsecured, the credit profile of a borrower plays an important role.
+                                    </p>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a data-bs-toggle="collapse" data-bs-target="#accordion-list-2" class="collapsed" href="#"><span>02</span> What are personal Loans? <svg class="icon-show" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z" /></svg></a>
+                                <div id="accordion-list-2" class="collapse" data-bs-parent=".accordion-list">
+                                    <p>
+                                        The need for money may come in any form like a sudden medical emergency, educational need, pay off an existing loan on a credit card or a lifestyle expense. Personal loans instantly provide you with cash which you can pay back in the form of equated monthly installments (also known as emis).
+                                    </p>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a data-bs-toggle="collapse" data-bs-target="#accordion-list-3" class="collapsed" href="#"><span>03</span> Why @Firm_Name? <svg class="icon-show" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z" /></svg></a>
+                                <div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
+                                    <p>
+                                        @Firm_Name offers to help you to get instant personal loans to middle class Indians at attractive interest rates through its online which can be easy & hassel free & users can check their loan eligibility along with the loan amount and interest rate offered.
+                                    </p>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-6 align-items-stretch order-1 order-lg-2 img" style='' data-aos="zoom-in" data-aos-delay="150">
+                    &nbsp;
+
+                    <video style="padding: 113px 0px 0 0px;" playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+                        <source src="~/MainFrontDesign/Loan_theme_css/Loan.mp4" type="video/mp4">
+
+                    </video>
+                </div>
+            </div>
+
+        </div>
+    </section><!-- End Why Us Section -->
+    <!-- ======= Skills Section ======= -->
+    <section id="skills" class="skills">
+        <div class="container" data-aos="fade-up">
+
+            <div class="row">
+                <div class="col-lg-6 d-flex align-items-center" data-aos="fade-right" data-aos-delay="100">
+                    <img src="~/MainFrontDesign/Loan_theme_css/img/Ezybaazaar2.png" class="img-fluid" alt="">
+                </div>
+                <div class="col-lg-6 pt-4 pt-lg-0 content" data-aos="fade-left" data-aos-delay="100">
+                    <h3>WHY @Firm_Name</h3>
+                    <p class="fst-italic">
+
+                    </p>
+
+                    <div class="skills-content">
+
+                        <div class="progress">
+                            <span class="skill">TRUST <i class="val">99%</i></span>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress">
+                            <span class="skill">FAITH <i class="val">99%</i></span>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress">
+                            <span class="skill">TRANSPARENCY <i class="val">99%</i></span>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress">
+                            <span class="skill">RESPONSIBILITY <i class="val">99%</i></span>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section><!-- End Skills Section -->
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services section-bg">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-title">
+                <h2>Services</h2>
+                <h3>Only the best professional Services</h3>
+            </div>
+
+            <div class="row">
+                <!-- Service 1 -->
+                <div class="col-xl-3 col-md-6 col-sm-6 d-flex align-items-stretch mt-4 mt-md-0 aos-init aos-animate" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="icon-box">
+                        <!-- Image for Loan Icon -->
+                        <div class="rob_set">
+                            <img src="~/MainFrontDesign/Loan_theme_css/img/loan.png" alt="Loan Icon" class="img-fluid" style="">
+                        </div>
+                        <h4><a href="#">Instant Loan</a></h4>
+                        <p>Get loan instantly in your bank account</p>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="col-xl-3 col-md-6 col-sm-6  d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="icon-box">
+                        <!-- Image for Approval Icon -->
+                        <div class="rob_set">
+                            <img src="~/MainFrontDesign/Loan_theme_css/img/stamp.png" alt="Loan Icon" class="img-fluid" style="">
+                        </div>
+
+                        <h4><a href="#">Quick Approvals</a></h4>
+                        <p>Apply using your PAN and Aadhaar number</p>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="col-xl-3 col-md-6 col-sm-6  d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="icon-box">
+                        <!-- Image for EMI Icon -->
+                        <div class="rob_set">
+                            <img src="~/MainFrontDesign/Loan_theme_css/img/trade.png" alt="Loan Icon" class="img-fluid" style="">
+                        </div>
+
+                        <h4><a href="#">Affordable EMI Plans</a></h4>
+                        <p>Select EMI amount as per your convenience</p>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="col-xl-3 col-md-6 col-sm-6  d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="icon-box">
+                        <!-- Image for Document Icon -->
+                        <div class="rob_set">
+                            <img src="~/MainFrontDesign/Loan_theme_css/img/file.png" alt="Loan Icon" class="img-fluid" style="   ">
+                        </div>
+
+                        <h4><a href="#">Easy Documentation</a></h4>
+                        <p>For your ease we have minimal documentation</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </section><!-- End Services Section -->
+    <!-- ======= Cta Section ======= -->
+    <section id="cta" class="cta">
+        <div class="container" data-aos="zoom-in">
+
+            <div class="row">
+                <div class="col-lg-9 text-center text-lg-start">
+                    <h3>Get a <b>Personal Loan</b> for your every need Instantly</h3>
+                    <p> Get chance of Pre Approved offer (No income Proof Required)<br> At flexible Rate of Interest Starting 10.50% Annually T&C apply</p>
+                </div>
+                <div class="col-lg-3 cta-btn-container text-center">
+                    <a class="cta-btn align-middle" href="@Url.Action("Login", "Home")">Apply Now</a>
+                </div>
+            </div>
+
+        </div>
+    </section><!-- End Cta Section -->
+
+
+    <section id="howitworks" class="portfolio">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-title">
+                <h2>HOW IT WORKS</h2>
+                <p>4 EASY STEPS</p>
+            </div>
+
+            <ul id="portfolio-flters" class="d-flex justify-content-center" data-aos="fade-up" data-aos-delay="100">
+                <li data-filter="*" class="filter">Requirement</li>
+                <li data-filter=".filter-app">Eligibility</li>
+                <li data-filter=".filter-card">Monthly Repayment</li>
+                <li data-filter=".filter-web">Choose your Lender</li>
+            </ul>
+
+
+        </div>
+    </section>
+
+
+
+    <section id="why-us" class="why-us section-bg">
+        <div class="container-fluid" data-aos="fade-up">
+
+            <div class="row">
+
+                <div class="col-lg-12 d-flex flex-column justify-content-center align-items-stretch  order-2 order-lg-1">
+
+                    <div class="content" style="text-align:center;">
+                        <h2>TRUSTED BY MANY</h2>
+                        <p>
+                            <h4>We're present across the nook & corner of the country, making loans accessible, and simple!</h4>
+                        </p>
+                        <div class="row">
+                            <!-- Service 1 -->
+                            <div class="col-xl-6 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+                                <div class="icon-box">
+                                    <!-- Image for Loan Icon -->
+                                    <img src="~/MainFrontDesign/Loan_theme_css/img/wallet.png" alt="Loan Icon" class="img-fluid" style="width: 50%; height: auto;">
+                                    <h4><a href="#">2,100+</a></h4>
+                                    <p>Loan Disbursed</p>
+                                </div>
+                            </div>
+
+                            <!-- Service 2 -->
+                            <div class="col-xl-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
+                                <div class="icon-box">
+                                    <!-- Image for Approval Icon -->
+                                    <img src="~/MainFrontDesign/Loan_theme_css/img/location.png" alt="Loan Icon" class="img-fluid" style="width: 50%; height: auto; ">
+                                    <h4><a href="#">25,000+</a></h4>
+                                    <p>Locations Served</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ======= Pricing Section ======= -->
+    <section id="pricing" class="pricing">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-title">
+                <h2>LOAN DETAILS</h2>
+            </div>
+
+            <div class="row">
+
+                <div class="col-xl-4 col-md-12">
+
+                    <img class=" mt-4" src="~/MainFrontDesign/Loan_theme_css/img/LOAN DETAILS.png" alt="LOAN DETAILS" style="float: left; width: 100%; height: 100%; border-radius: 5px; border-top: 4px solid #393939; border-bottom: 4px solid #393939; " />
+
+                </div>
+
+                <div class="col-xl-8  col-md-12">
+
+                    <div class="row">
+                        <div class="col-lg-4 mt-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="box featured">
+                                <h3>Basic Details</h3>
+                                <!-- <h4><sup>Rs</sup>0<span>per month</span></h4> -->
+                                <ul>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg> <h4>Personal Details</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg> <h4>Employment Details</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg> <h4>Pan Card</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg> <h4>Aadhar Card</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg> <h4>Address Proof ( If Current address not as per Adhar Card)</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg> <h4>Income Proof</h4></li>
+
+                                </ul>
+                                <a href="#" class="buy-btn">Get Started</a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mt-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="box featured">
+                                <h3>Instant personal Loan</h3>
+                                <h4>Loan Amount : 5000 to 5,00,000</h4>
+                                <ul>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4> Loan Tenure: 3 to 60 Month</h4> </li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4> Credit Score : 650+ </h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4> Interest Rates: 10.5% Starting</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4> Processing Fees: 2% Starting</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4> Foreclosure Charges: As per Lender Policy ( Some of Lender Don’t charge)</h4></li>
+                                </ul>
+                                <a href="#" class="buy-btn">Get Started</a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mt-4 " data-aos="fade-up" data-aos-delay="300">
+                            <div class="box featured">
+                                <h3>New to Credit Plan</h3>
+                                <h4>We are fulfilling Personal Loan requirement on every need</h4>
+
+                                <ul>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4>Instant CASH Loan</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4>Flexible Loan</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4>Medical Emergency</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4>Wedding Loan</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4>House Renovation</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4>Education Loan</h4></li>
+                                    <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m10 15.586l-3.293-3.293l-1.414 1.414L10 18.414l9.707-9.707l-1.414-1.414z" /></svg><h4>Business Expansion Loan</h4></li>
+                                </ul>
+                                <a href="#" class="buy-btn">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section><!-- End Pricing Section -->
+    <!-- ======= About Us Section ======= -->
+    <section id="about" class="about">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-title">
+                <h2>About Us</h2>
+            </div>
+
+            <div class="row content">
+                <div class="col-lg-6">
+                    <p>
+                        We have been working very efficiently with loan and funding for 10+years.
+                    </p>
+                    <ul>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.602 13.76l1.412 1.412l8.466-8.466l1.414 1.415l-9.88 9.88l-6.364-6.365l1.414-1.414l2.125 2.125zm.002-2.828l4.952-4.953l1.41 1.41l-4.952 4.953zm-2.827 5.655L7.364 18L1 11.636l1.414-1.414l1.413 1.413l-.001.001z" /></svg><h1> 10+ Years Finance Experience</h1></li>
+                        <!-- <li><i class="ri-check-double-line"></i> Duis aute irure dolor in reprehenderit in voluptate velit</li>
+                        <li><i class="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat</li> -->
+                    </ul>
+                </div>
+                <div class="col-lg-6 pt-4 pt-lg-0">
+                    <p>
+                        @Firm_Name is a digital platform which provides you loans upto ₹50 lakhs instantly through a completely paperless process in any cities of India.
+                    </p>
+                    <a href="#" class="btn-learn-more">Give it a Try</a>
+                </div>
+                <p>
+
+                </p>
+                <p>
+                    @Firm_Name is a personal loan provider and has collaboration with more than 82 banks and non-banking finance companies to fulfill your financial needs.
+
+                    Whether you’re looking to consolidate debt, fund a home renovation project, or cover unexpected expenses, @Firm_Name offers a range of loan options to suit your specific needs.
+                    With competitive interest rates, flexible repayment terms, and a simple online application process, getting the cash you need has never been easier.
+                    @Firm_Name also offers personalized customer support and guidance throughout the entire borrowing process, ensuring that you feel confident and informed every step of the way.
+                    So if you’re in need of a loan, consider @Firm_Name as your trusted financial partner.
+                </p>
+            </div>
+
+        </div>
+    </section><!-- End About Us Section -->
+    <!-- ======= BENEFITS ======= -->
+    <section id="faq" class="faq section-bg">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-title">
+                <h2>Benefits and Features of @Firm_Name's Personal Loan</h2>
+                <p>
+                    @Firm_Name offers quick and easy personal loans online to meet all your financial needs. With our user-friendly web journey process, you can apply for a loan from the convenience of  home using  your smartphone.
+                    We provide instant loans for medical emergencies, business ventures, purchasing new mobile phones, or even a vacation. Our fast and hassle-free application process takes only 2 minutes, making easy for to apply–even for new to the process.
+                    Count on @Firm_Name for all your personal loan needs.
+                </p>
+                <p><br><br><br></p>
+
+            </div>
+            <div>
+                <p>Top 6 reasons to choose @Firm_Name instant personal loans</p>
+                <br><br>
+                <ul style="list-style-type: disc; margin-left: 20px;">
+                    <li> Get any amount from Rs. 5,000 to Rs. 10,00,000</li>
+                    <li> Enjoy flexible repayment options that can extend up to 5 years</li>
+                    <li> Find out your eligibility in just 2 minutes</li>
+                    <li> Loan amount is credited to your account in just a few minutes after application approval</li>
+                    <li> Our interest rates are economical and start at just 0.88% per month (10.50% Annually*)</li>
+                    <li> From start to finish, you can complete the entire application process easily from the comfort of your home</li>
+                </ul>
+            </div>
+
+
+            <div class="faq-list">
+                <ul>
+                    <li data-aos="fade-up" data-aos-delay="100">
+                        <svg class="icon-help" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 6a3.939 3.939 0 0 0-3.934 3.934h2C10.066 8.867 10.934 8 12 8s1.934.867 1.934 1.934c0 .598-.481 1.032-1.216 1.626a9.208 9.208 0 0 0-.691.599c-.998.997-1.027 2.056-1.027 2.174V15h2l-.001-.633c.001-.016.033-.386.441-.793c.15-.15.339-.3.535-.458c.779-.631 1.958-1.584 1.958-3.182A3.937 3.937 0 0 0 12 6m-1 10h2v2h-2z" /><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8s8 3.589 8 8s-3.589 8-8 8" /></svg> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1" href="#">No Collateral Required<svg class="icon-show" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z" /></svg></a>
+                        <div id="faq-list-1" class="collapse show" data-bs-parent=".faq-list">
+                            <p>
+                                @Firm_Name offers hassle-free personal loans without collateral, making the application process fast, straightforward, and accessible for unexpected expenses. Contact us today to learn more about their personal loan options and achieve your financial goals.
+                        </div>
+                    </li>
+
+                    <li data-aos="fade-up" data-aos-delay="200">
+                        <svg class="icon-help" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 6a3.939 3.939 0 0 0-3.934 3.934h2C10.066 8.867 10.934 8 12 8s1.934.867 1.934 1.934c0 .598-.481 1.032-1.216 1.626a9.208 9.208 0 0 0-.691.599c-.998.997-1.027 2.056-1.027 2.174V15h2l-.001-.633c.001-.016.033-.386.441-.793c.15-.15.339-.3.535-.458c.779-.631 1.958-1.584 1.958-3.182A3.937 3.937 0 0 0 12 6m-1 10h2v2h-2z" /><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8s8 3.589 8 8s-3.589 8-8 8" /></svg> <a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed" href="#">Minimal documentation<svg class="icon-show" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z" /></svg></a>
+                        <div id="faq-list-2" class="collapse" data-bs-parent=".faq-list">
+                            <p>
+                                Exciting News: Our pre-approved loan offer!
+                                Our lending partners offer loans based solely on your KYC, without the need for income verification. Have you heard about this amazing opportunity?
+                                <br>
+                                <b>Doc Required:-</b><br>
+                                Pan Card       <br>
+                                Adhar Card     <br>
+                                Address proof  <br>
+                                Selfie         <br>
+
+                                <b>Basic Details : -</b> <br>
+                                Father Name       <br>
+                                DOB               <br>
+                                Company Name      <br>
+                        </div>
+                    </li>
+
+                    <li data-aos="fade-up" data-aos-delay="300">
+                        <svg class="icon-help" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 6a3.939 3.939 0 0 0-3.934 3.934h2C10.066 8.867 10.934 8 12 8s1.934.867 1.934 1.934c0 .598-.481 1.032-1.216 1.626a9.208 9.208 0 0 0-.691.599c-.998.997-1.027 2.056-1.027 2.174V15h2l-.001-.633c.001-.016.033-.386.441-.793c.15-.15.339-.3.535-.458c.779-.631 1.958-1.584 1.958-3.182A3.937 3.937 0 0 0 12 6m-1 10h2v2h-2z" /><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8s8 3.589 8 8s-3.589 8-8 8" /></svg> <a data-bs-toggle="collapse" data-bs-target="#faq-list-3" class="collapsed" href="#">Easy Approval<svg class="icon-show" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z" /></svg></a>
+                        <div id="faq-list-3" class="collapse" data-bs-parent=".faq-list">
+                            <p>
+                                While getting a loan may have been a tedious and time-consuming process in the past, with @Firm_Name it's a breeze. You no longer have to go through endless paperwork, long wait times, and numerous visits to the bank. With @Firm_Name, your loan can get approved within minutes, giving you more time to focus on what matters most to you. Whether you need a personal loan, a business loan, or a loan for any other purpose, @Firm_Name is there to help. So why wait? Apply for a loan today and get the funds you need in no time.
+                        </div>
+                    </li>
+
+                    <li data-aos="fade-up" data-aos-delay="400">
+                        <svg class="icon-help" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 6a3.939 3.939 0 0 0-3.934 3.934h2C10.066 8.867 10.934 8 12 8s1.934.867 1.934 1.934c0 .598-.481 1.032-1.216 1.626a9.208 9.208 0 0 0-.691.599c-.998.997-1.027 2.056-1.027 2.174V15h2l-.001-.633c.001-.016.033-.386.441-.793c.15-.15.339-.3.535-.458c.779-.631 1.958-1.584 1.958-3.182A3.937 3.937 0 0 0 12 6m-1 10h2v2h-2z" /><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8s8 3.589 8 8s-3.589 8-8 8" /></svg> <a data-bs-toggle="collapse" data-bs-target="#faq-list-4" class="collapsed" href="#">Versatile and Flexible: Personal Loans<svg class="icon-show" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z" /></svg></a>
+                        <div id="faq-list-4" class="collapse" data-bs-parent=".faq-list">
+                            <p>
+                                One of the greatest benefits of personal loans is their multipurpose nature. Unlike other forms of Loan, which are limited to specific purposes, personal loans can be used for almost anything except for investments and illegal activities. Whether you need funds for a wedding, home renovation, or any other immediate financial requirement, a personal loan is a flexible solution that can address various needs.
+                        </div>
+                    </li>
+
+                    <li data-aos="fade-up" data-aos-delay="400">
+                        <svg class="icon-help" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 6a3.939 3.939 0 0 0-3.934 3.934h2C10.066 8.867 10.934 8 12 8s1.934.867 1.934 1.934c0 .598-.481 1.032-1.216 1.626a9.208 9.208 0 0 0-.691.599c-.998.997-1.027 2.056-1.027 2.174V15h2l-.001-.633c.001-.016.033-.386.441-.793c.15-.15.339-.3.535-.458c.779-.631 1.958-1.584 1.958-3.182A3.937 3.937 0 0 0 12 6m-1 10h2v2h-2z" /><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8s8 3.589 8 8s-3.589 8-8 8" /></svg> <a data-bs-toggle="collapse" data-bs-target="#faq-list-5" class="collapsed" href="">FAQ<svg class="icon-show" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z" /></svg></a>
+                        <div id="faq-list-5" class="collapse" data-bs-parent=".faq-list">
+                            <p>
+                                <div>
+                                    <h2>Frequently Asked Questions for Personal Loans</h2>
+                                    <ul style="list-style-type: decimal; margin-left: 20px;">
+                                        <li>Is collateral/security required for an instant personal loan from @Firm_Name?</li>
+                                        <p>@Firm_Name instant loans are unsecured loans, hence you do not have to provide collateral or security of any sort.</p>
+
+                                        <li>What documents do I need to get an instant personal loan from @Firm_Name?</li>
+                                        <p>Our documentation requirements are minimal. We will only require the following:</p>
+                                        <ul style="list-style-type: disc; margin-left: 20px;">
+                                            <li>Your PAN number</li>
+                                            <li>Your mobile number will have to be linked to your Aadhaar card for KYC verification</li>
+                                            <li>Clear selfie taken in a well-lit area</li>
+                                            <li>Please note that we may require proof of address as well as a bank statement based on your profile.</li>
+                                        </ul>
+
+                                        <li>Is it safe to get an instant personal loan online from @Firm_Name?</li>
+                                        <p>@Firm_Name’s security systems are designed to be in line with those of the best banks in the country. You can be rest assured knowing that all your data is safe and secure as we use 256-bit data encryption for data management.</p>
+
+                                        <li>What happens to my existing instant loan if I avail a top-up loan from @Firm_Name?</li>
+                                        <p>When you take a top-up loan, we generate a new loan account for you. This new instant loan account has the due amount of the existing loan along with the top-up loan amount.</p>
+
+                                        <li>What are the applicable interest rates for my instant personal loan from @Firm_Name?</li>
+                                        <p>On your screen, you should be able to see a column called 'Monthly EMI'. That is the amount you will be paying each month. The Loan term column tells you the duration of the loan, and you will have to pay your 'Monthly EMI' every month for that duration. The interest column is for your information only, and specifies the entire interest you are paying on that loan amount in the entire duration. It is not related to the amount you will be paying.</p>
+
+                                        <li>Will there be a credit report inquiry when I apply for an instant loan from @Firm_Name?</li>
+                                        <p>Yes, there will be a credit report enquiry made whenever you avail an instant loan from @Firm_Name. This enquiry will only be made after you submit the loan application.</p>
+
+                                        <li>Is there any way to contact a @Firm_Name loan through a call?</li>
+                                        <p>You can contact our representatives through the options given below:</p>
+                                        <ul style="list-style-type: disc; margin-left: 20px;">
+                                            <li>You can send us an email to @SupportMail</li>
+                                            <li>You can also contact us through the @Firm_Name Loans App</li>
+                                            <li>To contact us for other purposes, please click <a href="#">here</a>.</li>
+                                        </ul>
+                                    </ul>
+                                </div>
+
+                            </p>
+                        </div>
+                    </li>
+
+
+
+                </ul>
+            </div>
+
+        </div>
+    </section><!-- ploan ended -->
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-title">
+                <h2>Contact</h2>
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-12 d-flex align-items-stretch">
+                    <div class="info">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="address">
+                                    <i><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><g fill="currentColor"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" /><path d="M8 8a2 2 0 1 1 0-4a2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6a3 3 0 0 0 0 6" /></g></svg></i>
+                                    <h4>Location:</h4>
+                                    <p>
+                                        @Address<br>
+                                        <strong>Phone:</strong>@CustCareNo<br>
+                                        <strong>Phone:</strong>@mobile<br>
+                                        <strong>Email:</strong> @SupportMail
+                                        <br>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="email">
+                                    <i><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2l7-4.2V4a1 1 0 0 0-1-1zm13 2.383l-4.708 2.825L15 11.105zm-.034 6.876l-5.64-3.471L8 9.583l-1.326-.795l-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" /></svg></i>
+                                    <h4>Email:</h4>
+                                    <p>@SupportMail</p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="phone">
+                                    <i><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><g fill="currentColor"><path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" /><path d="M8 14a1 1 0 1 0 0-2a1 1 0 0 0 0 2" /></g></svg></i>
+                                    <h4>Call:</h4>
+                                    <p style=" margin-bottom: 0;">@CustCareNo</p>
+                                    <p>+91 @mobile</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d460.80765313630474!2d72.8862585343205!3d19.111614861111505!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c81287ed1dd5%3A0x9c05feddc901279e!2sKrishanlal%20Marwah%20Industrial%20Estate!5e1!3m2!1sen!2sin!4v1692564424418!5m2!1sen!2sin" width="310" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        -->
+                    </div>
+
+                </div>
+
+                <div class="col-lg-12 mt-5 d-flex align-items-stretch">
+                    <form method="post" enctype="text/plain" class="php-email-form" role="form">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="name">Your Name</label>
+                                <input type="text" name="name" class="form-control" id="name" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="name">Your Email</label>
+                                <input type="email" class="form-control" name="email" id="email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Subject</label>
+                            <input type="text" class="form-control" placeholder="Loan Details" id="subject" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Message</label>
+                            <textarea style="height:100px; " class="form-control" name="message" rows="10" required></textarea>
+                        </div>
+                        <div class="my-3">
+                            <div class="loading">Loading</div>
+                            <div class="error-message"></div>
+                            <div class="sent-message">Your message has been sent. Thank you!</div>
+                        </div>
+                        <div class="text-center"><button type="submit">Send Message</button></div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+</main><!-- End #main -->

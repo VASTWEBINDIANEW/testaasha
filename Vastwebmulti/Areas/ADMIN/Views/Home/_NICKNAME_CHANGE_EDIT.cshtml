@@ -1,0 +1,120 @@
+﻿@model Vastwebmulti.Areas.ADMIN.Models.MasterDistributerModel
+
+<style>
+    .wallet-bank-input input[readonly="readonly"] {
+        background: transparent;
+        border: 0px;
+    }
+</style>
+
+
+<table class="table special-iii table-bordered  table-hover paid-service-table example-second" id="dvCategoryResults">
+    <thead>
+        <tr>
+            <th>Role</th>
+            <th>Nickname</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+
+    @foreach (var item in Model.Usernickname.OrderByDescending(x => x.Role == "master").ThenByDescending(x => x.Role))
+    {
+        <tbody>
+            <tr>
+                <td>
+
+                    @if (item.Role == "Dealer")
+                    {
+                        <p>Dealer </p>
+                    }
+                    else if (item.Role == "Retailer")
+                    {
+                        <p>Retailer </p>
+                    }
+                    else if (item.Role == "API")
+                    {
+                        <p>API</p>
+                    }
+
+
+                    else
+                    {
+                        <p>@Html.DisplayFor(modelItem => item.Role) </p>
+                    }
+                </td>
+
+                @if (item.idno == Model.UsernicknameByID.idno)
+                {
+                    //using (Ajax.BeginForm("UpdatePaidService", "Home", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "paidservicetbl" }))
+                    //{
+                    @Html.Hidden("idno", Model.UsernicknameByID.idno)
+
+
+                    @*<td><input type="number" id="txtminbalUPIQRCODE" name="txtminbalUPIQRCODE" value="@item.Role" readonly="readonly" /></td>*@
+                    <td>@Html.TextBox("NickName1", Model.UsernicknameByID.NickName, new { @class = "form-control" })</td>
+
+
+                    <td>
+                        <button type="button" id="btnSavedata123" onclick="btnSavedata123(@item.idno)" value="Save" class="btn waves-effect btnssl1 switch-edit-button" data-loading-text="<i class='fa fa-spinner fa-spin'></i>">Save</button>
+
+
+                    </td>
+                }
+                else
+                {
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </td>*@
+                    <td>@Html.DisplayFor(modelItem => item.NickName)</td>
+                    <td class="last-td">
+                        <button type="button" onclick="Editmode1('@item.idno')" id="btnEdit1" class="btn waves-effect shownextrow switch-edit-button" value="Edit">
+                            <p>Edit</p>
+                        </button>
+                    </td>
+                }
+
+            </tr>
+
+
+
+        </tbody>
+    }
+</table>
+
+
+@*<script>
+        $(document).ready(function () {
+            $('.second-design .example-second').DataTable({
+                paging: false
+            });
+        });
+
+    </script>*@
+<script>
+            function btnSavedata123(idno) {
+         $.ajax({
+             url: '@Url.Action("Editnickname", "Home")',
+             type:'POST',
+             data: { idno: idno, NickName: $('#NickName1').val() },
+
+             success: function (data) {
+
+                 setTimeout(function () { $('#NICKNAMEOPTION').html(data); }, 500);
+
+            }
+        });
+
+
+    }
+
+     $('.btnssl1').on('click', function () {
+                    var $this = $(this);
+                    $this.button('loading');
+                    setTimeout(function () {
+                        $this.button('reset');
+                    }, 500);
+                });
+</script>
+
+

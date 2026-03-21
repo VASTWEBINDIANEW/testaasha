@@ -1,0 +1,251 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.Activeandinactivepaid
+@{
+    ViewBag.Title = "Service Payment";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+<script src="~/loaderjs/loaderdemo.js"></script>
+@*<script src="http://code.jquery.com/jquery-latest.js"></script>*@
+
+<link href="~/CSS/bootstrap-combobox.css" rel="stylesheet" />
+<style>
+    .scroll {
+        width: 100%;
+        max-height: 508px;
+        overflow: auto;
+    }
+
+        .scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scroll::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .scroll::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+        }
+</style>
+<style>
+    .input-group {
+        width: 100%;
+        /* margin-bottom: 20px; */
+    }
+
+    .dropdown-menu {
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        -ms-border-radius: 0;
+        border-radius: 0;
+        /*margin-top: -35px !important;*/
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        border: none;
+    }
+</style>
+
+<style type="text/css">
+    .loadermoney {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 199999;
+        background: url('../../images/mmmm.svg') 50% 50% no-repeat rgba(249, 249, 249, 0.9);
+    }
+</style>
+
+<div id="loadermoney" class="loadermoney" style="display:none;"></div>
+<section class="content" style="margin:90px 0px 0px 0px;" id="paid">
+    <div class="container-fluid">
+        @*<div class="block-header">
+            <h2>TABS</h2>
+        </div>*@
+        <!-- Example Tab -->
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>
+                            Paid Services
+                            <small>Paid services purchase history</small>
+                        </h2>
+                        <ul class="header-dropdown m-r--5">
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="material-icons">more_vert</i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="javascript:void(0);" class="waves-effect waves-block">Action</a></li>
+                                    <li><a href="javascript:void(0);" class="waves-effect waves-block">Another action</a></li>
+                                    <li><a href="javascript:void(0);" class="waves-effect waves-block">Something else here</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="body">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs tab-nav-right" role="tablist" style="margin-top:-22px;">
+                            <li role="presentation" style="background-color:#607d8b;" class="active"><a href="#home" data-toggle="tab">Buy More</a></li>
+                            <li role="presentation" style="background-color:#607d8b;margin-left:5px;"><a href="#profile" data-toggle="tab">My Active Services</a></li>
+                            
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="home">
+                                <div class="row clearfix">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="header">
+                                                <h4>Service Price List</h4>
+                                            </div>
+                                            <div class="" style="margin-top:-20px;">
+                                                <div class="body table-responsive " style="position:inherit;padding:12px;">
+                                                    <table class="table table-bordered table-striped   ">
+                                                        <thead class="navbar" style="color:white;position:inherit;">
+                                                            <tr>
+
+                                                                <th>Service&nbsp;Name</th>
+                                                                <th>Payment&nbsp;Type</th>
+                                                                <th>₹&nbsp;Price</th>
+                                                                <th>#</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        @foreach (var item in ViewBag.PriceList)
+                                                        {
+                                                            <tbody>
+                                                                <tr>
+                                                                    @using (Ajax.BeginForm("PurchaseService", "Home", new AjaxOptions{ HttpMethod = "POST",OnSuccess= "OnSuccess" ,OnFailure= "OnFailure" }))
+                                                                    {
+                                                                     @Html.Hidden("Idno", (int)item.Idno)
+                                                                     @Html.Hidden("ServiceName", (string)item.ServiceName)
+                                                                    <td>@item.ServiceName</td>
+                                                                    <td>@item.PaymentType</td>
+                                                                    <td>@item.Price</td>
+                                                                      <td>
+                                                                        @if (Model.ActiveandInactive.Any(a => a.ServiceName == item.ServiceName))
+                                                                        {
+                                                                            <button type="button" class="btn bg-grey waves-effect">&nbsp;Running&nbsp;</button>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <button type="submit" class="btn bg-blue-grey waves-effect" onclick="loader()">Purchase</button>
+                                                                          }
+       
+                                                                    </td>
+                                                                    }
+                                                                </tr>
+                                                            </tbody>
+                                                        }
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="profile">
+                                <div class="row clearfix">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="header">
+                                                <h4>My Active Services</h4>
+                                            </div>
+                                            <div class="" style="margin-top:-20px;">
+                                                <div class="body table-responsive " style="position:inherit;padding:12px;">
+                                                    <table class="table table-bordered table-striped   ">
+                                                        <thead class="navbar" style="color:white;position:inherit;">
+                                                            <tr>
+                                                                <th>Service&nbsp;Name</th>
+                                                                <th>Payment&nbsp;Type</th>
+                                                                <th>₹&nbsp;Price</th>
+                                                                <th>Purchase&nbsp;Date</th>
+                                                                <th>Expiry&nbsp;Date</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        @foreach (var item in Model.History)
+                                                        {
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>@Html.DisplayFor(modelItem => item.ServiceName)</td>
+                                                                    <td>@Html.DisplayFor(modelItem => item.PaymentType)</td>
+                                                                    <td>@Html.DisplayFor(modelItem => item.AmountPaid)</td>
+                                                                    <td>@Html.DisplayFor(modelItem => item.PurchaseDate)</td>
+                                                                    <td>@Html.DisplayFor(modelItem => item.ExpiryDate)</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        }
+
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- #END# Example Tab -->
+    </div>
+</section>
+
+<input id="deletecode" type="text" style="display:none;" />
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/Swalalert/sweetalert.min.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<script src="~/CSS/bootstrap-combobox.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    function loader() {
+        document.getElementById("loadermoney").style.display = "block";
+    }
+</script>
+<script>
+    $(document).ready(function () {
+         //$(document).ajaxStart(function () {
+         //       document.getElementById("loadermoney").style.display = "block";
+         //   });
+         //   $(document).ajaxComplete(function () {
+         //       document.getElementById("loadermoney").style.display = "none";
+         //   });
+    });
+    function OnSuccess(data)
+    {
+        var response = JSON.parse(data);
+        if(response.Status = "Success")
+        {
+            document.getElementById("loadermoney").style.display = "none";
+            swal("Wow!", response.Message, "success")
+
+        }else
+        {
+            document.getElementById("loadermoney").style.display = "none";
+            swal("Oops!", response.Message, "error")
+
+
+        }
+    }
+    function OnFailure(xhr,err)
+    {
+        document.getElementById("loadermoney").style.display = "none";
+        swal("Oops!", "Failed to send request", "error")
+    }
+</script>

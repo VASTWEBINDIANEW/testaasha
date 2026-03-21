@@ -1,0 +1,103 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.DthConVM
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/RETAILER/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+      rel="Stylesheet" type="text/css" />
+<link href="~/AdminDesign/plugins/animate-css/animate.min.css" rel="stylesheet" />
+<script src="~/AdminDesign/js/pages/ui/animations.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>
+<script type="text/javascript">
+
+        $.noConflict();
+        jQuery(document).ready(function ($) {
+            var sts = '@TempData["Status"]';
+            var msg = '@TempData["Message"]';
+            if (sts != null && sts != '')
+            {
+                if (sts == "Success")
+                {
+                    $.notify(msg, {
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        },
+                        type: 'success'
+                    });
+                }
+                else {
+                    $.notify(msg, {
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        },
+                        type: 'danger'
+                    });
+                }
+            }
+            $("#txtSearch").autocomplete({
+                source:'@Url.Action("FindProductByName")',
+                minLength: 1
+            });
+            $('#txtSearch').on('autocompleteselect', function (e, ui) {
+                //alert("item " + ui.item.value + " selected");
+                //$("#ProductName").val(ui.item.value);
+                //$("#lstProductsSubmit").click();
+
+            });
+        });
+</script>
+
+<style>
+    .plan-specification ul li {
+        line-height: 24px;
+        /*background: url(.../images/checkmark.png) 0 6px no-repeat;*/
+        padding: 0 0 0 16px;
+        font-size: 15px;
+        background-size: 14px;
+        color: #000;
+        /*background: url(../images/checkmark.png);*/
+        background: url(/images/checkmark.png) left top repeat;
+    }
+</style>
+@Html.Action("_MenuList")
+
+<link href="~/CSS/PageCss/EcommIndex.css" rel="stylesheet" />
+<!--Auto Compelete-->
+<section class="content">
+    <!--Catagory List-->
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="lstProducts">
+                @Html.Action("_productlist", "DthConnection", new { ProductName = Model.ProductName, SortBy = Model.SortBy })
+            </div>
+        </div>
+    </div>
+    <!--Catagory List END-->
+</section>
+@using (Ajax.BeginForm("_productlist", "ECommerce", new AjaxOptions
+{
+    UpdateTargetId = "lstProducts",
+    InsertionMode = InsertionMode.Replace,
+    LoadingElementId = "loadermoney",
+    OnComplete = "OnComplete"
+}))
+{
+    <input type="hidden" name="ProductName" id="ProductName" />
+    <input type="hidden" name="SubCatId" id="SubCatId" />
+    <input type="hidden" name="Price" id="Price" />
+    <input type="hidden" name="SortBy" id="SortBy" />
+    <input type="hidden" name="FilterBy" id="FilterBy" />
+    <input type="submit" id="lstProductsSubmit" />
+}
+@Html.Partial("Loder")
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/PageScript/Retailer/ProductList.js"></script>
+

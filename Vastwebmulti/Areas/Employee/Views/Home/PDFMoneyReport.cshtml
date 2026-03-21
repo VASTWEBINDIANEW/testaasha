@@ -1,0 +1,131 @@
+﻿@model List<Vastwebmulti.Models.money_transfer_report_paging_Result>
+@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity
+@{
+    Layout = null;
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var currentuser = User.Identity.GetUserId();
+    var iswritepermision = DB1.tbl_permission_Services.Where(x => x.Employee_ID == currentuser && x.Servicename == "DMT" && x.iswrite == true).Any();
+
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF Recharge report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <table cellspacing="0">
+        <thead style="background-color: whitesmoke; display:table-header-group;">
+            <tr>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Status</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">User's Information</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Beneficiary&nbsp;Ac</th>
+                <th style="padding-left: 2px;padding-right: 2px;text-align:center;">Type</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Net&nbsp;T/F</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Debit</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">User&nbsp; &nbsp;Post&nbsp;</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Req&nbsp;Time</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Bank&nbsp;UTR</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var sts = item.status;
+                var IMPSVERIFY = "";
+                if (item.status.ToUpper().Contains("REQ"))
+                {
+                    sts = "Pending";
+                }
+                if (item.Trans_type == "IMPS_VERIFY")
+                {
+                    IMPSVERIFY = "VERIFY";
+                }
+                else
+                {
+                    IMPSVERIFY = "IMPS";
+                }
+                <tr>
+                    <td>@sts</td>
+                    <td>@item.Roles > @item.frm_name</td>
+
+                    <td>@item.accountno</td>
+                    <td>@IMPSVERIFY</td>
+                    <td>@item.amount</td>
+
+
+                    @{
+                        decimal debit1 = 0;
+                        decimal amount1 = 0;
+                        decimal usercomm = 0;
+                        if (item.Roles == "Retailer")
+                        {
+                            if (item.Trans_type.Contains("IMPS_VERIFY"))
+                            {
+
+                                debit1 = Convert.ToDecimal(item.rem_comm);
+                            }
+                            else
+                            {
+                                amount1 = Convert.ToDecimal(item.amount);
+                                usercomm = Convert.ToDecimal(item.rem_comm);
+                                debit1 = amount1 + usercomm;
+
+                            }
+                        }
+                        if (item.Roles == "API")
+                        {
+                            if (item.Trans_type.Contains("IMPS_VERIFY"))
+                            {
+
+                                debit1 = Convert.ToDecimal(item.api_comm);
+                            }
+                            else
+                            {
+                                amount1 = Convert.ToDecimal(item.amount);
+                                usercomm = Convert.ToDecimal(item.api_comm);
+                                debit1 = amount1 + usercomm;
+
+                            }
+                        }
+                        if (item.Roles == "Whitelabelretailer")
+                        {
+                            if (item.Trans_type.Contains("IMPS_VERIFY"))
+                            {
+
+                                debit1 = Convert.ToDecimal(item.whitelabel_comm);
+                            }
+                            else
+                            {
+                                amount1 = Convert.ToDecimal(item.amount);
+                                usercomm = Convert.ToDecimal(item.whitelabel_comm);
+                                debit1 = amount1 + usercomm;
+
+                            }
+                        }
+                    }
+
+                    <td> @debit1</td>
+                    <td>@item.user_remain</td>
+
+                    <td>@item.trans_time</td>
+                    <td>@item.bank_trans_id</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</body>
+</html>

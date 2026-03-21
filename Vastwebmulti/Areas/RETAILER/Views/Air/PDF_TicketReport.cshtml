@@ -1,0 +1,88 @@
+﻿@model List<Vastwebmulti.Models.proc_FlightReport_Result>
+@{
+    ViewBag.Title = "PDF_TicketReport";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF_Ticket Report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        thead {
+            display: table-header-group
+        }
+
+        tfoot {
+            display: table-row-group
+        }
+
+        tr {
+            page-break-inside: avoid
+        }
+    </style>
+</head>
+<body>
+    <table id="example" class="table table-bordered table-striped table-hover third-design-table" cellspacing="0" style="width:100%;font-size:12px;">
+        <thead class="" style="color:black;position:inherit;background-color:whitesmoke;">
+            <tr>
+                <th style="">#&nbsp;/&nbsp;Booking&nbsp;Id</th>
+                <th style="width:110px;">Ticket&nbsp;Status</th>
+                <th>Passanger&nbsp;Name</th>
+                <th>Flight</th>
+                <th style="display:none;">Booking&nbsp;Id</th>
+                <th>PNR&nbsp;₹</th>
+                <th>Booking&nbsp;Date</th>
+                <th>Fare&nbsp;Amount</th>
+                <th>Pre&nbsp;₹</th>
+                <th>Post&nbsp;₹</th>
+                <th>U&nbsp;Fee</th>
+                <th>Income</th>
+            </tr>
+        </thead>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.BookingId</td>
+                    <td>@item.TicketStatus</td>
+                    <td>@item.LeadPaxFirstName&nbsp;@item.LeadPaxLastName</td>
+                    <td>@item.AirlineName</td>
+                    <td style="font-size:13px;">@item.PNR</td>
+                    <td><p style="font-size:11px;margin-top:2px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.TicketDate)&nbsp;&nbsp;<span style="color:green;font-weight:700;"></span></p></td>
+                    <td>@Math.Round(item.FareAmount, 2)</td>
+                    <td style="font-size:13px;">@Math.Round(item.RemPre, 2)</td>
+                    <td style="font-size:13px;">@Math.Round(item.RemPost, 2)</td>
+                    <td>U&nbsp;Fee</td>
+                    <td>
+                        @Math.Round(item.RemInc, 2)
+                        @if (item.TicketStatus.Contains("Refund"))
+                        {
+                            <span><sup>(-)</sup></span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+
+        else
+        {
+            <tr>
+                <td colspan="13"><h2 style="text-align:center;">Data Not Found</h2></td>
+
+            </tr>
+
+        }
+    </table>
+</body>
+</html>
+

@@ -1,0 +1,3588 @@
+﻿@model Vastwebmulti.Models.User
+@using Vastwebmulti.Models;
+@using RestSharp;
+@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Data.Entity.Validation;
+@using System.IO;
+@using System.Linq;
+@using System.Net;
+@using System.Text;
+@using System.Threading.Tasks;
+@using System.Web;
+@using System.Web.Mvc;
+@using System.Web.Script.Serialization;
+@using System.Web.UI.WebControls;
+@using Vastwebmulti.Areas.ADMIN.Controllers;
+@using Vastwebmulti.Areas.ADMIN.Models;
+@using Vastwebmulti.Areas.WHITELABEL.Models;
+@using Vastwebmulti.Models;
+
+
+
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+
+    var passcodeset = ViewBag.passcodesetings;
+
+    var masterpasscodeset = ViewBag.masterpasscodesetings;
+    var dealerpasscodesetings = ViewBag.dealerpasscodesetings;
+    var Retailerpasscodesetings = ViewBag.Retailerpasscodesetings;
+    var APIpasscodesetings = ViewBag.APIpasscodesetings;
+    var Whitelabelpasscodesetings = ViewBag.Whitelabelpasscodesetings;
+    //var twowaysecurity = ViewBag.twowaysecurity;
+    //passcodeset= twowaysecurity==true?"OTP":"";
+    //if (twowaysecurity == false)
+    //{
+    //    passcodeset =
+    //}
+    //   var twowaysecuritypass = twowaysecurity == true ? "selected" : "";
+    //var offpasscode = twowaysecuritypass == "true" ? "selected" : "";
+    //var offpasscode = passcodeset == "OFF" ? "selected" : "";
+    //var perpasscode = passcodeset == "PERDAY" ? "selected" : "";
+    //var Weakpasscode = passcodeset == "WEAKS" ? "selected" : "";
+    //var monthpasscode = passcodeset == "MONTHS" ? "selected" : "";
+}
+
+
+
+<style>
+
+   /* new css */
+    .custmor-support {
+        margin: 0px;
+    }
+   
+   
+   /* new css */
+
+
+    .body.profile-register-address.upload-document ul .list-group-item {
+        padding: 10px 0px;
+    }
+
+
+    .col-md-8.customlisttupe .retailer-profile-secondclass {
+        padding-bottom: 40px;
+    }
+
+    .retailer-profile-secondclass p.uptotransction {
+        float: left;
+        background: #f9f9cb;
+        color: #555;
+        padding: 5px 1px;
+        margin-left: 8px;
+        margin-top: 3px;
+        margin-bottom: 0;
+        width: 33%;
+    }
+
+    .retailer-profile-secondclass strong {
+        text-align: center;
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+        .retailer-profile-secondclass strong span {
+            font-size: 12px;
+        }
+
+    .col-md-8.customlisttupe {
+        margin-top: 20px;
+    }
+
+        .col-md-8.customlisttupe .retailer-profile-secondclass {
+            margin-bottom: 0;
+        }
+
+        .col-md-8.customlisttupe button.btn.bg-blue-grey.waves-effect.valuechangebuttonadmin.valuechang-second {
+            border: none;
+        }
+
+
+    p.uptotransction.activeupto::after {
+        content: "";
+        float: left;
+        width: 14px;
+        height: 14px;
+        background: url(../../ashok-images/correct.svg)no-repeat;
+        background-color: green;
+        background-size: 83%;
+        background-position: center;
+        position: relative;
+        left: 4px;
+        top: 3.4px;
+    }
+
+
+    .onofloaderclass {
+        display: none;
+    }
+
+    .onofloaderclass {
+        animation: none;
+        border: 1px solid #bfbebe;
+        position: relative;
+        cursor: pointer;
+        text-transform: uppercase;
+        overflow: hidden;
+        background: #f0f0f0;
+        height: 24px;
+        width: 100%;
+        float: left;
+    }
+
+        .onofloaderclass::before {
+            -webkit-animation: fa-spin 2s infinite linear;
+            animation: fa-spin 2s infinite linear;
+            width: 12px;
+            height: 12px;
+            display: block;
+            text-align: center;
+            margin: 0px auto;
+            margin-top: 4px;
+        }
+
+    .ribbon {
+        position: absolute;
+        right: -2px;
+        top: -2px;
+        z-index: 1;
+        overflow: hidden;
+        width: 75px;
+        height: 75px;
+    }
+
+        .ribbon span {
+            font-size: 11px;
+            color: #fff;
+            text-align: center;
+            font-weight: bold;
+            line-height: 20px;
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+            width: 100px;
+            box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+            position: absolute;
+            top: 19px;
+            right: -21px;
+        }
+
+    .list-group-item {
+        border: none;
+    }
+
+
+    .field-validation-error {
+        color: red;
+    }
+
+    .firt {
+        -webkit-transform: rotate(-90deg);
+        position: absolute;
+        left: -46px;
+        top: 48px;
+    }
+
+    .ons1 button {
+        font-size: 22px;
+        text-align: center;
+        padding: 5px 22px;
+        font-weight: bold;
+        margin: 0px auto;
+        float: right;
+        margin-top: 22px;
+    }
+
+    .ons1 input {
+        width: 24%;
+        float: right;
+        border: 1px solid #c7c7c7;
+        height: 28px;
+        margin-left: 4px;
+        padding: 0px 2px;
+        font-size: 12px;
+    }
+
+    .ons1 {
+        width: 100%;
+        float: left;
+        background: #fff;
+        border: 1px solid #c7c7c7;
+        padding: 3px 5px;
+        margin-bottom: 5px;
+    }
+
+        .ons1 span {
+            font-size: 16px;
+            display: inline-block;
+            float: left;
+            width: 32%;
+            margin-top: 3px;
+        }
+
+        .ons1 select {
+            width: 17%;
+            height: 28px;
+            border: 1px solid #c7c7c7;
+            float: left;
+            background: #e1e1e1;
+        }
+
+    .firt span {
+        color: var(--main-bg-lcolor);
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .firt3, .firt4 {
+        margin-left: 5px;
+    }
+
+    .firt2, .firt3, .firt4 {
+        padding: 0px;
+        width: 32%;
+    }
+
+    .required:after {
+        color: red;
+        content: " *";
+    }
+
+    .profile-register-address .list-group-item {
+        background-color: var(--second-bg-color);
+    }
+
+    .userwise-off ul li {
+        float: left;
+        padding: 0px 8px;
+        border-left: 1px solid #aeaaaa;
+        width: 20%;
+        height: 50px;
+    }
+
+    .userwise-off ul {
+        margin: 0px;
+    }
+
+    .userwise-off .onoffswitch {
+        width: 55px;
+    }
+
+    .userwise-off .custom-off::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        top: 8px;
+    }
+
+    .userwise-off .costom-on::after {
+        top: 7px;
+    }
+
+    #btnff.custom-off::before {
+        top: 4px;
+    }
+
+    #btnon.costom-on::after {
+        top: 5px;
+        right: 10px;
+    }
+
+    .master-user-pop, .Distributor-user-pop, .retailer-user-pop, .api-user-pop, .white-user-pop {
+        width: 100%;
+        float: left;
+        display: none;
+        position: absolute;
+        top: 80px;
+        z-index: 1;
+        box-shadow: 0px 0px 3px #000;
+        padding: 25px;
+        background: #fff;
+    }
+
+    .master-close-out-up {
+        position: absolute;
+        right: 3px;
+        top: 2px;
+    }
+
+    .master-close-out {
+        position: relative;
+        width: 25px;
+        height: 25px;
+        border: 2px solid #aaa4a4;
+        background: #fff;
+        cursor: pointer;
+        text-align: center;
+        border-radius: 50%;
+    }
+
+    .for-master-close {
+        color: var(--main-bg-lcolor);
+        font-size: 14px;
+        position: absolute;
+        left: 2px;
+        top: 49%;
+        background: #fff;
+        -ms-transform: translateY(50%);
+        transform: translateY(-50%);
+        width: 17px;
+        line-height: 0px;
+    }
+
+
+    select.profileseclet {
+        float: left;
+        width: 77% !important;
+        padding: 0;
+        border: 1px solid #999;
+        text-transform: uppercase;
+        font-weight: 400;
+        height: 24px;
+        font-size: 12px;
+        background: transparent;
+    }
+
+    #btnff.custom-off::before {
+        top: 6px;
+    }
+
+    .userwise-off .onoffswitch {
+        width: 77px;
+    }
+
+    select.profileseclet {
+        padding-left: 15px;
+    }
+
+    .Masterlist-page .left-first-tabs button.dropdown-toggle::after, .custom-district::after {
+        right: 5px;
+        top: 11px;
+        width: 7px;
+        height: 7px;
+        border-color: #6a6a6a;
+    }
+
+    .table-bordered tbody tr td, .table-bordered tbody tr th {
+        padding: 5px 10px;
+    }
+
+    @@media screen and (max-width:1366px) {
+        .useroftime-third-respon ul li p {
+            font-size: 11px;
+        }
+
+
+        .useroftime-third-respon .select-redgreen select {
+            width: 100% !important;
+            margin-bottom: 2px;
+        }
+
+        #masterref, .dealerotpoffclass, .retaileroffclass, .apioofclass, .wwhiteoofclass {
+            display: none;
+        }
+
+        .useroftime-third-respon ul li {
+            height: auto !important;
+        }
+
+        .userwise-off.one-time-otp-user.useroftime-third.useroftime-third-respon p {
+            font-size: 11px;
+        }
+    }
+
+    @@media only screen and (max-width:1300px) {
+        .userwise-off.one-time-otp-user {
+            width: 60% !important;
+        }
+
+            .userwise-off.one-time-otp-user.useroftime-third.useroftime-third-respon p {
+                font-size: 11px;
+            }
+
+        .userwise-off ul li {
+            padding: 0px;
+            padding-left: 4px;
+        }
+
+        .userwise-off .onoffswitch {
+            width: 40px;
+        }
+
+        .custmor-support-in button {
+            margin: 12px 15px;
+        }
+
+        .userwise-off.one-time-otp-user.useroftime-third.useroftime-third-respon {
+            width: 72% !important;
+        }
+    }
+
+    @@media only screen and (max-width:1280px) {
+
+        section.content {
+            margin: 75px 0px 0 160px;
+        }
+    }
+
+    @@media only screen and (max-width:1169px) {
+
+        .ls-closed section.content {
+            margin-left: 0px;
+        }
+    }
+
+    @@media only screen and (max-width:1024px) {
+
+        #sidebar-open {
+            top: 29px;
+            left: -147px;
+        }
+    }
+
+    @@media only screen and (max-width:992px) {
+        .fourdesign-section-admin .col-md-8 {
+            float: left;
+        }
+    }
+
+    @@media only screen and (max-width:767px) {
+        #sidebar-open {
+            top: -1px;
+            left: -4px;
+        }
+    }
+
+    @@media screen and (max-width:766px) {
+        .one-time-otp.otponetime-third {
+            width: 100% !important;
+        }
+
+        .userwise-off.one-time-otp-user.useroftime-third.useroftime-third-respon p {
+            font-size: 11px;
+        }
+
+
+        .one-time-otp.otponetime-third h1 {
+            width: 100%;
+            float: left;
+        }
+
+        .one-time-otp.otponetime-third span {
+            margin-left: 0 !important;
+        }
+
+        .col-md-8 {
+            width: 100%;
+            float: left;
+        }
+
+        .userwise-off.one-time-otp-user.useroftime-third {
+            width: 100% !important;
+        }
+
+        .profile-third-design {
+            width: 100%;
+            float: left;
+            margin-bottom: 15px;
+            margin-top: 8px;
+        }
+
+        .col-md-8, .col-md-4 {
+            width: 100%;
+            float: left;
+        }
+
+        .userwise-off.one-time-otp-user.useroftime-third.useroftime-third-respon {
+            width: 100% !important;
+            margin-top: 8px;
+        }
+
+        .useroftime-third-respon ul li {
+            width: 50%;
+            float: left;
+            padding-right: 5px;
+        }
+    }
+
+    @@media only screen and (max-width:480px) {
+
+        .res_p a {
+            font-size: 12px !important;
+            padding: 4px 8px !important;
+        }
+
+        #btndelpancrd {
+            margin-right: 0px !important;
+        }
+
+        .last-list-second .list-group-item span {
+            margin: 0px !important;
+            font-size: 10px;
+        }
+
+        .res_p h2 {
+            font-size: 15px !important;
+        }
+
+        .last-list-second .list-group-item {
+            font-size: 11px;
+        }
+
+        .one-time-otp {
+            width: 100% !important;
+            float: right;
+        }
+
+            .one-time-otp #UserWiseOTPbtn {
+                float: right;
+            }
+
+        .userwise-off.one-time-otp-user {
+            width: 100% !important;
+            float: left !important;
+            margin-bottom: 60px;
+        }
+
+        .userwise-off ul li {
+            width: 33%;
+            margin-top: 10px;
+        }
+
+        .custmor-support.fullbodydycolorbg {
+            margin-top: 140px;
+        }
+
+        .otp-security .table-responsive > .table-bordered > thead > tr > th:first-child, .otp-security .table-responsive > .table-bordered > tbody > tr > td:first-child {
+            border-left: 1px solid var(--border-color);
+        }
+
+        .profile-customer-third .custmor-support {
+            margin-top: 0;
+        }
+
+        .useroftime-third-respon ul li {
+            width: 50%;
+            float: left;
+            padding-right: 5px;
+        }
+    }
+</style>
+<section class="content fourdesign-section-admin">
+
+    <div class="container-fluid">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-admin">
+            <h3>Profile</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard", "Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+
+                <li><a href="javascript:void(0);">Profile</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-md-4 profile-third-design">
+                <div class="card page-header-third" style="">
+                    <div class="ribbon"><span class="fullbodydycolorbg">ADMIN</span></div>
+
+                    <div class="body fullbodydycolorbg">
+                        <center>
+                            @if (!string.IsNullOrWhiteSpace(ViewBag.image))
+                            {
+                                <div class="image" style="margin-top:24px;">
+                                    <img id="Adminimage" src="@Url.Content("~/" + ViewBag.image)" class="img-circle profileimg-third" alt="User" width="100" height="100" title="Click Me Upload Profile Image" style="cursor:pointer;" onclick="uploadimage(@ViewBag.admin.ID)" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="image" style="margin-top:24px;">
+                                    <img id="Adminimage" src="~/AdminDesign/images/user.png" width="100" height="100" class="img-circle profileimg-third" alt="User" title="Click Me Upload Profile Image" style="cursor:pointer;" onclick="uploadimage(@ViewBag.admin.ID)">
+                                </div>
+                            }
+
+                            <div class="msg" style="padding-top:12px; font-size:19px; font-weight:600; color:#fff">@ViewBag.admin.Name</div>
+                            <p style="margin-top:5px;font-size:14px;text-transform:uppercase;color:#fff;">Administrator</p>
+
+                        </center>
+                    </div>
+
+                    <div class="res_p" style="background-color: #c7c7c7; padding: 5px 10px; width: 100%; float: left; display: flex; align-items: center; justify-content: space-between; margin-top: 14px;">
+
+                        <h2 style="margin: 0; font-size: 20px; text-transform: uppercase;">Auto Credit on/off</h2>
+
+                        @{
+                            VastwebmultiEntities db = new VastwebmultiEntities();
+                            var set = db.Email_show_passcode.SingleOrDefault().cr_status;
+                        }
+                        @if (set == true)
+                        {
+                            @Html.ActionLink("Auto Credit ON", "CreaditSetting", "ADMIN", new { @style = "padding: 6px 12px; font-size: 14px; background: forestgreen; color: aliceblue;float: right;" })
+                            @*<button style=" margin: 10px 10px 10px 10px; padding: 5px 10px 5px 10px; font-size: 16px; background: forestgreen; color: aliceblue;">
+                    Auto Credit ON
+                </button>*@
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Auto Credit OFF", "CreaditSetting", "ADMIN", new { style = "padding: 6px 12px;font-size: 14px; background: red; color: aliceblue; float: right;" })
+                            @*<button style=" margin: 10px 10px 10px 10px; padding: 5px 10px 5px 10px; font-size: 16px; background: red; color: aliceblue;">
+                    Auto Credit OFF
+                </button>*@
+                        }
+                    </div>
+
+                    <div class="res_p" style="background-color: #c7c7c7; padding: 5px 10px; width: 100%; float: left; display: flex; align-items: center; justify-content: space-between; margin-top: 14px;">
+
+                        <h2 style="margin: 0; font-size: 20px; text-transform: uppercase;">Rediant Status</h2>
+
+                        @{
+
+                            var set1 = db.rediantdistresponses.ToList();
+                            var set2 = db.radiantauths.ToList();
+                        }
+                        @if (set1.Count == 0)
+                        {
+                            if (set2.Count == 0)
+                            {
+                                <div>Rediant Auth is Required</div>
+                            }
+                            else
+                            {
+                            @Html.ActionLink("Create Rediant Distributer", "rediantdisform", "ADMIN", new { @style = "padding: 6px 12px; font-size: 14px; background: forestgreen; color: aliceblue;float: right;" })
+                            }
+                        }
+                        else if (set1[0].status == "Approved")
+                        {
+                            <div>APPROVED</div>
+                        }
+                        else
+                        {
+                            <div id="redfull">  <div id="redtext">@set1[0].status</div> <div id="redbutton"><button onclick="checkrediantsts();">Check Status</button></div> </div>
+                        }
+                        <script>
+                           function checkrediantsts() {
+                               $.ajax({
+                                type: "POST", url: '@Url.Action("checkrediantdissts", "Home")',
+                          
+                                   cache: false,
+                                   success: function (data) {
+                                       alert(data);
+                                       if (data == "Approved") {
+                                        document.getElementById('redfull').innerHTML = "APPROVED";
+
+                                    }
+
+                                }
+                            });
+                        }
+                        </script>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="saveaddressModal" class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <div class="card page-header-third" style="margin-bottom:0px;">
+                    <div class="heading-back-third boxback-allpage-admin" style="background-color:#c7c7c7;padding: 5px 10px; padding:10px;">
+                        @if (ViewBag.admin.Companyname != null)
+                        {
+                            <h1 style="color:#555;font-size:20px;font-weight:bold;text-transform:uppercase;margin:0px;">
+                                <span id="spncompny">  @ViewBag.admin.Companyname </span>
+                                <a class="editprofile-second" style="float:right;font-size:14px; color:#555; border: 1px solid  #bbb;padding: 5px 15px;text-transform:capitalize; cursor: pointer;" onclick="editeaddress(@ViewBag.admin.ID)">Edit</a>
+                            </h1>
+                        }
+                        else
+                        {
+                            <h1 style="color:#555;font-size:24px;font-weight:bold;text-transform:uppercase;margin:0px;">
+                                <span id="spncompny">
+                                    No Data Found !
+                                </span>
+                                <a style="float:right;"><i class="fa fa-pencil-square-o" style="font-size:22px;margin-top:0px;" onclick="editeaddress(@ViewBag.admin.ID)"></i></a>
+                            </h1>
+                        }
+                    </div>
+                    <div class="body profile-register-address profile-address-second boxback-allpage-admin" style="background:var(--second-bg-color);padding-top: 0px;padding-bottom: 13px;  ">
+                        <ul class="list-group edit-profilebor-second" style="margin-bottom:4px;">
+                            <li class="list-group-item">
+                                <i class="fa fa-map-marker"></i> <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Registered Business Address</span>
+                            </li>
+                            <li class="list-group-item">
+
+                                @if (ViewBag.admin.Address != null && ViewBag.admin.Address != "")
+                                {
+                                    <p style="text-align:justify;margin-top:-12px;"><span id="spnaddress"> @ViewBag.admin.Address </span></p>
+                                }
+                                else
+                                {
+                                    <p style="margin-top:-12px;"><span id="spnaddress"> ADDRESS NOT FOUND !  </span></p>
+                                }
+
+                            </li>
+                            <li class="list-group-item" style="margin-top:-19px;">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;Zip Code</span>
+                                @if (ViewBag.admin.pincode != null)
+                                {
+                                    <p style="float:right;margin-top:5px;"><span id="spnpincode"> @ViewBag.admin.pincode </span></p>
+                                }
+                                else
+                                {
+                                    <p style="float:right;margin-top:5px;"><span id="spnpincode"> ZIP CODE NOT FOUND ! </span></p>
+                                }
+                            </li>
+                            <li class="list-group-item">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;State</span>
+                                <p style="float:right;text-transform:uppercase;"><span id="spnstate">  @ViewBag.ddlstate </span></p>
+                            </li>
+                            <li class="list-group-item">
+                                <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;District</span>
+                                <p style="float:right;text-transform:uppercase;"><span id="spndistrict"> @ViewBag.dddistrict </span></p>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div id="EditaddressModal" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" style="display:none;">
+                <div class="page-header-third" style="background:var(--second-bg-color);width:100%;float:left;">
+                    <div class="card" style="margin-bottom:0px;">
+                        @*@using (Html.BeginForm("UpdateAddressProfile", "Home", FormMethod.Post))*@
+
+                        @using (Ajax.BeginForm("UpdateAddressProfile", "Home", new AjaxOptions
+                        {
+                            InsertionMode = InsertionMode.Replace,
+                            OnSuccess = "OnSuccessEditAddress",
+                            OnFailure = "OnFailure",
+
+                            // LoadingElementId = "progress"
+                        }))
+
+                        {
+                            <input type="hidden" id="hdidadmin" name="hdidadmin" value="" />
+                            <div style="background-color:#c7c7c7;padding: 5px 10px; padding:10px;">
+
+                                <h1 style="color:#555;font-size:20px;font-weight:bold;text-transform:uppercase;margin:0px;">
+                                    @Html.TextBox("txtcompany", "", new { @class = "form-control", placeholder = "Enter Your Company Name", required = "required", @style = "width:300px;" })
+                                    <button type="submit" class="btn waves-effect editprofile-second" style="margin-top: 4px;background:#c7c7c7; margin-right:12px;position: absolute;right: -2px;top: 5px;height: 32px;padding: 5px 16px;">
+                                        <span class="second-spanclass" style="color:#555;"> Save</span>
+                                    </button>
+                                </h1>
+
+                            </div>
+                            <div class="body profile-register-address" style="background:var(--second-bg-color);padding-top: 0px;padding-bottom: 13px;  ">
+                                <ul class="list-group" style="margin-bottom:0px;padding-bottom:4px;">
+                                    <li>
+                                        <i class="fa fa-map-marker"></i> <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Registered Business Address</span>
+                                    </li>
+                                    <li>
+
+
+                                        <p style="text-align:justify;">   @Html.TextBox("txtaddress", "", new { @class = "form-control", placeholder = "Enter Your Address", required = "required", @style = "width:100%;" })</p>
+
+
+                                    </li>
+                                    <li>
+                                        <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;Zip Code</span>
+
+                                        <p style="float:right;"> @Html.TextBox("txtzipcode", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Zip Code", onkeypress = "return isNumber(event)" })</p>
+
+                                    </li>
+                                    <li class="aapearnce-noneclass">
+                                        <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;State</span>
+                                        <p class="custom-district" style="float:right;text-transform:uppercase;"> @Html.DropDownList("State", (IEnumerable<SelectListItem>)ViewBag.Sate, "-- Select State--", new { @class = "form-control", @required = "required", @onchange = "FillDistict()" })</p>
+                                    </li>
+                                    <li class="aapearnce-noneclass">
+                                        <span style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">&nbsp;District</span>
+                                        <p class="custom-district" style="float:right;text-transform:uppercase;"> @Html.DropDownList("District", (IEnumerable<SelectListItem>)ViewBag.District, "-- Select District--", new { @class = "form-control", @required = "" })</p>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-md-4">
+                <div class="card page-header-third">
+                    <div class="" style="background-color:#c7c7c7;padding: 5px 10px;">
+                        <h1 style="color:#555;font-size:14px;font-weight:bold;text-transform:uppercase;margin:0px;">
+                            Website Launching Date
+                            <a class="editprofile-second" style="float: right;border: 1px solid  #bbb;padding: 5px 15px;color:#555; text-transform:capitalize; cursor: pointer;" onclick="editemobileandpancard(@ViewBag.admin.ID)">Edit</a>
+                        </h1>
+                        <p style="text-transform:uppercase;margin-bottom:0px;">@ViewBag.admin.Date</p>
+
+                    </div>
+                    <div class="my-profile-save boxback-allpage-admin" style="background: var(--second-bg-color);padding:10px;">
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Name</p>
+                        <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminname">@ViewBag.admin.Name</label> </p>
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Email-ID</p>
+                        <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminemail">@ViewBag.admin.email </label> </p>
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Mobile</p>
+                        <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminmobile"> @ViewBag.admin.mobile </label></p>
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Aadharcard</p>
+                        @if (ViewBag.admin.Aadhar != null && ViewBag.admin.Aadhar != "")
+                        {
+                            var input = ViewBag.admin.Aadhar;
+                            string firstPart = input.Substring(0, 8);
+                            int len = input.Length;
+                            string middlePart = new String('X', 8);
+                            string lastPart = input.Substring(len - 4, 4);
+                            var aadharcard = middlePart + lastPart;
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminaadhar"> @aadharcard </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Pancard</p>
+                        @if (ViewBag.admin.pencardno != null && ViewBag.admin.pencardno != "")
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminpencard"> @ViewBag.admin.pencardno </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">GST No</p>
+                        @if (ViewBag.admin.Gstno != null && ViewBag.admin.Gstno != "")
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladmingst"> @ViewBag.admin.Gstno </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">TAN No.</p>
+                        @if (ViewBag.admin.tanno != null && ViewBag.admin.tanno != "")
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladmintan"> @ViewBag.admin.tanno </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+                        <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Business Registration No.</p>
+                        @if (ViewBag.admin.registrationno != null && ViewBag.admin.registrationno != "")
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;"><label id="lbladminregistration"> @ViewBag.admin.registrationno </label></p>
+                        }
+                        else
+                        {
+                            <p style="text-transform:uppercase;margin-top:-7px;border-bottom: 1px solid #fff;padding-bottom: 6px;margin-bottom: 6px;">Data Not Found !</p>
+                        }
+
+                        @*<p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">TAN No.</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;">265498468</p>*@
+                    </div>
+                    <div id="EditnameandpancardModal" class="boxback-allpage-admin" style="background: var(--second-bg-color);padding:10px; display:none;">
+                        @*@using (Html.BeginForm("UpdatePanccardandmobile", "Home", FormMethod.Post))*@
+                        @using (Ajax.BeginForm("UpdatePanccardandmobile", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "UpdateProfilesOnsucc", OnBegin = "ajaxValidate()" }))
+                        {
+                            <button type="submit" class="btn waves-effect editprofile-second margin-top-second" style="margin-top: 4px;background:#c7c7c7; margin-right:12px;position: absolute;right: -2px;top: -2px;height: 32px;padding: 5px 16px;">
+                                <span class="second-spanclass" style="color:#555;"> Save</span>
+                            </button>
+                            <input type="hidden" id="hdid1" name="hdid1" value="0" />
+
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Name</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;">   @Html.TextBox("txtname", "", new { @class = "form-control", placeholder = "Enter Your Name", required = "required" })</p>
+
+                            @*<p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Mobile</p>
+                                <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtmobile", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Mobile Number", onkeypress = "return isNumber(event)", maxlength = "10" })</p>*@
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Aadharcard</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtaadhaarcard", "", new { @class = "form-control", @placeholder = "Enter Aadhaar Number", onkeypress = "return isNumber(event)", maxlength = "12" })</p>
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Pancard</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;">@Html.TextBox("txtpancard", "", new { @class = "form-control", @placeholder = "Enter Pancard Number", @style = "text-transform:uppercase", maxlength = 10 })</p>
+                            @*<p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">GST No</p>
+                                <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtgst", "", new { @class = "form-control", @placeholder = "Enter GST Number", maxlength = "15", @style = "text-transform:uppercase" })</p>*@
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">TAN No</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtTAN", "", new { @class = "form-control", @placeholder = "Enter TAN Number", maxlength = "15", @style = "text-transform:uppercase" })</p>
+                            <p style="color:#7a7676;font-family:'Open Sans',sans-serif;font-weight:600;">Business Registration No</p>
+                            <p style="text-transform:uppercase;margin-top:-7px;padding-bottom: 6px;margin-bottom: 6px;"> @Html.TextBox("txtregistration", "", new { @class = "form-control", @placeholder = "Enter TAN Number", maxlength = "15", @style = "text-transform:uppercase" })</p>
+                            <label id="lblmsg"></label>
+                        }
+                    </div>
+                </div>
+            </div>
+            <!--Otp security Password -->
+            <div class="col-md-8 otp-security">
+                <div class="card page-header-third" style="margin-bottom: 0px; margin-top: 15px;">
+                    <div style="background-color:#c7c7c7;padding:7px 10px;width:100%;float:left;">
+                        <div class="one-time-otp otponetime-third" style="width:15%;float:left;">
+                            @*<h1 style="font-size:14px;display: inline-block;float:left; font-weight:500;margin:0px;margin-bottom:4px;">
+                                    <i class="fa fa-lock"></i>&nbsp;Admin Security
+
+                                </h1>*@
+                            <p style="margin-bottom:2px;"><i class="fa fa-lock"></i>&nbsp;Admin Security</p>
+                            @*<span style="float:left;color:var(--main-bg-lcolor);float:left;margin-right:10px; font-family:'Open Sans',sans-serif;font-weight:400;margin-bottom: 0px;margin-left: 19px;font-size:12px;margin-top: 4px;">You Want Login (OTP) Security Purpose !</span>*@
+
+
+
+                            @*@Html.DropDownList("Sortby", new SelectListItem[]
+                                {
+                                     new SelectListItem() { Text = "OFF", Value = "OFF" , },
+                                     new SelectListItem() { Text = "Otp-S", Value = "Otp"    },
+                                     new SelectListItem() { Text = "Day-P", Value = "Day"    },
+                                     new SelectListItem() { Text = "Weak-p", Value = "Weak"   },
+                                     new SelectListItem() { Text = "Monthly-P", Value = "Monthly" }},
+                                     new
+                                     {
+                                        @class = "profileseclet form-control"
+                                     });*@
+
+                            <span id="adminoff" class="securtyoff-show" style="height:10px;width:10px;float:left;background:red;position: absolute;left: 15px;display: block;top: 36px;"></span>
+                            <span id="adminon" class="securtyon-show" style="display:none;height:10px;width:10px;float:left;background:#28a745e6;position: absolute;left: 15px;top: 36px;"></span>
+
+                            <select id="Sortby" name="Sortby" class="profileseclet form-control" style="padding-left: 15px;width:100%;">
+                                <option value="OFF">SECURITY OFF</option>
+                                <option value="OTP">LOGIN OTP</option>
+                                <option value="PERDAY">DAY PASSCODE</option>
+                                <option value="WEAKS">WEAKLY PASSCODE</option>
+                                <option value="MONTHS">MONTH PASSCODE</option>
+
+                            </select>
+
+
+                            <div class="onoffswitch onofswicnewaddclass" id="UserWiseOTPbtn" style="float:left;cursor:pointer;width: 60px;border:0px;margin-top: 2px;display: inline-block;    margin-top: 0px;
+    position: relative;left: 3px;display:none">
+
+                                @if (Model.TwoFactorEnabled)
+                                {
+                                    using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", new { area = "" }, FormMethod.Post, new { encType = "multipart/form-data" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        @*<span class="costom-on">on</span>*@
+                                        <button style="border: 1px solid #999;border-radius: 13px;padding: 0px 8px;padding-top: 0px;border-radius: 0;
+    height: 24px;margin-top: 0px;" type="submit" class="costom-on" value="ON" id="btnon" name="btnon">
+                                            ON
+                                        </button>
+
+                                    }
+                                }
+                                else
+                                {
+                                    using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", new { area = "" }, FormMethod.Post, new { encType = "multipart/form-data" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @*<span class="custom-off">off</span>*@
+                                        <button style="border: 1px solid #999;border-radius: 13px;padding: 0px 8px;padding-top: 0px;border-radius: 0;height: 24px;
+    margin-top: 0px;" type="submit" class="custom-off " value="Off" id="btnff" name="btnff">
+                                            OFF
+                                        </button>
+                                    }
+                                }
+
+                            </div>
+
+                        </div>
+                        <div class="userwise-off one-time-otp-user useroftime-third useroftime-third-respon" style="width:84%;float:right;">
+                            <ul>
+                                <li>
+                                    <p style="margin-bottom:2px;">Master Security</p>
+                                    <div class="select-redgreen" style="width:100%;float:left;position:relative;">
+                                        <span id="masteroff" class="securtyoff-show" style="height:10px;width:10px;background:red;float:left;position: absolute;top: 7px;left: 5px;"></span>
+                                        <span id="masteron" class="securtyon-show" style="display: none; height: 10px; width: 10px; background: #28a745e6; float: left; position: absolute; top: 7px; left: 5px;"></span>
+                                        <select id="Sortbymaster" name="Sortbymaster" class="profileseclet form-control" style="width:82%;float:left;">
+
+                                            <option value="OFF">SECURITY OFF</option>
+                                            <option value="OTP">LOGIN OTP</option>
+                                            <option value="PERDAY">DAY PASSCODE</option>
+                                            <option value="WEAKS">WEAKLY PASSCODE</option>
+                                            <option value="MONTHS">MONTH PASSCODE</option>
+
+                                        </select>
+                                        <span onclick="GetUser('master')" class="for-master-button" style="font-size:10px;cursor: pointer;line-height: 12px;margin-bottom:0px;margin-left:3px;padding: 4px 5px;border:1px solid #999;height: 23px;margin-top:1px;display: inline-block;float: right">H</span>
+                                    </div>
+
+                                    <div class="onoffswitch" style="float: left; width: 80%; top: -24px;border: 0;" id="masterref">
+                                        @if (ViewBag.RoleStatus[0].RoleName == "master")
+                                        {
+
+                                            if (ViewBag.RoleStatus[0].Status == "N")
+                                            {
+                                                <button class="custom-off change-class" id="masterotpoff" onclick="RoleWiseOTP('master','Y')" style="border:1px solid;display:none;width: 100%;">
+                                                    OFF
+                                                </button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloaderq"></i>
+                                            }
+                                            else
+                                            {
+                                                <button class="costom-on change-class" id="masterotpon" onclick="RoleWiseOTP('master','N')" style="border:1px solid;display:none;width: 100%;">ON</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloaderq"></i>
+                                            }
+
+                                        }
+                                    </div>
+
+
+
+
+                                </li>
+                                <li>
+                                    <p style="margin-bottom:2px;">Distributor Security</p>
+                                    <div class="select-redgreen" style="width:100%;float:left;position:relative;">
+                                        <span id="dealeroff" class="securtyoff-show" style="height:10px;width:10px;background:red;float:left;position: absolute;top: 7px;left: 5px;"></span>
+                                        <span id="dealeron" class="securtyon-show" style="display: none; height: 10px; width: 10px; background: #28a745e6; float: left; position: absolute; top: 7px; left: 5px;"></span>
+                                        <select id="Sortbydealer" name="Sortbydealer" class="profileseclet form-control" style="width:82%;">
+                                            <option value="OFF">SECURITY OFF</option>
+                                            <option value="OTP">LOGIN OTP</option>
+                                            <option value="PERDAY">DAY PASSCODE</option>
+                                            <option value="WEAKS">WEAKLY PASSCODE</option>
+                                            <option value="MONTHS">MONTH PASSCODE</option>
+
+                                        </select>
+                                        <span onclick="GetUser('Dealer')" class="for-distributor-button" style="font-size:10px;cursor: pointer;line-height: 12px;margin-bottom:0px;margin-left:3px;padding: 4px 5px;border: 1px solid #999;height: 23px;margin-top:1px;display: inline-block;float:right;">H</span>
+                                    </div>
+                                    <div class="onoffswitch dealerotpoffclass" style="float: left; width: 80%; top: -24px;border: 0;">
+                                        @if (ViewBag.RoleStatus[1].RoleName == "Dealer")
+                                        {
+                                            if (ViewBag.RoleStatus[1].Status == "N")
+                                            {
+                                                <button class="custom-off" id="dealerotpoff" onclick="RoleWiseOTP('Dealer','Y')" style="border:1px solid;display:none;width: 100%;">OFF</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloader"></i>
+                                            }
+                                            else
+                                            {
+                                                <button class="costom-on" id="dealerotpon" onclick="RoleWiseOTP('Dealer','N')" style="border:1px solid;display:none;width: 100%;">ON</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloader"></i>
+                                            }
+
+                                        }
+                                    </div>
+
+                                </li>
+                                <li>
+                                    <p style="margin-bottom:2px;">Retailer Security</p>
+                                    <div class="select-redgreen" style="width:100%;float:left;position:relative;">
+                                        <span id="retaileroff" class="securtyoff-show" style="height:10px;width:10px;background:red;float:left;position: absolute;top: 7px;left: 5px;"></span>
+                                        <span id="retaileron" class="securtyon-show" style="display: none; height: 10px; width: 10px; background: #28a745e6; float: left; position: absolute; top: 7px; left: 5px;"></span>
+                                        <select id="Sortbyretailer" name="Sortbyretailer" class="profileseclet form-control" style="width:82%;">
+                                            <option value="OFF">SECURITY OFF</option>
+                                            <option value="OTP">LOGIN OTP</option>
+                                            <option value="PERDAY">DAY PASSCODE</option>
+                                            <option value="WEAKS">WEAKLY PASSCODE</option>
+                                            <option value="MONTHS">MONTH PASSCODE</option>
+
+                                        </select>
+
+                                        <span onclick="GetUser('Retailer')" class="for-retailer-button" style="font-size:10px;cursor: pointer;line-height: 12px;margin-bottom:0px;margin-left:3px;padding: 4px 5px;border: 1px solid #999;height: 23px;margin-top:1px;display: inline-block;float: right;">H</span>
+                                    </div>
+                                    <div class="onoffswitch retaileroffclass" style="float: left; width: 80%; top: -24px;border:0;">
+                                        @if (ViewBag.RoleStatus[2].RoleName == "Retailer")
+                                        {
+                                            if (ViewBag.RoleStatus[2].Status == "N")
+                                            {
+                                                <button class="custom-off" id="retailerotpoff" onclick="RoleWiseOTP('Retailer','Y')" style="border:1px solid;display:none;width: 100%;">OFF</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloader1"></i>
+                                            }
+                                            else
+                                            {
+                                                <button class="costom-on" id="retailerotpon" onclick="RoleWiseOTP('Retailer','N')" style="border:1px solid;display:none;width: 100%;">ON</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloader1"></i>
+                                            }
+
+                                        }
+
+                                    </div>
+
+                                </li>
+                                <li>
+                                    <p style="margin-bottom:2px;">API User Security</p>
+                                    <div class="select-redgreen" style="width:100%;float:left;position:relative;">
+                                        <span id="apioff" class="securtyoff-show" style="height:10px;width:10px;background:red;float:left;position: absolute;top: 7px;left: 5px;"></span>
+                                        <span id="apion" class="securtyon-show" style="display: none; height: 10px; width: 10px; background: #28a745e6; float: left; position: absolute; top: 7px; left: 5px;"></span>
+                                        <select id="SortbyAPI" name="SortbyAPI" class="profileseclet form-control" style="width: 82%;">
+                                            <option value="OFF">SECURITY OFF</option>
+                                            <option value="OTP">LOGIN OTP</option>
+                                            <option value="PERDAY">DAY PASSCODE</option>
+                                            <option value="WEAKS">WEAKLY PASSCODE</option>
+                                            <option value="MONTHS">MONTH PASSCODE</option>
+
+                                        </select>
+                                        <span onclick="GetUser('API')" class="for-api-button" style="font-size:10px;cursor: pointer;line-height: 12px;margin-bottom:0px;margin-left:3px;padding: 4px 5px;border: 1px solid #999;height: 23px;margin-top:1px;display: inline-block;float: right;">H</span>
+                                    </div>
+                                    <div class="onoffswitch apioofclass" style="float: left; width: 80%; top: -24px;border:0;">
+                                        @if (ViewBag.RoleStatus[3].RoleName == "API")
+                                        {
+                                            if (ViewBag.RoleStatus[3].Status == "N")
+                                            {
+                                                <button class="custom-off" id="apiotpoff" onclick="RoleWiseOTP('API','Y')" style="border:1px solid;display:none;width: 100%;">OFF</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloader2"></i>
+                                            }
+                                            else
+                                            {
+                                                <button class="costom-on" id="apiotpon" onclick="RoleWiseOTP('API','N')" style="border:1px solid;display:none;width: 100%;">ON</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloader2"></i>
+                                            }
+
+                                        }
+
+                                    </div>
+
+                                </li>
+                                <li style="padding-right: 0;">
+                                    <p style="margin-bottom:2px;">W/L&nbsp;User Security</p>
+                                    <div class="select-redgreen" style="width:100%;float:left;position:relative;">
+                                        <span id="whitelabeloff" class="securtyoff-show" style="height:10px;width:10px;background:red;float:left;position: absolute;top: 7px;left: 5px;"></span>
+                                        <span id="whitelabelon" class="securtyon-show" style="height:10px;width:10px;background:#28a745e6;float:left;position: absolute;top: 7px;left: 5px;display:none;"></span>
+                                        <select id="SortbyWhitelabel" name="SortbyWhitelabel" class="profileseclet form-control" style="width:83%;">
+                                            <option value="OFF">SECURITY OFF</option>
+                                            <option value="OTP">LOGIN OTP</option>
+                                            <option value="PERDAY">DAY PASSCODE</option>
+                                            <option value="WEAKS">WEAKLY PASSCODE</option>
+                                            <option value="MONTHS">MONTH PASSCODE</option>
+                                        </select>
+                                        <span onclick="GetUser('Whitelabel')" class="for-white-button" style="font-size:10px;cursor: pointer;line-height: 12px;margin-bottom:0px;margin-left:3px;padding: 4px 5px;border: 1px solid #999;height: 23px;margin-top:1px; display: inline-block;float: right;">H</span>
+                                    </div>
+                                    <div class="onoffswitch wwhiteoofclass" style="float: left; width: 80%; top: -24px;border:0;">
+                                        @if (ViewBag.RoleStatus[4].RoleName == "Whitelabel")
+                                        {
+                                            if (ViewBag.RoleStatus[4].Status == "N")
+                                            {
+                                                <button class="costom-on" id="whitelabelotpoff" onclick="RoleWiseOTP('Whitelabel','Y')" style="border:1px solid;display:none;width: 100%;">ON</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloader3"></i>
+                                            }
+                                            else
+                                            {
+                                                <button class="costom-on" id="whitelabelotpon" onclick="RoleWiseOTP('Whitelabel','N')" style="border:1px solid;display:none;width: 100%;">ON</button>
+                                                <i class="fa fa-circle-o-notch fa-spin onofloaderclass" id="dealeronloader3"></i>
+                                            }
+
+                                        }
+                                    </div>
+
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="master-user-pop">
+                        <div class="master-close-out-up">
+                            <div class="master-close-out">
+                                <div class="for-master-close">&#10006;</div>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="width:100%;height:397px;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SR</th>
+                                        <th>User&nbsp;Info</th>
+                                        <th>Reg.&nbsp;Mob.</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="masterlist">
+                                    @*<tr>
+                                            <td>1</td>
+                                            <td>sefsdgfdg</td>
+                                            <td>54364567567</td>
+                                            <td>
+                                                <div class="onoffswitch" style="float:left;">
+                                                    <button class="costom-on" style="border:0px;">ON</button>
+                                                </div>
+                                            </td>
+                                        </tr>*@
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="Distributor-user-pop">
+                        <div class="master-close-out-up">
+                            <div class="master-close-out">
+                                <div class="for-master-close">&#10006;</div>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="width:100%;height:397px;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SR</th>
+                                        <th>User&nbsp;Info</th>
+                                        <th>Reg.&nbsp;Mob.</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dealerlist">
+                                    @*<tr>
+                                            <td>1</td>
+                                            <td>sefsdgfdg</td>
+                                            <td>54364567567</td>
+                                            <td>
+                                                <div class="onoffswitch" style="float:left;">
+                                                    <button class="costom-on" style="border:0px;">ON</button>
+                                                </div>
+                                            </td>
+                                        </tr>*@
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="retailer-user-pop">
+                        <div class="master-close-out-up">
+                            <div class="master-close-out">
+                                <div class="for-master-close">&#10006;</div>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="width:100%;height:397px;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SR</th>
+                                        <th>User&nbsp;Info</th>
+                                        <th>Reg.&nbsp;Mob.</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="retailerlist">
+                                    @*<tr>
+                                            <td>1</td>
+                                            <td>sefsdgfdg</td>
+                                            <td>54364567567</td>
+                                            <td>
+                                                <div class="onoffswitch" style="float:left;">
+                                                    <button class="costom-on" style="border:0px;">ON</button>
+                                                </div>
+                                            </td>
+                                        </tr>*@
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="api-user-pop">
+                        <div class="master-close-out-up">
+                            <div class="master-close-out">
+                                <div class="for-master-close">&#10006;</div>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="width:100%;height:397px;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SR</th>
+                                        <th>User&nbsp;Info</th>
+                                        <th>Reg.&nbsp;Mob.</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="apilist">
+                                    @*<tr>
+                                            <td>1</td>
+                                            <td>sefsdgfdg</td>
+                                            <td>54364567567</td>
+                                            <td>
+                                                <div class="onoffswitch" style="float:left;">
+                                                    <button class="costom-on" style="border:0px;">ON</button>
+                                                </div>
+                                            </td>
+                                        </tr>*@
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="white-user-pop">
+                        <div class="master-close-out-up">
+                            <div class="master-close-out">
+                                <div class="for-master-close">&#10006;</div>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="width:100%;height:397px;">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SR</th>
+                                        <th>User&nbsp;Info</th>
+                                        <th>Reg.&nbsp;Mob.</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="whitelabellist">
+                                    @*<tr>
+                                            <td>1</td>
+                                            <td>sefsdgfdg</td>
+                                            <td>54364567567</td>
+                                            <td>
+                                                <div class="onoffswitch" style="float:left;">
+                                                    <button class="costom-on" style="border:0px;">ON</button>
+                                                </div>
+                                            </td>
+                                        </tr>*@
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="body" style="background:var(--second-bg-color); display:none;">
+                        <div class="row" style="margin-bottom:-20px;position: relative;">
+                            <div class="firt">
+                                <span>Support Time</span>
+                            </div>
+                            <div class="col-md-3 firt2" style="margin-left: 25px;">
+                                <div class="ons1">
+                                    <span>Monday</span>
+
+                                    <select class="dropshow" style="display:none;" id="Mondayd" onchange="change('Monday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Mondayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Mondayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                                <div class="ons1">
+                                    <span>Tuesday</span>
+                                    <select class="dropshow" style="display:none;" id="Tuesdayd" onchange="change('Tuesday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Tuesdayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Tuesdayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                                <div class="ons1">
+                                    <span>Wednesday</span>
+                                    <select class="dropshow" style="display:none;" id="Wednesdayd" onchange="change('Wednesday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Wednesdayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Wednesdayto" type="text" placeholder="End Time" readonly />
+                                </div>
+
+                            </div>
+                            <div class="col-md-3 firt3">
+                                <div class="ons1">
+                                    <span>Thursday</span>
+                                    <select class="dropshow" style="display:none;" id="Thursdayd" onchange="change('Thursday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Thursdayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Thursdayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                                <div class="ons1">
+                                    <span>Friday</span>
+                                    <select class="dropshow" style="display:none;" id="Fridayd" onchange="change('Friday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Fridayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Fridayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                                <div class="ons1">
+                                    <span>Saturday</span>
+                                    <select class="dropshow" style="display:none;" id="Saturdayd" onchange="change('Saturday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Saturdayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Saturdayto" type="text" placeholder="End Time" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3 firt4">
+                                <div class="ons1">
+                                    <span>Sunday</span>
+                                    <select class="dropshow" style="display:none;" id="Sundayd" onchange="change('Sunday')">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                    <input id="Sundayfrom" type="text" placeholder="Start Time" readonly />
+                                    <input id="Sundayto" type="text" placeholder="End Time" readonly />
+                                </div>
+
+                                <div class="ons1" style="border: 0px;background: none;">
+                                    <button id="edittime" onclick="edittime()" style="display: block;">Edit Support Timing</button>
+                                    <button id="Savetime" onclick="save()" style="display: none;">Save Support Timing</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+          
+            @*<div class="col-md-8 customlisttupe">
+                    <div class="retailer-profile-secondclass" style="width:100%;float:left;background:#eae9e9;margin-bottom:20px;">
+                        <button type="button" class="btn bg-blue-grey waves-effect valuechangebuttonadmin valuechang-second" style="float:right !important;width:100% !important;background: #eae9e9 !important;">
+                            <span style="display:block;color:#555;font-size:14px;">Auto Paid Services Renewal</span>
+                            <strong><p class="uptotransction classadminwhichraviknown @offpasscode"><span data-value="OFF">Passcode Setting OFF</span></p><p class="uptotransction classadminwhichraviknown @perpasscode"><span data-value="PERDAY">Day PassCode</span> </p><p class="uptotransction classadminwhichraviknown @Weakpasscode"><span data-value="WEAKS">Weekly PassCode</span></p><p class="uptotransction classadminwhichraviknown @monthpasscode"><span data-value="MONTHS">MONTHLY PassCode</span></p></strong>
+                        </button>
+                    </div>
+                </div>*@
+
+
+            <div class="col-md-8 profile-customer-third">
+                <div class="page-header-third" style="margin-top: 15px;">
+                    <div class=" custmor-support fullbodydycolorbg">
+                        <div class="custmor-support-in ">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <fieldset style="border: 1px solid #fff;padding: 5px 10px;">
+                                        <legend style="font-size: 14px;border: 0px;color: #fff;width: auto;padding: 0px 10px;margin-left: 10px;margin-bottom:0px;">Customer Support Email Id</legend>
+                                        <input type="hidden" id="IDd" value="@ViewBag.admin.ID" />
+                                        @if (ViewBag.admin.email1 != null && ViewBag.admin.email1 != "")
+                                        {
+                                            <input type="text" id="SupportEmail" readonly="readonly" value="@ViewBag.admin.email1" style="width:100%;" maxlength="50" />
+                                        }
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-5">
+                                    <fieldset style="border: 1px solid #fff;padding: 05px 10px;">
+                                        <legend style="font-size: 14px;border: 0px;color: #fff;width: auto;padding: 0px 10px;margin-left: 10px;margin-bottom:0px;">Customer Care No</legend>
+                                        @if (ViewBag.admin.mobile1 != null && ViewBag.admin.mobile1 != "")
+                                        {
+                                            <input type="number" id="SupportMobile" readonly="readonly" value="@ViewBag.admin.mobile1" maxlength="10" />
+                                        }
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="filed-edit-second" style="border: 1px solid #fff;margin-top: 9px;width:100%;float:left;">
+                                        <button>Edit</button><button id="btnnnSave" style="display:none;" onclick="SavaDataSupport()">Save</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="page-header-third card">
+                    <div class="heading-back-third boxback-allpage-admin" style="background-color:#c7c7c7;padding: 10px;">
+                        <h1 style="color:#555;font-size:18px;font-weight:bold;margin:0px;text-transform:uppercase;">
+                            <i class="fa fa-file" style="font-size:17px;"></i>&nbsp;Upload Documents
+                        </h1>
+
+                    </div>
+                    <div class="body profile-register-address upload-document boxback-allpage-admin" style="background:var(--second-bg-color);height: 259px;">
+                        <ul class="list-group last-list-second" style="margin-bottom:-19px;">
+                            <li class="list-group-item" style="">
+                                <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Aadhaar Card :-</span>
+                                <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                <div class="save-aadhar" id="EditAadhaardocModal" style="display:none;">
+                                    @*@using (Html.BeginForm("UploadAadharcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {*@
+                                    <input type="file" id="filess" name="filess" />
+                                    <button type="button" id="btnsuploadfile" name="btnsuploadfile">Save</button>
+
+                                    @*}*@
+
+                                </div>
+
+                                <span id="upddelbtn"></span>
+                                @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.Aadhaarpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>*@
+                                @if (ViewBag.admin.Aadhaarpath == null)
+                                {
+                                    <span id="aadharspnadivshow" style="display:none;">
+                                        <span class="badge" id="btndelservice" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Aadhaar')">Delete</span>
+                                        @*<span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                        <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Aadhaar" })">View</span>
+
+                                    </span>
+                                    <span id="aadharspnadivnotshow">
+                                        <span class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="uploadaadhaarDoc(@ViewBag.admin.ID)">Upload</span>
+                                    </span>
+                                    @*<span class="badge " id="aadhrupld" style="border-radius:0px; background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="uploadaadhaarDoc(@ViewBag.admin.ID)">Upload</span>*@
+
+
+                                }
+                                else
+                                {
+
+                                    <span id="aadharspnadivshow">
+                                        <span class="badge" id="btndelpancrd" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Aadhaar')">Delete</span>
+                                        @*<span class="badge" id="btnviewpancrd" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                        <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Aadhaar" })">View</span>
+
+                                    </span>
+                                    <span id="aadharspnadivnotshow" style="display:none;">
+                                        <span id="btnupld" class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="uploadaadhaarDoc(@ViewBag.admin.ID)">Upload</span>
+                                    </span>
+
+                                    @*<span class="badge " id="aadhrupld" style="border-radius:0px; background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;display:none;" onclick="uploadaadhaarDoc(@ViewBag.admin.ID)">Upload</span>
+                                        <span class="badge" id="aadhrView" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>
+                                        <span class="badge" id="aadhardel" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Aadhaar')">Delete</span>*@
+
+                                }
+
+                            </li>
+                            <li class="list-group-item" style="">
+                                <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Pancard :-</span>
+                                <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                <div class="save-aadhar" id="EditPancarddocModal" style="display:none;">
+                                    @*@using (Html.BeginForm("UploadPancardcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {*@
+                                    <input type="file" id="filepancrd" name="filepancrd" />
+                                    <button type="button" id="btnpncard" name="btnpncard">Save</button>
+                                    @*}*@
+                                </div>
+                                @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px; font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.pancardpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>*@
+                                @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px; font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.pancardpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View </a></span>*@
+                                @if (ViewBag.admin.pancardpath == null)
+                                {
+                                    <span id="panspnadivshow" style="display:none;">
+                                        <span class="badge" id="btndelpancrd" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Pancard')">Delete</span>
+                                        @*<span class="badge" id="btnviewpancrd" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                        <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Pancard" })">View</span>
+
+                                    </span>
+                                    <span id="panspnadivnotshow">
+                                        <span class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="uploadpancardDoc(@ViewBag.admin.ID)">Upload</span>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span id="panspnadivshow" style="float:right;">
+                                        <span class="badge" id="btndelpancrd" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Pancard')">Delete</span>
+                                        @*<span class="badge" id="btnviewpancrd" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                        <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Pancard" })">View</span>
+
+                                    </span>
+                                    <span id="panspnadivnotshow" style="display:none;">
+                                        <span id="btnupld" class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="uploadpancardDoc(@ViewBag.admin.ID)">Upload</span>
+                                    </span>
+
+                                }
+
+                            </li>
+                            <li class="list-group-item" style="">
+                                <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Service Agreement :-</span>
+                                <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                <div class="save-aadhar" id="EditServicedocModal" style="display:none;">
+                                    @*@using (Html.BeginForm("UploadServiceAggrementdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {*@
+                                    <input type="file" id="filesserv" name="filesserv" />
+                                    <button type="button" id="btnuploadservice" name="btnuploadservice">Save</button>
+                                    @*}*@
+                                </div>
+                                @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.serciveaggrementpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>*@
+                                @if (ViewBag.admin.serciveaggrementpath == null)
+                                {
+
+                                    <span id="servicespnadivshow" style="display:none;float:right;">
+                                        <span class="badge" id="btndelservice" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>
+                                        <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="ServiceAgrrement" })">View</span>
+
+                                    </span>
+                                    <span id="servicespnadivnotshow">
+                                        <span class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="uploadserviceDoc(@ViewBag.admin.ID)">Upload</span>
+                                    </span>
+
+                                }
+                                else
+                                {
+                                    <span id="servicespnadivshow" style="float:right;">
+                                        <span class="badge" id="btndelservice" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>
+                                        @*<span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                        <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="ServiceAgrrement" })">View</span>
+
+                                    </span>
+                                    <span id="servicespnadivnotshow" style="display:none;">
+                                        <span id="251" class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="uploadserviceDoc(@ViewBag.admin.ID)">Upload</span>
+                                    </span>
+
+                                    @*<span class="badge" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>*@
+                                }
+                            </li>
+
+                            <li class="list-group-item" style="">
+                                <span style="font-weight:bold;color:#7a7676;font-family:'Open Sans',sans-serif;">Signature :-</span>
+                                <span style="color:brown;opacity:0.5;margin-left: 10px;">MANDATORY</span>
+                                <div class="save-aadhar" id="EditsignaturdocModal" style="display:none;">
+                                    @*@using (Html.BeginForm("UploadServiceAggrementdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+                                        {*@
+                                    <input type="file" id="filesig" name="filesig" />
+                                    <button type="button" id="btnsignature" name="btnsignature">Save</button>
+                                    @*}*@
+                                </div>
+                                @*<span class="badge" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;"><a href="@Url.Content("~/" + ViewBag.admin.serciveaggrementpath)" style="cursor:pointer;text-decoration:none;color:#555;" target="_blank">View Link</a></span>*@
+                                @if (ViewBag.admin.signaturepath == null)
+                                {
+
+                                    <span id="sigpnadivshow" style="display:none;float:right;">
+                                        <span class="badge" id="btndelservice" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Signature')">Delete</span>
+                                        <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Signature" })">View</span>
+
+                                    </span>
+                                    <span id="signaturnotshow" style="float:right;">
+                                        <span class="badge " style="border-radius:0px;background:#f0f0f0;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="uploadsignature(@ViewBag.admin.ID)">Upload</span>
+                                    </span>
+
+                                }
+                                else
+                                {
+                                    <span id="sigpnadivshow" style="float:right;">
+                                        <span class="badge" id="btndelservice" style="border-radius:0px;background:#f0f0f0; margin-right:34px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'Signature')">Delete</span>
+                                        @*<span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>*@
+                                        <span class="badge" id="btnviewservice" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard(this)" style="margin-right:0px;background-color:#f0f0f0;color:#000;padding: 6px 15px;border:1px solid #bbb;border-radius:0px;font-weight:400;" data-href="@Url.Action("ShowingImages","Home",new {id=@ViewBag.admin.ID,imgtype="Signature" })">View</span>
+
+                                    </span>
+                                    <span id="signaturnotshow" style="display:none;">
+                                        <span id="21451" class="badge " style="border-radius:0px;background:#f0f0f0; margin-right:93px;color:#000;border:1px solid #bbb;font-weight:400;cursor:pointer;" onclick="uploadsignature(@ViewBag.admin.ID)">Upload</span>
+                                    </span>
+
+                                    @*<span class="badge" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc(@ViewBag.admin.ID,'ServiceAgrrement')">Delete</span>*@
+                                }
+                            </li>
+
+
+                        </ul>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="myModalUploadImg" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" style="color:var(--main-bg-lcolor);float: right;background: transparent;border: 0px;font-size: 40px;line-height: 20px;" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Document</h4>
+            </div>
+            <div class="modal-body" style="padding:10px;">
+                @if (ViewBag.admin.Aadhaarpath == null)
+                {
+
+                    <img src="" id="imgAdharCard" alt="" style="max-width:100%;" />
+                }
+                else
+                {
+                    <img src="../../@ViewBag.admin.Aadhaarpath" id="imgAdharCard" alt="" style="max-width:100%;" />
+                }
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--Edit Address and Pincode Modal Poppup popup-->
+<div class="modal fade" @*id="EditaddressModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Address</h4>
+            </div>
+            @using (Html.BeginForm("UpdateAddressProfile", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtid" name="txtid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Company Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtcompany", "", new { @class = "form-control", placeholder = "Enter Your Company Name", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <input type="text" id="txtid" name="txtid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Address</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtaddress", "", new { @class = "form-control", placeholder = "Enter Your Address", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Zip Code</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtzipcode", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Zip Code", onkeypress = "return isNumber(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">State</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.DropDownList("State", (IEnumerable<SelectListItem>)ViewBag.Sate, "-- Select State--", new { @class = "form-control", @required = "required", @onchange = "FillDistict()" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">District</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.DropDownList("District", (IEnumerable<SelectListItem>)ViewBag.District, "-- Select District--", new { @class = "form-control", @required = "" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Edit Pancard nad Name and Gst Number Modal Popup-->
+<div class="modal fade" @*id="EditnameandpancardModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Profile</h4>
+            </div>
+            @using (Html.BeginForm("UpdatePanccardandmobile", "Home", FormMethod.Post))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtid1" name="txtid1" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Name</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtname", "", new { @class = "form-control", placeholder = "Enter Your Name", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Mobile No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtmobile", "", new { @required = "required", @class = "form-control", @placeholder = "Enter Mobile Number", onkeypress = "return isNumber(event)", maxlength = "10" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Aadhaar No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtaadhaarcard", "", new { @class = "form-control", @placeholder = "Enter Aadhaar Number", onkeypress = "return isNumber(event)", maxlength = "12" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Pancard No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtpancard", "", new { @class = "form-control", @placeholder = "Enter Pancard Number", @style = "text-transform:uppercase", maxlength = 10 })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2" class="required">Gst No</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            @Html.TextBox("txtgst", "", new { @class = "form-control", @placeholder = "Enter GST Number", maxlength = "15", @style = "text-transform:uppercase" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--Edit Profile Image Modal Popup-->
+<div class="modal fade" id="EditprofileimageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Update Profile Image</h4>
+            </div>
+            @using (Html.BeginForm("Uploadprofileimage", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;background:#f5f5f5;">
+                    <div class="body">
+
+                        <div class="row clearfix">
+                            <input type="text" id="txtimgid" name="txtimgid" style="display:none;" />
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                <label for="email_address_2">Upload Image</label>
+                            </div>
+
+                            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #ddd;">
+                                        <input type="file" class="form-control" id="filess" name="filess" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                <span style="color:black;">Close</span>
+                            </button>
+                            <button type="submit" class="btn fullbodydycolorbg waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                <span style="color:#fff;">Save Change</span>
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<input type="hidden" id="HDadminid" value="@ViewBag.admin.ID" name="HDadminid" />
+<!--Upload Aadhaar card Doc Moadl Popup-->
+<div class="modal fade" @*id="EditAadhaardocModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Aadhaar Card Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadAadharcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtaadharid" name="txtaadharid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Upload Pancard card Doc Moadl Popup-->
+<div class="modal fade" @*id="EditPancarddocModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Pancard Card Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadPancardcarddoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtpancardid" name="txtpancardid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!--Upload Serviceaggremt card Doc Moadl Popup-->
+<div class="modal fade" @*id="EditServicedocModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Service Agreement Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadServiceAggrementdoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtserviceid" name="txtserviceid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+<!--Upload signature Moadl Popup-->
+<div class="modal fade" @*id="EditsignaturdocModal"*@ tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Upload Document</h4>
+            </div>
+            @using (Html.BeginForm("UploadSignatureDoc", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <input type="text" id="txtsignatureid" name="txtsignatureid" style="display:none;" />
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Upload Image</label>
+                                </div>
+
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #ddd;">
+                                            <input type="file" class="form-control" id="file" name="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<script>
+
+ $(document).ready(function () {
+     $('#Sortby option[value="@passcodeset"]').attr("selected", "selected");
+     $('#Sortbymaster option[value="@masterpasscodeset"]').attr("selected", "selected");
+     $('#Sortbyretailer option[value="@Retailerpasscodesetings"]').attr("selected", "selected");
+     $('#Sortbydealer option[value="@dealerpasscodesetings"]').attr("selected", "selected");
+     $('#SortbyAPI option[value="@APIpasscodesetings"]').attr("selected", "selected");
+     $('#SortbyWhitelabel option[value="@Whitelabelpasscodesetings"]').attr("selected", "selected");
+     var passcodesess ="@passcodeset";
+     var masterpasscodess  ="@masterpasscodeset";
+     var dealerpasscodess ="@dealerpasscodesetings";
+     var Retailerpasscodess ="@Retailerpasscodesetings";
+     var APIpasscodess ="@APIpasscodesetings";
+     var Whitelabelpasscodess ="@Whitelabelpasscodesetings";
+
+     if (passcodesess == "OFF") {
+         $('#adminoff.securtyoff-show').show();
+
+         $('#adminon.securtyon-show').hide();
+     }
+     else {
+         $('#adminoff.securtyoff-show').hide();
+         $('#adminon.securtyon-show').show();
+     }
+     if (masterpasscodess == "OFF") {
+          $('#masteroff.securtyoff-show').show();
+
+          $('#masteron.securtyon-show').hide();
+     }
+     else {
+          $('#masteroff.securtyoff-show').hide();
+          $('#masteron.securtyon-show').show();
+     }
+     if (dealerpasscodess == "OFF") {
+         $('#dealeroff.securtyoff-show').show();
+
+         $('#dealeron.securtyon-show').hide();
+     }
+     else {
+         $('#dealeroff.securtyoff-show').hide();
+         $('#dealeron.securtyon-show').show();
+     }
+     if (Retailerpasscodess == "OFF") {
+         $('#retaileroff.securtyoff-show').show();
+
+         $('#retaileron.securtyon-show').hide();
+     }
+     else {
+         $('#retaileroff.securtyoff-show').hide();
+         $('#retaileron.securtyon-show').show();
+     }
+
+     if (APIpasscodess == "OFF") {
+         $('#apioff.securtyoff-show').show();
+
+         $('#apion.securtyon-show').hide();
+     }
+     else {
+         $('#apioff.securtyoff-show').hide();
+         $('#apion.securtyon-show').show();
+     }
+     if (Whitelabelpasscodess == "OFF") {
+         $('#whitelabeloff.securtyoff-show').show();
+
+         $('#whitelabelon.securtyon-show').hide();
+     }
+     else {
+         $('#whitelabeloff.securtyoff-show').hide();
+         $('#whitelabelon.securtyon-show').show();
+     }
+
+
+});
+
+
+
+
+</script>
+<script>
+    $("#Sortby").on("change", e => {
+        // Note `e` argument
+
+        var value = $(e.currentTarget).val();  // ...and using it here
+        alert(value)
+        if (value == "OTP") {
+            $('#btnff').click();
+        }
+        else {
+
+            cclassadminwhisisknown(value)
+
+        }
+        //alert(value);
+    });
+
+
+</script>
+
+<script>
+
+    $("#Sortbymaster").on("change", e => {      // Note `e` argument
+
+        var value = $(e.currentTarget).val();  // ...and using it here
+        if (value == "OTP") {
+
+            $('#masterotpoff').click();
+        }
+        else {
+
+            cclassmasterwhisisknown(value,'master')
+
+        }
+        //alert(value);
+    });
+
+    $("#Sortbydealer").on("change", e => {      // Note `e` argument
+
+        var value = $(e.currentTarget).val();  // ...and using it here
+        if (value == "OTP") {
+            $('#dealerotpoff').click();
+        }
+        else {
+
+            cclassmasterwhisisknown(value, 'Dealer')
+
+        }
+        //alert(value);
+    });
+
+    $("#Sortbyretailer").on("change", e => {      // Note `e` argument
+
+        var value = $(e.currentTarget).val();  // ...and using it here
+        if (value == "OTP") {
+            $('#retailerotpoff').click();
+        }
+        else {
+
+            cclassmasterwhisisknown(value, 'Retailer')
+
+        }
+        //alert(value);
+    });
+
+    $("#SortbyAPI").on("change", e => {      // Note `e` argument
+
+        var value = $(e.currentTarget).val();  // ...and using it here
+        if (value == "OTP") {
+            $('#apiotpoff').click();
+        }
+        else {
+
+            cclassmasterwhisisknown(value, 'API')
+
+        }
+        //alert(value);
+    });
+
+
+    $("#SortbyWhitelabel").on("change", e => {      // Note `e` argument
+
+        var value = $(e.currentTarget).val();  // ...and using it here
+        if (value == "OTP") {
+            $('#whitelabelotpoff').click();
+        }
+        else {
+
+            cclassmasterwhisisknown(value, 'Whitelabel')
+
+        }
+        //alert(value);
+    });
+
+
+
+     const cclassmasterwhisisknown=(val,userrol)=> {
+         var typsss = val;
+         if (userrol == "master") {
+             $(this).hide();
+             $("#dealeronloaderq").show();
+         }
+         else if (userrol == "Dealer") {
+             $(this).hide();
+             $("#dealeronloader").show();
+         }
+         else if (userrol == "Retailer") {
+             $(this).hide();
+             $("#dealeronloader1").show();
+         }
+
+         else if (userrol == "API") {
+             $(this).hide();
+             $("#dealeronloader2").show();
+         }
+         else if (userrol == "Whitelabel") {
+             $(this).hide();
+             $("#dealeronloader3").show();
+         }
+
+         $('#Sortbydealer').attr("disabled", "disabled");
+         $('#Sortbymaster').attr("disabled", "disabled");
+         $('#Sortbyretailer').attr("disabled", "disabled");
+         $('#SortbyAPI').attr("disabled", "disabled");
+         $('#SortbyWhitelabel').attr("disabled", "disabled");
+        $.ajax({
+                url: '@Url.Action("DisablePassCodeAllUser", "Home")',
+            type: 'POST',
+            data: { btnVal: val, UserRole: userrol},
+         success: function (data) {
+
+
+                    if (data == 1)
+                    {
+                        location.reload();
+
+
+
+                          //   currenclass.addClass('activeupto').siblings().removeClass('activeupto');
+                    }
+                    else {
+                        $("#Sortby").val('Error Pls Refresh page');
+                        location.reload();
+                        //$('# $("#Sortby")').val(typsss);
+                        //swal("Oops...", response.Message, "error");
+                    }
+                },
+                error: function (data) {
+                }
+            });
+    }
+
+
+
+
+</script>
+
+
+<script>
+    const cclassadminwhisisknown=val=> {
+        var typsss = val;
+        $('#Sortby').attr("disabled", "disabled");
+        $.ajax({
+                url: '@Url.Action("PasscodeSettingByrem", "Home")',
+            type: 'POST',
+            data: { passcodetype: val },
+         success: function (data) {
+
+             $('#Sortby').removeAttr('disabled');
+                    if (data == 1)
+                    {
+                        location.reload();
+                       $("#Sortby").val(typsss);
+
+
+                          //   currenclass.addClass('activeupto').siblings().removeClass('activeupto');
+                    }
+                    else {
+                        $("#Sortby").val('Error Pls Refresh page');
+                        location.reload();
+                        //$('# $("#Sortby")').val(typsss);
+                        //swal("Oops...", response.Message, "error");
+                    }
+                },
+                error: function (data) {
+                }
+            });
+    }
+
+
+    @*$('.classadminwhichraviknown').click(function () {
+        var e = $(this).find("span").data("value");
+        var currenclass = $(this);
+
+     $.ajax({
+                url: '@Url.Action("PasscodeSettingByrem", "Home")',
+                type: 'POST',
+         data: { passcodetype: e },
+         success: function (data) {
+             $('#HDdataval').val('')
+                    if (data == 1)
+                    {
+
+                        currenclass.addClass('activeupto').siblings().removeClass('activeupto');
+                        location.reload();
+                    }
+                    else {
+                        //swal("Oops...", response.Message, "error");
+                    }
+                },
+                error: function (data) {
+                }
+            });
+
+    })*@
+
+
+</script>
+
+
+
+<script>
+    function change(val) {
+        var sts = $('#' + val + 'd').val();
+        if (sts == "ON") {
+            $('#' + val + 'from').prop('readonly', false);
+            $('#' + val + 'to').prop('readonly', false);
+        }
+        else {
+            $('#' + val + 'from').prop('readonly', true);
+            $('#' + val + 'to').prop('readonly', true);
+        }
+    }
+    function edittime() {
+        $('#edittime').hide();
+        $('#Savetime').show();
+        $('.dropshow').show();
+        $('#Mondayfrom').prop('readonly', false);
+        $('#Mondayto').prop('readonly', false);
+        $('#Tuesdayfrom').prop('readonly', false);
+        $('#Tuesdayto').prop('readonly', false);
+        $('#Thursdayfrom').prop('readonly', false);
+        $('#Thursdayto').prop('readonly', false);
+        $('#Wednesdayfrom').prop('readonly', false);
+        $('#Wednesdayto').prop('readonly', false);
+        $('#Fridayfrom').prop('readonly', false);
+        $('#Fridayto').prop('readonly', false);
+        $('#Saturdayfrom').prop('readonly', false);
+        $('#Saturdayto').prop('readonly', false);
+        $('#Sundayfrom').prop('readonly', false);
+        $('#Sundayto').prop('readonly', false);
+    }
+    function save() {
+         var Mondayd = $('#Mondayd').val();
+         var Tuesdayd = $('#Tuesdayd').val();
+         var Wednesdayd = $('#Wednesdayd').val();
+         var Thursdayd = $('#Thursdayd').val();
+         var Fridayd = $('#Fridayd').val();
+         var Saturdayd = $('#Saturdayd').val();
+         var Sundayd = $('#Sundayd').val();
+
+         $.ajax({
+              type: "POST",
+              url: '@Url.Action("Addsupporttime","Home")',
+              data: { 'ID': ID, 'Email': email, 'Mobile': mobile  },
+              success: function (data) {
+
+                                 $('#imgAdharCard').attr('src', '../../' + data)
+
+                       $('#myModalUploadImg').modal('toggle');
+                    },
+                    error: function() {
+                        alert("Error occured!!")
+                    }
+                });
+
+
+    }
+</script>
+
+<script>
+    $('.custmor-support-in button').click(function () {
+        $(this).hide();
+        $('#btnnnSave').css('display', 'block');
+        $('.custmor-support-in input').removeAttr('readonly');
+    });
+
+</script>
+
+<script>
+    function ajaxValidate() {
+        var aadhar = $('#txtaadhaarcard').val();//document.getElementById("adharcard").value;
+        var gst = $('#txtgst').val();
+        var pancard = $('#txtpancard').val();
+
+
+        if (aadhar.length > 0) {
+
+
+
+            var res = validatesss(aadhar)
+
+            if (res == false) {
+                $('#lblmsg').text('Invalid AADHAR No.')
+                $('#txtaadhaarcard').focus();
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+
+            }
+
+
+        }
+        if (pancard.length > 0) {
+            var regex = /([A-Z]){5}([0-9]){4}([A-Z]){1}$/;
+            if (regex.test(pancard.toUpperCase()) == false) {
+                // $('#error').text('Invalid Pan No')
+                // return false;
+                $('#lblmsg').text('Invalid PAN No')
+                $('#txtpancard').focus();
+                RegisterSuccess.stopImmediatePropagation();
+
+                return false;
+            }
+
+
+
+        }
+
+
+        if (gst.length > 0) {
+            var gstinformat = new RegExp('^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
+            if (gstinformat.test(gst.toUpperCase()) == false) {
+                //   $('#error').text('Invalid GST No')
+                //  return false;
+                $('#lblmsg').text('Invalid GST No')
+                $('#txtgst').focus();
+                event.preventDefault();
+                RegisterSuccess.stopImmediatePropagation();
+                return false;
+            }
+
+
+        }
+
+
+    }
+    // multiplication table
+    const d = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+        [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+        [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+        [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+        [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+        [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+        [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+        [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+        [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    ]
+
+    // permutation table
+    const p = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+        [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+        [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+        [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+        [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+        [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+        [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+    ]
+
+    // validates Aadhar number received as string
+    function validatesss(aadharNumber) {
+        let c = 0
+        let invertedArray = aadharNumber.split('').map(Number).reverse()
+
+        invertedArray.forEach((val, i) => {
+            c = d[c][p[(i % 8)][val]]
+        })
+
+        return (c === 0)
+    }
+</script>
+
+<script>
+    function getAdharCard(current) {
+
+        $.ajax({
+            type: "POST",
+            url: $(current).attr('data-href'),
+
+            success: function (data) {
+
+                $('#imgAdharCard').attr('src', '../../' + data)
+
+                $('#myModalUploadImg').modal();
+            },
+            error: function () {
+                alert("Error occured!!")
+            }
+        });
+
+    }
+
+
+
+
+</script>
+
+<script>
+     $('#btnuploadimg').click(function () {
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+             var totalFiles = document.getElementById("filess").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("filess").files[i];
+
+                formData.append("FileUpload", file);
+            }
+          var id=  $("#txtimgid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("Uploadprofileimage","Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                         processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                         success: function (result) {
+                           $('#EditprofileimageModal').modal('toggle');
+                             $('#Adminimage').attr('src', '../../' + result)
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+    })
+
+</script>
+
+<script>
+
+    $('#btnuploadservice').click(function () {
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+             var totalFiles = document.getElementById("filesserv").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("filesserv").files[i];
+
+                formData.append("FileUpload", file);
+            }
+
+          var id=  $("#HDadminid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("UploadServiceAggrementdoc","Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                   processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                      success: function (result) {
+                             // $('#myModalUploadImg').modal('toggle');
+                             if (result != null || result) {
+
+                                 $('#servicespnadivshow').show();
+                                 $('#servicespnadivnotshow').hide();
+
+                                 $('#EditServicedocModal').hide();
+
+                                 $('#imgAdharCard').attr('src', '../../' + result)
+                                 $('#myModalUploadImg').modal('toggle');
+
+                             }
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+    })
+
+     $('#btnpncard').click(function () {
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+             var totalFiles = document.getElementById("filepancrd").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("filepancrd").files[i];
+
+                formData.append("FileUpload", file);
+            }
+
+          var id=  $("#HDadminid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("UploadPancardcarddoc","Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                   processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                      success: function (result) {
+                             // $('#myModalUploadImg').modal('toggle');
+                             if (result != null || result) {
+
+                                 $('#panspnadivshow').show();
+                                 $('#panspnadivnotshow').hide();
+
+                                 $('#EditPancarddocModal').hide();
+
+                                 $('#imgAdharCard').attr('src', '../../' + result)
+                                 $('#myModalUploadImg').modal('toggle');
+
+                             }
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+     })
+
+    $('#btnsignature').click(function () {
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+            var totalFiles = document.getElementById("filesig").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                 var file = document.getElementById("filesig").files[i];
+
+                formData.append("FileUpload", file);
+            }
+
+          var id=  $("#HDadminid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("UploadSignatureDoc", "Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                   processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                      success: function (result) {
+                             // $('#myModalUploadImg').modal('toggle');
+                             if (result != null || result) {
+
+                                 $('#sigpnadivshow').show();
+                                 $('#signaturnotshow').hide();
+
+                                 $('#EditsignaturdocModal').hide();
+
+                                 $('#imgAdharCard').attr('src', '../../' + result)
+                                 $('#myModalUploadImg').modal('toggle');
+
+                             }
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+    })
+
+    $( document ).ready(function() {
+
+});
+
+    $('#btnsuploadfile').click(function () {
+        if (window.FormData !== undefined) {
+          //  var fileUpload = $("#file").get(0);
+          //  var files = fileUpload.files;
+            //var fileData = new FormData();
+             var formData = new FormData();
+             var totalFiles = document.getElementById("filess").files.length;
+             for (var i = 0; i < totalFiles; i++)
+            {
+                var file = document.getElementById("filess").files[i];
+
+                formData.append("FileUpload", file);
+            }
+
+          var id=  $("#txtaadharid").val();
+             formData.append('userid',id);
+                  $.ajax({
+                    url: '@Url.Action("UploadAadharcarddoc","Home")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                         processData: false, // Not to process data
+                     dataType: 'json',
+                    data: formData,
+                      success: function (result) {
+                             // $('#myModalUploadImg').modal('toggle');
+                             if (result != null || result) {
+
+                                 var htm = '';
+                                 html = '<span  class="badge" id="aadhrView" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View';
+                                 html += '</span>';// '<span class="badge" id="aadhrView" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>';
+                                  html += '<span   class="badge" id="aadhardel1" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;"  onclick="deleteDoc(' + id + ',"Aadhaar")">Delete';
+                                 html += '</span>';// '<span class="badge" id="aadhrView" data-toggle="modal" data-target="#myModalUploadImg" onclick="getAdharCard()" style="margin-right:0px;background-color:#f0f0f0;color:#999;border:1px solid #bbb;border-radius:0px;font-weight:400;">View</span>';
+
+                                 // html += '<span class="badge" id="aadhardel" style="border-radius:0px;background:#f0f0f0; margin-right:24px;color:#000;border:1px solid #dddddd;font-weight:400;cursor:pointer;" onclick="deleteDoc("' + id + '","Aadhaar")">Delete</span>';
+                                 //$('#upddelbtn').html(html)
+                                 //$('#aadhrupld').hide();
+                                   $('#aadharspnadivshow').show();
+                                 $('#aadharspnadivnotshow').hide();
+                                 $('#EditAadhaardocModal').hide();
+                                 $('#imgAdharCard').attr('src', '../../' + result)
+                                 $('#myModalUploadImg').modal('toggle');
+
+                             }
+
+                    },
+                         error: function (err) {
+
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+      //   alert('undi')
+
+    })
+
+        //$('#btnuploadimg').click(function () {
+        //    debugger
+        //    // Checking whether FormData is available in browser
+        //    if (window.FormData !== undefined) {
+
+        //        var fileUpload = $("#file").get(0);
+        //        var files = fileUpload.files;
+
+        //        // Create FormData object
+        //        var fileData = new FormData();
+
+        //        // Looping over all files and add it to FormData object
+        //        for (var i = 0; i < files.length; i++) {
+        //            fileData.append(files[i].name, files[i]);
+        //        }
+
+        //        // Adding one more key to FormData object
+        //        fileData.append('username', ‘Manas’);
+
+        //        $.ajax({
+        //            url: '/Home/UploadFiles',
+        //            type: "POST",
+        //            contentType: false, // Not to set any content header
+        //            processData: false, // Not to process data
+        //            data: fileData,
+        //            success: function (result) {
+        //                alert(result);
+        //            },
+        //            error: function (err) {
+        //                alert(err.statusText);
+        //            }
+        //        });
+        //    } else {
+        //        alert("FormData is not supported.");
+        //    }
+        //});
+
+</script>
+
+
+<script>
+
+    function UpdateProfilesOnsucc(data) {
+
+        $('#hdid1').val(data.ID)
+        $('#lbladminname').text(data.Name)
+        $('#lbladminemail').text(data.email)
+        $('#lbladminmobile').text(data.mobile)
+        $('#lbladminaadhar').text(data.Aadhar)
+        $('#lbladminpencard').text(data.pencardno)
+        $('#lbladmingst').text(data.Gstno)
+        $('#lbladmintan').text(data.tanno)
+        $('#lbladminregistration').text(data.registrationno)
+        $('#EditnameandpancardModal').hide();
+        $('.my-profile-save').show();
+
+
+
+    }
+
+
+
+</script>
+<script>
+    function OnSuccessEditAddress(result) {
+
+        $('#spncompny').text(result.admindetails.Companyname)
+        $('#spnaddress').text(result.admindetails.Address)
+        $('#spnpincode').text(result.admindetails.pincode)
+        $('#spnstate').text(result.statename)//(result.State)
+        $('#spndistrict').text(result.district)
+        $('#EditaddressModal').hide();
+        $('#saveaddressModal').show();
+
+    }
+</script>
+
+
+<script type="text/javascript">
+    function isNumber(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+        return true;
+    }
+</script>
+
+<script>
+    function FillDistict() {
+        var State_id = $('#State').val();
+    $.ajax({
+        url: '@Url.Action("FillDistict", "Home")',
+        type: "GET",
+        dataType: "JSON",
+
+        data: { State: State_id },
+        success: function (cities) {
+            $("#District").html("");
+            $.each(cities, function (i, District) {
+                $("#District").append(
+                    $('<option></option>').val(District.Dist_id).html(District.Dist_Desc));
+            });
+        }
+    });
+  }
+</script>
+<!--edit address and prifile image -->
+<script>
+    function editeaddress(ID) {
+
+        var url = '@Url.Action("ShowAddressprofile", "Home")'
+        $.ajax({
+            url: url,
+            data: { ID: ID },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#hdidadmin').val(data[0].ID);
+                $("#txtid").val(data[0].ID);
+                $("#txtcompany").val(data[0].Companyname);
+                $("#txtaddress").val(data[0].Address);
+                $("#txtzipcode").val(data[0].pincode);
+                $("#State").val(data[0].State);
+                $("#District").val(data[0].District);
+
+                $('#EditaddressModal').show();
+                $('#saveaddressModal').hide();
+                saveaddressModal
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+
+</script>
+
+<!--edit Name and Pancrad and Gst Number  image -->
+<script>
+    function editemobileandpancard(ID) {
+
+        var url = '@Url.Action("Showmobileandpancardprofile", "Home")'
+        $.ajax({
+            url: url,
+            data: { ID: ID },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#hdid1').val(data[0].ID)
+                $("#txtid1").val(data[0].ID);
+                $("#txtname").val(data[0].Name);
+                $("#txtmobile").val(data[0].mobile);
+                $("#txtaadhaarcard").val(data[0].Aadhar);
+                $("#txtpancard").val(data[0].pencardno);
+                $("#txtgst").val(data[0].Gstno);
+                $("#txtTAN").val(data[0].tanno);
+                $("#txtregistration").val(data[0].registrationno);
+                $('#EditnameandpancardModal').show();
+                 $('.my-profile-save').hide();
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+
+</script>
+<!--Upload image Profile-->
+
+<script>
+    function uploadimage(ID) {
+        $("#txtimgid").val(ID);
+        $('#EditprofileimageModal').modal('show');
+    }
+</script>
+<script>
+    $(document).ready(function()
+    {
+        var msg = '@ViewData["msg"]';
+        //if(msg !="")
+        //{
+        //    swal("File Uploaded!", msg, "success");
+        //}
+    })
+</script>
+
+<!--Upload Aadhaar Card Doc Script-->
+<script>
+    function uploadaadhaarDoc(ID) {
+
+        $("#txtaadharid").val(ID);
+        $('#EditAadhaardocModal').show();
+        $('#aadhrupld').hide();
+        $('#aadharspnadivnotshow').hide();
+
+    }
+</script>
+
+
+<!--Upload Pancard  Card Doc Script-->
+<script>
+    function uploadpancardDoc(ID) {
+        $("#txtpancardid").val(ID);
+        $('#EditPancarddocModal').show();
+        $('#panspnadivnotshow').hide();
+    }
+</script>
+
+<!--Upload Service Aggrement  Doc Script-->
+<script>
+    function uploadserviceDoc(ID) {
+        $("#txtserviceid").val(ID);
+        $('#EditServicedocModal').show();
+        $('#servicespnadivnotshow').hide();
+    }
+</script>
+
+
+<!--Upload signature  Doc Script-->
+<script>
+    function uploadsignature(ID) {
+        $("#txtsignatureid").val(ID);
+        $('#EditsignaturdocModal').show();
+        $('#signaturnotshow').hide();
+    }
+</script>
+
+<!--Delete Doc -->
+
+
+
+
+<script type="text/javascript">
+
+    function deleteDoc(ID, docname) {
+
+         var html = '';
+        swal({
+            text: "<p style='color:#948f8b; font-size:20px;border-bottom:1px solid #dddddd;margin-top:-12px;padding-bottom:12px;'>Delete " + " " + docname + " !</p>" +
+                   "</br><i class='fa fa-trash'style='font-size:72px;color:red;'></i></br><p style=''>Are you sure ?</p>",
+             html: true,
+            title:"" ,
+            showCancelButton: true,
+            confirmButtonColor: "#f9a7a7",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("DelereprofileDoc", "Home")', data: { 'ID': ID, 'Docname': docname }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("File Removed!", " Deleted Successfully.", "success");
+                if (docname == 'Pancard') {
+                    $('#panspnadivshow').hide();
+                    $('#panspnadivnotshow').show();
+
+                }
+                else if (docname == 'Signature') {
+                    $('#sigpnadivshow').hide();
+                    $('#signaturnotshow').show();
+                }
+                else if (docname == 'ServiceAgrrement') {
+                        $('#servicespnadivshow').hide();
+                    $('#servicespnadivnotshow').show();
+                }
+                else {
+                    $('#aadharspnadivshow').hide();
+                    $('#aadharspnadivnotshow').show();
+                }
+
+              //  var url = '@Url.Action("Profile", "Home")';
+             //   window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Profile", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>
+
+<script>
+    function SavaDataSupport() {
+        var ID = $("#IDd").val();
+        var email= $("#SupportEmail").val();
+        var mobile = $('#SupportMobile').val();
+
+        $.ajax({
+            type: "GET", url: '@Url.Action("UpdateSupportData", "Home")', data: { 'ID': ID, 'Email': email, 'Mobile': mobile  }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+
+                //swal("Good Job!", "Successfully Data Updated", "success");
+
+                var url = '@Url.Action("Profile", "Home")';
+                window.location.href = url;
+            }
+            else {
+                //swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("Profile", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+
+
+
+    }
+</script>
+<script>
+    $('.for-master-button').click(function () {
+        $('.master-user-pop').show();
+    })
+    $('.for-distributor-button').click(function () {
+        $('.Distributor-user-pop').show();
+    })
+    $('.for-retailer-button').click(function () {
+        $('.retailer-user-pop').show();
+    })
+    $('.for-api-button').click(function () {
+        $('.api-user-pop').show();
+    })
+    $('.for-white-button').click(function () {
+        $('.white-user-pop').show();
+    })
+
+    $('.for-master-close').click(function () {
+        $('.master-user-pop').hide();
+        $('.Distributor-user-pop').hide();
+        $('.retailer-user-pop').hide();
+        $('.api-user-pop').hide();
+        $('.white-user-pop').hide();
+
+
+
+
+    })
+</script>
+
+<script>
+    function RoleWiseOTP(roleName,stsBtn) {
+        $.ajax({
+            type: "POST", url: '@Url.Action("DisableTwoFactor", "Home")',
+            data: { 'UserRole': roleName, 'btnVal': stsBtn, 'UserrId':'' },
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                GetUser(data[0]);
+                WriteOTPStatus(roleName, stsBtn);
+        }
+    });
+    }
+
+    @*function OtpOnOffById(userid, btnsts) {
+
+        $.ajax({
+            type: "POST", url: '@Url.Action("DisableTwoFactor", "Home")',
+            data: { 'UserRole': '', 'btnVal': btnsts, 'UserrId': userid },
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                GetUser(data[0]);
+            }
+        });
+    }*@
+
+    function OtpOnOffByIdALL(userid, btnsts) {
+        if (btnsts == 'OTP') {
+            btnsts = 'Y';
+        }
+        $.ajax({
+            type: "POST", url: '@Url.Action("DisablePassCodeBYUserID", "Home")',
+            data: { 'UserRole': '', 'btnVal': btnsts, 'userid': userid },
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                GetUser(data[0]);
+            }
+        });
+    }
+
+    function GetUser(roleName) {
+       var passcodetypeselected= $('#Sortbymaster').val()
+        var passcodetypedealer = $('#Sortbydealer').val()
+        var passcodetyperetailer = $('#Sortbyretailer').val()
+        var passcodetypeAPI = $('#SortbyAPI').val()
+        var passcodetypeWhitelabel = $('#SortbyWhitelabel').val()
+        $.ajax({
+            type: "GET", url: '@Url.Action("GetTwoFactor", "Home")',
+            data: { 'UserRole': roleName },
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+
+                if (roleName == "master") {
+
+                    var row = "";
+                    var Id = 1;
+                    var otptypes = "";
+                    $.each(data, function (index, item) {
+                        otptype = '';
+                        var OnOff = item.TwoFactorEnable;
+                        var passcodetype = item.passcodetype;
+
+                        var btnOnOff = "";
+                        if (OnOff == true) {
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        if (passcodetype == "PERDAY" || passcodetype == "WEAKS" || passcodetype == "MONTHS") {
+
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','OFF') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                      else  if (OnOff == false) {
+                            if (passcodetype == "OFF") {
+                                if (passcodetypeselected == 'OTP') {
+                                    otptype = "Y";
+                                }
+                               else{
+                                    otptype = passcodetypeselected;
+                                }
+                                btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffByIdALL('" + item.UserId + "','" + otptype + "') style = 'border:1px solid;'> OFF</button ></div>";
+
+                            }
+
+                        }
+
+                        row += "<tr><td>" + Id + "</td><td>" + item.Email + "</td><td>" + item.Mobile + "</td><td>" + btnOnOff + "</td></tr>";
+                        Id++;
+                    });
+                    $("#masterlist").html(row);
+                }
+                else if (roleName == "Dealer") {
+                    var row = "";
+                    var Id = 1;
+                    $.each(data, function (index, item) {
+                        var OnOff = item.TwoFactorEnable;
+                        var passcodetype = item.passcodetype;
+                        var btnOnOff = "";
+
+                        var btnOnOff = "";
+                        if (OnOff == true) {
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        if (passcodetype == "PERDAY" || passcodetype == "WEAKS" || passcodetype == "MONTHS") {
+
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','OFF') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        else if (OnOff == false) {
+                            if (passcodetype == "OFF") {
+                                if (passcodetypedealer == 'OTP') {
+                                    otptype = "Y";
+                                }
+                                else {
+                                    otptype = passcodetypedealer;
+                                }
+                                btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffByIdALL('" + item.UserId + "','" + otptype + "') style = 'border:1px solid;'> OFF</button ></div>";
+
+                            }
+
+                        }
+
+
+
+                        //if (OnOff == true) {
+                        //    btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffById('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        //}
+                        //else {
+                        //    btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffById('" + item.UserId + "','Y') style = 'border:1px solid;'> OFF</button ></div>";
+                        //}
+                        row += "<tr><td>" + Id + "</td><td>" + item.Email + "</td><td>" + item.Mobile + "</td><td>" + btnOnOff + "</td></tr>";
+                        Id++;
+                    });
+                    $("#dealerlist").html(row);
+                }
+                else if (roleName == "Retailer") {
+                    var row = "";
+                    var Id = 1;
+                    $.each(data, function (index, item) {
+                        var OnOff = item.TwoFactorEnable;
+                        var passcodetype = item.passcodetype;
+                        var btnOnOff = "";
+
+                        var btnOnOff = "";
+                        if (OnOff == true) {
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        if (passcodetype == "PERDAY" || passcodetype == "WEAKS" || passcodetype == "MONTHS") {
+
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','OFF') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        else if (OnOff == false) {
+                            if (passcodetype == "OFF") {
+                                if (passcodetyperetailer == 'OTP') {
+                                    otptype = "Y";
+                                }
+                                else {
+                                    otptype = passcodetyperetailer;
+                                }
+                                btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffByIdALL('" + item.UserId + "','" + otptype + "') style = 'border:1px solid;'> OFF</button ></div>";
+
+                            }
+
+                        }
+
+
+                        //if (OnOff == true) {
+                        //    btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffById('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        //}
+                        //else {
+                        //    btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffById('" + item.UserId + "','Y') style = 'border:1px solid;'> OFF</button ></div>";
+                        //}
+                        row += "<tr><td>" + Id + "</td><td>" + item.Email + "</td><td>" + item.Mobile + "</td><td>" + btnOnOff + "</td></tr>";
+                        Id++;
+                    });
+                    $("#retailerlist").html(row);
+                }
+                else if (roleName == "API") {
+                    var row = "";
+                    var Id = 1;
+                    $.each(data, function (index, item) {
+
+                        var OnOff = item.TwoFactorEnable;
+                        var passcodetype = item.passcodetype;
+                        var btnOnOff = "";
+
+                        var btnOnOff = "";
+                        if (OnOff == true) {
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        if (passcodetype == "PERDAY" || passcodetype == "WEAKS" || passcodetype == "MONTHS") {
+
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','OFF') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        else if (OnOff == false) {
+                            if (passcodetype == "OFF") {
+                                if (passcodetypeAPI == 'OTP') {
+                                    otptype = "Y";
+                                }
+                                else {
+                                    otptype = passcodetypeAPI;
+                                }
+                                btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffByIdALL('" + item.UserId + "','" + otptype + "') style = 'border:1px solid;'> OFF</button ></div>";
+
+                            }
+
+                        }
+
+
+
+                        //var OnOff = item.TwoFactorEnable;
+                        //var btnOnOff = "";
+                        //if (OnOff == true) {
+                        //    btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffById('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        //}
+                        //else {
+                        //    btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffById('" + item.UserId + "','Y') style = 'border:1px solid;'> OFF</button ></div>";
+                        //}
+                        row += "<tr><td>" + Id + "</td><td>" + item.Email + "</td><td>" + item.Mobile + "</td><td>" + btnOnOff + "</td></tr>";
+                        Id++;
+                    });
+                    $("#apilist").html(row);
+                }
+                else if (roleName == "Whitelabel") {
+                    var row = "";
+                    var Id = 1;
+                    $.each(data, function (index, item) {
+
+                        var OnOff = item.TwoFactorEnable;
+                        var passcodetype = item.passcodetype;
+                        var btnOnOff = "";
+
+                        var btnOnOff = "";
+                        if (OnOff == true) {
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        if (passcodetype == "PERDAY" || passcodetype == "WEAKS" || passcodetype == "MONTHS") {
+
+
+                            btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffByIdALL('" + item.UserId + "','OFF') style = 'border:1px solid;'> ON</button ></div>";
+                        }
+                        else if (OnOff == false) {
+                            if (passcodetype == "OFF") {
+                                if (passcodetypeWhitelabel == 'OTP') {
+                                    otptype = "Y";
+                                }
+                                else {
+                                    otptype = passcodetypeWhitelabel;
+                                }
+                                btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffByIdALL('" + item.UserId + "','" + otptype + "') style = 'border:1px solid;'> OFF</button ></div>";
+
+                            }
+
+                        }
+
+
+
+
+                        //var OnOff = item.TwoFactorEnable;
+                        //var btnOnOff = "";
+                        //if (OnOff == true) {
+                        //    btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='costom-on' onclick = OtpOnOffById('" + item.UserId + "','N') style = 'border:1px solid;'> ON</button ></div>";
+                        //}
+                        //else {
+                        //    btnOnOff = "<div class='onoffswitch' style='float: left;'><button class='custom-off' onclick = OtpOnOffById('" + item.UserId + "','Y') style = 'border:1px solid;'> OFF</button ></div>";
+                        //}
+                        row += "<tr><td>" + Id + "</td><td>" + item.Email + "</td><td>" + item.Mobile + "</td><td>" + btnOnOff + "</td></tr>";
+                        Id++;
+                    });
+                    $("#whitelabellist").html(row);
+                }
+                else {
+
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+function WriteOTPStatus(roleName, stsBtn) {
+
+        $.ajax({
+            type: "POST", url: '@Url.Action("AdminOTPStatus", "Home")',
+            data: { 'RoleName': roleName, 'Status': stsBtn },
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                if (data.RoleName == "master" && data.Status == "Y") {
+                    $('#masterotpoff').removeClass('custom-off');
+                    $('#masterotpoff').addClass('costom-on');
+                    $('#masterotpoff').text('ON');
+
+                    $('.loader').hide();
+                }
+                else if (data.RoleName == "master" && data.Status == "N") {
+                    $('#masterotpon').addClass('custom-off');
+                    $('#masterotpon').removeClass('costom-on');
+                    $('#masterotpon').text('OFF');
+                }
+                else if (data.RoleName == "Dealer" && data.Status == "Y") {
+                    $('#dealeroff').removeClass('custom-off');
+                    $('#dealeroff').addClass('costom-on');
+                    $('#dealeroff').text('ON');
+                }
+                else if (data.RoleName == "Dealer" && data.Status == "N") {
+                    $('#dealeron').addClass('custom-off');
+                    $('#dealeron').removeClass('costom-on');
+                    $('#dealeron').text('OFF');
+                }
+                else if (data.RoleName == "Retailer" && data.Status == "Y") {
+                    $('#retaileroff').removeClass('custom-off');
+                    $('#retaileroff').addClass('costom-on');
+                    $('#retaileroff').text('ON');
+                }
+                else if (data.RoleName == "Retailer" && data.Status == "N") {
+                    $('#retaileron').addClass('custom-off');
+                    $('#retaileron').removeClass('costom-on');
+                    $('#retaileron').text('OFF');
+                }
+                else if (data.RoleName == "API" && data.Status == "Y") {
+                    $('#apioff').removeClass('custom-off');
+                    $('#apioff').addClass('costom-on');
+                    $('#apioff').text('ON');
+                }
+                else if (data.RoleName == "API" && data.Status == "N") {
+                    $('#apion').addClass('custom-off');
+                    $('#apion').removeClass('costom-on');
+                    $('#apion').text('OFF');
+                }
+                if (data.RoleName == "Whitelabel" && data.Status == "Y") {
+                    $('#whitelabeloff').removeClass('custom-off');
+                    $('#whitelabeloff').addClass('costom-on');
+                    $('#whitelabeloff').text('ON');
+                }
+                else if (data.RoleName == "Whitelabel" && data.Status == "N") {
+                    $('#whitelabelon').addClass('custom-off');
+                    $('#whitelabelon').removeClass('costom-on');
+                    $('#whitelabelon').text('OFF');
+                }
+
+                window.location.href = "@Url.Action("Profile","Home")";
+            },
+        });
+
+    }
+</script>
+<script>
+    $("#masterref button").click(function () {
+        $(this).hide();
+        $("#dealeronloaderq").show();
+    });
+</script>
+<script>
+    $(".dealerotpoffclass button").click(function () {
+        $(this).hide();
+        $("#dealeronloader").show();
+    });
+</script>
+
+<script>
+    $(".retaileroffclass button").click(function () {
+        $(this).hide();
+        $("#dealeronloader1").show();
+    });
+</script>
+<script>
+    $(".apioofclass button").click(function () {
+        $(this).hide();
+        $("#dealeronloader2").show();
+    });
+</script>
+<script>
+    $(".wwhiteoofclass button").click(function () {
+        $(this).hide();
+        $("#dealeronloader3").show();
+    });
+</script>
+
+
+@*<script>
+        $('.retailer-profile-secondclass button p.uptotransction').on('click', function () {
+            $(this).addClass('activeupto').siblings().removeClass('activeupto');
+        });
+    </script>*@

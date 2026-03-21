@@ -1,0 +1,467 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.remmulti
+
+<style>
+
+    .loader {
+        position: fixed;
+        top: -90px;
+        left: 0;
+        background-color: rgba(255,255,255,0.7);
+        z-index: 999999999999;
+        display: none;
+        height: 100vw;
+        width: 100vw;
+    }
+
+    @@-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 48%;
+        top: 25%;
+        width: 100px;
+        height: 100px;
+        border-style: solid;
+        border-color: black;
+        border-top-color: transparent;
+        border-width: 4px;
+        border-radius: 50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+</style>
+<div id="watershow" class="row" style="padding-left: 4px;">
+    <div class="col-md-3 elecpay-first watershow-class">
+        <div>
+            <p id="insurancemessage22" style="top:-15px !important; margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="input-group">
+                @Html.DropDownList("walterddltype", ViewBag.water as SelectList, "Select Operators", new { id = "walterddltype", @class = "form-control", required = "required", onchange = "waterddl(this)" })
+                <div class="input-group-addon in-addon">
+
+                </div>
+
+            </div>
+            <!-- /.input group -->
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+        <div>
+            <p id="watermessage" class="insurancemessage22" style="top:-16px !important; margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="" style="margin-top:-1px;border:1px solid #dddddd; height:37px;">
+                <input type="text" id="txtwaterno" name="txtwaterno" class="form-control" placeholder="Enter Consumer / Account / Ref " />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2" id="wamount">
+        <div>
+            <p id="wateramountmessage" class="insurancemessage22" style="top:-16px !important; margin-top:10px; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="txtelectricity1" style="margin-top:-1px; height:37px;">
+                <input type="text" id="wateramount" name="wateramount" class="form-control" placeholder="Amount" style="padding-left:0px;" onkeypress="return isNumber(event)" />
+                <div class="col-md-1 col-sm-1 wamount-input-type">
+                    <center>
+                        <div class="form-group" style="margin-bottom:0px;">
+                            <div class="form-line" style="border-bottom:none;">
+                                <input type="submit" id="btnnn5" class="btn bg-blue-grey" value="View Bill" style="height:37px;" onclick="GetWaterviewbill('walterddltype')" />
+                            </div>
+                        </div>
+                    </center>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2" id="wmobile" style="display:none;">
+        <div>
+            <p id="watermobilemessage" class="insurancemessage22" style="margin-top:10px; top:-16px !important; color:#E91E63; font-size:10px; padding-left:1px;"></p>
+        </div>
+        <div class="form-group" style="margin-bottom:0px;">
+            <div class="" style="margin-top:-1px;border:1px solid #dddddd; height:37px;">
+                <input type="text" id="watermobile" name="watermobile" class="form-control" placeholder="Mobile Number" onkeypress="return isNumber(event)" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 gasamount-input-before">
+        <center>
+            <div class="form-group" style="margin-bottom:0px;">
+                <div class="form-line" style="margin-top:-1px !important; border-bottom:none;">
+                    <input type="submit" id="btn5" class="btn bg-blue-grey" value="Continue" style="height:37px;" onclick="getwaltercontinuebtn('walterddltype')" />
+                </div>
+            </div>
+        </center>
+    </div>
+    <!--View Bill button-->
+    <!--
+    <div class="col-md-1 col-sm-1">
+        <center>
+            <div class="form-group" style="margin-bottom:0px;">
+                <div class="form-line" style="margin-top:38px; border-bottom:none;">
+                    <input type="submit" id="btnnn" class="btn bg-blue-grey" value="View Bill" style="height:37px;" onclick="GetWaterviewbill('walterddltype')" />
+                </div>
+            </div>
+        </center>
+
+    </div>
+    -->
+
+</div>
+
+<div id="watermsgBox" style="margin-top:10px;"></div>
+
+<table id="confirmwater" class="for-prepaid" style="width:100%;margin-top:-11px;display:none;">
+    <tr>
+        <th style="width:10%;"></th>
+        <th style="width:25%;">Operator</th>
+        <th style="width:25%;">Recharge to</th>
+        <th style="width:10%;">amount</th>
+        <th style="width:15%;">Service Fee </th>
+        @if (Model.Ispin == true)
+        {
+            <th style="width:15%;">Pin </th>
+        }
+        <th style="width:15%;">Action</th>
+    </tr>
+    <tr>
+        <td>
+            <button style="padding: 5px 20px;" onclick="backwater()"><img src="~/AdminDesign/images/back.svg" style="width:18px;" /></button>
+        </td>
+        <td style="font-size: 15px;"><b><span id="showoptwater"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 20px;"><b> <span id="shownumberwater"></span> </b></td>
+        <td class="border-centerbe" style="font-size: 20px;"><b><span id="showamountwater"></span></b></td>
+        <td>
+            <input type="number" class="form-control" id="servicefeewater" placeholder="Enter Fee" />
+            <input type="hidden" name="waterduedate" id="waterduedate" />
+        </td>
+        @if (Model.Ispin == true)
+        {
+            <td style="font-size: 24px;">
+                <input style=" width: 160px; " type="password"
+                       id="WaterRechargepin"
+                       class="form-control text-center"
+                       placeholder="Enter PIN"
+                       maxlength="6"
+                       autocomplete="off" />
+                <span id="waterpinError"
+                      style="color:red; font-size:13px; display:none; margin-top:5px;">
+                </span>
+            </td>
+
+
+        }
+
+        <td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="waterprocessToPay()">Procces To Pay</button></td>
+
+
+        @*<td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="waterrechargeconfirm()">Procces To Pay</button></td>*@
+
+    </tr>
+</table>
+<table id="rechargeconfirmwater" class="for-prepaid" style="width:100%;margin-top:-11px;display:none;">
+    <tr>
+        <th style="width:25%;">Recharge Status</th>
+        <th style="width:37%;">Message</th>
+        <th style="width:11%;">Action</th>
+    </tr>
+    <tr>
+        <td style="font-size: 20px;"><b> <span id="rchstatuschkwater"></span> </b></td>
+        <td class="border-centerbe border-centerbess" style="font-size: 20px;"><b><span id="rchmsgwater"></span></b></td>
+        <td><button style="float: right;background: linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;border: 0px;color: #fff;padding: 4px 19px;font-size: 20px;" onclick="Rechargeagainwater()">Recharge Again</button></td>
+    </tr>
+</table>
+
+
+
+
+<div class="loader loaderwww"></div>
+
+
+<script>
+
+     var isPinOn = @Model.Ispin.ToString().ToLower();
+
+    function waterprocessToPay() {
+
+     if (isPinOn) {
+
+         var pin = $('#WaterRechargepin').val();
+
+
+         if (!pin) {
+             alert('Please enter transaction PIN');
+             $('#WaterRechargepin').focus();
+             return;
+         }
+
+         waterrechargeconfirm(pin);
+     }
+     else {
+         waterrechargeconfirm('');
+     }
+ }
+
+</script>
+
+
+
+<script>
+    function showMsg(msg, type) {
+
+        var color = (type === "success") ? "green" : "red";
+
+        $('#watermsgBox').html(
+            '<div style="color:' + color + '; font-weight:bold;">' + msg + '</div>'
+        );
+
+        setTimeout(function () {
+            $('#watermsgBox').html('');
+        }, 5000);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    j('#walterddltype').select2();
+</script>
+<!--Water Vibill Button script-->
+<script>
+    function GetWaterviewbill(w) {
+        var e = document.getElementById(w);
+        var waterddltext = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var waterno = $("#txtwaterno").val();
+        var wateramount = $("#wateramount").val();
+        var watermobile = $("#watermobile").val();
+        /* call function */
+        var sts = getwatercontiunebtn(waterddltext, waterno, "10", watermobile);
+
+        if (sts == true) {
+            if (waterddltext == "Municipal Corporation Jalandhar" || waterddltext == "Municipal Corporation Ludhiana - WATER") {
+                viewbillwater(waterddltext, eleddlvalue, waterno, "10", watermobile, "", "", "");
+                event.preventDefault();
+                return false
+            }
+            else {
+                viewbillwater(waterddltext, eleddlvalue, waterno, "10", "", "", "", "");
+                event.preventDefault();
+                return false
+            }
+
+        }
+        else {
+            event.preventDefault();
+            return false
+        }
+    }
+</script>
+
+<script>
+    function viewbillwater(optname, optvalue, mobileno, amount, optional1, optional2, optional3, optional4) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("viewbill", "Home")",
+            data: { OperatorName: optname, OptCode: optvalue, mobileno: mobileno, Amount: amount, optional1: optional1, optional2: optional2, optional3: optional3, optional4: optional4 },
+            cache: false,
+            dataType: 'json',
+            closeOnConfirm: true,
+            success: function (result) {
+                if (result.Response == 'SUCCESS') {
+                    var displayValues = "";
+                    var price = result.Price;
+                    var BIllduedate = result.billduedate;
+                    displayValues = price;
+                    if (price != "") {
+                        price = parseInt(price);
+                        $('#wateramount').val(price);
+                        $('#waterduedate').val(BIllduedate);
+                        //swal("Success!", displayValues, "success")
+                    }
+                    else {
+                        alert(result.Message)
+                    }
+
+                }
+            }
+        })
+    }
+</script>
+<!--Water Continue Button script-->
+<script>
+    function getwaltercontinuebtn(w) {
+        var e = document.getElementById(w);
+        var waterddltext = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var waterno = $("#txtwaterno").val();
+        var wateramount = $("#wateramount").val();
+        var duedate = $("#waterduedate").val();
+        var watermobile = $("#watermobile").val();
+        /* call function */
+        var sts = getwatercontiunebtn(waterddltext, waterno, wateramount, watermobile);
+        if (sts == true) {
+            $('#showoptwater').text(waterddltext);
+            $('#shownumberwater').text(waterno);
+            $('#showamountwater').text(wateramount);
+            $('#waterduedate').text(duedate);
+            $('#watershow').hide();
+            $('#confirmwater').show();
+            //  Recharge(waterddltext, eleddlvalue, waterno, wateramount, watermobile, "", "", "", "0");
+            event.preventDefault();
+            return false;
+        }
+        else {
+            event.preventDefault();
+            return false;
+        }
+    }
+</script>
+<script>
+    function backwater() {
+
+        $('#watershow').show();
+        $('#confirmwater').hide();
+        $('#rechargeconfirmwater').hide();
+    }
+</script>
+<script>
+    function waterrechargeconfirm(pinValue) {
+
+            var e = document.getElementById("walterddltype");
+        var waterddltext = e.options[e.selectedIndex].text;
+        var eleddlvalue = e.options[e.selectedIndex].value;
+        var waterno = $("#txtwaterno").val();
+        var wateramount = $("#wateramount").val();
+        var duedate = $("#waterduedate").val();
+        var watermobile = $("#watermobile").val();
+        var servicefeewater = $("#servicefeewater").val();
+        if (servicefeewater != "") {
+            /* call function */
+            var sts = getwatercontiunebtn(waterddltext, waterno, wateramount, watermobile);
+            if (sts == true) {
+                   $("#servicefeewater").css("border-color", "#00000");
+                //$("#txtwaterno").val("");
+                //$("#wateramount").val("");
+              //  if (waterno != "" && wateramount != "") {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Recharge","Home")",
+                        data: { OperatorName: waterddltext, OptCode: eleddlvalue, mobileno: waterno, Amount: wateramount, optional1: "", optional2: "", optional3: "", optional4: "", comm: "", BillRefId: "", servicefee: servicefeewater, billduedate: duedate, Rechargepin: pinValue },
+                        cache: false,
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('.loader').show();
+                        },
+                        success: function (result) {
+
+
+                            // 🔴 Clear old PIN error every time
+                            $('#waterpinError').hide().text("");
+
+                            /* 🔴 PIN ERROR — SAME PAGE */
+                            if (result.status && (
+                                result.status === "PIN_REQUIRED" ||
+                                result.status === "INVALID_PIN" ||
+                                result.status === "PIN_NOT_SET")) {
+
+                                $('#waterpinError').text(result.message).show();
+                                $('.loader').hide();
+                                return; // 🚫 STOP ONLY FOR PIN ERROR
+                            }
+
+                            var status = result.Response;
+                            var message = result.Message;
+                            if (status == "GATEWAY") {
+                                window.open(message, "_self");
+                                $('#rchstatuschkwater').text("Pending");
+                                $('#rchmsgwater').text("Please Wait While Redirect The Gateway");
+                            }
+                            else {
+                                $('#rchstatuschkwater').text(status);
+                                $('#rchmsgwater').text(message);
+
+
+                                $("#txtwaterno").val("");
+                                $("#wateramount").val("");
+                            }
+
+                            $('#confirmwater').hide();
+                            $('#rechargeconfirmwater').show();
+                        },
+                        complete: function () {
+                            $("#remainretailer").load(location.href + " #remainretailer");
+                            $('.loader').hide();
+                            $.ajax({
+                                url: '@Url.Action("showrecentrecharge", "Home")',
+                                type: 'GET',
+                                dataType: "html",
+                                data: { type: "water" },
+                                success: function (data) {
+                                    $('#reportchk').html(data);
+                                },
+                                error: function (data) {
+
+                                }
+                            });
+                        },
+                        error: function () {
+                            $("#remainretailer").load(location.href + " #remainretailer");
+                            $('.loader').hide();
+                        }
+                    })
+
+              //  }
+
+                event.preventDefault();
+                return false;
+            }
+            else {
+                event.preventDefault();
+                return false;
+            }
+        }
+        else {
+              $("#servicefeewater").css("border-color", "#FF0000");
+        }
+    }
+</script>
+<script>
+    function Rechargeagainwater() {
+        $('#numbershowmobile').text();
+        j('#walterddltype').val("");
+        j('#walterddltype').select2().trigger('change');
+        $('#txtwaterno').val("");
+        $('#wateramount').val("");
+        $('#watershow').show();
+        $('#confirmwater').hide();
+        $('#rechargeconfirmwater').hide();
+    }
+</script>

@@ -1,0 +1,283 @@
+﻿@model Vastwebmulti.Models.SimDetail_Info
+
+<style>
+    .i_set {
+        background-color: #ff5c91;
+        border-color: #000000;
+        filter: invert(1);
+        padding: 0px 10px;
+        width: 43px;
+    }
+
+    .i_set2 {
+        width: 45px;
+        background-color: #16c7b6;
+        border-radius: 2px;
+        filter: invert(1);
+        padding: 0px 10px;
+        cursor: pointer;
+    }
+
+    .table tbody tr td, .table tbody tr th {
+        border: 1px solid #cccccc;
+    }
+
+    #updatestatusd {
+        position: fixed;
+        z-index: 99;
+        background: #ccccccab;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    #updatestatusd23 {
+        position: fixed;
+        z-index: 99;
+        background: #ccccccab;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .bg_set {
+        background-color: whitesmoke;
+        border: 10px solid #00000036;
+        font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        width: 478px;
+        padding: 17px;
+        border-radius: 5px;
+        text-align: center;
+        overflow: hidden;
+        z-index: 99999;
+        position: absolute;
+        top: 30%;
+        left: 38%;
+        height: auto;
+        display: flow-root;
+    }
+
+    .c_set {
+        color: #342f2f;
+        font-size: 30px;
+        text-align: center;
+        font-weight: 600;
+        text-transform: none;
+        position: relative;
+        margin: 25px 0;
+        padding: 0;
+        line-height: 40px;
+        display: block;
+    }
+
+    .bg_set input {
+        background-color: #289328;
+        color: white;
+        border: none;
+        box-shadow: none;
+        font-size: 17px;
+        font-weight: 500;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        padding: 10px 32px;
+        margin: 21px 5px 0 5px;
+        cursor: pointer;
+        width: 36%;
+        float: left;
+        margin: 25px;
+    }
+
+    .bg_set button {
+        float: right;
+        background-color: #000000;
+        color: white;
+        border: none;
+        box-shadow: none;
+        font-size: 17px;
+        font-weight: 500;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        padding: 10px 32px;
+        margin: 21px 5px 0 5px;
+        cursor: pointer;
+        width: 36%;
+        margin: 25px;
+    }
+
+    .off_set {
+        background: #e93849;
+        color: #fff;
+        border: 1px solid #d96f6f;
+        border-radius: 2px;
+    }
+
+    .on_set {
+        color: #fff;
+        border-radius: 2px;
+        background-color: #449d44;
+        border: 1px solid #398439;
+        padding: 2px 9px;
+    }
+
+    .page_loader {
+        background: #00000045;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    #LOGINMESSAGE12 {
+        font-size: 25px;
+    }
+
+    .input_set .bg_set input {
+        width: 100%;
+        background: #ccc;
+        margin: 0;
+        color: #000;
+    }
+</style>
+
+
+<div id="divEditFormComm" style="padding: 1%;">
+    <div>@Model.message</div>
+    <table class="table">
+        <tr>
+            <th>USER ID</th>
+            <th>IMEI-NUMBER</th>
+            <th>Remark</th>
+            <th>E-TOP ₹</th>
+
+            <th>OPERATOR</th>
+            <th>DAY LIMIT</th>
+            <th>MIN BAL</th>
+            <th>Status</th>
+            <th>CHK ₹</th>
+            <th>LOGIN</th>
+            <th>EDIT</th>
+            <th>DEL</th>
+        </tr>
+
+        @foreach (var i in Model.data1)
+        {
+            <tr>
+                <td>@i.USERID</td>
+                <td>@i.Imeino</td>
+                <td>@i.Remark</td>
+                <td>@i.remaining</td>
+                <td>@i.opt_code</td>
+                <td>@i.DaylimitMax</td>
+                <td>@i.Etopminbal</td>
+                <td id="updatestatusd1">
+                    @if (i.status == true)
+                    {
+                        <button class="on_set" onclick="ONOFFS('OFF',@i.idno)">ON</button>
+                    }
+                    else
+                    {
+                        <button class="off_set" onclick="ONOFFS('ON',@i.idno)">OFF</button>
+                    }
+
+                </td>
+
+                <td>
+                    <img class="i_set" src="~/ashok-images/icons8-ok-30.png" />
+                </td>
+                <td>
+                    <img class="i_set2" src="~/ashok-images/icons8-login-64.png" style="" onclick="LoginbbySim(@i.idno)" />
+
+                </td>
+                @{
+                    var s123 = Convert.ToString(i.opt_code);
+                }
+                <td><button data-toggle="modal" data-target="#defaultModal2212" id="myBtn1" onclick="Editcollw(@i.idno)">edit</button></td>
+                <td> <button onclick="ONOFFS('DELETE',@i.idno)">DELETE</button></td>
+
+            </tr>
+        }
+    </table>
+    <div style="display:none" id="updatestatusd">
+
+        <div class="bg_set">
+            @using (Ajax.BeginForm("simonoff", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess3", OnFailure = "onfailed3", UpdateTargetId = "divEditFormComm", LoadingElementId = "div_Loader", InsertionMode = InsertionMode.Replace }))
+            {
+                <div class="c_set">ARE YOU SURE?</div>
+                <div id="updatestatusd11"></div>
+                <div id="updatestatusd12"></div>
+                <input type="submit" value="Sure?" />
+            }
+            <button onclick="document.getElementById('updatestatusd').style.display = 'none'">Close</button>
+        </div>
+
+    </div>
+
+    <div style="display:none" id="updatestatusd23">
+
+        <div class="bg_set">
+
+
+            <div id="LOGINMESSAGE12"></div>
+
+            <button style="float: inherit; margin-bottom: 5px; " onclick="document.getElementById('updatestatusd23').style.display = 'none'">Close</button>
+        </div>
+
+    </div>
+
+    <div style="display:none" id="updatestatusd342" class="input_set">
+
+        <div class="bg_set">
+
+            @using (Html.BeginForm("verifysimotp", "Home"))
+            {
+                <div class="c_set">Enter OTP</div>
+                <input type="hidden" id="idnosd" name="idno" value="" />
+                <input type="number" name="otp" value="" />
+
+
+                <button type="submit" style="float: inherit; margin-bottom: 5px; background-color: #289328;">Submit</button>
+            }
+        </div>
+      
+
+    </div>
+
+</div>
+
+@*<div class="modal" id="defaultModal112" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div id="userinfodiv" class="modal-content width100 float-left input-border-third" style="display: block; width: 100%;">*@
+
+
+@*<div>dyxrtudty</div>
+
+            </div>
+        </div>
+    </div>*@
+
+
+
+<div class="page_loader" id="lodersd1" style="display:none">
+    <div id="loader" style="position: fixed; right: 50%; top: 50%; transform: translate(50%, -50%); /*! display: none; */">
+        <div class="loadingio-spinner-ripple-92ar2pfqk5j">
+            <div class="ldio-zdyd6mf6t5">
+                <div></div><div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+        var ent = @Model.message;
+
+    alert(ent);
+
+</script>

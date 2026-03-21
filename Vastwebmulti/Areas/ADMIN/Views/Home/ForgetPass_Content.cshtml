@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewBag.Title = "ForgetPass_Content";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Ckeditor/ckeditor.js"></script>
+<script src="~/Ckeditor/adapters/jquery.js"></script>
+<script type="text/javascript"> CKEDITOR.replace('txtedit'); </script>
+<style>
+    .scroll {
+        width: 100%;
+        max-height: 530px;
+        overflow: auto;
+    }
+
+        .scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scroll::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .scroll::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+        }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-2">
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="body scroll" style="max-height:572px;">
+                                <div class="demo-button ">
+                                    <div class="row">
+                                        <div class="col-md-12" style="margin-top:-10px;">
+                                            @Html.Partial("ColorPartial")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                  <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-20px;">
+                        <div class="card">
+                            <div class="">
+                                <h2 style="color:#00000082; font-size:16px;padding-top:9px; padding-left:22px;">
+                                    All Forgot Password Email Footer Content
+                                </h2>
+                                <button type="button" class="btn  waves-effect" style="float:right; margin-top:-34px;margin-right:6px;border:1px solid #c7c2c2;background:#dedddd;" data-toggle="modal" data-target="#defaultModal">
+                                    <i class="fa fa-plus" style="top:1px;font-size:15px;"></i>
+                                    <span style="top:0px;">Add New</span>
+                                </button>
+                         
+                            </div>
+                            <div class="body">
+                                <div class="row">
+                                    <div class="table-responsive" style="position:inherit;margin-top:-20px;">
+                                        <table class="table table-bordered table-striped table-hover dataTable js-exportable ">
+                                            <thead style="background-color:whitesmoke;">
+                                                <tr>
+                                                    <th>Subject</th>
+                                                    <th>Gmail&nbsp;Content</th>
+                                                    <th>Image</th>
+                                                    <th>Edit</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in ViewBag.gmail)
+                                                {
+                                                    var p = item.GmailContent;
+                                                    var q = "";
+                                                    if (p.Length > 300)
+                                                    {
+                                                        q = p.Substring(0, 300);
+                                                    }
+                                                    else
+                                                    {
+                                                        q = p;
+                                                    }
+                                                    <tr>
+                                                        <td>@item.Subject</td>
+                                                        <td>@Html.Raw(q)</td>
+                                                        <td> <img src="@Url.Content("~/"+item.Image)" width="100" height="70" /></td>
+                                                        <td>
+                                                            <a class="btn btn-default waves-effect" href='@Url.Action("Edit_ForgetPass", "Home", new {ForgetId = item.Id})' style="border:1px solid #c7c2c2;">
+                                                               Edit
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-default waves-effect" style="background-color:transparent; border:none;border:1px solid #c7c2c2;" onclick="delGmailContent('@item.Id')">
+                                                                Delete
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     
+            </div>
+</section>
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">Add Email Footer Content</h4>
+            </div>
+            @using (Html.BeginForm("ForgetPass_Content", "Home", FormMethod.Post, new { encType = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="margin-top:0px;">
+                    <div class="body">
+                        <form>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Subject</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <input type="text" id="txtsubject" name="txtsubject" class="form-control" required="" placeholder="Enter Subject Like:-Welcome to Company Name. Family" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Gmail Formate Content</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <textarea id="txtedit" name="txtedit" class="ckeditor" required=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="email_address_2">Select Image</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #c7c2c2;">
+                                            <input type="file" name="file" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-5 form-control-label">
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-7">
+                                    <p style="color:red;">Image Size will Be :- 800 * 200 Pixel</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer" id="silder1">
+                                <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;" onclick="return check()">
+                                    <span style="top:-2px;color:black;">Save Change</span>
+                                </button>
+                                <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                    <span style="top:-2px;color:black;">Close</span>
+                                </button>
+
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script src="~/Swalalert/sweetalert-dev.js"></script>
+<script>
+    $(document).ready(function () {
+        var succ = '@TempData["success"]';
+
+        if (succ != null && succ != "") {
+            if (succ.includes("successfully")) {
+                swal("Data Upload!", succ, "success");
+            }
+            else {
+                swal("Oops!", succ, "error");
+            }
+        }
+    });
+</script>
+<script type="text/javascript">
+
+    function delGmailContent(e) {
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete Forget Gmail Data !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+function () {
+
+    $.ajax({
+        type: "POST", url: '@Url.Action("delGmailContent", "Home")', data: { Id: e }, dataType: 'json', cache: false, success: function (result) {
+            if (result == "Success") {
+                swal("File Removed!", "Gmail Data Deleted Successfully.", "success");
+                var url = '@Url.Action("ForgetPass_Content", "Home")';
+                window.location.href = url;
+            }
+            else {
+                swal("Failed!", "Something went wrong.", "error");
+                var url = '@Url.Action("ForgetPass_Content", "Home")';
+                window.location.href = url;
+            }
+        }
+    });
+}
+);
+
+    }
+
+</script>

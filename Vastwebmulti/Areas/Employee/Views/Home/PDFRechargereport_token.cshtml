@@ -1,0 +1,81 @@
+﻿@model List<Vastwebmulti.Models.PAN_CARD_IPAY_Token_report_paging_Result>
+@using Vastwebmulti.Models;
+@using Microsoft.AspNet.Identity
+@{
+    Layout = null;
+    VastwebmultiEntities DB1 = new VastwebmultiEntities();
+    var currentuser = User.Identity.GetUserId();
+    var iswritepermision = DB1.tbl_permission_Services.Where(x => x.Employee_ID == currentuser && x.Servicename == "PANCARD" && x.iswrite == true).Any();
+
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF Recharge report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <table cellspacing="0" style="width:100%;font-size:12px;">
+        <thead style="background-color: whitesmoke; ">
+            <tr>
+
+                <th>User&nbsp;Information</th>
+                @*<th>User&nbsp;Information</th>*@
+                <th>Merchant&nbsp;Id</th>
+                <th>Physical</th>
+                <th>Digital</th>
+                <th>Processing&nbsp;Fees</th>
+                <th>UTI&nbsp;TXN&nbsp;ID</th>
+                <th>User Income</th>
+                <th>User Remain Post</th>
+                <th>User&nbsp;Remain Pre</th>
+                <th>Distributor Remain Pre</th>
+                <th>Distributor Income</th>
+                <th>MD Remain Pre</th>
+                <th>MD Net Income</th>
+                <th>Date</th>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var sts = item.Particulars;
+                if (item.Particulars.ToUpper().Contains("REQ"))
+                {
+                    sts = "Pending";
+                }
+                <tr align="center">
+                    <td><span>@item.UserType</span>&nbsp;⇒&nbsp;@item.Frm_Name</td>
+                    <td>@item.MerchantTxnId</td>
+                    <td>@item.PhysicalCount</td>
+                    <td>@item.DigitalCount</td>
+                    <td>@item.ProcessingFees</td>
+                    <td>@item.UTI_TXN_ID</td>
+                    <td>@item.RetailerIncome</td>
+                    <td>@item.retailer_remain_post</td>
+                    <td>@item.retailer_remain_pre</td>
+
+                    <td>@item.retailer_dealer_pre</td>
+                    <td>@item.DealerIncome</td>
+                    <td>@item.retailer_master_pre</td>
+                    <td>@item.MDIncome</td>
+                    <td>@item.Date</td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+</body>
+</html>
+

@@ -1,0 +1,331 @@
+﻿@model List<Vastwebmulti.Areas.ADMIN.Models.dthconnectionModel>
+@{
+    ViewBag.Title = "DTHConnection";
+    Layout = "~/Areas/ADMIN/Views/Shared/_Layout.cshtml";
+}
+<!-- Sweetalert Css -->
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+</style>
+<link href="~/AdminDesign/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card" style="margin-top:2px; ">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p style="font-size:22px;margin-top:6px;">DTH Connection</p>
+                        </div>
+                        @using (Html.BeginForm("Index", "DthBooking", FormMethod.Post))
+                        {
+                            <form class="form-horizontal">
+                                <div class="col-md-4">
+
+                                    <div class="" style="margin-top:4px;padding-bottom:12px;">
+                                        <select name="Opt" id="Opt" class="selectpicker form-control" placeholder="Enter plan spefification" required="" data-live-search="true" >
+                                            <option value="1">Dish Tv</option>
+                                            <option value="2">Tata Sky</option>
+                                            <option value="3">Videocon D2H</option>
+                                            <option value="4">Airtel</option>
+                                            <option value="5">Sun Direct</option>
+                                            <option value="6">Independent TV</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4">
+
+                                    <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left:7px; height:34px;border:1px solid #c7c2c2;">
+                                        <i class="fa fa-search" style="top:-1px;font-size:16px;color:black;">&nbsp;Search</i>
+                                    </button>
+
+                                    <a href="@Url.Action("AddDtdPlan","DthBooking")" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left:31px; height:34px;border:1px solid #c7c2c2;">
+                                        <i class="fa fa-plus" style="top:-1px;font-size:16px;color:black;">&nbsp;Add New</i>
+                                    </a>
+
+
+
+                                </div>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:4px;">
+                <div class="card">
+                    <div class="">
+                        <ol class="breadcrumb breadcrumb-col-blue-grey" style="margin-left:5px;margin-top:-22px;">
+                            <li class="active" style="color:#9E9E9E; font-size:12px;">DTH CONNECTION&nbsp;></li>
+                        </ol>
+                    </div>
+                    <div class="body">
+                        <div class="table-responsive" style="position:inherit; margin-top:-51px;">
+                            <table id="example" class="table table-bordered">
+                                <thead style="color:black;position:inherit;background-color:whitesmoke;">
+                                    <tr>
+                                        <th>Sr.No</th>
+                                        <th>Title</th>
+                                        <th>Plan&nbsp;Name</th>
+                                        <th>Offered&nbsp;Price</th>
+                                        <th>Published&nbsp;Price</th>
+                                        <th>Specifications</th>
+                                        <th>Image</th>
+                                        <th>#</th>
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ int i = 1; }
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@item.Title</td>
+                                            <td>@item.PlanName</td>
+                                            <td>@item.OfferePrice</td>
+                                            <td>@item.PublishePrice</td>
+                                            <td>@item.Specification</td>
+                                            @if (item.ImageUrl == null || item.ImageUrl == "")
+                                            {
+                                                <td><button class="btn btn-primary">Upload</button></td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <img src="@Url.Content(item.ImageUrl)" height="100" width="100" />
+                                                </td>
+                                            }
+                                            <td>
+                                                <button class="btn btn default" id="but" odata-toggle="modal" data-target="#editModal" onclick="FillDataForEdit('@item.Id')" style="background-color:transparent; border:none;border:1px solid #c7c2c2;margin-top:4px; padding:1px 6px 1px 6px;" title="Edit Information">
+                                                    Edit
+                                                </button>
+
+                                            </td>
+                                            <td>
+                                                <button class="btn btn default" id="but" onclick="DeleteConfirm('@item.Id')" style="background-color:transparent; border:none;border:1px solid #c7c2c2;margin-top:4px; padding:1px 6px 1px 6px;" title="Delete Information">
+                                                    Delete
+                                                </button>
+
+                                            </td>
+                                        </tr>
+                                        i++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<div id="editModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:whitesmoke;">
+                <h4 class="modal-title" id="defaultModalLabel" style="color:black;">EDIT DTH PLAN AND SPECIFICATION</h4>
+            </div>
+
+            <div class="modal-body" style="margin-top:0px;">
+                @using (Html.BeginForm("EditDtdPlan", "DthBooking", FormMethod.Post))
+                {
+                    @Html.Hidden("Id");
+                    <form class="form-horizontal">
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="title">Title</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        <input type="text" id="title" name="title" class="form-control" placeholder="Enter Title" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="password_2">Plan Name</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        <input type="text" name="PlanName" id="PlanName" class="form-control" placeholder="Enter plan name" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="password_2">Offer Price</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        <input type="text" name="OfferPrice" id="OfferPrice" class="form-control" placeholder="Enter offer price" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="password_2">Published Price</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="" style="border:1px solid #dddddd;">
+                                        <input type="text" name="PublishedPrice" id="PublishedPrice" class="form-control" placeholder="Enter published price" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id='TextBoxesGroup'>
+                            <div class="row clearfix" id="TextBoxDiv1">
+                                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                    <label for="password_2">Specification </label>
+                                </div>
+                                <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                    <div class="form-group">
+                                        <div class="" style="border:1px solid #dddddd;">
+                                            <textarea type="text" id="specifications" name="specifications" class="form-control" placeholder="Enter plan spefification" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label>NOTE: Specifications should be comma saparated only.</label>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right:12px; height:34px;">
+                                <span style="top:-2px;color:black;">Save Change</span>
+                            </button>
+                            <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                                <span style="top:-2px;color:black;">Close</span>
+                            </button>
+                        </div>
+                    </form>
+                }
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>*@
+        </div>
+
+    </div>
+</div>
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<!-- SweetAlert Plugin Js -->
+<script src="~/AdminDesign/plugins/sweetalert/sweetalert.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var counter = 2;
+
+        $("#addButton").click(function () {
+
+            if (counter > 10) {
+                alert("Only 10 dprcifications allowed");
+                return false;
+            }
+
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'TextBoxDiv' + counter);
+            newTextBoxDiv.addClass("row clearfix");
+
+            //newTextBoxDiv.after().html('<label class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">Specification ' + counter + ' : </label>' +
+            //      '<input type="text" name="textbox' + counter +
+            //      '" id="textbox' + counter + '" value="" >');
+            newTextBoxDiv.after().html('<div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label"><label for="password_2">Specification ' + counter + '</label></div><div class="col-lg-10 col-md-10 col-sm-8 col-xs-7"><div class="form-group"><div class="form-line"><input type="text" name="specifications" class="form-control" placeholder="Enter plan spefification"></div></div></div>');
+            newTextBoxDiv.appendTo("#TextBoxesGroup");
+
+
+            counter++;
+        });
+
+        $("#removeButton").click(function () {
+            if (counter == 1) {
+                alert("No more specification to remove");
+                return false;
+            }
+
+            counter--;
+
+            $("#TextBoxDiv" + counter).remove();
+
+        });
+
+        $("#getButtonValue").click(function () {
+
+            var msg = '';
+            for (i = 1; i < counter; i++) {
+                msg += "\n Textbox #" + i + " : " + $('#textbox' + i).val();
+            }
+            alert(msg);
+        });
+    });
+
+    function FillDataForEdit(id) {
+        var optId = '@Model.'
+        var model = '@Html.Raw(Json.Encode(Model))';
+        const data = JSON.parse(model);
+        const item = data.find(f=>f.Id == id);
+        console.log(item);
+        $("#Id").val(id);
+        $("#title").val(item.Title);
+        $("#PlanName").val(item.PlanName);
+        $("#OfferPrice").val(item.OfferePrice);
+        $("#PublishedPrice").val(item.PublishePrice);
+        $("#specifications").val(item.Specification);
+    }
+    function DeleteConfirm(Id) {
+        swal({
+            title: "Are you sure?",
+            text: "Selected entry will be deleted permanently.",
+            type: "info",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+        }, function () {
+            window.location.href = '@Url.Action("DeleteDthPlan", "DthBooking")' + "?Id=" + Id;
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print'
+            ]
+        });
+    });
+</script>

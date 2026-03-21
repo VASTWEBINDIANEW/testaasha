@@ -1,0 +1,196 @@
+﻿
+@model Vastwebmulti.Areas.ADMIN.ViewModel.TargetSetviewmodel
+@{
+    
+    DateTime todaysDate = DateTime.Now.Date.AddMonths(-1);
+    int month = todaysDate.Month;
+    int year = todaysDate.Year;
+}
+<table class="table table-bordered table-striped table-hover third-design-table table-input-color-third" id="categoryList">
+    <thead>
+        <tr>
+            <th style="text-align: center;">Category</th>
+            <th style="text-align: center;">Target&nbsp;Business<br /><span style="color:red;font-size:11px;text-align:center;"> (Total Business)</span></th>
+            <th style="text-align: center;">Offer&nbsp;Type</th>
+            <th style="text-align: center;">(60%)&nbsp;Achieved <br /><span style="color:red;font-size:11px;text-align:center;">On 60% Of Buss.</span></th>
+            <th style="text-align: center;">(70%)&nbsp;Achieved <br /><span style="color:red;font-size:11px;text-align:center;">On 70% Of Buss.</span></th>
+            <th style="text-align: center;">(80%)&nbsp;Achieved <br /><span style="color:red;font-size:11px;text-align:center;">On 80% Of Buss.</span></th>
+            <th style="text-align: center;">(90%)&nbsp;Achieved <br /><span style="color:red;font-size:11px;text-align:center;">On 90% Of Buss.</span></th>
+            <th style="text-align: center;">(100%)&nbsp;Achieved <br /><span style="color:red;font-size:11px;text-align:center;">On 100% Of Buss.</span></th>
+            <th style="text-align: center;">Status</th>
+            <th style="text-align: center;">Edit</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="beforload" style="display:none">
+            <td colspan="10"><div class="loader"></div></td>
+        </tr>
+        <tr id="AfterLoding">
+            @if (Model.mdTargetCategory != null)
+            {
+                foreach (var item in Model.mdTargetCategory)
+                {
+                    if (item.Date.Value.Month == month && item.Date.Value.Year == year)
+                    {
+        <tr>
+            <td>@item.Category</td>
+            <td><input type="text" value="@item.SetTarget" class="txtsettarget third-tr-color" name="txtsettarget" readonly="readonly" /></td>
+            <td>
+                <div class="for-custom-select-icon">
+                    <select class="ddloffertype" disabled="true" onchange="changeachive(this)">
+                        <option value="Fixrupees">Fix Rupees</option>
+                        <option value="Giftitem">Gift Item</option>
+                    </select>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="txt60achive" value="@item.Achive_60" readonly="readonly" />
+                <div class="for-custom-select-icon-other">
+                    <select class="ddl60achive" style="display:none;">
+                        @foreach (var Giftitem in Model.tblproductlist)
+                        {
+                            <option value="@Giftitem.Text">@Giftitem.Text</option>
+                        }
+
+                    </select>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="txt70achive" value="@item.Achive_70" readonly="readonly" />
+                <div class="for-custom-select-icon-other">
+                    <select class="ddl70achive" style="display:none;">
+                        @foreach (var Giftitem in Model.tblproductlist)
+                        {
+                            <option value="@Giftitem.Text">@Giftitem.Text</option>
+
+                        }
+                    </select>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="txt80achive" value="@item.Achive_80" readonly="readonly" />
+                <div class="for-custom-select-icon-other">
+                    <select class="ddl80achive" style="display:none;">
+                        @foreach (var Giftitem in Model.tblproductlist)
+                        {
+                            <option value="@Giftitem.Text">@Giftitem.Text</option>
+
+                        }
+                    </select>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="txt90achive" value="@item.Achive_90" readonly="readonly" />
+                <div class="for-custom-select-icon-other">
+                    <select class="ddl90achive" style="display:none;">
+                        @foreach (var Giftitem in Model.tblproductlist)
+                        {
+                            <option value="@Giftitem.Text">@Giftitem.Text</option>
+
+                        }
+                    </select>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="txt100achive" value="@item.Achive_100" readonly="readonly" />
+                <div class="for-custom-select-icon-other">
+                    <select class="ddl100achive" style="display:none;">
+                        @foreach (var Giftitem in Model.tblproductlist)
+                        {
+                            <option value="@Giftitem.Text">@Giftitem.Text</option>
+
+                        }
+                    </select>
+                </div>
+            </td>
+            <td disabled>
+                @if (item.Status == true)
+                {
+                    <div class="onoffswitch onoffswitchspan-design">
+                        <span class="costom-on">on</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="onoffswitch ofoffswitchspan-design">
+                        <span class="custom-off">off</span>
+                    </div>
+                }
+
+            </td>
+            <td class="last-target" disabled>
+                🚫
+            </td>
+
+        </tr>
+                    }
+                }
+            }
+        </tbody>
+</table>
+<script>
+    $('.edit-target').click(function () {
+
+        $(this).closest('tr').find('input[type=text]').removeAttr('readonly');
+        $(this).closest('tr').find('select').removeAttr('disabled');
+        $(this).closest('tr').find('.for-custom-select-icon').addClass('custom-district');
+        $(this).css('display', 'none');
+        $(this).next('.save-target').css('display', 'block');
+
+    });
+
+    $('.save-target').click(function () {
+
+        var currentid = $(this);
+        var settarget = $(this).closest('tr').find('.txtsettarget').val()
+        var offertype = $(this).closest('tr').find('.ddloffertype').val()
+        var txt60achive = $(this).closest('tr').find('.txt60achive').val()
+        var txt70achive = $(this).closest('tr').find('.txt70achive').val()
+        var txt80achive = $(this).closest('tr').find('.txt80achive').val()
+        var txt90achive = $(this).closest('tr').find('.txt90achive').val()
+        var txt100achive = $(this).closest('tr').find('.txt100achive').val()
+        var ddl60achive = $(this).closest('tr').find('.ddl60achive').val()
+        var ddl70achive = $(this).closest('tr').find('.ddl70achive').val()
+        var ddl80achive = $(this).closest('tr').find('.ddl80achive').val()
+        var ddl90achive = $(this).closest('tr').find('.ddl90achive').val()
+        var ddl100achive = $(this).closest('tr').find('.ddl100achive').val()
+
+        $.ajax({
+            url: $(this).attr('data-href'),
+            data: { settarget: settarget, offertype: offertype, txt60achive: txt60achive, txt70achive: txt70achive, txt80achive: txt80achive, txt90achive: txt90achive, txt100achive: txt100achive, ddl60achive: ddl60achive, ddl70achive: ddl70achive, ddl80achive: ddl80achive, ddl90achive: ddl90achive, ddl100achive: ddl100achive },
+            success: function (data) {
+
+
+                if (data == 'Success') {
+                    currentid.closest('tr').find('select').prop("disabled", true);
+                    currentid.closest('tr').find('input[type=text]').prop("readonly", "readonly");
+                    currentid.closest('tr').find('.for-custom-select-icon').removeClass('custom-district');
+                    currentid.css('display', 'none');
+                    currentid.prev('.edit-target').css('display', 'block');
+                }
+
+
+            }
+        })
+    });
+</script>
+
+
+<script>
+    $('.third-design .third-design-table tbody td').mouseenter(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'var(--main-bg-rcolor)');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#fff');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'var(--main-bg-rcolor)');
+    });
+
+    $('.third-design .third-design-table tbody td').mouseleave(function () {
+        var colIndex = $(this).parent().children().index($(this)) + 1;
+        var rowIndex = $(this).parent().parent().children().index($(this).parent()) + 1;
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('background', 'transparent');
+        $(".third-design-table td:nth-child(" + colIndex + ")").css('color', '#333');
+        $(".third-design-table tbody tr:nth-child(" + rowIndex + ")").css('background', 'transparent');
+    });
+</script>

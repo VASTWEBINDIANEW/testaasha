@@ -1,0 +1,270 @@
+﻿
+@{
+    ViewBag.Title = "SocialMedia";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+
+<script src="~/Ckeditor/ckeditor.js"></script>
+<script src="~/Ckeditor/adapters/jquery.js"></script>
+<script type="text/javascript">
+    CKEDITOR.replace('txtedit');
+</script>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="bread-same-all-page">
+            <ul style="margin:0px;">
+                <li class="smli">
+                    <a href="@Url.Action("Dashboard", "Home")" class="fullbodydycolorbg tmw-total-color-one">
+                        Dashboard&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;" />
+                    </a>
+                </li>
+                <li class="fullbodydycolorbg tmw-total-color-one">
+                    <a href="@Url.Action("Dashboard", "Home")#setting" class="fullbodydycolorbg tmw-total-color-one">
+                        Basic&nbsp;Setting
+                    </a>&nbsp;<img src="~/ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;" />
+                </li>
+                <li class="fullbodydycolorbg tmw-total-color-one">
+                    Social Media
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="folower-setting">
+                    <h2>Followers Setting</h2>
+
+                    <fieldset>
+                        <legend>Select Social Media</legend>
+                        <div class="custom-district">
+                            @Html.DropDownList("ddlSocial", new List<SelectListItem>
+                                {
+                                   new SelectListItem{ Text="Select Media",Value="",},
+                                   new SelectListItem{ Text="Facebook",Value="Facebook",},
+                                   new SelectListItem{Text="Instagram",Value="Instagram"},
+                                   new SelectListItem{Text="Youtube",Value="Youtube"},
+                                   new SelectListItem{Text="Twitter",Value="Twitter"},
+                                   new SelectListItem{Text="Pinterest",Value="Pinterest"},
+                                   new SelectListItem{Text="LinkedIn",Value="LinkedIn"},
+                                   new SelectListItem{Text="Blogger",Value="Blogger"},
+                                   new SelectListItem{Text="Tumblr",Value="Tumblr"}
+                                 }, new { @required = "required" })
+                        </div>
+                        <input type="url" id="urlLink" placeholder="Enter Social Media Link" />
+                        <button class="fullbodydycolorbg" onclick="SaveSocialAc()">Save Link</button>
+                    </fieldset>
+                    <div class="social-history table-responsive">
+                        <table id="social-list" class="table table-bordered table-striped table-hover" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Media&nbsp;Type</th>
+                                    <th>Social Media Link</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.linkcontact.Count > 0)
+                                {
+                                    foreach (var item in ViewBag.linkcontact)
+                                    {
+                                        <tr>
+                                            <td>@item.FooterType</td>
+                                            <td>@item.FooterLink</td>
+                                            <td>
+                                                <button onclick="delSocialAc('@item.Id')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="Badges-setting folower-setting">
+                    <h2>Badges Setting</h2>
+                    <fieldset>
+                        <legend>Select Badges</legend>
+                        <div class="custom-district">
+                            @Html.DropDownList("ddlBadges", new List<SelectListItem>
+                                    {
+                                       new SelectListItem{ Text="Select Media",Value="",},
+                                       new SelectListItem{ Text="Appfutura",Value="Appfutura",},
+                                       new SelectListItem{Text="Applancher",Value="Applancher"},
+                                       new SelectListItem{Text="Badush",Value="Badush"},
+                                       new SelectListItem{Text="Extract",Value="Extract"},
+                                       new SelectListItem{Text="Freelancer",Value="Freelancer"},
+                                       new SelectListItem{Text="Good-firms",Value="Good-firms"},
+                                       new SelectListItem{Text="Mobile-app",Value="Mobile-app"},
+                                       new SelectListItem{Text="Trustpilot",Value="Trustpilot"},
+                                     }, new { @required = "required" })
+                        </div>
+                        <input type="url" id="BadgeLink" placeholder="Enter Badges Link" />
+                        <button class="fullbodydycolorbg" onclick="SaveBadge()">Save Link</button>
+                    </fieldset>
+                    <div class="social-history">
+                        <table id="Badge-list" class="table table-bordered table-striped table-hover" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Badges&nbsp;Type</th>
+                                    <th>Badges Link</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.Badges.Count > 0)
+                                {
+                                    foreach (var item in ViewBag.Badges)
+                                    {
+                                        <tr>
+                                            <td>@item.BadgeType</td>
+                                            <td>@item.Url_Link</td>
+                                            <td>
+                                                <button onclick="delBadge('@item.Id')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+<script>
+    function SaveSocialAc() {
+        var social = $('#ddlSocial').val();
+        if (social != "") {
+            var txt = $('#urlLink').val();
+        var re = /(http(s)?:\\)?([\w-]+\.)+[\w-]+[.com|.in|.org]+(\[\?%&=]*)?/
+        if (re.test(txt)) {
+            $.ajax({
+                type: "GET",
+               url: '@Url.Action("Social_Media", "Home")',
+                    data: { socialType: $('#ddlSocial').val(), link: $('#urlLink').val() },
+                success: function (response) {
+
+                var i = 0;
+                var mdtblHtml = "";
+                $.each(response, function (a, b) {
+                    mdtblHtml += "<tr><td>" + b.FooterType + "</td>";
+                    mdtblHtml += "<td>" + b.FooterLink + "</td>";
+                    mdtblHtml += "<td>" + '<button onclick="delSocialAc('+b.Id+')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>' + "</td>";
+                    i++;
+                });
+                $('#social-list > tbody').html(mdtblHtml);
+                }
+
+            });
+            }
+            else {
+            alert('Not a Valid Url !');
+        }
+        }
+
+        else {
+            alert('Select Social Account Type');
+        }
+    }
+</script>
+<script>
+    function delSocialAc(e) {
+        if (e != "") {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("delfooterlink", "Home")',
+                data: { Id: e },
+                dataType: 'json',
+                cache: false,
+                success: function (response) {
+                var i = 0;
+                var mdtblHtml = "";
+                $.each(response, function (a, b) {
+                    mdtblHtml += "<tr><td>" + b.FooterType + "</td>";
+                    mdtblHtml += "<td>" + b.FooterLink + "</td>";
+                    mdtblHtml += "<td>" + '<button onclick="delSocialAc('+b.Id+')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>' + "</td>";
+                    i++;
+                });
+                $('#social-list > tbody').html(mdtblHtml);
+                }
+
+            });
+        }
+        else {
+            alert('');
+        }
+    }
+</script>
+
+
+<script>
+    function SaveBadge() {
+        var Badge = $('#ddlBadges').val();
+        if (Badge != "") {
+            var txt = $('#BadgeLink').val();
+        var re = /(http(s)?:\\)?([\w-]+\.)+[\w-]+[.com|.in|.org]+(\[\?%&=]*)?/
+        if (re.test(txt)) {
+            $.ajax({
+                type: "GET",
+               url: '@Url.Action("BadgeMedia", "Home")',
+                    data: { BadgeType: $('#ddlBadges').val(), Badgelink: $('#BadgeLink').val() },
+                success: function (response) {
+
+                var i = 0;
+                var BadgeHtml = "";
+                $.each(response, function (a, b) {
+                    BadgeHtml += "<tr><td>" + b.BadgeType + "</td>";
+                    BadgeHtml += "<td>" + b.Url_Link + "</td>";
+                    BadgeHtml += "<td>" + '<button onclick="delBadge('+b.Id+')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>' + "</td>";
+                    i++;
+                });
+                $('#Badge-list > tbody').html(BadgeHtml);
+                }
+
+            });
+            }
+            else {
+            alert('Not a Valid Url !');
+        }
+        }
+
+        else {
+            alert('Select Badge Type');
+        }
+    }
+</script>
+<script>
+    function delBadge(e) {
+        if (e != "") {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("delBadgesMedia", "Home")',
+                data: { Id: e },
+                dataType: 'json',
+                cache: false,
+                success: function (response) {
+                var i = 0;
+                var BadgeHtml = "";
+                $.each(response, function (a, b) {
+                    BadgeHtml += "<tr><td>" + b.BadgeType + "</td>";
+                    BadgeHtml += "<td>" + b.Url_Link + "</td>";
+                    BadgeHtml += "<td>" + '<button onclick="delBadge('+b.Id+')"><img src="../../MainFrontDesign/images/delete.svg" style="width:16px;"></button>' + "</td>";
+                    i++;
+                });
+                $('#Badge-list > tbody').html(BadgeHtml);
+                }
+
+            });
+        }
+        else {
+            alert('');
+        }
+    }
+</script>

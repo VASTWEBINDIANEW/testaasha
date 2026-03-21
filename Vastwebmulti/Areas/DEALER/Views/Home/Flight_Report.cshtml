@@ -1,0 +1,436 @@
+﻿@model List<Vastwebmulti.Models.proc_FlightReport_Result>
+@using Newtonsoft.Json;
+@{
+    ViewBag.Title = "Flight";
+    Layout = "~/Areas/DEALER/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .table.dataTable thead th, table.dataTable thead td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px 6px 4px;
+    }
+
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 4px;
+    }
+
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+        height: 20px;
+    }
+
+    .slab-setting-menu li a.activee {
+        background-image: linear-gradient(to right, var(--main-bg-lcolor), var(--main-bg-rcolor)) !important;
+    }
+    .dropdown-menu {
+    margin-top: 75px !important;
+    }
+    .datepicker.datepicker-dropdown td.active.selected.range-start.day::before{display:none;}
+    .flight-reportfullpage .col-md-2 .form-group .web-white-filter.fil input {border-color: #ccc !important;}
+
+    @@media screen and (max-width:1366px){
+        .flight-reportfullpage .fligh-allretailer-search button span {margin: 0 !important;}
+        .flight-reportfullpage .fligh-allretailer-search {width: 10%;}
+        .flight-reportfullpage .col-md-2 .form-group .web-white-filter.fil {margin-right: 0% !important;position: relative;left: -4px;}
+        
+    }
+
+    @@media screen and (max-width:990px){
+        .content.flight-reportfullpage .col-md-2, .content.flight-reportfullpage .col-md-4, .content.flight-reportfullpage .col-md-5, .content.flight-reportfullpage .col-md-6, .content.flight-reportfullpage .col-md-1 {float: left;}
+        .content.flight-reportfullpage .col-md-8.flight-all-divclass {float: right;width: 79%;}
+        .content.flight-reportfullpage .select-rediusnone.fligh-allretailer {width: 21%;}
+        .content.flight-reportfullpage .col-md-2.fligh-allretailer-pnr {width: 12%;}
+        .flight-reportfullpage .col-md-2.export-totalpdf {float: right;padding-right: 24px;}
+
+    }
+    @@media screen and (max-width:768px){
+        .content.flight-reportfullpage .col-md-8.flight-all-divclass {float: right;width: 100%;}
+        .content.flight-reportfullpage .flight-bushotel-report {margin: 0 !important;}
+        .content.flight-reportfullpage .col-md-2 {width: 100%;float: left;}
+        .content.flight-reportfullpage .col-md-2 .flight-bushotel-report {width: 100%;float: left;}
+        .content.flight-reportfullpage .col-md-2 .flight-bushotel-report ul.slab-setting-menu {width: 100%;float: left;text-align: center;}
+        .content.flight-reportfullpage .col-md-2 .flight-bushotel-report ul.slab-setting-menu li {float: none;display: inline-block;border-right:1px solid #ccc !important;}
+        .flight-reportfullpage .table-responsive {border: 0;}
+        .flight-reportfullpage .card.all-reporttable-css .col-lg-12.col-md-12.col-sm-12.col-xs-12 {padding-left: 5px;}
+        .flight-reportfullpage .table-responsive{position:relative !important;z-index:9;}
+        .flight-reportfullpage .col-md-2.export-totalpdf .form-group {margin: 0 !important;}
+        .flight-reportfullpage .col-md-2.export-totalpdf .form-group div {padding-top: 0 !important;}
+    }
+
+    @@media screen and (max-width:520px){
+        .flight-reportfullpage .custom-date-icon {display: none;}
+        .flight-reportfullpage .fligh-allretailer-date input {padding-left: 2px !important;padding-right: 2px;font-size: 12px;}
+        .flight-reportfullpage .select2 span {font-size: 12px;}
+        .flight-reportfullpage input {font-size: 12px !important;}
+        .flight-reportfullpage input::placeholder{font-size: 12px !important;}
+        .flight-reportfullpage .col-md-1.fligh-allretailer-search button span {font-size: 0;}
+        .flight-reportfullpage .col-md-1.fligh-allretailer-search button {padding-left: 0 !important;padding-right: 0 !important;}
+        .flight-reportfullpage .fligh-allretailer-date {width: 36%;}
+        .flight-reportfullpage .col-md-2, .flight-reportfullpage .col-md-5 {padding-right: 3px;}
+        .flight-reportfullpage .all-report-inputclass-right {padding-left: 1px;}
+        .flight-reportfullpage .all-report-inputclass-left {padding-right: 2px;}
+        .flight-reportfullpage .col-md-2.export-totalpdf {padding-right: 15px;}
+
+    }
+
+    @@media screen and (max-width:420px){
+        .content.flight-reportfullpage .select-rediusnone.fligh-allretailer {width: 41%;}
+        .content.flight-reportfullpage .col-md-2.fligh-allretailer-pnr {width: 18%;padding-right: 0;}
+        .flight-reportfullpage .fligh-allretailer-date {width: 84%;}
+        .flight-reportfullpage .fligh-allretailer-search {width: 16%;}
+        .flight-reportfullpage .col-md-2.export-totalpdf {margin-top: 10px;}
+
+    }
+
+</style>
+
+<section class="content flight-reportfullpage">
+    <div class="container-fluid full-dealer-secondanimation">
+
+        <!--Four-Design-Admin-page-Header-Section-Start-->
+        <div class="page-title-box-fourde-dealer">
+            <h3>Flight Report</h3>
+            <ul>
+                <li><a href="@Url.Action("Dashboard","Home")" style="color:var(--fullbodybg-four);">Home&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Report's&nbsp;&nbsp;<i class="fa fa-angle-right"></i></a></li>
+                <li><a href="javascript:void(0);">Flight Report</a></li>
+            </ul>
+        </div>
+        <!--Four-Design-Admin-page-Header-Section-End-->
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-2">
+                        <div class="flight-bushotel-report" style=" margin-left: -14px; ">
+                            @Html.Partial("_Flightpartialmenu")
+                        </div>
+                    </div>
+                    <div class="col-md-8 flight-all-divclass">
+
+
+                        <div class="row">
+
+                            <div class="col-md-12" style="margin-left: -10px; ">
+                                <div class="row clearfix">
+                                    <div>
+                                        <div>
+                                            @using (Html.BeginForm("Flight_Report", "Home", FormMethod.Post))
+                                            {
+                                                <div class="">
+
+                                                    <div class="col-md-2 only-select-css select-rediusnone fligh-allretailer" id="rem">
+                                                        <div class="form-line" style="width:100%;padding-bottom:10px;">
+                                                            @Html.DropDownList("allretailer", ViewBag.allretailer as SelectList, "Select User", new { id = "allretailer", @class = "selectpicker form-control for-select2", data_live_search = "true", @style = "margin-top:0px; padding-left:0px; padding-right:0px;text-align:center;" })
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-md-2 only-select-css select-rediusnone fligh-allretailer" id="sts" style="">
+                                                        <div class="" style="width:100%;padding-bottom:10px;">
+                                                            @Html.DropDownList("ddl_status", new List<SelectListItem>
+                                                        {
+                                                new SelectListItem{ Text="Status",Value="",},
+                                                new SelectListItem{Text="Success",Value="SUCCESS"},
+                                                new SelectListItem{Text="Pending",Value="PENDING"},
+                                                new SelectListItem{Text="Failed",Value="FAILED"}
+                                                 }, new { @class = "selectpicker form-control for-select2", data_live_search = "true", @style = "margin-top:0px; padding:0px;text-align:center;" })
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-md-2 fligh-allretailer-pnr">
+                                                        <div class="input-group" style="border:1px solid #bfbebe;width:100%;">
+
+                                                            <div class="">
+                                                                @Html.TextBox("PNR", "", new { @class = "form-control", @placeholder = "PNR", @style = "height:30px;padding:3px; background:none;font-size:12px;color:#555;" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5 fligh-allretailer-date" style="padding-left: 0px;padding-right: 5px;">
+                                                        <div class="form-group for-web-date" style="margin-bottom:0px;width:100%;">
+                                                            <div class="input-daterange input-group">
+                                                                <div class="all-report-inputclass all-report-inputclass-left">
+                                                                    <div class="custom-date-icon border-colorchangecss" style="height: 32px;">
+                                                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                                                    </div>
+                                                                    @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "padding-left:20px; border:1px solid #ccc;height:32px;", autocomplete = "off" })
+                                                                </div>
+                                                                @*<span class="input-group-addon">
+                                                                    <i class="fa fa-exchange" style="padding-top:10px;"></i>
+                                                                </span>*@
+                                                                <div class="all-report-inputclass all-report-inputclass-right">
+                                                                    <div class="custom-date-icon border-colorchangecss" style="height: 32px;">
+                                                                        <i class="fa fa-calendar tmw-total-color-one fullbodydycolorbg" aria-hidden="true"></i>
+                                                                    </div>
+                                                                    @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "padding-left:20px;border:1px solid #ccc; height:32px;", autocomplete = "off" })
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 fligh-allretailer-search" style="padding-left:0px;padding-right:0;">
+
+
+
+                                                        <center>
+                                                            <button type="submit" value="Old" name="submit" class="btn" style="padding:5px; height:32px;border:1px solid #ccc;background:#eeebeb;">
+                                                                <i class="fa fa-search" style="top:-1px;font-size:13px;color:#444;"></i>
+                                                                <span style="color:#444;">Search</span>
+                                                            </button>
+                                                        </center>
+
+
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-2 export-totalpdf">
+                        <div class="row">
+                            <div class="form-group" style="margin-top:-18px; ">
+                                <div style="padding-top: 18px; float:right">
+                                    <button class="white-success-button" style="height:32px;border:1px solid #ccc;background:#eeebeb;" onclick="findtotalticket()">Total</button>
+                                    <div class="web-white-filter fil" style="float: left;margin-right: 5px;">
+                                        <input type="button" id="btnExport" value="Export" style="margin-left:0px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/xls.png);
+                                background-repeat: no-repeat;
+                                background-position: 4px center;
+                                padding-left: 20px;">
+                                        <input type="button" id="btnPDF" value="PDF" style="margin-left:2px; padding: 0px 4px;height:32px;border:1px solid #b1a6a638;background:#b1a6a638;background-image: url(../../images/reportimage/pdf.png);
+                                background-repeat: no-repeat;
+                                background-position: 4px center;
+                                padding-left: 19px;">
+                                    </div>
+                                </div>
+                                <div class="white-success" style="display:none; float: right; margin-top: 20px;">
+                                    <span id="successtotal" class="btn btn-success waves-effect" style="font-size: 13px;padding:9px; color:white;font-weight:600;" title="Total  Success"><i style="font-size:15px;top:1px;" class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Failedtotal" class="btn btn-danger waves-effect" style="font-size: 13px;padding:9px; color:white;font-weight:600;" title="Total  Failed"><i style="font-size:15px;top:1px;" class="fa fa-times-circle-o" aria-hidden="true"></i> </span>
+                                    <span id="Pendingtotal" class="btn btn-warning waves-effect" style="font-size: 13px;padding:9px;color:white; font-weight:600;" title="Total  Pending"><i style="font-size:15px;top:1px;" class="fa fa-question-circle-o" aria-hidden="true"></i> </span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card all-reporttable-css">
+
+                    <div class="row clearfix">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="">
+                                <div class="table-responsive tableseconddes-dealer" style="position:inherit;">
+                                    <table id="example" class="table table-bordered table-striped table-hover " cellspacing="0" style="width:100%;font-size:12px;">
+                                        <thead style="background-color:whitesmoke;position:inherit; color:black;">
+                                            <tr>
+                                                <th style="width:110px;">Status</th>
+                                                <th style="width:110px;">Ticket&nbsp;Status</th>
+
+                                                <th>Passanger&nbsp;Name</th>
+                                                <th>Flight</th>
+                                                <th>Booking&nbsp;Id</th>
+                                                <th>PNR</th>
+                                                <th>Total&nbsp;Passenger</th>
+                                                <th>Fare&nbsp;Amount</th>
+                                                <th>MY&nbsp;Income</th>
+                                                <th>Booking&nbsp;Date</th>
+                                                @*<th>Retailer&nbsp;Pre</th>
+                                                <th>Retailer&nbsp;Income</th>
+                                                <th>Retailer&nbsp;Post</th>
+                                                <th>Dealer&nbsp;Pre</th>
+                                                <th>Dealer&nbsp;Income</th>
+                                                <th>Dealer&nbsp;Post</th>*@
+
+
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="trow" class="alin">
+
+                                            @{
+                                                Html.RenderAction("_Flight_Report", "Home", new { Model = Model });
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                    <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:20px;">
+                                        <img src="~/img/ajax-loader.gif" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- Jquery Core Js -->
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+</script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+
+<link href="~/MainFrontDesign/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/MainFrontDesign/select2/dist/js/select2.full.min.js"></script>
+
+
+<script>
+    $('.for-select2').select2();
+
+
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+
+          $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+      });
+</script>
+
+<script>
+    $('.white-success-button').click(function () {
+        $('.white-success').toggle();
+    });
+</script>
+<script>
+    function findtotalticket() {
+
+        var allretailer = $('#allretailer').val();
+        var ddl_status = $('#ddl_status').val();
+        var PNR = $('#PNR').val();
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+             $.post("@Url.Action("Flight_Total", "Home")",
+                 {"allretailer": allretailer, "ddl_status": ddl_status, "PNR": PNR, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date  },
+                 function (data) {
+                     $('#successtotal').text("₹. " + data.success);
+                     $('#Failedtotal').text("₹. " + data.failed);
+                     $('#Pendingtotal').text("₹. " + data.pending);
+
+                 });
+    }
+</script>
+<script>
+    $("#btnExport").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+        var allretailer = $('#allretailer').val();
+        var alldealer = $('#alldealer').val();
+        var PNR = $('#PNR').val();
+        var url = '@Url.Action("ExcelFilghtReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&ddl_status=' + ddl_status + '&alldealer=' + alldealer + '&allretailer=' + allretailer + '&PNR=' + PNR;
+        location.href = url;
+});
+</script>
+
+<script>
+    $("#btnPDF").click(function () {
+        var txt_frm_date = $('#txt_frm_date').val();
+        var txt_to_date = $('#txt_to_date').val();
+        var ddlusers = $('#ddlusers').val();
+        var ddl_status = $('#ddl_status').val();
+        var allretailer = $('#allretailer').val();
+        var alldealer = $('#alldealer').val();
+        var PNR = $('#PNR').val();
+        var url = '@Url.Action("PDF_FilghtReport", "Home")?txt_frm_date=' + txt_frm_date + '&txt_to_date=' + txt_to_date + '&ddlusers=' + ddlusers + '&ddl_status=' + ddl_status + '&alldealer=' + alldealer + '&allretailer=' + allretailer + '&PNR=' + PNR;
+        window.open(url,'_blank');
+    });
+</script>
+<script>
+        var pageindex = 2;
+        var NoMoredata = false;
+        var inProgress = false;
+        $(window).scroll(function () {
+
+            var allretailer = $('#allretailer').val();
+            var PNR = $('#PNR').val();
+            var ddl_status = $('#ddl_status').val();
+            var txt_frm_date = $('#txt_frm_date').val();
+            var txt_to_date = $('#txt_to_date').val();
+            if ($(window).scrollTop() > Number($("#example").height()) / 4 && !NoMoredata && !inProgress) {
+                inProgress = true;
+                $("#loadingdiv").show();
+                $.post("@Url.Action("InfiniteScroll_Ticket", "Home")",
+                    { "pageindex": pageindex,"allretailer": allretailer, "PNR": PNR,"ddl_status": ddl_status, "txt_frm_date": txt_frm_date, "txt_to_date": txt_to_date },
+                    function (data) {
+                        pageindex = pageindex + 1;
+                        NoMoredata = data.NoMoredata;
+                        $("#trow").append(data.HTMLString);
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    });
+            }
+        });
+
+
+</script>
+
+<script>
+    $(function () {
+        var current = location.pathname;
+        $('.sidebar-dealer-responshive ul li a').each(function () {
+            var $this = $(this);
+            // if the current path is like this link, make it active
+            if ($this.attr('href').indexOf(current) !== -1) {
+                $this.addClass('active');
+            }
+        })
+    })
+</script>

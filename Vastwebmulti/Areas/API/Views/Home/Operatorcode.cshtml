@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Vastwebmulti.Models.Operator_Code>
+@{
+    ViewBag.Title = "Operatorcode";
+    Layout = "~/Areas/API/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #operatoesearch {
+        margin-bottom: 10px;
+    }
+
+
+    .exportButtonclass {margin-bottom: 10px;}
+    .master-four-design .fa.fa-file-pdf-o {
+        font: normal normal normal 14px/1 FontAwesome !important;
+    }
+    .exportButtonclass {
+        background: var(--main-bg-lcolor) !important;font-size:14px !important;
+    }
+    .master-four-design .exportButtonclass {
+        background: var(--fullbodybg-four) !important;
+    }
+
+    @@media screen and (max-width:766px){
+        .operatorcode-api {padding-left: 0px;}
+            .operatorcode-api .col-md-3 {
+                width: 100%;
+                float: left;
+            }
+
+        .master-four-design .operatorcode-api {
+            padding-left: 15px;
+        }
+    }
+
+    @@media screen and (max-width:420px){
+        .operatorcode-api .col-md-9 h2 {
+            font-size: 20px !important;
+        }
+    }
+    
+
+   
+
+</style>
+<section class="content">
+    <div class="container-fluid operatorcode-api">
+        <div class="row clearfix">
+            <div class="col-lg-9 col-md-9 col-sm-9" style="float:left;width:auto;">
+                <div class="bread-same-all-page breadsameall-second" style="width:100%;float:left;">
+                    <ul class="">
+                        <li class="smli">
+                            <a href="@Url.Action("Dashboard","Home")" class="fullbodydycolorbg tmw-total-color-one">
+                                Dashboard&nbsp;<img src="../../ashok-images/rightaeps.svg" alt="right-arrow" style="width:12px;margin-top:-2px;">
+                            </a>
+                        </li>
+                        <li class="fullbodydycolorbg tmw-total-color-one">
+                            Operator Code
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+            <div style="width:auto;float:right;padding-right:15px;">
+                <button id="exportButton" onclick="PDF()" class="btn btn-lg btn-danger clearfix exportButtonclass"><span class="fa fa-file-pdf-o"></span> Export to PDF</button>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 " style="float:right;">
+                <input type="text" id="operatoesearch" placeholder="Search" onkeyup="myFunction()" style="width:100%;padding: 8px 10px;border: 1px solid #ddd;" />
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 html-content" style="overflow:auto;">
+                <table id="exportTable" class="table table-bordered table-striped table-hover third-design-table" style="width:100%;background:#f9f9f9;">
+
+                    <thead style="background-color:whitesmoke;">
+                        <tr>
+                            <th>Operator&nbsp;Name</th>
+                            <th>Operator&nbsp;Type</th>
+                            <th>Operator&nbsp;Code</th>
+                            @*<th>Optional1</th>
+                                <th>Optional2</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.operator_Name</td>
+                                <td>@item.Operator_type</td>
+                                <td>@item.new_opt_code</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+ 
+<script>
+
+    $('#operatoesearch').on("keyup", function () {
+        var search = $(this).val().toLowerCase();
+        $('#operatortable tbody tr').hide();
+        var len = $('#operatortable tbody tr:not(.notfound) td:contains("' + search + '")').length;
+        if (len > 0) {
+            $('#operatortable tbody tr:not(.notfound) td:contains("' + search + '")').each(function () {
+                $(this).closest('tr').show();
+            });
+        } else {
+            $('.notfound').show();
+        }
+        $.expr[":"].contains = $.expr.createPseudo(function (arg) {
+            return function (elem) {
+                return $(elem).text().toLowerCase().indexOf(arg.toLowerCase()) >= 0;
+            };
+        });
+    });
+
+
+
+
+
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script>
+    var doc = new jsPDF();
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+    //Create PDf from HTML...
+    function PDF() {
+    
+        doc.fromHTML($('.html-content').html(), 15, 15, {
+                'width': 170,
+                'elementHandlers': specialElementHandlers
+            });
+            doc.save('OPerator_code.pdf');
+       
+    }
+</script>

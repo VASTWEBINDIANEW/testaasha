@@ -1,0 +1,173 @@
+﻿@model Vastwebmulti.Areas.RETAILER.Models.AirTopSectionModel
+<div class="row">
+    @{
+        Vastwebmulti.Areas.RETAILER.ViewModels.Result SrcItem = null;
+        Vastwebmulti.Areas.RETAILER.ViewModels.Result DstnItem = null;
+        var SrcACode = string.Empty;
+        var DstnACode = string.Empty;
+        decimal pb = 0;
+        decimal op = 0;
+        if (Model.Results.Count == 1) //For International
+        {
+            SrcItem = Model.Results[0];
+            DstnItem = Model.Results[0];
+            SrcACode = SrcItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode;
+            DstnACode = DstnItem.Segments.LastOrDefault().FirstOrDefault().Airline.AirlineCode;
+            if (Model.Results[0].Fare != null)
+            {
+                pb = Model.Results[0].Fare.PublishedFare;
+                op = Model.Results[0].Fare.OfferedFare;
+            }
+        }
+        else if (Model.Results.Count == 2) //Domastic
+        {
+            SrcItem = Model.Results[0];
+            DstnItem = Model.Results[1];
+            SrcACode = SrcItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode;
+            DstnACode = DstnItem.Segments.FirstOrDefault().FirstOrDefault().Airline.AirlineCode;
+            if (Model.Results[0].Fare != null && Model.Results[1].Fare != null)
+            {
+                pb = Model.Results[0].Fare.PublishedFare + Model.Results[1].Fare.PublishedFare;
+                op = Model.Results[0].Fare.OfferedFare + Model.Results[1].Fare.OfferedFare;
+            }
+        }
+    }
+    <div class="col-md-4">
+        <p class="text-uppercase"><strong>Pub price:&nbsp;&nbsp;&nbsp;</strong> &#8377;<span class="text-right AirPbFareSpan">@pb</span></p>
+        <p class="text-uppercase"><strong>offered price:&nbsp;&nbsp;&nbsp;</strong> &#8377;<span class="text-right AirOfFareSpan">@op</span></p>
+    </div>
+    <div class="col-md-3" style="padding-right:0px;">
+        <div class="media">
+            <div class="media-left">
+                <a href="javascript:void(0);">
+
+                    @if (SrcACode == "AI")
+                    {
+                        <img class="media-object" id="srcFlight" src="https://logo.clearbit.com/www.airindia.com?size=64" width="64" height="64">
+                    }
+                    else if (SrcACode == "6E")
+                    {
+                        <img class="media-object" id="srcFlight" src="https://logo.clearbit.com/www.goindigo.in?size=64" width="64" height="64">
+                    }
+                    else if (SrcACode == "SG")
+                    {
+                        <img class="media-object" id="srcFlight" src="https://logo.clearbit.com/www.spicejet.com/?size=64" width="64" height="64">
+                    }
+                    else if (SrcACode == "9W")
+                    {
+                        <img class="media-object" id="srcFlight" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="64" height="64">
+                    }
+                    else if (SrcACode == "9W")
+                    {
+                        <img class="media-object" id="srcFlight" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="64" height="64">
+                    }
+                    else if (SrcACode == "UK")
+                    {
+                        <img class="media-object" id="srcFlight" src="https://logo.clearbit.com/www.airvistara.com?size=64" width="64" height="64">
+                    }
+                    else
+                    {
+                        <img class="media-object" id="srcFlight" src="http://placehold.it/64x64" width="64" height="64">
+                    }
+
+                </a><br />
+            </div>
+            <div class="media-body" style="text-align:left;" id="mediabodySrc">
+                @foreach (var segment in SrcItem.Segments.FirstOrDefault())
+                {
+                    <strong> (@segment.Origin.Airport.AirportCode)@Convert.ToDateTime(segment.Origin.DepTime).ToString("HH:mm")&rarr;(@segment.Destination.Airport.AirportCode)@Convert.ToDateTime(segment.Destination.ArrTime).ToString("HH:mm")</strong>
+                }
+                <br />
+                <span title="Publish Price">
+                    @if(SrcItem.Fare != null)
+                    {
+                       <span>@SrcItem.Fare.PublishedFare &nbsp; @SrcItem.Fare.Currency</span>
+                    }
+                    
+                
+                </span>
+                <br />
+                <span title="Offer Orice">
+                    @if (SrcItem.Fare != null)
+                    {
+                         <span>@string.Format("{0:C2}", SrcItem.Fare.OfferedFare) (O.P.)</span>
+                     }
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3" style="padding-right:0px;">
+        <div class="media">
+            <div class="media-left">
+                <a href="javascript:void(0);">
+
+                    @if (DstnACode == "AI")
+                    {
+                        <img class="media-object" id="DstnFlight" src="https://logo.clearbit.com/www.airindia.com?size=64" width="64" height="64">
+                    }
+                    else if (DstnACode == "6E")
+                    {
+                        <img class="media-object" id="DstnFlight" src="https://logo.clearbit.com/www.goindigo.in?size=64" width="64" height="64">
+                    }
+                    else if (DstnACode == "SG")
+                    {
+                        <img class="media-object" id="DstnFlight" src="https://logo.clearbit.com/www.spicejet.com/?size=64" width="64" height="64">
+                    }
+                    else if (DstnACode == "9W")
+                    {
+                        <img class="media-object" id="DstnFlight" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="64" height="64">
+                    }
+                    else if (DstnACode == "9W")
+                    {
+                        <img class="media-object" id="DstnFlight" src="https://logo.clearbit.com/www.jetairways.com?size=64" width="64" height="64">
+                    }
+                    else if (DstnACode == "UK")
+                    {
+                        <img class="media-object" id="DstnFlight" src="https://logo.clearbit.com/www.airvistara.com?size=64" width="64" height="64">
+                    }
+                    else
+                    {
+                        <img class="media-object" id="DstnFlight" src="http://placehold.it/64x64" width="64" height="64">
+                    }
+
+                </a><br />
+            </div>
+            <div class="media-body" style="text-align:left;">
+                @foreach (var segment in DstnItem.Segments.LastOrDefault())
+                {
+                    <strong> (@segment.Origin.Airport.AirportCode)@Convert.ToDateTime(segment.Origin.DepTime).ToString("HH:mm") &rarr; (@segment.Destination.Airport.AirportCode)@Convert.ToDateTime(segment.Destination.ArrTime).ToString("HH:mm")</strong>
+                }
+                <br />
+                <span title="Publish Price">
+                    @if (DstnItem.Fare != null)
+                    {
+                   <span> @DstnItem.Fare.PublishedFare &nbsp; @DstnItem.Fare.Currency</span>
+                    }
+            </span>
+                <br />
+                @if (DstnItem.Fare != null)
+                {
+                <span title="Offer Orice">@string.Format("{0:C2}", DstnItem.Fare.OfferedFare) (O.P.)</span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+       @if (Model.JourneyType != 4)
+       {
+        using (Html.BeginForm("FlightDetails", "Home", FormMethod.Get))
+        {
+            @Html.Hidden("TraceId", Model.TraceId)
+            @Html.Hidden("ResultIndex", SrcItem.ResultIndex)
+            @Html.Hidden("ResultIndex", DstnItem.ResultIndex)
+            @Html.Hidden("JourneyType", Model.JourneyType)
+            <input type="submit" class="btn btn-primary bg-dark-green" name="Book Now">
+           }
+       }
+       else
+       {
+        <button type="button" class="btn btn-primary bg-dark-green">Show Price</button>
+       }
+     </div>
+
+</div>

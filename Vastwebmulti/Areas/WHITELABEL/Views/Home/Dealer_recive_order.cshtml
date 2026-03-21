@@ -1,0 +1,282 @@
+﻿@model IEnumerable<Vastwebmulti.Models.select_whitelabel_dlm_pur_order_Result>
+@{
+    ViewBag.Title = "Dealer_recive_order";
+    Layout = "~/Areas/WHITELABEL/Views/Shared/Main.cshtml";
+}
+
+<style>
+    .dropdown-menu {
+        margin-top: 81px !important;
+    }
+</style>
+<style>
+    .slab-setting-menu li a.activee {
+
+    background:linear-gradient(to right, @PageData["Globalfirst"],@PageData["GlobalSecond"]);
+
+    }
+
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="col-md-7">
+                        <div style="margin-left:-13px;">
+                            @Html.Partial("_Menuaccount")
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        @using (Html.BeginForm("Dealer_recive_order", "Home", FormMethod.Post))
+                        {
+                            <div class="row">
+                                <div class="col-md-2">
+
+                                </div>
+                                <div class="col-md-7" style="padding:0px;">
+                                    <div class="form-group  for-web-date" style="margin-bottom:0px;">
+                                        <div class="input-daterange input-group">
+                                            <div class="custom-date-icon" style="height: 34px;">
+                                                <i class="fa fa-calendar tmw-total-color-one" aria-hidden="true" style="color: #46c837;"></i>
+                                            </div>
+                                            @Html.TextBox("txt_frm_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;padding-left:20px; ", autocomplete = "off" })
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-exchange"></i>
+                                            </span>
+                                            <div class="custom-date-icon" style="height: 34px;">
+                                                <i class="fa fa-calendar tmw-total-color-one" aria-hidden="true" style="color: #46c837;"></i>
+                                            </div>
+                                            @Html.TextBox("txt_to_date", "", new { @class = "form-control", required = "required", style = "border:1px solid #dddddd;padding-left:20px;", autocomplete = "off" })
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <center>
+                                        <button type="submit" class="btn waves-effect" style="width:100%; background:transparent; height:34px;border:1px solid #c7c2c2;">
+                                           
+                                            <span style="color:black;">Search</span>
+                                        </button>
+                                    </center>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:-19px;">
+                <div class="card">
+                
+                    <div >
+                        <div class="table-responsive   web-white-table" style="position:inherit;">
+                            <table class="table table-bordered table-striped table-hover  " style="width:100%;">
+                                <thead class="navbar" style="color:white;position:inherit;">
+                                    <tr>
+                                        <th>Order&nbsp;No</th>
+                                        <th>Status</th>
+                                        <th>Dealer&nbsp;Info</th>
+                                        <th>Amount</th>
+                                        <th>Payment&nbsp;Mode</th>
+                                        <th>To&nbsp;Acc&nbsp;No</th>
+                                        <th>Approved</th>
+                                        <th>Rejected</th>
+                                        <th>UtrNo/SlipNo</th>
+                                        <th>Request&nbsp;Date</th>
+                                        <th>Response&nbsp;Date</th>
+                                        <th>Comment</th>
+                                        <th>Slip</th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var color = "";
+                                        var stscolor = "";
+                                        if (item.type_.ToUpper() == "CASH")
+                                        {
+                                            color = "green";
+                                        }
+                                        if (item.type_.ToUpper() == "CREDIT")
+                                        {
+                                            color = "red";
+                                        }
+                                        if (item.sts == "Pending")
+                                        {
+                                            stscolor = "#FF9800";
+
+                                        }
+                                        if (item.sts == "APPROVED")
+                                        {
+                                            stscolor = "green";
+
+                                        }
+                                        if (item.sts == "REJECTED")
+                                        {
+                                            stscolor = "red";
+
+                                        }
+                                        <tr>
+                                            <td><p style="font-size:12px;">@item.orderno&nbsp;⇒&nbsp;<span style="color:@color;font-weight:600;">@item.type_.ToUpper()</span></p></td>
+                                            <td><p style="font-size:12px;text-align:center;"><span style="color:@stscolor;font-weight:600;">@item.sts.ToUpper()</span></p></td>
+                                            <td><p style="font-size:10px;font-weight:700;">@Html.DisplayFor(modelItem => item.DealerEmail).ToString().ToUpper()</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.amount)</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.paymode).ToString().ToUpper()</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.Toaccountno)</p></td>
+                                            <td>
+                                                <button type="button" name="type" onclick="return funin('@item.id','APP')" style="background:transparent;border:none;font-size:20px;"><li class="fa fa-check" style="color:green;"></li> </button>
+                                            </td>
+                                            <td>
+                                                <button type="button" name="type" onclick="return funin('@item.id','REJ')" style="background:transparent;border:none;font-size:20px;"><li class="fa  fa-ban" style="color:red;"></li> </button>
+                                            </td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.utrno).ToString().ToUpper()</p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.reqdate) </p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.respodate) </p></td>
+                                            <td><p style="font-size:12px;text-align:center;">@Html.DisplayFor(modelItem => item.details) </p></td>
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(item.Slip))
+                                                {
+                                                    <img src="@Url.Content("~/" + item.Slip)" height="60" width="60" />
+                                                }
+                                            </td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header  navbar" style="position:initial;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="color:white;">Enter Comment</h4>
+            </div>
+            @using (Html.BeginForm("updatepurchage_dlm", "Home", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <input type="text" id="id" name="id" class="form-control" style="display:none;" />
+                    <input type="text" id="type" name="type" class="form-control" style="display:none;" />
+                    <textarea id="txtcomment" name="txtcomment" class="form-control" required="" placeholder="Enter Comment"></textarea>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btn" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-right: 12px; height:34px;">
+                        <span style="top:-2px;color:black;">Save Change</span>
+                    </button>
+                    <button type="button" class="btn bg-grey waves-effect" style="margin-top: 4px; margin-left: -3px; height:34px;" data-dismiss="modal">
+                        <span style="top:-2px;color:black;">Close</span>
+                    </button>
+                </div>
+
+            }
+
+        </div>
+
+    </div>
+</div>
+
+<script src="~/AdminDesign/plugins/jquery/jquery.min.js"></script>
+
+<!-- Custom Js -->
+<script src="~/AdminDesign/js/pages/forms/basic-form-elements.js"></script>
+<!-- Demo Js -->
+<script src="~/AdminDesign/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="~/AdminDesign/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/jquery.dataTables.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+<script src="~/AdminDesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+<script src="~/AdminDesign/js/pages/tables/jquery-datatable.js"></script>
+<script src="~/AdminDesign/js/demo.js"></script>
+<script src="~/AdminDesign/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="~/Swalalert/sweetalert-dev.js">
+
+</script>
+<script src="~/AdminDesign/plugins/jquery-validation/jquery.validate.js"></script>
+<link href="~/Swalalert/sweetalert.css" rel="stylesheet" />
+<script>
+    $(document).ready(function()
+    {
+
+        $('.input-daterange').datepicker({
+            format: "yyyy-mm-dd",
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "bottom auto",
+
+        });
+        var val = '@ViewBag.chk';
+        if (val != "post") {
+            $("#txt_frm_date").datepicker("setDate", new Date());
+            $("#txt_to_date").datepicker("setDate", new Date());
+        }
+
+    })
+</script>
+<!--Insert Popuop-->
+<script>
+    window.onload = function () {
+        var message = '@ViewData["successorder"]';
+        if (message != "" && message != null) {
+            swal("Good job!", message, "success");
+
+        }
+        var errormessage = '@ViewData["failedorder"]';
+        if (errormessage != "" && errormessage != null) {
+            swal("Oops!", errormessage, "error");
+
+        }
+
+    }
+</script>
+<script type="text/jscript">
+    $(function () {
+        var data = '@ViewData["show"]';
+        if (data != "") {
+            sweetAlert("Oops...", data, "error");
+        }
+        })
+
+
+</script>
+<script>
+    function funin(idno, status) {
+        var answer = confirm("ARE YOU SURE?")
+        if (answer) {
+            var id = $('#id').val(idno);
+            var type = $('#type').val(status);
+
+            $('#myModal').modal('show');
+                var txtcomment = $('#txtcomment').val();
+                var type = $('#type').val();
+                var id = $('#id').val();
+               return true;
+                  }
+           else {
+            return false;
+        }
+    }
+</script>
+
+

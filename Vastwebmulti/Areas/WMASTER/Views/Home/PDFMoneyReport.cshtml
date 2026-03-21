@@ -1,0 +1,124 @@
+﻿@model List<Vastwebmulti.Models.money_transfer_report_paging_Result>
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF MONEY report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <table cellspacing="0">
+        <thead style="background-color: whitesmoke; display:table-header-group;">
+            <tr>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Status</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Type</th>
+
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Beneficiary&nbsp;Account</th>
+                <th style="padding-left: 2px;padding-right: 2px;text-align:center;">Sender&nbsp;No</th>
+                <th style="padding-left: 2px;padding-right: 2px;text-align:center;">Net&nbsp;T/F&nbsp;</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Transfer&nbsp;Total</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">MY &nbsp;Income&nbsp;</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">MY&nbsp;Pre</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Bank&nbsp;UTR</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Request&nbsp;Date</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">Bank&nbsp;Name</th>
+                <th style="padding-left:2px; padding-right:2px;text-align:center;">IFSC&nbsp;Code</th>
+
+        
+
+</thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                
+            <tr>
+                <td>@item.status </td>
+                <td>
+                    @if (item.Trans_type == "IMPS")
+                    {
+                      
+                        <span style="font-size:12px;font-weight:bold;">IMPS</span>
+
+                    }
+                    else if (item.Trans_type == "NEFT")
+                    {
+                       
+                        <span style="font-size:12px;font-weight:bold">NEFT</span>
+
+                    }
+                    else
+                    {
+                      
+                        <span style="font-size:12px;font-weight:bold">Verify</span>
+
+                    }
+                </td>
+                <td>@item.accountno</td>
+                <td>@item.senderno</td>
+
+                <td>@item.totalamount</td>
+
+                <td>
+                    @{
+                        decimal amount = 0;
+                        decimal customerfee = 0;
+                        decimal total = 0;
+                        decimal debit = 0;
+                        decimal remcomm = 0;
+                        if (item.Trans_type.Contains("IMPS_VERIFY"))
+                        {
+                            amount = Convert.ToDecimal(item.amount);
+                            customerfee = Convert.ToDecimal(item.rem_comm);
+                            customerfee = customerfee - amount;
+                            total = amount + customerfee;
+                            debit = Convert.ToDecimal(item.rem_comm);
+                        }
+                        else
+                        {
+                            amount = Convert.ToDecimal(item.amount);
+                            customerfee = Convert.ToDecimal(item.customer_fee);
+                            total = amount + customerfee;
+                            remcomm = Convert.ToDecimal(item.rem_comm);
+                            debit = amount + remcomm;
+
+                        }
+                    }
+                    @debit
+                </td>
+
+
+                <td>@item.md_income</td>
+                <td>@item.md_remain</td>
+                <td>@item.bank_trans_id</td>
+                <td>
+                    <span style="font-size:11px;">@String.Format("{0:dd-MMM HH:mm:ss}", item.trans_time)</span>
+
+             
+                </td>
+                <td>@item.bank_nm</td>
+                <td>@item.ifsccode</td>
+ 
+         
+            </tr>
+                }
+            }
+        </tbody>
+    </table>
+</body>
+</html>
