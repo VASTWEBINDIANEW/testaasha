@@ -107,6 +107,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #region Profile
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays the user profile details
+        /// </summary>
         public new ActionResult Profile()
         {
             var userid = User.Identity.GetUserId();
@@ -128,6 +131,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         #endregion
 
+        /// <summary>
+        /// [GET] - Renders the dashboard with summary statistics and key metrics
+        /// </summary>
         public ActionResult Dashboard()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -151,6 +157,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         //Live Recharge
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays live recharge operator report
+        /// </summary>
         public ActionResult Operator_report_new(string prtname, string type, string ddlusers, string allmaster1, string alldealer, string allretailer, string Whitelabel, string API, string ddl_status, string Operator)
         {
             try
@@ -211,6 +220,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters recharge report by operator, date and user criteria
+        /// </summary>
         public ActionResult Operator_report_new(string ddlusers, string allmaster1, string alldealer, string allretailer, string API, string Whitelabel, string txt_frm_date, string txtmob, string txt_to_date, string ddl_status, string txtdemo, string ddl_top, string lapuno11, string Operator)
         {
             ViewBag.ddlusers = ddlusers;
@@ -274,6 +286,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [ChildActionOnly]
         //[HttpPost]
+        /// <summary>
+        /// [GET] - Returns filtered recharge report partial view
+        /// </summary>
         public ActionResult _showRechargeReport(string txt_frm_date, string txt_to_date, string txtmob, string ddl_status, string lapuno11, string Operator, string ddlusers, string allmaster1, string alldealer, string allretailer, string Whitelabel, string API, string txtdemo)
         {
             var optname = "";
@@ -408,6 +423,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Fetches paginated recharge data for AJAX requests
+        /// </summary>
         public ActionResult FetchRechargeData(string btntype, string txt_frm_date, string txtmob, string txt_to_date, string ddl_status, string txtdemo, string ddl_top, string lapuno11, string Operator, string kk)
         {
             string draw = Request.Form.GetValues("draw")[0];
@@ -525,6 +543,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Loads next page of recharge report for infinite scroll
+        /// </summary>
         public ActionResult InfiniteScroll(int pageindex, string txt_frm_date, string txt_to_date, string txtmob, string ddl_status, string lapuno11, string Operator, string ddlusers, string allmaster1, string alldealer, string allretailer, string Whitelabel, string API, string txtdemo)
         {
             var optname = "";
@@ -662,6 +683,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Shows detailed view of a single recharge transaction
+        /// </summary>
         public ActionResult Recharge_report_View(int Idno)
         {
             var details = db.Recharge_report_View_Details(Idno);
@@ -671,6 +695,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// [POST] - Updates operator details for a recharge transaction
+        /// </summary>
         public ActionResult Editoperator(string txtrchno, string txtidno, string txtamount, string txtprovider, string txtoptid, string txtlapubal)
         {
             try
@@ -688,6 +715,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] - Calculates and returns total amounts for recharge report filters
+        /// </summary>
         public ActionResult FindTotal(string txt_frm_date, string txtmob, string txt_to_date, string ddl_status, string lapuno11, string Operator, string ddlusers, string allmaster1, string alldealer, string allretailer, string API, string Whitelabel)
         {
             var optname = "";
@@ -802,6 +832,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks multiple recharge transactions as SUCCESS
+        /// </summary>
         public ActionResult Successall(string idnval, string optval)
         {
             string[] idnnstring = idnval.Split(',');
@@ -847,6 +880,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(dict, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks multiple recharge transactions as FAILED
+        /// </summary>
         public ActionResult Failedall(string idnval, string optval)
         {
             string[] idnnstring = idnval.Split(',');
@@ -892,6 +928,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(dict, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// [GET] - Resends a pending recharge request
+        /// </summary>
         public ActionResult resend(string idnval)
         {
             string[] idarrary = idnval.Split(',');
@@ -1367,6 +1406,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// [GET] - Raises a dispute for a recharge transaction
+        /// </summary>
         public ActionResult dispute(string id, string txtregion)
         {
             try
@@ -1396,6 +1438,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// [POST] - Marks a recharge as SUCCESS by port number
+        /// </summary>
         public ActionResult sucess(int prtname)
         {
             try
@@ -1590,6 +1635,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays operator-specific recharge summary report
+        /// </summary>
         public ActionResult show_Operator_report_new(string prtname, string type)
         {
             var portname = ""; var optchk = "";
@@ -1634,6 +1682,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays operator report filtered by date range
+        /// </summary>
         public ActionResult show_Operator_report_new1(string prtname, string type, string txt_frm_date, string txt_to_date)
         {
             var portname = ""; var optchk = "";
@@ -1692,6 +1743,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// [POST] - Marks a recharge transaction as FAILED with refund option
+        /// </summary>
         public ActionResult Failed(int txtrefidno, string ddl_refund, string currentstatus)
         {
             if (currentstatus.Contains("Request"))
@@ -2466,6 +2520,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// [GET] - Checks the live status of a recharge transaction from the operator
+        /// </summary>
         public ActionResult RchStatusCheck(string idno)
         {
             if (idno != null)
@@ -2602,6 +2659,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Displays service details for a given service ID
+        /// </summary>
         public ActionResult service(string Id)
         {
 
@@ -2662,6 +2722,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(hhh, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// [GET] - Generates and downloads an Excel export of the recharge report
+        /// </summary>
         public ActionResult ExcelRechargereport(string txt_frm_date, string txt_to_date, string txtmob, string ddl_status, string lapuno11, string Operator, string ddlusers, string allmaster1, string alldealer, string allretailer, string Whitelabel, string API, string txtdemo)
         {
             var optname = "";
@@ -2847,6 +2910,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
 
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF export of the recharge report
+        /// </summary>
         public ActionResult PDFRechargereport(string txt_frm_date, string txt_to_date, string txtmob, string ddl_status, string lapuno11, string Operator, string ddlusers, string allmaster1, string alldealer, string allretailer, string Whitelabel, string API, string txtdemo)
         {
             var optname = "";
@@ -3036,12 +3102,18 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
+        /// <summary>
+        /// [GET] - Displays all details for a dispute by transaction ID
+        /// </summary>
         public ActionResult ShowAll(int idno, string disput)
         {
             var ch = db.clear_dispute_list(idno);
             ViewBag.dis = disput == null ? "Not Region Found" : disput;
             return View(ch);
         }
+        /// <summary>
+        /// [GET] - Lists all disputes
+        /// </summary>
         public ActionResult Dispute_list()
         {
             ViewData["success"] = TempData["success"];
@@ -3053,6 +3125,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters dispute list by status and date range
+        /// </summary>
         public ActionResult Dispute_list(string ddl_status, string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -3060,6 +3135,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] - Returns filtered dispute list as partial view
+        /// </summary>
         public ActionResult _Dispute_list(string ddl_status, string txt_frm_date, string txt_to_date)
         {
             if (string.IsNullOrEmpty(txt_frm_date) || string.IsNullOrEmpty(txt_to_date))
@@ -3082,6 +3160,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 return View(ch);
             }
         }
+        /// <summary>
+        /// [GET] - Loads next page of dispute list for infinite scroll
+        /// </summary>
         public ActionResult InfiniteScrollDispute(int pageindex, string ddl_status, string txt_frm_date, string txt_to_date)
         {
             int pagesize = 20;
@@ -3151,6 +3232,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Rejects a dispute with a reason
+        /// </summary>
         public ActionResult diputerejected(string idno, string txtregion)
         {
             try
@@ -3196,6 +3280,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays activation status summary for all retailers
+        /// </summary>
         public ActionResult All_Retailer_Status()
         {
             var ch = db.show_all_active_inactive_rem_list().ToList();
@@ -3205,6 +3292,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// [GET] - Exports retailer status report to Excel
+        /// </summary>
         public ActionResult Excel_All_Retailer_Status()
         {
             var ch = db.show_all_active_inactive_rem_list().ToList();
@@ -3247,6 +3337,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         #region Retailer Bank List
+        /// <summary>
+        /// [GET] - Lists pending retailer bank account approval requests
+        /// </summary>
         public ActionResult RetailerBnk()
         {
             TempData.Keep("msgbox");
@@ -3263,6 +3356,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(RemPendingAc);
         }
 
+        /// <summary>
+        /// [GET] - Sends OTP for bank account approval process
+        /// </summary>
         public ActionResult bankApproveOTP(string userid)
         {
             //var BANKEXIST = db.UpdateREMAccounts.Where(a => a.UserId == userid && a.Status.ToUpper() == "Approved").Any();
@@ -3312,6 +3408,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             //}
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Approves a retailer bank account after OTP verification
+        /// </summary>
         public ActionResult RetailerBnkApprove(int hdidno, string remotp, string adminotp, string hduserid)
         {
             var otpchkretailer = db.MobileOtps.Where(aa => aa.Userid == hduserid && aa.Type == "RetailerBANKAPPROVEDOTP").OrderByDescending(aa => aa.Date).FirstOrDefault().Otp;
@@ -3357,6 +3456,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return RedirectToAction("RetailerBnk");
 
         }
+        /// <summary>
+        /// [GET] - Rejects a retailer bank account request
+        /// </summary>
         public ActionResult RetailerBnkReject(int Idno)
         {
             if (Idno > 0)
@@ -3379,6 +3481,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Deletes a retailer bank account entry
+        /// </summary>
         public ActionResult DeleteRetailerBnkt(int Idno)
         {
             if (Idno > 0)
@@ -3453,6 +3558,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return RedirectToAction("RetailerBnk");
         }
 
+        /// <summary>
+        /// [GET] - Lists deleted/approved bank accounts
+        /// </summary>
         public ActionResult Delete_Approve_Bank_list()
         {
             var model = db.deletedApprveBankInfoes.OrderByDescending(x => x.deleteddate).ToList();
@@ -3464,6 +3572,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         //IMPS 
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays money transfer (DMT) report
+        /// </summary>
         public ActionResult Money_Transfer_Report()
         {
             string userid = User.Identity.GetUserId();
@@ -3496,6 +3607,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters money transfer report by date, user and status
+        /// </summary>
         public ActionResult Money_Transfer_Report(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string Whitelabel, string ddl_status, string allapiuser, string txtmob, string ddl_Type)
         {
             string userid = User.Identity.GetUserId();
@@ -3532,6 +3646,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [ChildActionOnly]
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Returns filtered money transfer report as partial view
+        /// </summary>
         public ActionResult _Money_TransferReport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string Whitelabel, string ddl_status, string allapiuser, string txtmob, string ddl_Type)
         {
 
@@ -3652,6 +3769,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(rowdata);
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Loads next page of money transfer report for infinite scroll
+        /// </summary>
         public ActionResult InfiniteScroll1(int pageindex, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string Whitelabel, string ddl_status, string allapiuser, string txtmob, string ddl_Type)
         {
             string userid = User.Identity.GetUserId();
@@ -3969,6 +4089,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF of the money transfer report
+        /// </summary>
         public ActionResult PDFMoneyReport(string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string allmaster, string alldealer, string allretailer, string allapiuser, string Whitelabel, string ddl_Type)
         {
             if (txt_frm_date == "")
@@ -4072,6 +4195,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return new ViewAsPdf(respo);
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Write")]
+        /// <summary>
+        /// [GET] - Updates DMT operator details for a transaction
+        /// </summary>
         public ActionResult EditDMToperator(int txtidno, string txtoptid)
         {
             var chk = db.IMPS_transtion_detsils.Where(aa => aa.idno == txtidno).SingleOrDefault();
@@ -4093,6 +4219,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Calculates totals for money transfer report filters
+        /// </summary>
         public ActionResult FindMoneyTotal(string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string ddl_Type, string txtmob, string allmaster, string alldealer, string allretailer, string allapiuser)
         {
             var userchk = "";
@@ -4186,12 +4315,18 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
+        /// <summary>
+        /// [POST] - Shows detailed view of a single money transfer transaction
+        /// </summary>
         public ActionResult Money_Tranfer_Details_View(int Idno)
         {
             var details = db.Money_Tranfer_Details_View(Idno);
             return Json(details, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays admin IMPS income summary by type and date
+        /// </summary>
         public ActionResult AdminImpsIncmoe(string Type, string txt_frm_date, string txt_to_date)
         {
             DateTime frm = Convert.ToDateTime(txt_frm_date);
@@ -4214,6 +4349,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(new { Type = Type, Adminincome = Adminincome, Gst = Gst });
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Counts and verifies IMPS transactions by type and date
+        /// </summary>
         public ActionResult CountImpasandVerify(string Type, string txt_frm_date, string txt_to_date)
         {
 
@@ -4239,6 +4377,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         //Manual success money transfer
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks a money transfer as SUCCESS
+        /// </summary>
         public ActionResult Moneysucess(string trans_id, string bank_trans_id, string recivername, string currentstatus)
         {
             try
@@ -4470,6 +4611,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         //Manual Failed Money Transfer
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks a money transfer as FAILED with refund option
+        /// </summary>
         public ActionResult MoneyFailed(string txtrefidno, string bankid, string recivername, string ddl_refund, string secuirtypass, string currentstatus)
         {
             try
@@ -4758,6 +4902,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #region MPOSSTART
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays mPOS transaction report
+        /// </summary>
         public ActionResult m_Possreport()
         {
 
@@ -4786,6 +4933,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters mPOS report by date range and user criteria
+        /// </summary>
         public ActionResult m_Possreport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster2, string alldealer, string allretailer, string ddl_top, string ddl_status)
         {
 
@@ -4816,6 +4966,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] - Returns filtered mPOS report as partial view
+        /// </summary>
         public ActionResult _m_Possreport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster2, string allwhitelabel1, string alldealer, string allretailer, string ddl_status)
         {
 
@@ -4903,6 +5056,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Loads next page of mPOS report for infinite scroll
+        /// </summary>
         public ActionResult InfiniteScroll_mpos(int pageindex, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster2, string allwhitelabel1, string alldealer, string allretailer, string ddl_status)
         {
 
@@ -4982,6 +5138,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(jsonmodel);
         }
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Calculates totals for mPOS report filters
+        /// </summary>
         public ActionResult mpos_Total(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster2, string alldealer, string allretailer, string ddl_status)
         {
 
@@ -5217,6 +5376,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
 
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF of the mPOS report
+        /// </summary>
         public ActionResult PDFMposReport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster2, string alldealer, string allretailer, string ddl_status)
         {
             if (txt_frm_date == "")
@@ -5300,12 +5462,18 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Read")]
+        /// <summary>
+        /// [POST] - Shows detailed view of a single mPOS transaction
+        /// </summary>
         public ActionResult m_Possreport_View(int Idno)
         {
             var detail = db.Mpos_Report_View(Idno);
             return Json(detail, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Write")]
+        /// <summary>
+        /// [GET] - Updates the status of an mPOS transaction
+        /// </summary>
         public ActionResult MposStatus(int idno)
         {
             var entites = db.mPosInfoes.Where(aa => aa.Idno == idno).SingleOrDefault();
@@ -5322,6 +5490,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region AEPS_Report
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays AEPS (Aadhaar Enabled Payment System) report
+        /// </summary>
         public ActionResult AepsReport()
         {
 
@@ -5364,6 +5535,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters AEPS report by date, user and settlement type
+        /// </summary>
         public ActionResult AepsReport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype)
         {
             ViewBag.chk = "post";
@@ -5410,6 +5584,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] - Returns filtered AEPS report as partial view
+        /// </summary>
         public ActionResult _AepsReport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype)
         {
 
@@ -5510,6 +5687,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         }
+        /// <summary>
+        /// [GET] - Loads next page of AEPS report for infinite scroll
+        /// </summary>
         public ActionResult InfiniteScroll_Aeps(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype, int pageindex)
         {
             var userid = "";
@@ -5777,6 +5957,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF of the AEPS report
+        /// </summary>
         public ActionResult PDFAepsReport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype)
         {
             var userid = "";
@@ -5886,6 +6069,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Calculates totals for AEPS report filters
+        /// </summary>
         public ActionResult AepsReport_Total(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype)
         {
             var userid = "";
@@ -6003,12 +6189,18 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
+        /// <summary>
+        /// [POST] - Shows detailed view of a single AEPS transaction
+        /// </summary>
         public ActionResult AepsReport_View(int Idno)
         {
             var detail = db.Aeps_Report_New_View(Idno);
             return Json(detail, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks an AEPS transaction as SUCCESS
+        /// </summary>
         public ActionResult AEPSsucess(string trans_id, string RRN, string terminalID, string Remark)
         {
             try
@@ -6261,6 +6453,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks an AEPS transaction as FAILED with refund option
+        /// </summary>
         public ActionResult AepsFailed(string txtrefidno, string mobile, string ddl_refund, string secuirtypass)
         {
             try
@@ -6366,6 +6561,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region CashDepositReport
 
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays cash deposit report
+        /// </summary>
         public ActionResult CashDepositReport()
         {
             var stands = db.Superstokist_details.ToList();
@@ -6396,6 +6594,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters cash deposit report by status and date range
+        /// </summary>
         public ActionResult CashDepositReport(string ddl_status, DateTime txt_frm_date, DateTime txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer)
         {
             if (ddlusers == "")
@@ -6444,6 +6645,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(chk);
         }
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Shows detailed view of a single cash deposit transaction
+        /// </summary>
         public ActionResult cashdeposit_view(int Idno)
         {
             var chkk = db.cash_deposit_history.Where(aa => aa.idno == Idno).ToList();
@@ -6451,6 +6655,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Write")]
+        /// <summary>
+        /// [POST] - Marks a cash deposit as SUCCESS with bank RRN
+        /// </summary>
         public ActionResult successcashdeposit(int idno, string bnkrrn)
         {
             var chkexist = db.cash_deposit_history.Where(x => x.bankrrn == bnkrrn.Trim()).FirstOrDefault();
@@ -6469,6 +6676,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks a cash deposit as FAILED with refund option
+        /// </summary>
         public ActionResult Failedcashdeposit(int txtrefidno, string ddl_refund, string secuirtypass)
         {
             try
@@ -6502,6 +6712,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Generates and downloads an Excel export of the cash deposit report
+        /// </summary>
         public ActionResult ExcelCashReport(string ddl_status, DateTime txt_frm_date, DateTime txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer)
         {
             if (ddlusers == "")
@@ -6578,6 +6791,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Calculates totals for cash deposit report filters
+        /// </summary>
         public ActionResult FindcashdepositTotal(string ddl_status, DateTime txt_frm_date, DateTime txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer)
         {
             if (ddlusers == "")
@@ -6638,6 +6854,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #endregion
 
+        /// <summary>
+        /// [GET] - Displays manual PAN card verification report
+        /// </summary>
         public ActionResult Pancard_new_manual()
         {
             var allretailername = (db.select_retailer_for_ddl("Admin")).ToList();
@@ -6673,6 +6892,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters PAN card report by retailer, status and date
+        /// </summary>
         public ActionResult Pancard_new_manual(string allretailer, string ddl_status, string txt_frm_date, string txt_to_date)
         {
             var allretailername = (db.select_retailer_for_ddl("Admin")).ToList();
@@ -6735,6 +6957,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region UITPANCARD
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays token purchase report
+        /// </summary>
         public ActionResult TokenPurchaseReport()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -6803,6 +7028,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters token purchase report by status and date
+        /// </summary>
         public ActionResult TokenPurchaseReport(string ddl_status, string ddl_top, string txt_frm_date, string txt_to_date)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -6870,6 +7098,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] - Returns filtered token purchase report as partial view
+        /// </summary>
         public ActionResult _TokenPurchaseReport(string ddlusers, string allmaster, string alldealer, string allretailer, string allapiuser, string Whitelabel, string ddl_status, string txt_frm_date, string txt_to_date)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -6975,6 +7206,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] - Loads next page of token purchase report for infinite scroll
+        /// </summary>
         public ActionResult InfiniteScroll3(int pageindex, string ddlusers, string allmaster, string alldealer, string allretailer, string allapiuser, string Whitelabel, string ddl_status, string txt_frm_date, string txt_to_date)
         {
 
@@ -7068,6 +7302,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
+        /// <summary>
+        /// [POST] - Shows detailed view of a single token purchase transaction
+        /// </summary>
         public ActionResult Token_report_View(int Idno)
         {
             var detail = db.PAN_CARD_IPAY_Token_report_View(Idno);
@@ -7229,6 +7466,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF of the token purchase report
+        /// </summary>
         public ActionResult PDFRechargereport_token(string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string allmaster, string alldealer, string allretailer, string allapiuser, string Whitelabel, string ddl_Type)
         {
             var userid = User.Identity.GetUserId();
@@ -7323,6 +7563,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return new ViewAsPdf(respo);
         }
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
+        /// <summary>
+        /// [GET] - Calculates totals for token purchase report filters
+        /// </summary>
         public ActionResult TokenPurchaseReport_Total(string ddlusers, string allmaster, string alldealer, string allretailer, string allapiuser, string Whitelabel, string ddl_status, string txt_frm_date, string txt_to_date)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -7440,6 +7683,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Write")]
+        /// <summary>
+        /// [POST] - Checks live status of a token purchase from the provider
+        /// </summary>
         public ActionResult GetTokenStatus(string id)
         {
             var userid = User.Identity.GetUserId();
@@ -7456,6 +7702,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Write")]
+        /// <summary>
+        /// [POST] - Marks a PAN verification request as failed with a remark
+        /// </summary>
         public ActionResult PanManualFailed(string id, string remark)
         {
             try
@@ -7477,6 +7726,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #region MicroATM
         [PermissioncheckingAttribute(servicename = "MICROATM", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays Micro ATM transaction report
+        /// </summary>
         public ActionResult MIcroAtmReport()
         {
             var stands = db.Superstokist_details.ToList();
@@ -7508,6 +7760,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "MICROATM", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters Micro ATM report by date range and user criteria
+        /// </summary>
         public ActionResult MIcroAtmReport(string ddlusers, string allwhitelabel1, string allmaster2, string alldealer, string allretailer, string ddl_status, DateTime txt_frm_date, DateTime txt_to_date)
         {
             ViewBag.chk = "post";
@@ -7554,6 +7809,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(chk);
         }
 
+        /// <summary>
+        /// [GET] - Generates and downloads an Excel export of the Micro ATM report
+        /// </summary>
         public ActionResult MICROATMEXCELLGENERATE(string ddlusers, string allwhitelabel1, string allmaster2, string alldealer, string allretailer, string ddl_status, DateTime txt_frm_date, DateTime txt_to_date)
         {
             var userid = "";
@@ -7648,6 +7906,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         //Manual Failed Money Transfer
         [PermissioncheckingAttribute(servicename = "MICROATM", permision = "Write")]
+        /// <summary>
+        /// [GET] - Changes a Micro ATM transaction from SUCCESS to FAILED
+        /// </summary>
         public ActionResult microatmsuccesstofailed(string txtrefidno, string secuirtypass)
         {
             try
@@ -7684,6 +7945,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "MICROATM", permision = "Read")]
+        /// <summary>
+        /// [POST] - Shows detailed view of a single Micro ATM transaction
+        /// </summary>
         public ActionResult Microatm_View(int Idno)
         {
             var detail = db.microatm_view(Idno);
@@ -7699,6 +7963,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region WalletToBankAmountTransfer
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "WALLETUNLOAD", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays wallet unload/withdrawal report
+        /// </summary>
         public ActionResult WalletUnloadReport(string type)
         {
             if (type == null)
@@ -7716,6 +7983,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "WALLETUNLOAD", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters wallet unload report by date range
+        /// </summary>
         public ActionResult WalletUnloadReport(string ddlusers, string allretailer, string ddl_status, DateTime txt_frm_date, DateTime txt_to_date)
         {
             var userid = "ALL";
@@ -7739,6 +8009,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             var entries = db.WalletUnloadReportAdmin(Convert.ToDateTime(txt_frm_date), Convert.ToDateTime(to_date), ddlusers, userid, ddl_status).ToList();
             return View(entries);
         }
+        /// <summary>
+        /// [GET] - Handles pdf Wallet Unload Report operation
+        /// </summary>
         public ActionResult pdfWalletUnloadReport(string ddlusers, string allretailer, string ddl_status, DateTime txt_frm_date, DateTime txt_to_date)
         {
             var userid = "ALL";
@@ -7763,6 +8036,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return new ViewAsPdf(entries);
         }
 
+        /// <summary>
+        /// [GET] - Handles Excel Wallet Unload Report operation
+        /// </summary>
         public ActionResult ExcelWalletUnloadReport(string ddlusers, string allretailer, string ddl_status, DateTime txt_frm_date, DateTime txt_to_date)
         {
             var userid = "ALL";
@@ -7826,6 +8102,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "WALLETUNLOAD", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks a gift card order as FAILED with refund option
+        /// </summary>
         public ActionResult GiftcardFailed(string orderid, string status, string ddl_refund)
         {
             try
@@ -7848,6 +8127,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "WALLETUNLOAD", permision = "Write")]
+        /// <summary>
+        /// [GET] - Marks a gift card order as SUCCESS
+        /// </summary>
         public ActionResult GiftcardSuccess(string orderid, string status)
         {
             try
@@ -7887,6 +8169,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region securityservices
 
         [PermissioncheckingAttribute(servicename = "SECURITYSERVICE", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays security deposit transaction report
+        /// </summary>
         public ActionResult SecurityReport()
         {
             DateTime from = DateTime.Now.Date;
@@ -7897,6 +8182,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "SECURITYSERVICE", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters security report by date range and user
+        /// </summary>
         public ActionResult SecurityReport(string ddlusers, string allretailer, string ddl_status, DateTime txt_frm_date, DateTime txt_to_date)
         {
             ViewBag.chk = "post";
@@ -7905,6 +8193,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             var ch = db.history_norton(ddlusers, allretailer, txt_frm_date, to, ddl_status).ToList();
             return View(ch);
         }
+        /// <summary>
+        /// [GET] - Generates and downloads an Excel export of the security report
+        /// </summary>
         public ActionResult ExcelSecurityReport(string ddlusers, string allretailer, string ddl_status, DateTime txt_frm_date, DateTime txt_to_date)
         {
             ViewBag.chk = "post";
@@ -7955,6 +8246,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
             return View();
         }
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF of the security report
+        /// </summary>
         public ActionResult PDFSecurityReport(string ddlusers, string allretailer, string ddl_status, DateTime txt_frm_date, DateTime txt_to_date)
         {
             ViewBag.chk = "post";
@@ -7996,6 +8290,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [PermissioncheckingAttribute(servicename = "SECURITYSERVICE", permision = "Write")]
+        /// <summary>
+        /// [GET] - Manually updates the status of a security deposit
+        /// </summary>
         public ActionResult SecurityManually(string orderid, string status)
         {
             db.update_norton(orderid, status, "", "", "", "", "");
@@ -8008,6 +8305,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region FundTransfer
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays the fund transfer management dashboard
+        /// </summary>
         public ActionResult Fund_transfer()
         {
 
@@ -8071,6 +8371,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
+        /// <summary>
+        /// [GET] - Validates security password and processes fund transfer from master to downstream
+        /// </summary>
         public ActionResult ChkSecurityPass(string txtcode, string hdSuperstokistID, string hdPaymentMode,
    string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
    string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -8448,6 +8751,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
+        /// <summary>
+        /// [GET] - Validates security password and processes retailer fund transfer
+        /// </summary>
         public ActionResult ChkSecurityPassRetailer(string txtcode, string hdSuperstokistID, string hdPaymentMode,
      string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
      string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -8658,6 +8964,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
+        /// <summary>
+        /// [GET] - Validates security password and processes API user fund transfer
+        /// </summary>
         public ActionResult ChkSecurityPassAPIUSER(string txtcode, string hdSuperstokistID, string hdPaymentMode,
      string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
      string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -8852,6 +9161,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
+        /// <summary>
+        /// [GET] - Validates security password and processes white label user fund transfer
+        /// </summary>
         public ActionResult ChkSecurityPassWLUSER(string txtcode, string hdSuperstokistID, string hdPaymentMode,
    string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
    string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -9044,6 +9356,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
+        /// <summary>
+        /// [GET] - Generates Excel report for fund transfer history
+        /// </summary>
         public ActionResult GenerateExcellFileFundTransfer(string tabID, DateTime frm_date, DateTime to_date, string usernm)
         {
             EmployeFundtransferviewmodel vmodel = new EmployeFundtransferviewmodel();
@@ -9228,6 +9543,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
 
+        /// <summary>
+        /// [GET] - Generates PDF report for fund transfer history
+        /// </summary>
         public ActionResult FundtransferPdfGenerate(string tabID, DateTime frm_date, DateTime to_date, string usernm)
         {
             DataTable dtt = new DataTable();
@@ -9398,6 +9716,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Displays account balance details for all retailers
+        /// </summary>
         public ActionResult Retailer_accoumt_detail()
         {
             var ch = db.retailer_Reamin_Cr_report().ToList();
@@ -9453,6 +9774,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
             return Json(vmodel.ddldistributorInfo);
         }
+        /// <summary>
+        /// [GET] - Returns credit/balance info for a master/superstokist user
+        /// </summary>
         public ActionResult M_Creditchk(string MID)
         {
             decimal mdbal;
@@ -9471,6 +9795,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
+        /// <summary>
+        /// [GET] - Returns credit/balance info for a dealer
+        /// </summary>
         public ActionResult D_Creditchk(string Dealerid)
         {
             decimal? dlmbal;
@@ -9489,6 +9816,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Returns credit/balance info for a retailer
+        /// </summary>
         public ActionResult R_Creditchk(string retailerid)
         {
             string userid = db.Admin_details.SingleOrDefault().userid;
@@ -9514,6 +9844,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Returns credit/balance info for a white label user
+        /// </summary>
         public ActionResult whitelabel_Creditchk(string whitelabelid)
         {
             var userid = User.Identity.GetUserId();
@@ -9521,6 +9854,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             ch = ch ?? 0;
             return Json(ch, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// [GET] - Returns credit/balance info for an API user
+        /// </summary>
         public ActionResult API_Creditchk(string apiid)
         {
             var userid = User.Identity.GetUserId();
@@ -9609,6 +9945,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #region FundUserTOUser
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays fund transfer user selection page
+        /// </summary>
         public ActionResult Fund_User()
         {
             EmployeeFundUserViewModel vmodel = new EmployeeFundUserViewModel();
@@ -9628,6 +9967,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         /////////////////////////////////Master//////////////////////////////////
         #region MasterUserList
 
+        /// <summary>
+        /// [GET] - Generates Excel report for master/superstokist user transactions
+        /// </summary>
         public ActionResult ExcellGenerateForMaster(string usernm)
         {
             DataTable dt = new DataTable("Grid");
@@ -9696,6 +10038,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Generates PDF report for master/superstokist user transactions
+        /// </summary>
         public ActionResult PrintMasterPartialViewToPdf(string usernm)
         {
             MasterDistributerModel viewModel = new MasterDistributerModel();
@@ -9737,6 +10082,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "USERS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Lists all master/superstokist accounts
+        /// </summary>
         public ActionResult Master_list()
         {
             ViewData["value"] = "";
@@ -9761,6 +10109,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "USERS", permision = "Read")]
 
+        /// <summary>
+        /// [POST] - Filters master list by master ID
+        /// </summary>
         public ActionResult Master_list(string MID)
         {
             if (MID != "" && MID != null)
@@ -9968,6 +10319,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Saves updated master/dealer account details
+        /// </summary>
         public ActionResult Edit_master_dealer(string ssid, string NameEdit, string FirmEdit, string pancardEdit, string AadhaarEdit, string gstEdit, string StateEdit, string DistrictEdit, string AddressEdit, string Editddlrole, string PinEdit, decimal? CappingEdit, decimal? offmargineEdit)
         {
             try
@@ -10006,6 +10360,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] - Sends email verification OTP for master account deletion
+        /// </summary>
         public ActionResult emailverify(string ssid)
         {
             var usersts = db.Users.Where(aa => aa.UserId == ssid).SingleOrDefault();
@@ -10024,6 +10381,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Confirms and deletes a master account after OTP verification
+        /// </summary>
         public ActionResult ConfirmDeleteOTP(string ssiddelete, string Deleteotp)
         {
 
@@ -10107,6 +10467,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             ViewData["ResendMail"] = TempData["ResendMAil"];
             return View(viewModel);
         }
+        /// <summary>
+        /// [GET] - Lists distributors for seller assignment
+        /// </summary>
         public ActionResult DistibutorListforseller()
         {
             var set = db.Recharge_sell_by_dealer.Where(s => s.registration_Status == true && s.Status == true).ToList();
@@ -10114,6 +10477,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(set);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters distributor seller list by dealer
+        /// </summary>
         public ActionResult DistibutorListforseller(string Dealertdd)
         {
             var set = db.Recharge_sell_by_dealer.Where(s => s.registration_Status == true && s.Status == true && s.Dealerid.Contains(Dealertdd)).ToList();
@@ -10122,6 +10488,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Generates Excel report for distributor transactions
+        /// </summary>
         public ActionResult ExcellGenerateForDistibutor(string usernm)
         {
             DataTable dt = new DataTable("Grid");
@@ -10186,6 +10555,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Changes active/inactive status for a distributor
+        /// </summary>
         public ActionResult Stscanhgedlmsell(string userid, bool? status)
         {
             try
@@ -10202,6 +10574,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
             return Json(status, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// [GET] - Generates PDF report for distributor transactions
+        /// </summary>
         public ActionResult PrintDistibutorPartialViewToPdf(string usernm)
         {
             DealerModel viewModel = new DealerModel();
@@ -10267,6 +10642,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Toggles chargeback OTP requirement for a dealer
+        /// </summary>
         public ActionResult ChargeBack_OTP_ON_OFF(string DealerId)
         {
             var stschk = db.Dealer_Details.Where(a => a.DealerId == DealerId).SingleOrDefault();
@@ -10279,6 +10657,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Toggles self UPI status for a dealer
+        /// </summary>
         public ActionResult Self_Upi_STS_ON_OFF(string DealerId)
         {
             var dd = db.Dealer_Details.Where(a => a.DealerId == DealerId).SingleOrDefault();
@@ -10289,6 +10670,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(new { status = "Success", Message = updateUPIsts }, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// [GET] - Confirms and deletes a dealer account after OTP verification
+        /// </summary>
         public ActionResult ConfirmDeleteDealerOTP(string DealerIddelete, string Deleteotp)
         {
             try
@@ -10343,6 +10727,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Saves updated distributor/dealer account details
+        /// </summary>
         public ActionResult Edit_Distributer_dealer(string DealerId, string NameEdit, string DOBEdit, string FirmEdit, string pancardEdit, string AadhaarEdit, string gstEdit, string StateEdit, string DistrictEdit, string AddressEdit, string Editddlrole, string PinEdit, int CappingEdit, decimal? offmargineEdit)
         {
             DealerModel viewModel = new DealerModel();
@@ -10389,6 +10776,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Sends email verification OTP for dealer account operations
+        /// </summary>
         public ActionResult emailverifyfordealer(string dealerid)
         {
             var usersts = db.Users.Where(aa => aa.UserId == dealerid).SingleOrDefault();
@@ -10412,6 +10802,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
+        /// <summary>
+        /// [GET] - Generates Excel report for retailer transactions
+        /// </summary>
         public ActionResult ExcellGenerateForRetailer(string usernm, string usernminput)
         {
             DataTable dt = new DataTable("Grid");
@@ -10517,6 +10910,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Generates PDF report for retailer transactions
+        /// </summary>
         public ActionResult PrintPartialViewToPdf(string usernm, string usernminput)
         {
             RetailerDetalsModel viewmodel = new RetailerDetalsModel();
@@ -10582,12 +10978,18 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Displays retailer e-KYC verification status list
+        /// </summary>
         public ActionResult retailerekyccheck()
         {
             var results = db.retailer_Ekycreport().ToList();
             return View("retailerekyccheck", results);
         }
 
+        /// <summary>
+        /// [GET] - Exports retailer e-KYC status list to Excel
+        /// </summary>
         public ActionResult Excel_retailerekyccheck()
         {
             var results = db.retailer_Ekycreport().ToList();
@@ -10649,6 +11051,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
 
+        /// <summary>
+        /// [GET] - Exports retailer e-KYC status list to PDF
+        /// </summary>
         public ActionResult PDF_retailerekyccheck()
         {
             var results = db.retailer_Ekycreport().ToList();
@@ -10683,6 +11088,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(new { list = ch, state = ViewBag.state1, poscapp = poscp }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// [GET] - Sends email verification for retailer account operations
+        /// </summary>
         public ActionResult emailverifyforRetailer(string RetailerId, string Type)
         {
             var usersts = db.Users.Where(aa => aa.UserId == RetailerId).SingleOrDefault();
@@ -10736,6 +11144,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpGet]
 
         [PermissioncheckingAttribute(servicename = "USERS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Lists all registered retailer accounts with pagination
+        /// </summary>
         public ActionResult Retailerlist()
         {
             ViewBag.state = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
@@ -10783,6 +11194,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(viewmodel);
 
         }
+        /// <summary>
+        /// [GET] - Loads next page of retailer list for infinite scroll
+        /// </summary>
         public ActionResult InfiniteScroll_retailer(int pageindex)
         {
             int pagesize = 50;
@@ -10818,6 +11232,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
 
 
+        /// <summary>
+        /// [POST] - Approves or activates a retailer account
+        /// </summary>
         public ActionResult ApprovedRetailersts(string val, string RetailerId)
         {
 
@@ -10872,6 +11289,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Deletes PAN/Aadhaar document for a retailer after OTP
+        /// </summary>
         public ActionResult PanAadharDelete(string hdval, string RetailerIddeletedocument, string Deletedocumentotp)
         {
 
@@ -10934,6 +11354,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
+        /// <summary>
+        /// [GET] - Rejects a retailer PAN/Aadhaar document after OTP
+        /// </summary>
         public ActionResult RejectedPancardAadharRetailersts(string hdval, string RetailerIddeletedocument, string Deletedocumentotp)
         {
             try
@@ -11002,6 +11425,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         }
+        /// <summary>
+        /// [GET] - Rejects or deactivates a retailer account
+        /// </summary>
         public ActionResult RejectedRetailersts(string val, string RetailerId)
         {
             var Retailerdetail = db.Retailer_Details.Where(aa => aa.RetailerId == RetailerId).SingleOrDefault();
@@ -11189,6 +11615,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Api_user\\\\\\\\\\\\\\\\\\\\\\
 
         [PermissioncheckingAttribute(servicename = "USERS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Lists all API user accounts
+        /// </summary>
         public ActionResult Api_user()
         {
             var results = (from p in db.Slab_name where p.SlabFor == "API" group p.SlabName by p.SlabName into g select new { SlabName = g.Key });
@@ -11204,6 +11633,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(vmodel);
         }
 
+        /// <summary>
+        /// [GET] - Exports API user list to PDF
+        /// </summary>
         public ActionResult PDF_Api_user()
         {
             var results = (from p in db.Slab_name where p.SlabFor == "API" group p.SlabName by p.SlabName into g select new { SlabName = g.Key });
@@ -11218,6 +11650,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return new ViewAsPdf(vmodel);
         }
 
+        /// <summary>
+        /// [GET] - Exports API user list to Excel
+        /// </summary>
         public ActionResult Excel_Api_user()
         {
             var results = (from p in db.Slab_name where p.SlabFor == "API" group p.SlabName by p.SlabName into g select new { SlabName = g.Key });
@@ -11259,6 +11694,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
 
+        /// <summary>
+        /// [GET] - Sends email verification for API user account operations
+        /// </summary>
         public ActionResult emailverifyforapi(string apiid)
         {
             var usersts = db.Users.Where(aa => aa.UserId == apiid).SingleOrDefault();
@@ -11272,6 +11710,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Approves or activates a dealer account
+        /// </summary>
         public ActionResult Approveddealersts(string val, string DealerId)
         {
 
@@ -11314,6 +11755,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] - Rejects or deactivates a dealer account
+        /// </summary>
         public ActionResult Rejecteddealersts(string val, string DealerId)
         {
             var dealerdetail = db.Dealer_Details.Where(aa => aa.DealerId == DealerId).SingleOrDefault();
@@ -11364,6 +11808,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Saves updated master/dealer account details
+        /// </summary>
         public ActionResult Edit_master_dealer(string ssid, string NameEdit, string FirmEdit, string pancardEdit, string AadhaarEdit, string gstEdit, string StateEdit, string DistrictEdit, string AddressEdit, string Editddlrole, string PinEdit)
         {
             try
@@ -11530,6 +11977,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
+        /// <summary>
+        /// [GET] - Validates security pass and processes master-to-DLM balance transfer
+        /// </summary>
         public ActionResult ChkSecurityPassmastertodlm_bal(string txtcode, string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
       string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
       string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -12023,6 +12473,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
+        /// <summary>
+        /// [GET] - Validates security pass and processes retailer-to-retailer balance transfer
+        /// </summary>
         public ActionResult ChkSecurityPassRetailertoRetailer_bal(string txtcode, string hdSuperstokistID, string hdMDDLM, string hdMDComments, string hdPaymentAmount)
         {
             try
@@ -12193,6 +12646,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Read")]
+        /// <summary>
+        /// [GET] - Generates Excel report for user-to-user fund transfer history
+        /// </summary>
         public ActionResult GenerateExcellFileFundUser_to_User(string tabID, DateTime frm_date, DateTime to_date, string usernm, string remreciverss)
         {
 
@@ -12332,6 +12788,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Read")]
+        /// <summary>
+        /// [GET] - Generates PDF report for user-to-user fund transfer history
+        /// </summary>
         public ActionResult FundUserToUserPdfGenerate(string tabID, DateTime frm_date, DateTime to_date, string usernm)
         {
             DataTable dtt = new DataTable();
@@ -12362,6 +12821,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Returns credit info for master-to-DLM transfer check
+        /// </summary>
         public ActionResult MToDLM_Creditchk(string MID, string dlmid)
         {
 
@@ -12394,6 +12856,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Returns credit info for DLM-to-RLM transfer check
+        /// </summary>
         public ActionResult DLMTORLM_Creditchk(string retailerid, string dlmid)
         {
 
@@ -12585,6 +13050,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays flight ticket booking report
+        /// </summary>
         public ActionResult TicketReport()
         {
             try
@@ -12638,6 +13106,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters flight ticket report by date, status and user
+        /// </summary>
         public ActionResult TicketReport(string txt_frm_date, string txt_to_date)
         {
             try
@@ -12694,6 +13165,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] - Returns filtered ticket report as partial view
+        /// </summary>
         public ActionResult _ticketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
             try
@@ -12810,6 +13284,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
 
+        /// <summary>
+        /// [POST] - Loads next page of ticket report for infinite scroll
+        /// </summary>
         public ActionResult scroll_TicketReport(int pageindex, string txt_frm_date, string txt_to_date, string PNR, string ddl_status, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
             try
@@ -12930,6 +13407,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Generates and downloads an Excel export of the ticket report
+        /// </summary>
         public ActionResult ExcelTicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
             try
@@ -13109,6 +13589,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF export of the ticket report
+        /// </summary>
         public ActionResult PDFTicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
             try
@@ -13223,6 +13706,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Calculates total amounts for ticket report filters
+        /// </summary>
         public ActionResult TotalticketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
             try
@@ -13348,6 +13834,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
+        /// <summary>
+        /// [POST] - Fetches current live flight status from the provider
+        /// </summary>
         public ActionResult GetFlightStatus(TicketBookinDetailsModel model)
         {
             try
@@ -13407,6 +13896,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             //return View(respo);
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays flight ticket cancellation report
+        /// </summary>
         public ActionResult CancellationReport()
         {
             try
@@ -13454,6 +13946,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters cancellation report by date and status
+        /// </summary>
         public ActionResult CancellationReport(string txt_frm_date, string txt_to_date, int? ddl_top, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabe)
         {
             try
@@ -13568,6 +14063,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
+        /// <summary>
+        /// [POST] - Processes a flight/hotel ticket cancellation status update
+        /// </summary>
         public ActionResult CancellationStatus(int ChangeReqId, int idno)
         {
             try
@@ -13641,6 +14139,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
+        /// <summary>
+        /// [GET] - Displays a detailed flight ticket view with fare
+        /// </summary>
         public ActionResult ViewTicket(int idno, string firsName, string lastName)
         {
             try
@@ -13714,6 +14215,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
+        /// <summary>
+        /// [GET] - Renders a printable flight ticket with fare details
+        /// </summary>
         public ActionResult PrintTicket(int idno, string firsName, string lastName)
         {
             try
@@ -13787,6 +14291,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
+        /// <summary>
+        /// [GET] - Displays a flight ticket view without fare details
+        /// </summary>
         public ActionResult ViewTicketWithoutFare(int idno, string firsName, string lastName)
         {
             try
@@ -13860,6 +14367,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
+        /// <summary>
+        /// [GET] - Renders a printable flight ticket without fare details
+        /// </summary>
         public ActionResult PrintWithoutFare(int idno, string firsName, string lastName)
         {
             try
@@ -14039,6 +14549,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #region BusBooking
         [PermissioncheckingAttribute(servicename = "BUS", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays bus booking transaction report
+        /// </summary>
         public ActionResult BusBookingReport()
         {
             try
@@ -14091,6 +14604,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "BUS", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters bus booking report by date, status and user
+        /// </summary>
         public ActionResult BusBookingReport(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel, string TicketNo)
         {
             try
@@ -14207,6 +14723,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] - Generates and downloads an Excel export of the bus booking report
+        /// </summary>
         public ActionResult ExcelBusBookingReport(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel, string TicketNo)
         {
 
@@ -14369,6 +14888,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         }
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF export of the bus booking report
+        /// </summary>
         public ActionResult PDFBusBookingReport(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel, string TicketNo)
         {
             try
@@ -14487,6 +15009,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "BUS", permision = "Write")]
+        /// <summary>
+        /// [POST] - Fetches bus booking details by trace ID from the provider
+        /// </summary>
         public ActionResult getBookingDetails(string TraceId)
         {
             try
@@ -14570,6 +15095,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         //[MenuAccessFilter] //used in paid and nonpaid services
 
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays hotel booking report
+        /// </summary>
         public ActionResult HotelReport()
         {
             try
@@ -14621,6 +15149,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters hotel booking report by date and status
+        /// </summary>
         public ActionResult HotelReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
         {
             try
@@ -14687,6 +15218,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// [GET] - Generates and downloads an Excel export of the hotel booking report
+        /// </summary>
         public ActionResult ExcelHotelBookingReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
         {
             try
@@ -14799,6 +15333,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] - Generates and downloads a PDF export of the hotel booking report
+        /// </summary>
         public ActionResult PDFHotelReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
         {
             try
@@ -14868,6 +15405,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
+        /// <summary>
+        /// [GET] - Displays hotel cancellation request queue
+        /// </summary>
         public ActionResult CancellationQueue()
         {
 
@@ -14922,6 +15462,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
+        /// <summary>
+        /// [POST] - Filters cancellation queue by date and status
+        /// </summary>
         public ActionResult CancellationQueue(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel, string BookingId)
         {
             try
@@ -15038,6 +15581,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Write")]
+        /// <summary>
+        /// [POST] - Processes a flight/hotel ticket cancellation status update
+        /// </summary>
         public ActionResult CancellationStatus(string ChangeReqId, int idno)
         {
             try
@@ -15124,6 +15670,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
+        /// <summary>
+        /// [POST] - Returns guest details for a hotel booking
+        /// </summary>
         public ActionResult GuestDetails(string TXNID)
         {
             try
@@ -15141,6 +15690,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
+        /// <summary>
+        /// [POST] - Returns price breakdown for a hotel booking
+        /// </summary>
         public ActionResult HotelPriceDetails(string TXNID)
         {
             try
@@ -15158,6 +15710,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Write")]
+        /// <summary>
+        /// [POST] - Checks the current status of a hotel booking
+        /// </summary>
         public ActionResult HotelBookingStatus(string TXNID)
         {
             try
@@ -15252,6 +15807,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Write")]
+        /// <summary>
+        /// [GET] - Displays full details of a hotel booking
+        /// </summary>
         public ActionResult HotelFullDetails(string TXNID)
         {
             try
@@ -15320,6 +15878,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Write")]
+        /// <summary>
+        /// [POST] - Initiates cancellation of a hotel booking
+        /// </summary>
         public ActionResult BookingCancallation(int id, string BookingId)
         {
             try

@@ -436,6 +436,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
         }
         //Profile
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays the user profile details
+        /// </summary>
         public new ActionResult Profile()
         {
             string userid = User.Identity.GetUserId();

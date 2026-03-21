@@ -1196,15 +1196,8 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 Vastwebmulti.Areas.RETAILER.ViewModels.GetFlightDetailsVM respo = JsonConvert.DeserializeObject<Vastwebmulti.Areas.RETAILER.ViewModels.GetFlightDetailsVM>(response.Content);
                 if (respo.StatusCode == 200 && respo.Content != null && respo.Content.ResponseCode == 0 && respo.Content.ADDINFO.Error.ErrorCode == 0)
                 {
-                    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-                    if (logo.Count > 0)
-                    {
-                        ViewBag.logoimage = logo.SingleOrDefault().LogoImage;
-                    }
-                    else
-                    {
-                        ViewBag.logoimage = "";
-                    }
+                    var logo = db.tblHeaderLogoes.FirstOrDefault(p => p.Role == "ADMIN");
+                    ViewBag.logoimage = logo != null ? logo.LogoImage : "";
                     var ticket = db.TBO_AirTicketingDetails.Where(a => a.PNR == respo.Content.ADDINFO.FlightItinerary.Pnr).FirstOrDefault();
                     var admin = db.Admin_details.Single();
                     ViewBag.Admin = admin;
@@ -1239,6 +1232,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// GET - Renders a PDF print version of the flight ticket with full fare details.
+        /// </summary>
         public ActionResult PrintTicket(int idno, string firsName, string lastName)
         {
             try
@@ -1268,15 +1264,8 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 Vastwebmulti.Areas.RETAILER.ViewModels.GetFlightDetailsVM respo = JsonConvert.DeserializeObject<Vastwebmulti.Areas.RETAILER.ViewModels.GetFlightDetailsVM>(response.Content);
                 if (respo.StatusCode == 200 && respo.Content != null && respo.Content.ResponseCode == 0 && respo.Content.ADDINFO.Error.ErrorCode == 0)
                 {
-                    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-                    if (logo.Count > 0)
-                    {
-                        ViewBag.logoimage = logo.SingleOrDefault().LogoImage;
-                    }
-                    else
-                    {
-                        ViewBag.logoimage = "";
-                    }
+                    var logo = db.tblHeaderLogoes.FirstOrDefault(p => p.Role == "ADMIN");
+                    ViewBag.logoimage = logo != null ? logo.LogoImage : "";
                     var ticket = db.TBO_AirTicketingDetails.Where(a => a.PNR == respo.Content.ADDINFO.FlightItinerary.Pnr).FirstOrDefault();
                     var admin = db.Admin_details.Single();
                     ViewBag.Admin = admin;
@@ -1310,6 +1299,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// GET - Displays the flight ticket details view with fare information hidden.
+        /// </summary>
         [HttpGet]
         public ActionResult ViewTicketWithoutFare(int idno, string firsName, string lastName)
         {
@@ -1340,15 +1332,8 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 Vastwebmulti.Areas.RETAILER.ViewModels.GetFlightDetailsVM respo = JsonConvert.DeserializeObject<Vastwebmulti.Areas.RETAILER.ViewModels.GetFlightDetailsVM>(response.Content);
                 if (respo.StatusCode == 200 && respo.Content != null && respo.Content.ResponseCode == 0 && respo.Content.ADDINFO.Error.ErrorCode == 0)
                 {
-                    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-                    if (logo.Count > 0)
-                    {
-                        ViewBag.logoimage = logo.SingleOrDefault().LogoImage;
-                    }
-                    else
-                    {
-                        ViewBag.logoimage = "";
-                    }
+                    var logo = db.tblHeaderLogoes.FirstOrDefault(p => p.Role == "ADMIN");
+                    ViewBag.logoimage = logo != null ? logo.LogoImage : "";
                     var ticket = db.TBO_AirTicketingDetails.Where(a => a.PNR == respo.Content.ADDINFO.FlightItinerary.Pnr).FirstOrDefault();
                     var admin = db.Admin_details.Single();
                     ViewBag.Admin = admin;
@@ -1383,6 +1368,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// GET - Renders a PDF print version of the flight ticket without fare details.
+        /// </summary>
         public ActionResult PrintWithoutFare(int idno, string firsName, string lastName)
         {
             try
@@ -1412,15 +1400,8 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 Vastwebmulti.Areas.RETAILER.ViewModels.GetFlightDetailsVM respo = JsonConvert.DeserializeObject<Vastwebmulti.Areas.RETAILER.ViewModels.GetFlightDetailsVM>(response.Content);
                 if (respo.StatusCode == 200 && respo.Content != null && respo.Content.ResponseCode == 0 && respo.Content.ADDINFO.Error.ErrorCode == 0)
                 {
-                    var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-                    if (logo.Count > 0)
-                    {
-                        ViewBag.logoimage = logo.SingleOrDefault().LogoImage;
-                    }
-                    else
-                    {
-                        ViewBag.logoimage = "";
-                    }
+                    var logo = db.tblHeaderLogoes.FirstOrDefault(p => p.Role == "ADMIN");
+                    ViewBag.logoimage = logo != null ? logo.LogoImage : "";
                     var ticket = db.TBO_AirTicketingDetails.Where(a => a.PNR == respo.Content.ADDINFO.FlightItinerary.Pnr).FirstOrDefault();
                     var admin = db.Admin_details.Single();
                     ViewBag.Admin = admin;
