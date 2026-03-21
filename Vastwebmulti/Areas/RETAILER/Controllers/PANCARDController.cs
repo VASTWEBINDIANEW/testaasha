@@ -38,10 +38,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         {
             var status = ""; var message = "";
             var userid = User.Identity.GetUserId();
-            var remdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
+            var remdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
             if (remdetails.pancardsts == "Y")
             {
-                var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == remdetails.DealerId).SingleOrDefault();
+                var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == remdetails.DealerId);
                 if (dealerdetails.pancardsts == "Y")
                 {
                     var check = "OK";
@@ -425,7 +425,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             try
             {
                 var userid = User.Identity.GetUserId();
-                var remdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
+                var remdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
                 var statenm = db.State_Desc.Where(aa => aa.State_id == remdetails.State).SingleOrDefault().State_name;
                 var distnm = db.District_Desc.Where(aa => aa.State_id == remdetails.State && aa.Dist_id == remdetails.District).SingleOrDefault().Dist_Desc;
 
@@ -1197,7 +1197,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             try
             {
                 var userid = User.Identity.GetUserId();
-                var retailer = db.Retailer_Details.Where(s => s.RetailerId == userid).SingleOrDefault();
+                var retailer = db.Retailer_Details.FirstOrDefault(s => s.RetailerId == userid);
                 var psaid = db.VastBazaarRetailerOutlets.Where(s => s.RetailerId == userid).SingleOrDefault().outlet_id;
                 string requestid = Guid.NewGuid().ToString();
                 var token = getAuthToken();
@@ -1205,8 +1205,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 var measge = db.proc_insert_PAN_CARD12(userid, amount, requestid, output).SingleOrDefault().msg;
                 try
                 {
-                    var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                    var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
+                    var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                    var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
                     var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
 
                     var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
@@ -1278,8 +1278,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         db.proc_PAN_CARD_Refund_new(Convert.ToString(entry.idno), "Failed", "Rejected", requestid);
                         try
                         {
-                            var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                            var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
+                            var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                            var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
                             var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
 
                             var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
