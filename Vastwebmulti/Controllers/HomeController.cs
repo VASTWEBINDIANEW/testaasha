@@ -3395,7 +3395,6 @@ namespace Vastwebmulti.Controllers
                 var result = streamReader.ReadToEnd();
             }
 
-            Console.WriteLine(httpResponse.StatusCode);
 
         }
     }

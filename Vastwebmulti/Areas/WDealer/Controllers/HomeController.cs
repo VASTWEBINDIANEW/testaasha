@@ -954,7 +954,6 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     throw;
                 }
 
@@ -1338,7 +1337,6 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     throw;
                 }
                 string userid = User.Identity.GetUserId();

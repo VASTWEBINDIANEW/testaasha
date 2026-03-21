@@ -3573,7 +3573,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                                 }
                                                 else
                                                 {
-                                                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                     HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                                                     WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(200).TotalMilliseconds;
                                                     try
@@ -7058,7 +7058,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                         }
                                         else
                                         {
-                                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                             HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                                             WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(200).TotalMilliseconds;
                                             try
@@ -54772,7 +54772,6 @@ System.Data.Entity.Core.Objects.ObjectParameter("output", typeof(string));
             }
             catch (CryptographicException e)
             {
-                Console.WriteLine(e.Message);
                 return null;
             }
         }
@@ -60449,7 +60448,6 @@ System.Data.Entity.Core.Objects.ObjectParameter("output", typeof(string));
                 catch (Exception ex)
                 {
                     // Log or handle the exception appropriately
-                    Console.WriteLine("Exception occurred during file download: " + ex.Message);
                     return HttpNotFound();
                     // Or return an appropriate error response
                 }

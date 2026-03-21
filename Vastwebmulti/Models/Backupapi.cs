@@ -528,7 +528,7 @@ namespace Vastwebmulti.Models
                             }
                             else
                             {
-                                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                 HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                                 WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(125).TotalMilliseconds;
                                 WebResponse Response = WebRequestObject.GetResponse();
@@ -917,7 +917,7 @@ namespace Vastwebmulti.Models
         {
             if (type.ToUpper() == "GET")
             {
-                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                 WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(125).TotalMilliseconds;
                 WebResponse Response = WebRequestObject.GetResponse();

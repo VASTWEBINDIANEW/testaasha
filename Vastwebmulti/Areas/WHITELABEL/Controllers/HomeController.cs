@@ -839,7 +839,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                         {
                             url = url.Replace("tttt", adminmobile);
                             url = url.Replace("mmmm", txtMsgBody);
-                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                             HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                             WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
 
@@ -1393,7 +1393,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                         {
                             url = url.Replace("tttt", adminmobile);
                             url = url.Replace("mmmm", txtMsgBody);
-                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                             HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                             WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
 
@@ -7881,7 +7881,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                         {
                             string url = smsapilist.Replace("tttt", item.Mobile);
                             url = url.Replace("mmmm", txtMsgBody);
-                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                             HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                             WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
                             try
@@ -7914,7 +7914,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                         {
                             string url = smsapilist.Replace("tttt", item.Mobile);
                             url = url.Replace("mmmm", txtMsgBody);
-                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                             HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                             WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(25).TotalMilliseconds;
                             try
@@ -7945,7 +7945,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                         {
                             string url = smsapilist.Replace("tttt", item.Mobile);
                             url = url.Replace("mmmm", txtMsgBody);
-                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                             HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                             WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(25).TotalMilliseconds;
                             try
@@ -7974,7 +7974,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                     var smsapilist = (from ff in db.whitelabel_apisms where ff.sts == "Y" && ff.userfor == userid select ff).Single().smsapi.ToString();
                     string url = smsapilist.Replace("tttt", txtmobileNo);
                     url = url.Replace("mmmm", txtMsgBody).ToString();
-                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(url);
                     WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(25).TotalMilliseconds;
                     try
@@ -25707,7 +25707,6 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     throw;
                 }
 
@@ -26458,8 +26457,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //            }
         //            catch (Exception e)
         //            {
-        //                Console.WriteLine(e);
-        //                throw;
+        //        //                throw;
         //            }
         //            string userid = User.Identity.GetUserId();
 

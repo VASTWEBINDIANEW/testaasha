@@ -11505,7 +11505,6 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     throw;
                     ch = e.Message;
                 }
@@ -11657,7 +11656,6 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     throw;
                 }
             }
@@ -11733,8 +11731,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             //    }
             //    catch (Exception ex)
             //    {
-            //        Console.WriteLine(ex);
-            //        throw;
+            //            //        throw;
             //    }
             //}
         }

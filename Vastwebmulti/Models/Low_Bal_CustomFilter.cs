@@ -36,10 +36,9 @@ namespace Vastwebmulti.Models
                                         try
                                         {
                                             string apiurls = "";
-                                            bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
-                                            if (isSmsOn)
+                                            var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
+                                            if (smsapi.Any())
                                             {
-                                                var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
 
                                                 var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
                                                 if (smsapionsts != null)
@@ -120,10 +119,9 @@ namespace Vastwebmulti.Models
                                         try
                                         {
                                             string apiurls = "";
-                                            bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
-                                            if (isSmsOn)
+                                            var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
+                                            if (smsapi.Any())
                                             {
-                                                var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
 
                                                 var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
                                                 if (smsapionsts != null)
@@ -202,10 +200,9 @@ namespace Vastwebmulti.Models
                                         try
                                         {
                                             string apiurls = "";
-                                            bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
-                                            if (isSmsOn)
+                                            var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
+                                            if (smsapi.Any())
                                             {
-                                                var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
 
                                                 var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
                                                 if (smsapionsts != null)
@@ -285,10 +282,9 @@ namespace Vastwebmulti.Models
                                         try
                                         {
                                             string apiurls = "";
-                                            bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
-                                            if (isSmsOn)
+                                            var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
+                                            if (smsapi.Any())
                                             {
-                                                var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
 
                                                 var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
                                                 if (smsapionsts != null)

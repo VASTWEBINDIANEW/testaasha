@@ -2674,7 +2674,7 @@ namespace Vastwebmulti.Controllers
                         //                // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                         //                var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                        //                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                        //                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                         //                HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                         //                WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(135).TotalMilliseconds;
 
@@ -2922,7 +2922,7 @@ namespace Vastwebmulti.Controllers
                                                     //            // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                                                     //            var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                                                    //            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                    //            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                     //            HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                                                     //            WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(135).TotalMilliseconds;
 
@@ -3069,7 +3069,7 @@ namespace Vastwebmulti.Controllers
                                                             // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                                                             var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                                                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                             HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                                                             WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
 
@@ -3303,7 +3303,7 @@ namespace Vastwebmulti.Controllers
                                                 //            // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                                                 //            var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                                                //            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                //            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                 //            HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                                                 //            WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(135).TotalMilliseconds;
 
@@ -3450,7 +3450,7 @@ namespace Vastwebmulti.Controllers
                                                         // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                                                         var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                                                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                         HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                                                         WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
 
