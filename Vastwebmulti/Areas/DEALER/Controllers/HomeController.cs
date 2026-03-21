@@ -88,7 +88,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             //show News for Dealer
             var news = (from pp in db.Message_top where (pp.users == "Distributor" || pp.users == "All") where pp.status == "Y" select pp).ToList();
             ViewBag.newsdata = news;
-            //if (news.Count() > 0)
+            //if (news.Any())
             //{
             //    ViewBag.news = news.FirstOrDefault().message;
             //    ViewBag.Name = news.FirstOrDefault().name;
@@ -2873,19 +2873,17 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
 
-                                bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
 
-                                if (isSmsOn)
+                                if (db.apisms.Any(s => s.sts == "Y"))
                                 {
                                     var asd = db.SMSSendAlls.Where(s => s.ServiceName == "dlmtoAdminfundtrans1" && s.Whatsapp_Status == "Y").ToList();
-                                    var asdcount = asd.Count();
                                     var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
                                     var mobile12 = db.Admin_details.SingleOrDefault().mobile;
                                     var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
 
                                     if (smsapionsts != null)
                                     {
-                                        if (asdcount > 0)
+                                        if (asd.Any())
                                         {
                                             apiurls = smsapionsts.smsapi;
                                             string text = Dealer_name + "-" + Dealer_data.FarmName + "(" + Dealer_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs";
@@ -2927,11 +2925,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                         }
                                     }
                                     var asd1 = db.SMSSendAlls.Where(s => s.ServiceName == "dlmtoAdminfundtrans1" && s.Status == "Y").ToList();
-                                    var asd1count = asd1.Count();
                                     var smsapionsts1 = smsapi.Where(s => s.api_type == "sms").SingleOrDefault();
                                     if (smsapionsts1 != null)
                                     {
-                                        if (asd1count > 0)
+                                        if (asd1.Any())
                                         {
                                             apiurls = smsapionsts1.smsapi;
                                             string text = Dealer_name + "-" + Dealer_data.FarmName + "(" + Dealer_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs";
@@ -2976,9 +2973,8 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                 }
 
                                 var emailcheck = db.EmailSendAlls.Where(s => s.ServiceName == "dlmtoAdminfundtrans1" && s.Status == "Y").ToList();
-                                var emailceckcount = emailcheck.Count();
 
-                                if (emailceckcount > 0)
+                                if (emailcheck.Any())
                                 {
                                     var AdminDetails = db.Admin_details.SingleOrDefault();
                                     smssend.SendEmailAll(AdminDetails.email, Dealer_name + "-" + Dealer_data.FarmName + "(" + Dealer_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs", "Purchase Order Request", AdminDetails.email);
@@ -3002,19 +2998,17 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                 var mobile12 = md_data.Mobile;
 
 
-                                bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
 
-                                if (isSmsOn)
+                                if (db.apisms.Any(s => s.sts == "Y"))
                                 {
                                     var asd = db.SMSSendAlls.Where(s => s.ServiceName == "DLMToDLMMDFundTrans1" && s.Whatsapp_Status == "Y").ToList();
 
-                                    var asdcount = asd.Count();
-                                    ; var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
+                                    var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
 
                                     var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
                                     if (smsapionsts != null)
                                     {
-                                        if (asdcount > 0)
+                                        if (asd.Any())
                                         {
                                             apiurls = smsapionsts.smsapi;
                                             string text = dlm_name + "-" + dlm_data.FarmName + "(" + dlm_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs";
@@ -3056,11 +3050,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                         }
                                     }
                                     var asd1 = db.SMSSendAlls.Where(s => s.ServiceName == "DLMToDLMMDFundTrans1" && s.Status == "Y").ToList();
-                                    var asd1count = asd1.Count();
                                     var smsapionsts1 = smsapi.Where(s => s.api_type == "sms").SingleOrDefault();
                                     if (smsapionsts1 != null)
                                     {
-                                        if (asd1count > 0)
+                                        if (asd1.Any())
                                         {
                                             apiurls = smsapionsts1.smsapi;
                                             string text = dlm_name + "-" + dlm_data.FarmName + "(" + dlm_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs";
@@ -3106,13 +3099,12 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
                                     var asd2 = db.SMSSendAlls.Where(s => s.ServiceName == "dlmToDLMdlmFundTrans1" && s.Whatsapp_Status == "Y").ToList();
-                                    var asd2count = asd2.Count();
                                     var smsapi2 = db.apisms.Where(x => x.sts == "Y").ToList();
 
                                     var smsapionsts2 = smsapi2.Where(s => s.api_type == "whatsapp").SingleOrDefault();
                                     if (smsapionsts2 != null)
                                     {
-                                        if (asd2count > 0)
+                                        if (asd2.Any())
                                         {
                                             apiurls = smsapionsts2.smsapi;
                                             string text = "Your purchase order Request of " + hdPaymentAmount + "Rs" + "has been sent";
@@ -3154,11 +3146,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                         }
                                     }
                                     var asd3 = db.SMSSendAlls.Where(s => s.ServiceName == "dlmToDLMdlmFundTrans1" && s.Status == "Y").ToList();
-                                    var asd3count = asd3.Count();
                                     var smsapionsts3 = smsapi.Where(s => s.api_type == "sms").SingleOrDefault();
                                     if (smsapionsts3 != null)
                                     {
-                                        if (asd3count > 0)
+                                        if (asd3.Any())
                                         {
                                             apiurls = smsapionsts3.smsapi;
                                             string text = "Your purchase order Request of " + hdPaymentAmount + "Rs" + "has been sent";
@@ -3209,8 +3200,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                 }
 
                                 var emailcheck = db.EmailSendAlls.Where(s => s.ServiceName == "DLMToDLMMDFundTrans1" && s.Status == "Y").ToList();
-                                var emailcheckcount = emailcheck.Count();
-                                if (emailcheckcount > 0)
+                                if (emailcheck.Any())
                                 {
                                     var AdminDetails = db.Admin_details.SingleOrDefault();
                                     smssend.SendEmailAll(md_data.Email, dlm_name + "-" + dlm_data.FarmName + "(" + dlm_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs", "Purchase Order Request", AdminDetails.email);
@@ -3220,8 +3210,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                 }
 
                                 var emailcheck23 = db.EmailSendAlls.Where(s => s.ServiceName == "dlmToDLMdlmFundTrans1" && s.Status == "Y").ToList();
-                                var emailcheck23count = emailcheck23.Count();
-                                if (emailcheck23count > 0)
+                                if (emailcheck23.Any())
                                 {
                                     var AdminDetails = db.Admin_details.SingleOrDefault();
                                     smssend.SendEmailAll(dlm_data.Email, "Your purchase order Request of " + hdPaymentAmount + "Rs" + "has been sent", "Purchase Order Request", AdminDetails.email);
@@ -5167,7 +5156,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 if (totalselfcount < 5)
                 {
 
-                    var lastotp = db.MobileOtps.Where(aa => aa.Userid == "Dealer" && aa.Type == "UPISELF").OrderByDescending(aa => aa.idno).Take(1).SingleOrDefault().Otp;
+                    var lastotp = db.MobileOtps.Where(aa => aa.Userid == "Dealer" && aa.Type == "UPISELF").OrderByDescending(aa => aa.idno).FirstOrDefault().Otp;
 
                     if (lastotp == otp)
                     {
@@ -8450,7 +8439,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
             var respo = db.Aeps_Report_New(ddlusers, userid, ddl_status, 0, "", "", "", "ALL", Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), 1, 1000000).ToList();
-            if (respo.Count() > 0)
+            if (respo.Any())
             {
                 foreach (var item in respo)
                 {
@@ -8953,7 +8942,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 dataTbl.Columns.Add("Time", typeof(string));
                
 
-                if (proc_Response.Count() > 0)
+                if (proc_Response.Any())
                 {
                     foreach (var item in proc_Response)
                     {
@@ -9900,7 +9889,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 TotalDebit = tkn.TotalDebit
             }).OrderByDescending(a => a.Idno);
             var tokenvaluedlmmd = db.TokenValueByAdmins.ToList();
-            if (tokenvaluedlmmd.Count() > 0)
+            if (tokenvaluedlmmd.Any())
             {
                 ViewBag.dealervalue = tokenvaluedlmmd.SingleOrDefault().DistributorValue;
                 ViewBag.mastervalue = tokenvaluedlmmd.SingleOrDefault().MasterValue;
@@ -9954,7 +9943,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                     token.Tokens = token.Tokens + tokenCount;
                 }
                 var count = db.TokenValueByAdmins.ToList();
-                if (count.Count() > 0)
+                if (count.Any())
                 {
                     var Dealervalue = db.TokenValueByAdmins.SingleOrDefault().DistributorValue;
                     decimal TotalTokenValue = Convert.ToDecimal(Dealervalue) * Convert.ToDecimal(tokenCount);
@@ -10809,7 +10798,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             dataTbl.Columns.Add("Transaction Time ", typeof(string));
             dataTbl.Columns.Add("Response Time", typeof(string));
 
-            if (chk.Count() > 0)
+            if (chk.Any())
             {
 
                 foreach (var item in chk)
@@ -11685,7 +11674,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                     Operator = db.operatorcommforsells.Where(s => s.optname == Operator).SingleOrDefault().optcode;
                 }
 
-                var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).Take(1).SingleOrDefault();
+                var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).FirstOrDefault();
                 var checkdlm = db.Dealer_Details.Where(s => s.DealerId == dealerid).SingleOrDefault();
                 var client = new RestClient("https://www.vastwebindia.com/DLMAPI/EditSimRegister");
                 var request = new RestRequest(Method.POST);
@@ -11875,7 +11864,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 {
                     chk2 = db.operatorcommforsells.Where(s => s.optname == chk.opt_code).SingleOrDefault().optcode;
                 }
-                var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).Take(1).SingleOrDefault();
+                var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).FirstOrDefault();
                 var dlmemail = db.Dealer_Details.Where(s => s.DealerId == userid).SingleOrDefault().Email;
                 var client2 = new RestClient("https://www.vastwebindia.com/DLMAPI/CheckBalance?OptCode=" + chk2 + "&userid=" + chk.USERID + "&Email=" + dlmemail + "&Operator=" + chk2 + "&Registeremail=" + check1.API_ID);
                 var request2 = new RestRequest(Method.POST);
@@ -11923,7 +11912,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                         {
                             chk2 = db.operatorcommforsells.Where(s => s.optname == chk1.opt_code).SingleOrDefault().optcode;
                         }
-                        var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).Take(1).SingleOrDefault();
+                        var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).FirstOrDefault();
 
                         var client2 = new RestClient("https://www.vastwebindia.com/DLMAPI/LoginSimInfo?loginid=" + chk1.USERID + "&password=" + Decrypt(chk1.Password) + "&imeino=" + chk1.Imeino + "&Operator=" + chk2 + "&Registeremail=" + check1.API_ID);
                         var request2 = new RestRequest(Method.POST);
@@ -11970,7 +11959,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             {
                 chk2 = db.operatorcommforsells.Where(s => s.optname == chk1.opt_code).SingleOrDefault().optcode;
             }
-            var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).Take(1).SingleOrDefault();
+            var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).FirstOrDefault();
             var client = new RestClient("https://www.vastwebindia.com/DLMAPI/Verifyotp?otp=" + otp +"&userid=" + chk1.USERID + "&optcode=" + chk2 + "&registeremail="+check1.API_ID);
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/json"); // Add headers if necessary
@@ -12018,7 +12007,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                         var checkr = db.dealer_sim_new.Where(s => s.USERID == USERID && s.opt_code == drop2).ToList();
                         if (checkr.Count == 0)
                         {
-                            var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).Take(1).SingleOrDefault();
+                            var check1 = db.Money_API_URLS.Where(s => s.API_Name.Contains("VASTWEB")).FirstOrDefault();
                             var checkdlm = db.Dealer_Details.Where(s => s.DealerId == dealerid).SingleOrDefault();
                             var client = new RestClient("https://www.vastwebindia.com/DLMAPI/SimRegister");
                             var request = new RestRequest(Method.POST);

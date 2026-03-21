@@ -18,7 +18,7 @@ namespace Vastwebmulti.Models.Scheduling
                     using (VastwebmultiEntities db = new VastwebmultiEntities())
                     {
                         var virtualremain = db.Remain_Admin_balance.SingleOrDefault().VirtualAmount;
-                        var totalremain = db.account_chk.OrderByDescending(aa => aa.tdate).Take(1).SingleOrDefault().total;
+                        var totalremain = db.account_chk.OrderByDescending(aa => aa.tdate).FirstOrDefault().total;
                         if (totalremain != virtualremain)
                         {
                             var admininfo = db.Admin_details.SingleOrDefault().WebsiteUrl;
@@ -29,7 +29,6 @@ namespace Vastwebmulti.Models.Scheduling
                             client.Timeout = -1;
                             var request = new RestRequest(Method.GET);
                             IRestResponse response = client.Execute(request);
-                            Console.WriteLine(response.Content);
                         }
                     }
                 }

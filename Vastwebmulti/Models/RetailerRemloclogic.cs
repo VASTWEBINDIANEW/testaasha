@@ -156,7 +156,7 @@ namespace Vastwebmulti.Models
 
                 var locationinformation = db.latlongstores.Select(x => x.city.ToUpper());
                 var retailermanagelocation = db.Manage_rem_Location_by_Admin.Where(sss => sss.userid == userids).ToList();
-                if (retailermanagelocation.Count() > 0)
+                if (retailermanagelocation.Any())
                 {
 
                     var findexectlocation = db.Manage_rem_Location_by_Admin.Where(sss => sss.userid == userids && locationinformation.Contains(sss.nameofcity.Trim().ToUpper())).FirstOrDefault();

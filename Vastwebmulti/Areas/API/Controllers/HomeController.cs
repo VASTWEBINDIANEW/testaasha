@@ -280,7 +280,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var tbrow = db.Sp_Recharge_info_LazyLoad(pageindex, pagesize, "Retailer", userid, txt_frm_date, txt_to_date, Operator, txtmob, ddl_status).ToList();
             JsonModel jsonmodel = new JsonModel();
             jsonmodel.NoMoredata = tbrow.Count < pagesize;
-            if (tbrow.Count() > 0)
+            if (tbrow.Any())
             {
                 jsonmodel.HTMLString = renderPartialViewtostring("_Rechargereport", tbrow);
             }
@@ -998,7 +998,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             //show News for master
             var news = (from pp in db.Message_top where (pp.users == "Api" || pp.users == "All") where pp.status == "Y" select pp).ToList();
             ViewBag.news = news;
-            //if (news.Count() > 0)
+            //if (news.Any())
             //{
             //    ViewBag.news = news.FirstOrDefault().message;
             //    ViewBag.newimg = news.FirstOrDefault().image;
@@ -1529,19 +1529,17 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
 
-                            bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
 
-                            if (isSmsOn)
+                            if (db.apisms.Any(s => s.sts == "Y"))
                             {
                                 var asd = db.SMSSendAlls.Where(s => s.ServiceName == "ApitoAdminfundtrans1" && s.Whatsapp_Status == "Y").ToList();
-                                var asdcount = asd.Count();
                                 var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
                                 var mobile12 = db.Admin_details.SingleOrDefault().mobile;
                                 var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
 
                                 if (smsapionsts != null)
                                 {
-                                    if (asdcount > 0)
+                                    if (asd.Any())
                                     {
                                         apiurls = smsapionsts.smsapi;
                                         string text = api_name + "-" + api_data.farmname + "(" + api_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs";
@@ -1582,11 +1580,10 @@ namespace Vastwebmulti.Areas.API.Controllers
                                     }
                                 }
                                 var asd1 = db.SMSSendAlls.Where(s => s.ServiceName == "ApitoAdminfundtrans1" && s.Status == "Y").ToList();
-                                var asd1count = asd1.Count();
                                 var smsapionsts1 = smsapi.Where(s => s.api_type == "sms").SingleOrDefault();
                                 if (smsapionsts1 != null)
                                 {
-                                    if (asd1count > 0)
+                                    if (asd1.Any())
                                     {
                                         apiurls = smsapionsts1.smsapi;
                                         string text = api_name + "-" + api_data.farmname + "(" + api_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs";
@@ -1630,9 +1627,8 @@ namespace Vastwebmulti.Areas.API.Controllers
                             }
 
                             var emailcheck = db.EmailSendAlls.Where(s => s.ServiceName == "ApitoAdminfundtrans1" && s.Status == "Y").ToList();
-                            var emailceckcount = emailcheck.Count();
 
-                            if (emailceckcount > 0)
+                            if (emailcheck.Any())
                             {
                                 var AdminDetails = db.Admin_details.SingleOrDefault();
                                 smssend.SendEmailAll(AdminDetails.email, api_name + "-" + api_data.farmname + "(" + api_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs", "Purchase Order Request", AdminDetails.email);
@@ -1827,7 +1823,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Req.Date", typeof(string));
             dataTbl.Columns.Add("Resp.Date", typeof(string));
 
-            if (model.Count() > 0)
+            if (model.Any())
             {
 
                 foreach (var item in model)
@@ -2958,7 +2954,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Old Day Failed", typeof(string));
             dataTbl.Columns.Add("Diff", typeof(string));
 
-            if (rep.DaybookLive.Count() > 0)
+            if (rep.DaybookLive.Any())
             {
                 if (txtfrm == frm_date)
                 {
@@ -4755,7 +4751,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Transaction Time ", typeof(string));
             dataTbl.Columns.Add("Response Time", typeof(string));
 
-            if (chk.Count() > 0)
+            if (chk.Any())
             {
 
                 foreach (var item in chk)
@@ -4944,8 +4940,8 @@ namespace Vastwebmulti.Areas.API.Controllers
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid && aa.status.ToUpper() == "SUCCESS").ToList();
             if (purchasecheck.Count > 0)
             {
-                var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).Take(1).SingleOrDefault().renewaldate;
-                var purchasedate = purchasecheck.OrderByDescending(aa => aa.purchasedate).Take(1).SingleOrDefault().purchasedate;
+                var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
+                var purchasedate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().purchasedate;
                 if (expdate >= DateTime.Now)
                 {
                     var chkk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
@@ -5014,7 +5010,7 @@ namespace Vastwebmulti.Areas.API.Controllers
                 var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
                 if (purchasecheck.Count > 0)
                 {
-                    var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).Take(1).SingleOrDefault().renewaldate;
+                    var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                     if (expdate >= DateTime.Now)
                     {
                         VastBazaartoken vbtoken = new VastBazaartoken();
@@ -5084,7 +5080,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
             if (purchasecheck.Count > 0)
             {
-                var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).Take(1).SingleOrDefault().renewaldate;
+                var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)
                 {
                     VastBazaartoken vbtoken = new VastBazaartoken();
@@ -5149,7 +5145,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var chk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
             if (purchasecheck.Count > 0)
             {
-                var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).Take(1).SingleOrDefault().renewaldate;
+                var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)
                 {
                     VastBazaartoken vbtoken = new VastBazaartoken();
@@ -5203,7 +5199,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var chk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
             if (purchasecheck.Count > 0)
             {
-                var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).Take(1).SingleOrDefault().renewaldate;
+                var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)
                 {
                     VastBazaartoken vbtoken = new VastBazaartoken();
@@ -5306,14 +5302,14 @@ namespace Vastwebmulti.Areas.API.Controllers
                     if (outmsg.ToUpper() == "PURCHASE DONE")
                     {
                         msg = "Purchase Done";
-                        var infochk = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).OrderByDescending(aa => aa.purchasedate).Take(1).SingleOrDefault();
+                        var infochk = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).OrderByDescending(aa => aa.purchasedate).FirstOrDefault();
                         System.Data.Entity.Core.Objects.ObjectParameter output1 = new System.Data.Entity.Core.Objects.ObjectParameter("output", typeof(string));
                         db.updateWhatsapppurchase(infochk.idno, "Success", output1);
                     }
                     else if (outmsg.ToUpper() == "YOUR REMAIN BALANCE LOW")
                     {
                         msg = "Purchase Not Done, Contact To Admin";
-                        var infochk = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).OrderByDescending(aa => aa.purchasedate).Take(1).SingleOrDefault();
+                        var infochk = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).OrderByDescending(aa => aa.purchasedate).FirstOrDefault();
                         System.Data.Entity.Core.Objects.ObjectParameter output1 = new System.Data.Entity.Core.Objects.ObjectParameter("output", typeof(string));
                         db.updateWhatsapppurchase(infochk.idno, "Failed", output1);
                     }

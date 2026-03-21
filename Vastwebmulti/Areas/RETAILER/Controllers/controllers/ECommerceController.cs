@@ -81,7 +81,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
                         if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                         {
-                            var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                            var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                             if (chkklatestdate != null)
                             {
                                 var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
@@ -114,7 +114,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         //    int serviceid = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "AEPS").SingleOrDefault().Idno;
                         //    var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                         //}
-                        var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                        var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                         if (servicecheck != null)
                         {
 
@@ -159,7 +159,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
                         if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                         {
-                            var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                            var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                             if (chkklatestdate != null)
                             {
                                 var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
@@ -193,7 +193,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         //    var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                         //}
 
-                        var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                        var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                         if (servicecheck != null)
                         {
 
@@ -237,7 +237,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
                         if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                         {
-                            var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                            var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                             if (chkklatestdate != null)
                             {
                                 var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
@@ -287,7 +287,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         //    int serviceid = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "AEPS").SingleOrDefault().Idno;
                         //    var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                         //}
-                        var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                        var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "ECOMM").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                         if (servicecheck != null)
                         {
 

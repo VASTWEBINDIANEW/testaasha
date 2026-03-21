@@ -19,7 +19,6 @@ namespace Vastwebmulti.Areas.RETAILER.Models
             var request = new RestRequest(Method.POST);
             request.AddHeader("Authorization", "Bearer " + token);
             IRestResponse response = client.Execute(request);
-            Console.WriteLine(response.Content);
 
             return response.StatusCode.ToString() == "OK" ? response.Content : null;
         }
@@ -31,7 +30,6 @@ namespace Vastwebmulti.Areas.RETAILER.Models
             var request = new RestRequest(Method.POST);
             request.AddHeader("Authorization", "Bearer " + token);
             IRestResponse response = client.Execute(request);
-            Console.WriteLine(response.Content);
 
             return response.StatusCode.ToString() == "OK" ? response.Content : "";
         }
@@ -162,7 +160,6 @@ namespace Vastwebmulti.Areas.RETAILER.Models
             request.AddHeader("Authorization", "Bearer " + vbToken);
             //request.AddHeader("Authorization", "Bearer 1NWecleNYqVjWrwvXKROj_cBkrEgcHgUjbjYCTH_1uq-GCKx6Zs9NOSCkcuPFkht70EMGtGCnzovCkNbgKHI_HwWbq6mgY2dWnQF1rW4dzEIYDFQCU1x23UIXWwJDqlEEfrvNS42K3yX7vyz3pDJwUaNvBA6joebAuT1d5vwYNN9RW4UtOPVZBWIi4O4G4Cj3Q8ZqAGPVTAaOCAx8WjLVEagJJkDzd9aQHIiIbcg8aCCcltLbnXgvOfUINxeqnFcOSsU16XGRiUdTsgOBOK6gUaMGfTM7kUAge9fVNckq8NLvS29MLXbVcJRF02ws1Wtf7EwgLh6h08mpY7df9duHooPLho1mNqOZuEjq4fszawc4_lnwRGY3Wx8MMgb6xGWhf_Rk7mOCuGbMblgSFp_4eoCx9ddqa8RITJSfEfJ0vcTRjtir3ZumEpANWc8jaNGp039kAwM8uxOYIBmqUpChTGlLvQ_U9CiewS5bvc0GcfezmxG-wEKD-3l5mcmUyOul5ezvwSUgjLOfbBA0p_V8g");
             IRestResponse response = client.Execute(request);
-            Console.WriteLine(response.Content);
 
             return response.StatusCode.ToString() == "OK" ? response.Content : null;
         }
@@ -176,7 +173,7 @@ namespace Vastwebmulti.Areas.RETAILER.Models
             }
 
             //string ApiUrl = HttpContext.Current.Request.IsLocal ? "https://www.rechargepartners.in/" : HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
-            //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             //HttpWebRequest WebRequestObjectTarget = (HttpWebRequest)HttpWebRequest.Create(ApiUrl);
             //WebRequestObjectTarget.Timeout = (System.Int32)TimeSpan.FromSeconds(250).TotalMilliseconds;
             //WebResponse Response = WebRequestObjectTarget.GetResponse();

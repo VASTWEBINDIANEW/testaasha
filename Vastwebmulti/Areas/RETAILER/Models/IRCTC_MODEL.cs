@@ -92,7 +92,7 @@ namespace Vastwebmulti.Areas.RETAILER.Models
           
 
             //string ApiUrl = HttpContext.Current.Request.IsLocal ? "https://www.rechargepartners.in/" : HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
-            //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             //HttpWebRequest WebRequestObjectTarget = (HttpWebRequest)HttpWebRequest.Create(ApiUrl);
             //WebRequestObjectTarget.Timeout = (System.Int32)TimeSpan.FromSeconds(250).TotalMilliseconds;
             //WebResponse Response = WebRequestObjectTarget.GetResponse();

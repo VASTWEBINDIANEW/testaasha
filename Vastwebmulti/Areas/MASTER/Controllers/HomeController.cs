@@ -111,7 +111,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             //show News for master
             var news = (from pp in _db.Message_top where (pp.users == "Master" || pp.users == "All") where pp.status == "Y" select pp).ToList();
             ViewBag.news = news;
-            //if (news.Count() > 0)
+            //if (news.Any())
             //{
             //    ViewBag.news = news.FirstOrDefault().message;
             //    ViewBag.newimg = news.FirstOrDefault().image;
@@ -847,7 +847,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         //                token.Tokens = token.Tokens + tokenCount;
         //            }
         //            var count = _db.TokenValueByAdmins.ToList();
-        //            if (count.Count() > 0)
+        //            if (count.Any())
         //            {
         //                var Dealervalue = _db.TokenValueByAdmins.SingleOrDefault().DistributorValue;
         //                decimal TotalTokenValue = Convert.ToDecimal(Dealervalue) * Convert.ToDecimal(tokenCount);
@@ -983,7 +983,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
                     token.Tokens = token.Tokens + tokenCount;
                 }
                 var count = db.TokenValueByAdmins.ToList();
-                if (count.Count() > 0)
+                if (count.Any())
                 {
                     var Dealervalue = db.TokenValueByAdmins.SingleOrDefault().DistributorValue;
                     decimal TotalTokenValue = Convert.ToDecimal(Dealervalue) * Convert.ToDecimal(tokenCount);
@@ -1526,7 +1526,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
                     token.Tokens = token.Tokens + tokenCount;
                 }
                 var count = db.TokenValueByAdmins.ToList();
-                if (count.Count() > 0)
+                if (count.Any())
                 {
                     var Mastervalue = db.TokenValueByAdmins.SingleOrDefault().MasterValue;
                     decimal TotalTokenValue = Convert.ToDecimal(Mastervalue) * Convert.ToDecimal(tokenCount);
@@ -3179,19 +3179,17 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
 
 
-                            bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
 
-                            if (isSmsOn)
+                            if (db.apisms.Any(s => s.sts == "Y"))
                             {
                                 var asd = db.SMSSendAlls.Where(s => s.ServiceName == "mastertoadminfundtrans1" && s.Whatsapp_Status == "Y").ToList();
-                                var asdcount = asd.Count();
                                 var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
                                 var mobile12 = db.Admin_details.SingleOrDefault().mobile;
                                 var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
 
                                 if (smsapionsts != null)
                                 {
-                                    if (asdcount > 0)
+                                    if (asd.Any())
                                     {
                                         apiurls = smsapionsts.smsapi;
                                         string text = md_name + "-" + md_data.FarmName + "(" + md_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs";
@@ -3233,11 +3231,10 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
                                     }
                                 }
                                 var asd1 = db.SMSSendAlls.Where(s => s.ServiceName == "mastertoadminfundtrans1" && s.Status == "Y").ToList();
-                                var asd1count = asd1.Count();
                                 var smsapionsts1 = smsapi.Where(s => s.api_type == "sms").SingleOrDefault();
                                 if (smsapionsts1 != null)
                                 {
-                                    if (asd1count > 0)
+                                    if (asd1.Any())
                                     {
                                         apiurls = smsapionsts1.smsapi;
                                         string text = md_name + "-" + md_data.FarmName + "(" + md_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs";
@@ -3282,9 +3279,8 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
                             }
 
                             var emailcheck = db.EmailSendAlls.Where(s => s.ServiceName == "mastertoadminfundtrans1" && s.Status == "Y").ToList();
-                            var emailceckcount = emailcheck.Count();
 
-                            if (emailceckcount > 0)
+                            if (emailcheck.Any())
                             {
                                 var AdminDetails = db.Admin_details.SingleOrDefault();
                                 smssend.SendEmailAll(AdminDetails.email, md_name + "-" + md_data.FarmName + "(" + md_no + ") is Requested to you for perchase order of " + hdPaymentAmount + "Rs", "Purchase Order Request", AdminDetails.email);
@@ -8022,7 +8018,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
             var respo = db.Aeps_Report_New(ddlusers, userid, ddl_status, 0, "", "", "", "ALL", Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), 1, 1000000).ToList();
 
-            if (respo.Count() > 0)
+            if (respo.Any())
             {
                 foreach (var item in respo)
                 {
@@ -8714,7 +8710,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             dataTbl.Columns.Add("Time", typeof(string));
 
 
-            if (proc_Response.Count() > 0)
+            if (proc_Response.Any())
             {
                 foreach (var item in proc_Response)
                 {
@@ -10160,7 +10156,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             dataTbl.Columns.Add("Transaction Time ", typeof(string));
             dataTbl.Columns.Add("Response Time", typeof(string));
 
-            if (chk.Count() > 0)
+            if (chk.Any())
             {
 
                 foreach (var item in chk)

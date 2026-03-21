@@ -14,7 +14,7 @@ namespace Vastwebmulti.Areas.RETAILER.Models
         public IRestResponse RchReq(string token, string Number, string Tokenid, string Userid, decimal ammt, string apioptcode, string CommonTranid, string optional1, string optional2, string url)
         {
             var client = new RestClient(url);
-            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var request = new RestRequest(Method.POST);
             request.AddHeader("authorization", "bearer " + token + "");
             //request.AddHeader("cache-control", "no-cache");
@@ -44,7 +44,7 @@ namespace Vastwebmulti.Areas.RETAILER.Models
         }
         public IRestResponse RchReqMrobotics(string token, string Number, string Tokenid, string Userid, decimal ammt, string apioptcode, string CommonTranid, string optional1, string optional2, string Special_OPT, string url)
         {
-            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var client = new RestClient(url);
             var request = new RestRequest(Method.POST);
             //request.AddHeader("Postman-Token", "716bfc7e-3f1c-4a99-8e1a-c55a99c471fc");
