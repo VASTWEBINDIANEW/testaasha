@@ -22,12 +22,15 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
     {
         VastwebmultiEntities db = new VastwebmultiEntities();
         string VastbazaarBaseUrl = "http://api.vastbazaar.com/";
+        /// <summary>
+        /// GET Initiates AEPS merchant registration if not already registered, fetches super merchant info, and sends an OTP for eKYC.
+        /// </summary>
         public ActionResult Aepscheck()
         {
             var userid = User.Identity.GetUserId();
             var token = string.Empty;
             token = getAuthToken();
-            var retailer = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+            var retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
             if (retailer.AepsMerchandId == "")
             {
                 var reque = new
@@ -63,7 +66,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     retailer.AepsMerchandId = ouletid;
                     retailer.AepsMPIN = pin;
                     db.SaveChanges();
-                    retailer = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+                    retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
                 }
                 else
                 {
@@ -126,12 +129,15 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
             return View();
         }
+        /// <summary>
+        /// GET Validates the AEPS OTP for the eKYC flow using the provided OTP and transaction identifiers.
+        /// </summary>
         public ActionResult AepscheckVerify(string otp, string primaryKeyId, string encodeFPTxnId)
         {
             var userid = User.Identity.GetUserId();
             var token = string.Empty;
             token = getAuthToken();
-            var retailer = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+            var retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
             if (retailer.AepsMerchandId == "")
             {
                 var reque = new
@@ -167,7 +173,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     retailer.AepsMerchandId = ouletid;
                     retailer.AepsMPIN = pin;
                     db.SaveChanges();
-                    retailer = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+                    retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
                 }
                 else
                 {
@@ -226,6 +232,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
             return View();
         }
+        /// <summary>
+        /// GET Performs AEPS fingerprint-based eKYC verification using a captured biometric response.
+        /// </summary>
         public ActionResult FingerVerify()
         {
             string primaryKeyId = "128"; string encodeFPTxnId = "EKYKF1017396030421154029853I";
@@ -233,7 +242,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             var userid = User.Identity.GetUserId();
             var token = string.Empty;
             token = getAuthToken();
-            var retailer = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+            var retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
             if (retailer.AepsMerchandId == "")
             {
                 var reque = new
@@ -269,7 +278,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     retailer.AepsMerchandId = ouletid;
                     retailer.AepsMPIN = pin;
                     db.SaveChanges();
-                    retailer = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+                    retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
                 }
                 else
                 {
@@ -420,7 +429,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
         public IRestResponse tokencheck()
         {
-            var apidetails = db.Money_API_URLS.Where(aa => aa.API_Name == "VASTWEB").SingleOrDefault();
+            var apidetails = db.Money_API_URLS.FirstOrDefault(aa => aa.API_Name == "VASTWEB");
             var token = apidetails == null ? "" : apidetails.Token;
             var apiid = apidetails == null ? "" : apidetails.API_ID;
             var apiidpwd = apidetails == null ? "" : apidetails.Api_pwd;
@@ -432,18 +441,18 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             IRestResponse response = client.Execute(request);
             return response;
         }
-        // GET: RETAILER/DTH
         /// <summary>
-        /// GET/POST - Manage booking
+        /// GET Displays the DTH recharge booking page.
         /// </summary>
+        // GET: RETAILER/DTH
         public ActionResult DTHBooking()
         {
             return View();
         }
-        [HttpPost]
         /// <summary>
-        /// GET - View detail of a specific record
+        /// POST Fetches DTH operator package details for the given operator code via InstantPay utility.
         /// </summary>
+        [HttpPost]
         public ActionResult GetPackageDetails(string Code)
         {
             string respo = new InstantPayComnUtil().getOperatorDetails(Code);
@@ -455,6 +464,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
             return RedirectToAction("DTHBooking");
         }
+        /// <summary>
+        /// POST Processes a DTH recharge payment using the InstantPay utility and redirects to the booking page.
+        /// </summary>
         [HttpPost]
         public ActionResult DoPayment(string STB, string ConOpt, string ddlPackage, string packageAmt, string txtName, string txtMobile, string customerAddress, string txtPIN)
         {

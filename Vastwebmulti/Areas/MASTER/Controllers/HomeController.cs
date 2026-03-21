@@ -31,9 +31,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.MASTER.Controllers
 {
-    /// <summary>
-    /// MASTER Area - Manages Master Dealer dashboard, wallet, fund transfers, retailer management and reports
-    /// </summary>
+        /// <summary>
+        /// MASTER Area - Manages Master Dealer dashboard, wallet, fund transfers, retailer management and reports
+        /// </summary>
     [Authorize(Roles = "master")]
     [CutomAttributforpasscodeset()]
     [Low_Bal_CustomFilter()]
@@ -103,9 +103,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
         #endregion
         //Dashboard 
-/// <summary>
-/// Displays the master dealer dashboard with balance overview, news and recharge stats.
-/// </summary>
+        /// <summary>
+        /// Displays the master dealer dashboard with balance overview, news and recharge stats.
+        /// </summary>
         public ActionResult Dashboard()
         {
             try
@@ -419,9 +419,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
 
         //check master balance
-/// <summary>
-/// Returns the master dealer's current credit balance and outstanding dealer balances.
-/// </summary>
+        /// <summary>
+        /// Returns the master dealer's current credit balance and outstanding dealer balances.
+        /// </summary>
         public ActionResult Chkbalance()
         {
             var userid = User.Identity.GetUserId();
@@ -439,9 +439,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             });
         }
 
-/// <summary>
-/// Displays the outstanding balance report for all dealers under this master.
-/// </summary>
+        /// <summary>
+        /// Displays the outstanding balance report for all dealers under this master.
+        /// </summary>
         public ActionResult Show_Dealer_outstandingreport()
         {
             var userid = User.Identity.GetUserId();
@@ -516,9 +516,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
         //show today and yesterday business
         #region show today and yesterday business
-/// <summary>
-/// Returns today or yesterday recharge chart data for the master dealer.
-/// </summary>
+        /// <summary>
+        /// Returns today or yesterday recharge chart data for the master dealer.
+        /// </summary>
         public ActionResult Show_All_Recharge(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -555,9 +555,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         #endregion
 
         #region Notification
-/// <summary>
-/// Displays the notification management page for sending messages to dealers.
-/// </summary>
+        /// <summary>
+        /// Displays the notification management page for sending messages to dealers.
+        /// </summary>
         public ActionResult Notification()
         {
             ViewData["success"] = TempData["success"];
@@ -595,9 +595,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
         #endregion End Notification
         #region  Master Income
-/// <summary>
-/// Displays the master dealer income report for the current date.
-/// </summary>
+        /// <summary>
+        /// Displays the master dealer income report for the current date.
+        /// </summary>
         public ActionResult Master_income()
         {
             var userid = User.Identity.GetUserId();
@@ -728,9 +728,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             return RedirectToAction("Actual_Master_income");
         }
 
-/// <summary>
-/// Displays the master dealer home index page with operator and service listings.
-/// </summary>
+        /// <summary>
+        /// Displays the master dealer home index page with operator and service listings.
+        /// </summary>
         public ActionResult Index()
         {
             try
@@ -795,9 +795,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
         }
 
-/// <summary>
-/// Displays the signup token management page for assigning tokens to dealers.
-/// </summary>
+        /// <summary>
+        /// Displays the signup token management page for assigning tokens to dealers.
+        /// </summary>
         public ActionResult SignupTokens()
         {
             var userid = User.Identity.GetUserId();
@@ -1244,9 +1244,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
         //end
         //Complaint Request 
-/// <summary>
-/// Displays the list of complaints raised by the master dealer.
-/// </summary>
+        /// <summary>
+        /// Displays the list of complaints raised by the master dealer.
+        /// </summary>
         public ActionResult Complaint()
         {
             var userid = User.Identity.GetUserId();
@@ -1748,9 +1748,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             }
         }
 
-/// <summary>
-/// Displays the master dealer hold commission transfer reports.
-/// </summary>
+        /// <summary>
+        /// Displays the master dealer hold commission transfer reports.
+        /// </summary>
         public ActionResult Masterhold_comm_reports()
         {
 
@@ -1783,9 +1783,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
 
         #region TDSReport
-/// <summary>
-/// Displays the TDS (Tax Deducted at Source) report for the master dealer.
-/// </summary>
+        /// <summary>
+        /// Displays the TDS (Tax Deducted at Source) report for the master dealer.
+        /// </summary>
         public ActionResult TDSReport()
         {
             var userid = User.Identity.GetUserId();
@@ -1908,9 +1908,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         #endregion
 
         #region Master Gst Invocing Report
-/// <summary>
-/// Displays the GST invoicing report for the master dealer.
-/// </summary>
+        /// <summary>
+        /// Displays the GST invoicing report for the master dealer.
+        /// </summary>
         public ActionResult Gst_Invocing_Master_report()
         {
             var userid = User.Identity.GetUserId();
@@ -2522,9 +2522,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             return Json(cities, JsonRequestBehavior.AllowGet);
         }
         //Change Password 
-/// <summary>
-/// Displays the change-password form for the master dealer account.
-/// </summary>
+        /// <summary>
+        /// Displays the change-password form for the master dealer account.
+        /// </summary>
         [HttpGet]
         public ActionResult ChangePassword()
         {
@@ -2837,9 +2837,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         //Start Slab Setting 
         #region SlabSetting
         //GET : Show Slab Name 
-/// <summary>
-/// Displays the slab generation and commission configuration page for the master.
-/// </summary>
+        /// <summary>
+        /// Displays the slab generation and commission configuration page for the master.
+        /// </summary>
         public ActionResult generateSlab()
         {
             ResultSetViewModel viewModel = new ResultSetViewModel();
@@ -2920,9 +2920,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
         #region Account
 
-/// <summary>
-/// Displays the fund transfer page for sending funds to a dealer.
-/// </summary>
+        /// <summary>
+        /// Displays the fund transfer page for sending funds to a dealer.
+        /// </summary>
         public ActionResult SendFund()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -3203,9 +3203,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
 
 
-/// <summary>
-/// Displays the fund transfer management page showing all incoming and outgoing fund requests.
-/// </summary>
+        /// <summary>
+        /// Displays the fund transfer management page showing all incoming and outgoing fund requests.
+        /// </summary>
         public ActionResult FUNDTRANSFER()
         {
             FundTransferViewModel vmodel = new FundTransferViewModel();

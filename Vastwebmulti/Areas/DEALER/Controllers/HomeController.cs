@@ -37,9 +37,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 {
 
     // GET: MASTER/Home
-    /// <summary>
-    /// DEALER Area - Manages Dealer dashboard, wallet, transactions, reports and commission management
-    /// </summary>
+        /// <summary>
+        /// DEALER Area - Manages Dealer dashboard, wallet, transactions, reports and commission management
+        /// </summary>
     [Authorize(Roles = "Dealer")]
     [CutomAttributforpasscodeset()]
     [Low_Bal_CustomFilter()]
@@ -81,9 +81,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
 
-/// <summary>
-/// Displays the dealer dashboard with wallet balance, news, and quick stats.
-/// </summary>
+        /// <summary>
+        /// Displays the dealer dashboard with wallet balance, news, and quick stats.
+        /// </summary>
         public ActionResult Dashboard()
         {
             var userid = User.Identity.GetUserId();
@@ -461,9 +461,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         #region Show all today and yesterday recharge
-/// <summary>
-/// Shows all recharge transactions for today or yesterday based on the provided flag.
-/// </summary>
+        /// <summary>
+        /// Shows all recharge transactions for today or yesterday based on the provided flag.
+        /// </summary>
         public ActionResult Show_All_Recharge(string yesterday)
         {
             var type = "";
@@ -517,9 +517,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
         //Total Active and Inactive USER
         #region show active and inactive users
-/// <summary>
-/// Returns a stacked chart view showing active and inactive retailer counts under the dealer.
-/// </summary>
+        /// <summary>
+        /// Returns a stacked chart view showing active and inactive retailer counts under the dealer.
+        /// </summary>
         public ActionResult Show_All_ActiveandInactive_user()
         {
             var userid = User.Identity.GetUserId();
@@ -574,9 +574,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
 
-/// <summary>
-/// Updates the passcode setting type (auto/manual) for the logged-in dealer.
-/// </summary>
+        /// <summary>
+        /// Updates the passcode setting type (auto/manual) for the logged-in dealer.
+        /// </summary>
         public ActionResult PasscodeSettingByrem(string passcodetype)
         {
             int isupdateauto = 0;
@@ -662,9 +662,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
 
-/// <summary>
-/// Verifies the passcode expiry and presents the passcode entry form if required.
-/// </summary>
+        /// <summary>
+        /// Verifies the passcode expiry and presents the passcode entry form if required.
+        /// </summary>
         public ActionResult PassCodeVeryFY()
         {
             var userid = User.Identity.GetUserId();
@@ -1040,9 +1040,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         #region DealerIncome
-/// <summary>
-/// Displays the actual income report for the dealer including commission earned.
-/// </summary>
+        /// <summary>
+        /// Displays the actual income report for the dealer including commission earned.
+        /// </summary>
         public ActionResult Actual_Dealer_income()
         {
             var dealerid = User.Identity.GetUserId();
@@ -1522,9 +1522,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         }
-/// <summary>
-/// Displays the change-password form for the dealer account.
-/// </summary>
+        /// <summary>
+        /// Displays the change-password form for the dealer account.
+        /// </summary>
         [HttpGet]
         public ActionResult ChangePassword()
         {
@@ -1715,9 +1715,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         #endregion
 
         //check Retailer Outstanding and My Credit
-/// <summary>
-/// Returns a JSON result with the dealer's current credit balance and retailer outstanding balance.
-/// </summary>
+        /// <summary>
+        /// Returns a JSON result with the dealer's current credit balance and retailer outstanding balance.
+        /// </summary>
         public ActionResult Chkbalance()
         {
             var userid = User.Identity.GetUserId();
@@ -1788,9 +1788,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Day Book Report
-/// <summary>
-/// Displays the dealer day-book report for the current date.
-/// </summary>
+        /// <summary>
+        /// Displays the dealer day-book report for the current date.
+        /// </summary>
         [HttpGet]
         public ActionResult Dealer_Daybook_Report()
         {
@@ -1829,9 +1829,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         //Start Slab Setting 
         #region SlabSetting
         //GET : Show Slab Name 
-/// <summary>
-/// Displays the slab generation page for commission management.
-/// </summary>
+        /// <summary>
+        /// Displays the slab generation page for commission management.
+        /// </summary>
         public ActionResult generateSlab()
         {
             ResultSetViewModel viewModel = new ResultSetViewModel();
@@ -1915,9 +1915,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         #region Account
         //Fund Transfer To Retailer
         //Fund Transfer To Retailer
-/// <summary>
-/// Displays the fund transfer page for sending funds to a retailer.
-/// </summary>
+        /// <summary>
+        /// Displays the fund transfer page for sending funds to a retailer.
+        /// </summary>
         public ActionResult SendFund()
         {
 
@@ -2029,9 +2029,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
 
-/// <summary>
-/// Displays the dealer's saved bank account information.
-/// </summary>
+        /// <summary>
+        /// Displays the dealer's saved bank account information.
+        /// </summary>
         public ActionResult Bankinfo()
         {
             return View();
@@ -2072,9 +2072,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View(listview1);
         }
 
-/// <summary>
-/// Displays the dealer fund transfer dashboard with received and sent fund request tabs.
-/// </summary>
+        /// <summary>
+        /// Displays the dealer fund transfer dashboard with received and sent fund request tabs.
+        /// </summary>
         public ActionResult FundTransferDealer(string tabname = "")
         {
             ViewData["successorder"] = TempData["successorder"];
@@ -2240,9 +2240,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
         }
 
-/// <summary>
-/// Displays the wallet-based fund request form for the dealer.
-/// </summary>
+        /// <summary>
+        /// Displays the wallet-based fund request form for the dealer.
+        /// </summary>
         public ActionResult WalletRequestSend()
         {
             FundRequestViewmodel vmodel = new FundRequestViewmodel();
@@ -3774,9 +3774,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Credit Balance Check
-/// <summary>
-/// Returns the current credit balance for a specific retailer under this dealer.
-/// </summary>
+        /// <summary>
+        /// Returns the current credit balance for a specific retailer under this dealer.
+        /// </summary>
         public ActionResult R_Creditchk(string retailerid)
         {
             string userid = User.Identity.GetUserId();
@@ -3822,9 +3822,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //fund recive from admin
-/// <summary>
-/// Shows the fund received from the admin report for the current day.
-/// </summary>
+        /// <summary>
+        /// Shows the fund received from the admin report for the current day.
+        /// </summary>
         [HttpGet]
         public ActionResult ReceiveFund_by_admin()
         {
@@ -3969,9 +3969,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         //}
-/// <summary>
-/// Displays the dealer purchase order list page with pending and completed orders.
-/// </summary>
+        /// <summary>
+        /// Displays the dealer purchase order list page with pending and completed orders.
+        /// </summary>
         public ActionResult PurchaseOrder()
         {
             try

@@ -515,7 +515,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             {
                 var userid = User.Identity.GetUserId();
 
-                var retailer = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+                var retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
                 #region Hit_Client
                 var token = string.Empty;
                 token = getAuthToken();
@@ -1203,7 +1203,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     var ajaxRespo = new { Status = "Failed", Message = "Invalid or empty booking id." };
                     return Json(JsonConvert.SerializeObject(ajaxRespo));
                 }
-                var ticket = db.BusTicketingDetails.SingleOrDefault(a => a.RetailerId == userid && a.TraceId == TraceId && a.TicketStatus == "Confirmed");
+                var ticket = db.BusTicketingDetails.FirstOrDefault(a => a.RetailerId == userid && a.TraceId == TraceId && a.TicketStatus == "Confirmed");
                 if (ticket == null)
                 {
                     var ajaxRespo = new { Status = "Failed", Message = "Invalid ticket for cancellation." };
@@ -1473,7 +1473,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
         public IRestResponse tokencheck()
         {
-            var apidetails = db.Money_API_URLS.Where(aa => aa.API_Name == "VASTWEB").SingleOrDefault();
+            var apidetails = db.Money_API_URLS.FirstOrDefault(aa => aa.API_Name == "VASTWEB");
             var token = apidetails == null ? "" : apidetails.Token;
             var apiid = apidetails == null ? "" : apidetails.API_ID;
             var apiidpwd = apidetails == null ? "" : apidetails.Api_pwd;
@@ -1653,7 +1653,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         pdf.BookingDetails = JsonConvert.DeserializeObject<BusDetailsResponseModel>(task.Result.Content);
                         //retailer info
                         var userid = User.Identity.GetUserId();
-                        var rem = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+                        var rem = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
                         var markup = db.Convence_Fees.Where(a => a.RetailerId == rem.RetailerId && a.Role == "Bus").FirstOrDefault();
                         pdf.retailerAddress = rem.Address;
                         pdf.retailerEmail = rem.Email;
