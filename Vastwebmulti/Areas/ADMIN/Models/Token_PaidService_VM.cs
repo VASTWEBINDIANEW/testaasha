@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +6,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Composite view model for managing token-based paid service charges and dealer token reports.
+    /// </summary>
     public class Token_PaidService_VM
     {
         public List<RetailerCreationCharge> RetailerCreationCharge { get; set; }

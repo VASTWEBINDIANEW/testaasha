@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for displaying day book report data in the admin panel.
+    /// </summary>
     public class DayBookreport
     {
         public IEnumerable<Vastwebmulti.Models.daybook_Result> daybook { get; set; }

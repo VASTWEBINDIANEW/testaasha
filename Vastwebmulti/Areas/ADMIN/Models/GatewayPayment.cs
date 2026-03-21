@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Aggregate view model for managing payment gateway charge configurations across user roles.
+    /// </summary>
     public class GatewayPayment
     {
         public List<PaymentGatewaycharge_new> userWise { get; set; }

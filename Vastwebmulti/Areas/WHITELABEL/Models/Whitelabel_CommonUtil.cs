@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -58,7 +58,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Models
 
             var Admin_details =   db.WhiteLabel_userList.Where(aa=>aa.WhiteLabelID== whitelabelid).SingleOrDefault();
             var logoPath = db.tblHeaderLogoes.Where(aa=>aa.UserId==whitelabelid).ToList();
-            var logo = logoPath.Count == 0 ? "" : logoPath.SingleOrDefault().LogoImage;
+            var logo = !logoPath.Any() ? "" : logoPath.SingleOrDefault().LogoImage;
 
 
             int state = Convert.ToInt32(Admin_details.state);
@@ -154,7 +154,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Models
 
             var Admin_details = db.WhiteLabel_userList.Where(aa=>aa.WhiteLabelID== whitelabelid).SingleOrDefault();
             var logoPath = db.tblHeaderLogoes.Where(aa=>aa.UserId==whitelabelid).ToList();
-            var logo = logoPath.Count == 0 ? "" : logoPath.SingleOrDefault().LogoImage;
+            var logo = !logoPath.Any() ? "" : logoPath.SingleOrDefault().LogoImage;
 
 
             int state = Convert.ToInt32(Admin_details.state);
@@ -257,7 +257,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Models
             var websiteurl =white.websitename;
             var adminmailid = white.EmailId;
             var gmail = db.tblHeaderLogoes.Where(aa=>aa.UserId==whitelabelid).ToList();
-            var logo = gmail.Count == 0 ? "" : gmail.SingleOrDefault().LogoImage;
+            var logo = !gmail.Any() ? "" : gmail.SingleOrDefault().LogoImage;
 
             string body = string.Empty;
             using (StreamReader reader = new StreamReader(HttpContext.Current.Server.MapPath("~/IMPSEMAIL.html")))
@@ -291,7 +291,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Models
 
             var Admin_details = db.WhiteLabel_userList.SingleOrDefault();
             var logoPath = db.tblHeaderLogoes.Where(aa=>aa.UserId==whitelabelid).ToList();
-            var logo = logoPath.Count == 0 ? "" : logoPath.SingleOrDefault().LogoImage;
+            var logo = !logoPath.Any() ? "" : logoPath.SingleOrDefault().LogoImage;
 
 
             int state = Convert.ToInt32(Admin_details.state);
@@ -401,7 +401,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Models
 
             var Admin_details = db.WhiteLabel_userList.Where(aa=>aa.WhiteLabelID==whitelabelid).SingleOrDefault();
             var logoPath = db.tblHeaderLogoes.Where(aa=>aa.UserId==whitelabelid).ToList();
-            var logo = logoPath.Count == 0 ? "" : logoPath.SingleOrDefault().LogoImage;
+            var logo = !logoPath.Any() ? "" : logoPath.SingleOrDefault().LogoImage;
 
 
             int state = Convert.ToInt32(Admin_details.state);
@@ -535,12 +535,12 @@ namespace Vastwebmulti.Areas.WHITELABEL.Models
             var websiteurl = db.WhiteLabel_userList.Where(a => a.WhiteLabelID == whitelabelid).SingleOrDefault().websitename;
             var adminmailid = db.WhiteLabel_userList.Where(a => a.WhiteLabelID == whitelabelid).SingleOrDefault().EmailId;
             var comp = db.tblContects.ToList();
-            var companyname = comp.Count == 0 ? "" : comp.SingleOrDefault().CompnayName;
-            var mobile = comp.Count == 0 ? "" : comp.SingleOrDefault().phone;
+            var companyname = !comp.Any() ? "" : comp.SingleOrDefault().CompnayName;
+            var mobile = !comp.Any() ? "" : comp.SingleOrDefault().phone;
             var gmail = db.tblForgetGmailContents.ToList();
-            var logo = gmail.Count == 0 ? "" : gmail.SingleOrDefault().Image;
-            var Gmailsubject = gmail.Count == 0 ? "" : gmail.SingleOrDefault().Subject;
-            var GmailContent = gmail.Count == 0 ? "" : gmail.SingleOrDefault().GmailContent;
+            var logo = !gmail.Any() ? "" : gmail.SingleOrDefault().Image;
+            var Gmailsubject = !gmail.Any() ? "" : gmail.SingleOrDefault().Subject;
+            var GmailContent = !gmail.Any() ? "" : gmail.SingleOrDefault().GmailContent;
             string body = string.Empty;
             using (StreamReader reader = new StreamReader(HttpContext.Current.Server.MapPath("~/Email-Tamplete/emailverifaction.html")))
             {
@@ -572,12 +572,12 @@ namespace Vastwebmulti.Areas.WHITELABEL.Models
             var websiteurl = db.WhiteLabel_userList.Where(a => a.WhiteLabelID == whitelabelid).SingleOrDefault().websitename;
             var adminmailid = db.WhiteLabel_userList.Where(a => a.WhiteLabelID == whitelabelid).SingleOrDefault().EmailId;
             var comp = db.tblContects.ToList();
-            var companyname = comp.Count == 0 ? "" : comp.SingleOrDefault().CompnayName;
-            var mobile = comp.Count == 0 ? "" : comp.SingleOrDefault().phone;
+            var companyname = !comp.Any() ? "" : comp.SingleOrDefault().CompnayName;
+            var mobile = !comp.Any() ? "" : comp.SingleOrDefault().phone;
             var gmail = db.tblForgetGmailContents.ToList();
-            var logo = gmail.Count == 0 ? "" : gmail.SingleOrDefault().Image;
-            var Gmailsubject = gmail.Count == 0 ? "" : gmail.SingleOrDefault().Subject;
-            var GmailContent = gmail.Count == 0 ? "" : gmail.SingleOrDefault().GmailContent;
+            var logo = !gmail.Any() ? "" : gmail.SingleOrDefault().Image;
+            var Gmailsubject = !gmail.Any() ? "" : gmail.SingleOrDefault().Subject;
+            var GmailContent = !gmail.Any() ? "" : gmail.SingleOrDefault().GmailContent;
             string body = string.Empty;
             using (StreamReader reader = new StreamReader(HttpContext.Current.Server.MapPath("~/Email-Tamplete/emailverifaction.html")))
             {

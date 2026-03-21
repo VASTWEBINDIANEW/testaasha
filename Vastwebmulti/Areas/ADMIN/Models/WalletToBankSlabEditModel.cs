@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for editing wallet-to-bank transfer commission slab configurations.
+    /// </summary>
     public class WalletToBankSlabEditModel
     {
         public int Idno { get; set; }

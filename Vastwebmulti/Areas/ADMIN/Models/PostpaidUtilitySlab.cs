@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for managing postpaid and utility bill payment commission slab configurations.
+    /// </summary>
     public class PostpaidUtilitySlab
     {
         public List<ExtraCommon> Extra { get; set; }

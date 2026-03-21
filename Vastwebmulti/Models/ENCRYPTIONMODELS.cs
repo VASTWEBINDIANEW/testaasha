@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// Utility class providing AES/RSA encryption and decryption for sensitive data
+    /// </summary>
     public class ENCRYPTIONMODELS
     {
 

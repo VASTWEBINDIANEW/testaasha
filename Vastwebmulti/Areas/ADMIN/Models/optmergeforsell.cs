@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for merging operator data for the sell/recharge service interface.
+    /// </summary>
     public class optmergeforsell
     {
      public IEnumerable<Vastwebmulti.Models.operatorcommforsellStatu> optcomm { get; set; }

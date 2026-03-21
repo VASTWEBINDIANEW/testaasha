@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models.Enumdata;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for configuring UPI transaction status and gateway settings.
+    /// </summary>
     public class UPI_status_setting
     {
          public IList<UPI_QR_API> upiqr { get; set; }

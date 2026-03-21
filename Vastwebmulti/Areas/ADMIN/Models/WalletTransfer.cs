@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for initiating and tracking wallet-to-wallet or wallet-to-bank fund transfers.
+    /// </summary>
     public class WalletTransfer
     {
         public List<wallet_imps_common_comm> common { get; set; }

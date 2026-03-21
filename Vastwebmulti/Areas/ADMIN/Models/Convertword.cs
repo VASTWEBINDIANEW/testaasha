@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Utility model for converting numeric amounts to their word representation for invoices and reports.
+    /// </summary>
     public class Convertword
     {
         public string ConvertToWords(String numb)

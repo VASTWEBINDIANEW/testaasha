@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for admin fund transfer operations to dealers, retailers, and API users.
+    /// </summary>
     public class Fundtransferviewmodel
     {
         public string SuperstokistID { get; set; }

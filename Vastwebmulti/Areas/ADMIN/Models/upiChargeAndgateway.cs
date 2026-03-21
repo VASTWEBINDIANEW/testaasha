@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models.Enumdata;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for managing UPI transaction charges and gateway configurations.
+    /// </summary>
     public class upiChargeAndgateway
     {
         public IEnumerable<Upi_slab> Upi_slabs { get; set; }

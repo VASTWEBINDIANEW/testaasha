@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// ViewModels for user account management - login, registration, password change
+    /// </summary>
     public class ExternalLoginConfirmationViewModel
     {
         [Required]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -60,6 +60,9 @@ namespace Vastwebmulti.Areas.ADMIN.Models
         public string value { set; get; }
     }
 
+    /// <summary>
+    /// View model for displaying all configured commission slabs in the admin panel.
+    /// </summary>
     public class Show_all_slab
     {
         public DTH DTH { get; set; }

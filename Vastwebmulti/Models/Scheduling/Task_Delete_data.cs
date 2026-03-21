@@ -46,7 +46,9 @@ namespace Vastwebmulti.Models.Scheduling
                     WriteLog("Delete Start");
                     using (VastwebmultiEntities db = new VastwebmultiEntities())
                     {
-                        var admininfo = db.Admin_details.SingleOrDefault().WebsiteUrl;
+                        // Safe null check to avoid NullReferenceException if admin record missing
+                        var adminRec = db.Admin_details.FirstOrDefault();
+                        var admininfo = adminRec != null ? adminRec.WebsiteUrl : "";
                         var client = new RestClient("http://api.vastbazaar.com/api/WEB/Planinfo?websitenm=" + admininfo + "");
                         //client.Timeout = -1;
                         var request = new RestRequest(Method.POST);

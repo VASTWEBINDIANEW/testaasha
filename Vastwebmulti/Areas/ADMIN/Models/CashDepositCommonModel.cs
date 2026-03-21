@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Aggregate view model for managing cash deposit commission settings across all user roles.
+    /// </summary>
     public class CashDepositCommonModel
     {
         public List<CashDeposit_comm_userwise> userWise { get; set; }

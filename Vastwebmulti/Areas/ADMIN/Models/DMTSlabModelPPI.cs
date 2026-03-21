@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Aggregate view model for managing DMT PPI (Prepaid Payment Instrument) commission slabs.
+    /// </summary>
     public class DMTSlabModelPPI
     {
         public List<PPI_common_comm_new> commonnew { get; set; }

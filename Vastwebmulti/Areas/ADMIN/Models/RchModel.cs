@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,6 +15,9 @@ namespace Vastwebmulti.Areas.ADMIN.Models
         public string Email { get; set; }
         public decimal? comm { set; get; }
     }
+    /// <summary>
+    /// View model for managing recharge transaction data and settings.
+    /// </summary>
     public class RchModel
     {
         public IEnumerable<Vastwebmulti.Models.Select_manual_opt_Result> show_all { get; set; }

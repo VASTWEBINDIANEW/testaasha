@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,6 +6,9 @@ using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for displaying all default commission slab charges across service types.
+    /// </summary>
     public class ShowAllDefaultSlabCharge
     {
         public List<DefaultPrepaid> DefaultPrepaid { set; get; }

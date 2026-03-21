@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Represents operator-level commission configuration data.
+    /// </summary>
     public class Operater_Commission
     {
         public List<Recharge_Amount_range_info> AmountRange { get; set; }

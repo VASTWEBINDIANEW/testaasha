@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Represents common status data shared between master distributor and dealer management operations.
+    /// </summary>
     public class Common_status_master_dlm_cls
     {
         public int idno { get; set; }

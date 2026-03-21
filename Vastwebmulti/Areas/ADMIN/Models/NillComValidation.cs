@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model used for validating nil/zero commission entries in slab configurations.
+    /// </summary>
     public class NillComValidation
     {
         public string Dealerid { get; set; }

@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for configuring or displaying other miscellaneous service offerings.
+    /// </summary>
     public class otherservices
     {
         public string servicenm { get; set; }
