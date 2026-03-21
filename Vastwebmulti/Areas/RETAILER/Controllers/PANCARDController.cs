@@ -374,6 +374,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(json, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// GET Returns the current retailer's profile information as JSON for use in PAN card forms.
+        /// </summary>
         public ActionResult Userinfo()
         {
             var userid = User.Identity.GetUserId();
@@ -401,6 +404,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(q, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// GET Renders the partial PSA registration form pre-filled with the retailer's details.
+        /// </summary>
         [HttpGet]
         public ActionResult RegisterPSA()
         {
@@ -419,6 +425,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             model.state = db.State_Desc.FirstOrDefault(y => y.State_id == entry.State)?.State_name;
             return PartialView(model);
         }
+        /// <summary>
+        /// POST Submits PSA registration details to the provider and saves the outlet record on success.
+        /// </summary>
         [HttpPost]
         public ActionResult RegisterPSA(string txtpanname, string txtfirmnmpan, string txtemailpan, string panphone, string dobpan, string panpancard, string aadharpan, string txtaddresspan, string pinpan)
         {
@@ -1141,6 +1150,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// POST Returns paginated PAN card report HTML via infinite scroll for the given date range and status.
+        /// </summary>
         [HttpPost]
         public ActionResult InfiniteScroll(int pageindex, string txt_frm_date, string txt_to_date, string ddl_status)
         {
@@ -1191,6 +1203,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         //    var response = util.GetUTILoginCredentials(userid);
         //    return Json(response.ToString());
         //}
+        /// <summary>
+        /// POST Deducts balance and purchases UTI PAN card tokens via the provider API for the retailer.
+        /// </summary>
         [HttpPost]
         public ActionResult buyUTIToken(decimal? amount)
         {

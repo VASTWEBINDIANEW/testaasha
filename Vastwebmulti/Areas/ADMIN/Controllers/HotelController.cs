@@ -773,10 +773,10 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return Json(JsonConvert.SerializeObject(AjaxRespo));
             }
         }
-        [HttpGet]
         /// <summary>
-        /// GET - View detail of a specific record
+        /// GET - Fetches and displays the full hotel booking details from the provider for a given transaction.
         /// </summary>
+        [HttpGet]
         public ActionResult HotelFullDetails(string TXNID)
         {
             try
@@ -843,10 +843,10 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
 
-        [HttpPost]
         /// <summary>
-        /// GET/POST - Manage booking
+        /// POST - Initiates a hotel booking cancellation request with the provider and saves the change request.
         /// </summary>
+        [HttpPost]
         public ActionResult BookingCancallation(int id, string BookingId)
         {
             try
