@@ -1319,7 +1319,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             dataTbl.Columns.Add("Check Out Date", typeof(string));
 
 
-            if (ch.Count() > 0)
+            if (ch.Any())
             {
                 foreach (var item in ch)
                 {
@@ -2006,7 +2006,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 dataTbl.Columns.Add("Refund Amount ", typeof(string));
                 dataTbl.Columns.Add("Request Date ", typeof(string));
                 dataTbl.Columns.Add("Response Date", typeof(string));
-                if (reportResult.Count() > 0)
+                if (reportResult.Any())
                 {
                     foreach (var item in reportResult)
                     {

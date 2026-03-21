@@ -520,7 +520,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 string city = presonse111ip.city;
 
                 var retailermanagelocation = db.Manage_rem_Location_by_Admin.Where(sss => sss.userid == userid).ToList();
-                if (retailermanagelocation.Count() > 0)
+                if (retailermanagelocation.Any())
                 {
                     var findexectlocation = db.Manage_rem_Location_by_Admin.Where(sss => sss.userid == userid && sss.nameofcity.Trim().ToUpper() == city.Trim().ToUpper()).FirstOrDefault();
                     if (findexectlocation == null)
@@ -1010,7 +1010,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 dataTbl.Columns.Add("Post", typeof(string));
                 dataTbl.Columns.Add("Income", typeof(string));
                 dataTbl.Columns.Add("Date", typeof(string));
-                if (proc_Response.Count() > 0)
+                if (proc_Response.Any())
                 {
                     foreach (var item in proc_Response)
                     {
@@ -1355,7 +1355,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             dataTbl.Columns.Add("Cancellation Date", typeof(string));
 
 
-            if (entries.Count() > 0)
+            if (entries.Any())
             {
                 foreach (var item in entries)
                 {

@@ -316,7 +316,7 @@ namespace Vastwebmulti.Controllers
             else
             {
                 var LogoPath = DB.tblLoginContents.ToList();
-                if (LogoPath.Count() > 0)
+                if (LogoPath.Any())
                 {
                     ViewBag.Logo = DB.tblLoginContents.SingleOrDefault().Image;
                 }
@@ -455,7 +455,7 @@ namespace Vastwebmulti.Controllers
                 if (onlyadmin != null)
                 {
                     var ipexistornot = DB.ipadreesvalidates.Where(a => a.ipstatus == "Y").ToList();
-                    if (ipexistornot.Count() > 0)
+                    if (ipexistornot.Any())
                     {
 
                         var checkipaddressexist = ipexistornot.Where(aaa => aaa.ipaddress.Contains(externalip)).FirstOrDefault();
@@ -529,7 +529,7 @@ namespace Vastwebmulti.Controllers
 
 
                     var retailermanagelocation = DB.Manage_rem_Location_by_Admin.Where(sss => sss.userid == usr1.Id).ToList();
-                    if (retailermanagelocation.Count() > 0)
+                    if (retailermanagelocation.Any())
                     {
 
 
@@ -611,11 +611,11 @@ namespace Vastwebmulti.Controllers
                     try
                     {
                         var chk = DB.security_settings.ToList();
-                        if (chk.Count() > 0)
+                        if (chk.Any())
                         {
                             chksecurity = DB.security_settings.SingleOrDefault().highsecurity;
                         }
-                        else if (chk.Count() == 0)
+                        else
                         {
                             security_settings defaultInsert = new security_settings();
                             defaultInsert.highsecurity = false;
@@ -2328,7 +2328,7 @@ namespace Vastwebmulti.Controllers
             if (ModelState.IsValid)
             {
                 var findemail = DB.Users.Where(x => x.PhoneNumber == model.Email).ToList();
-                if (findemail.Count() > 0)
+                if (findemail.Any())
                 {
                     model.Email = findemail.SingleOrDefault().Email;
                 }
@@ -2546,7 +2546,7 @@ namespace Vastwebmulti.Controllers
                 {
                     var emailids = DB.Users.Where(x => x.PhoneNumber == model.Email).ToList();
 
-                    if (emailids.Count() > 0)
+                    if (emailids.Any())
                     {
                         model.Email = emailids.SingleOrDefault().Email;
                     }
@@ -2674,7 +2674,7 @@ namespace Vastwebmulti.Controllers
                         //                // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                         //                var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                        //                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                        //                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                         //                HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                         //                WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(135).TotalMilliseconds;
 
@@ -2922,7 +2922,7 @@ namespace Vastwebmulti.Controllers
                                                     //            // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                                                     //            var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                                                    //            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                    //            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                     //            HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                                                     //            WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(135).TotalMilliseconds;
 
@@ -3069,7 +3069,7 @@ namespace Vastwebmulti.Controllers
                                                             // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                                                             var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                                                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                             HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                                                             WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
 
@@ -3303,7 +3303,7 @@ namespace Vastwebmulti.Controllers
                                                 //            // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                                                 //            var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                                                //            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                //            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                 //            HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                                                 //            WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(135).TotalMilliseconds;
 
@@ -3450,7 +3450,7 @@ namespace Vastwebmulti.Controllers
                                                         // smssend.sendsmsallnew(user.PhoneNumber, msgssss, urlss, tempid);
 
                                                         var apinamechange = urlss.Replace("tttt", user.PhoneNumber).Replace("mmmm", msgssss).Replace("iiii", tempid);
-                                                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                         HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(apinamechange);
                                                         WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
 

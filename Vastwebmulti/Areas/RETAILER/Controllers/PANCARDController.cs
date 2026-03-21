@@ -50,7 +50,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
-                                var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                                var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                                 if (chkklatestdate != null)
                                 {
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
@@ -83,7 +83,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             //    int serviceid = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "AEPS").SingleOrDefault().Idno;
                             //    var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                             //}
-                            var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                            var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                             if (servicecheck != null)
                             {
 
@@ -115,7 +115,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
-                                var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                                var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                                 if (chkklatestdate != null)
                                 {
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
@@ -144,7 +144,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             //    var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                             //}
 
-                            var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                            var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                             if (servicecheck != null)
                             {
 
@@ -174,7 +174,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
-                                var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                                var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                                 if (chkklatestdate != null)
                                 {
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
@@ -222,7 +222,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             //    int serviceid = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "AEPS").SingleOrDefault().Idno;
                             //    var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                             //}
-                            var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                            var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                             if (servicecheck != null)
                             {
 
@@ -260,7 +260,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     //        int serviceid = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD").SingleOrDefault().Idno;
                     //        var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                     //    }
-                    //    var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).Take(1).SingleOrDefault();
+                    //    var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
                     //    if (servicecheck != null)
                     //    {
                     //        var expdate = servicecheck.ExpiryDate;
@@ -924,7 +924,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 dataTbl.Columns.Add("Remain Pre ", typeof(string));
                 dataTbl.Columns.Add("Net Income ", typeof(string));
                 dataTbl.Columns.Add("Remain Post", typeof(string));
-                if (proc_Response.Count() > 0)
+                if (proc_Response.Any())
                 {
                     foreach (var item in proc_Response)
                     {
@@ -991,7 +991,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 dataTbl.Columns.Add("Remain Post ₹", typeof(string));
                 dataTbl.Columns.Add("Final ", typeof(string));
                 
-                if (proc_Response.Count() > 0)
+                if (proc_Response.Any())
                 {
                     foreach (var item in proc_Response)
                     {
@@ -1065,7 +1065,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 dataTbl.Columns.Add("Remain Post ₹", typeof(string));
                 dataTbl.Columns.Add("Final ", typeof(string));
                 
-                if (proc_Response.Count() > 0)
+                if (proc_Response.Any())
                 {
                     foreach (var item in proc_Response)
                     {

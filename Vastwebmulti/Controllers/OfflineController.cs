@@ -46,7 +46,7 @@ namespace Vastwebmulti.Controllers
                             var msg = db.priority_sms_send_new(frmmobile, text, "Check Balance", output).Single().msg;
                             if (msg != "free" && msg != "sim")
                             {
-                                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(msg);
                                 request.Timeout = 15000;
                                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -83,7 +83,7 @@ namespace Vastwebmulti.Controllers
                                 var msg = db.priority_sms_send_new(frmmobile, textdlm, "Balance Transfer", output).Single().msg;
                                 if (msg != "free" && msg != "sim")
                                 {
-                                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(msg);
                                     request.Timeout = 15000;
                                     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -104,7 +104,7 @@ namespace Vastwebmulti.Controllers
                                 msg = db.priority_sms_send_new(remmobile, textrem, "Balance Transfer", output).Single().msg;
                                 if (msg != "free" && msg != "sim")
                                 {
-                                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(msg);
                                     request.Timeout = 15000;
                                     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -140,7 +140,7 @@ namespace Vastwebmulti.Controllers
                             var msg = db.priority_sms_send_new(frmmobile, text, "Check Balance", output).Single().msg;
                             if (msg != "free" && msg != "sim")
                             {
-                                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(msg);
                                 request.Timeout = 15000;
                                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -227,7 +227,7 @@ namespace Vastwebmulti.Controllers
                                     var msg1 = db.priority_sms_send_new(frmmobile, result, "Check Balance", output1).Single().msg;
                                     if (msg1 != "free" && msg1 != "sim")
                                     {
-                                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                         HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(msg1);
                                         WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
                                         try
@@ -262,7 +262,7 @@ namespace Vastwebmulti.Controllers
                                     var msg1 = db.priority_sms_send_new(frmmobile, result, "Check Balance", output).Single().msg;
                                     if (msg1 != "free" && msg1 != "sim")
                                     {
-                                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                         HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(msg1);
                                         WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
                                         try
@@ -514,7 +514,7 @@ namespace Vastwebmulti.Controllers
                                 var msg = db.priority_sms_send_new(frmmobile, result, "Recharge", output).Single().msg;
                                 if (msg != "free" && msg != "sim")
                                 {
-                                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                     HttpWebRequest WebRequestObject = (HttpWebRequest)HttpWebRequest.Create(msg);
                                     WebRequestObject.Timeout = (System.Int32)TimeSpan.FromSeconds(10).TotalMilliseconds;
                                     try

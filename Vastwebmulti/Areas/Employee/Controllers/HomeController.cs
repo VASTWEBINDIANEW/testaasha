@@ -3311,8 +3311,8 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         public ActionResult RetailerBnkApprove(int hdidno, string remotp, string adminotp, string hduserid)
         {
-            var otpchkretailer = db.MobileOtps.Where(aa => aa.Userid == hduserid && aa.Type == "RetailerBANKAPPROVEDOTP").OrderByDescending(aa => aa.Date).Take(1).SingleOrDefault().Otp;
-            var otpchkadmin = db.MobileOtps.Where(aa => aa.Userid == hduserid && aa.Type == "AdminBANKAPPROVEDOTP").OrderByDescending(aa => aa.Date).Take(1).SingleOrDefault().Otp;
+            var otpchkretailer = db.MobileOtps.Where(aa => aa.Userid == hduserid && aa.Type == "RetailerBANKAPPROVEDOTP").OrderByDescending(aa => aa.Date).FirstOrDefault().Otp;
+            var otpchkadmin = db.MobileOtps.Where(aa => aa.Userid == hduserid && aa.Type == "AdminBANKAPPROVEDOTP").OrderByDescending(aa => aa.Date).FirstOrDefault().Otp;
             if (otpchkretailer == remotp && otpchkadmin == adminotp)
             {
                 if (hdidno > 0)

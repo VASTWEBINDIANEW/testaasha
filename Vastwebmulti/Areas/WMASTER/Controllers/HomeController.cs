@@ -678,7 +678,7 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         //            token.Tokens = token.Tokens + tokenCount;
         //        }
         //        var count = _db.TokenValueByAdmins.ToList();
-        //        if (count.Count() > 0)
+        //        if (count.Any())
         //        {
         //            var Mastervalue = _db.TokenValueByAdmins.SingleOrDefault().MasterValue;
         //            decimal TotalTokenValue = Convert.ToDecimal(Mastervalue) * Convert.ToDecimal(tokenCount);
