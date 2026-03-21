@@ -1497,7 +1497,7 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
             //show News for Dealer
             var news = (from pp in db.Message_top where (pp.users == "Distributor" || pp.users == "All") where pp.status == "Y" && pp.UserId == whitelabelid select pp).ToList();
-            if (news.Count() > 0)
+            if (news.Any())
             {
                 ViewBag.news = news.FirstOrDefault().message;
                 ViewBag.newimg = news.FirstOrDefault().image;

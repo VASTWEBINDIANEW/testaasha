@@ -87,7 +87,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewData["whitelabelMaster"] = ch.Single().totalmaster;
             //Whitelabel News
             var news = (from pp in db.Message_top where (pp.users == "Whitelabel" || pp.users == "All") where pp.status == "Y" select pp).ToList();
-            if (news.Count() > 0)
+            if (news.Any())
             {
                 ViewBag.news = news.FirstOrDefault().message;
                 ViewBag.newimg = news.FirstOrDefault().image;
@@ -2456,7 +2456,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
 
             var tokenvaluedlmmd = db.TokenValueByWhitelabels.ToList();
-            if (tokenvaluedlmmd.Count() > 0)
+            if (tokenvaluedlmmd.Any())
             {
                 ViewBag.dealervalue = tokenvaluedlmmd.SingleOrDefault().DistributorValue;
                 ViewBag.mastervalue = tokenvaluedlmmd.SingleOrDefault().MasterValue;
@@ -2663,7 +2663,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                     token.Tokens = token.Tokens + tokenCount;
                 }
                 var count = db.TokenValueByWhitelabels.ToList();
-                if (count.Count() > 0)
+                if (count.Any())
                 {
                     var Dealervalue = db.TokenValueByWhitelabels.SingleOrDefault().DistributorValue;
                     decimal TotalTokenValue = Convert.ToDecimal(Dealervalue) * Convert.ToDecimal(tokenCount);
@@ -2800,7 +2800,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                     token.Tokens = token.Tokens + tokenCount;
                 }
                 var count = db.TokenValueByWhitelabels.ToList();
-                if (count.Count() > 0)
+                if (count.Any())
                 {
                     var Mastervalue = db.TokenValueByWhitelabels.SingleOrDefault().MasterValue;
                     decimal TotalTokenValue = Convert.ToDecimal(Mastervalue) * Convert.ToDecimal(tokenCount);
@@ -26751,7 +26751,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             if (apiurl.ToUpper().Contains("VASTWEBINDIA.COM"))
             {
-                if (ch.Count() < 1)
+                if (!ch.Any())
                 {
                     System.Data.Entity.Core.Objects.ObjectParameter output = new System.Data.Entity.Core.Objects.ObjectParameter("Output", typeof(string));
                     var msg = db.spWhitelabel_insert_api_nm(whitelabelid, apinm, apiurl, CheckbalUrl, output).SingleOrDefault().msg.ToString();
@@ -28972,7 +28972,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         public ActionResult AddUpiSelf(string upiid, decimal min, string otp, decimal max)
         {
             var userid = User.Identity.GetUserId();
-            var lastotp = db.MobileOtps.Where(aa => aa.Userid == "ADMIN" && aa.Type == "UPISELF").OrderByDescending(aa => aa.idno).Take(1).SingleOrDefault().Otp;
+            var lastotp = db.MobileOtps.Where(aa => aa.Userid == "ADMIN" && aa.Type == "UPISELF").OrderByDescending(aa => aa.idno).FirstOrDefault().Otp;
             upiChargeAndgateway model = new upiChargeAndgateway();
             if (lastotp == otp)
             {

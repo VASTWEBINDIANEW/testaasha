@@ -108,7 +108,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
             //Retailer News
             var news = (from pp in db.Message_top where (pp.users == "Retailer" || pp.users == "All") where pp.status == "Y" && pp.UserId == whitelabelid select pp).ToList();
-            if (news.Count() > 0)
+            if (news.Any())
             {
                 ViewBag.news = news.FirstOrDefault().message;
                 ViewBag.newimg = news.FirstOrDefault().image;
@@ -1622,7 +1622,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             var tbrow = db.Sp_Recharge_info_LazyLoad(pageindex, pagesize, "Whitelabelretailer", userid, txt_frm_date, txt_to_date, Operator, txtmob, ddl_status).ToList();
             JsonModel jsonmodel = new JsonModel();
             jsonmodel.NoMoredata = tbrow.Count < pagesize;
-            if (tbrow.Count() > 0)
+            if (tbrow.Any())
             {
                 jsonmodel.HTMLString = renderPartialViewtostring("_Rechargereport", tbrow);
             }
@@ -1845,7 +1845,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
             JsonModel jsonmodel = new JsonModel();
             jsonmodel.NoMoredata = tbrow.Count < pagesize;
-            if (tbrow.Count() > 0)
+            if (tbrow.Any())
             {
                 jsonmodel.HTMLString = renderPartialViewtostring("_Money_Transfer_Report", tbrow);
             }
@@ -1940,7 +1940,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
             JsonModel jsonmodel = new JsonModel();
             jsonmodel.NoMoredata = tbrow.Count < pagesize;
-            if (tbrow.Count() > 0)
+            if (tbrow.Any())
             {
                 jsonmodel.HTMLString = renderPartialViewtostring("_m_Possreport", tbrow);
             }
@@ -2680,7 +2680,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                                 if (amount >= 5000)
                                 {
                                     chkamounts = "NOTOK";
-                                    var otpchkretailer = db.MobileOtps.Where(aa => aa.Userid == userid && aa.Type == "AaDHARPayConfirmation" && aa.mobileno == mobile).OrderByDescending(aa => aa.Date).Take(1).SingleOrDefault().Otp;
+                                    var otpchkretailer = db.MobileOtps.Where(aa => aa.Userid == userid && aa.Type == "AaDHARPayConfirmation" && aa.mobileno == mobile).OrderByDescending(aa => aa.Date).FirstOrDefault().Otp;
                                     if (otpchkretailer == userotp)
                                     {
                                         chkamounts = "OK";
@@ -3504,7 +3504,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         public ActionResult AEPSNAMEFIND(string mobile)
         {
             var name = "";
-            var nm = db.AEPS_TXN_Details.Where(aa => aa.Mobile == mobile && (aa.usernm != "" && aa.usernm != null)).OrderByDescending(aa => aa.Idno).Take(1).SingleOrDefault();
+            var nm = db.AEPS_TXN_Details.Where(aa => aa.Mobile == mobile && (aa.usernm != "" && aa.usernm != null)).OrderByDescending(aa => aa.Idno).FirstOrDefault();
             if (nm != null)
             {
                 name = nm.usernm;
@@ -11114,7 +11114,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         public ActionResult PAN_FirstPageDownLoad(string ackno)
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/PAN_FirstPage"), ackno + "*");
-            if (filesInDirectory.Count() == 0)
+            if (!filesInDirectory.Length > 0)
             {
                 return RedirectToAction("PAN_CARD", "Home");
             }
@@ -11123,7 +11123,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         public ActionResult PAN_DocDownLoad(string ackno)
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/PAN_DOC_PDF"), ackno + "*");
-            if (filesInDirectory.Count() == 0)
+            if (!filesInDirectory.Length > 0)
             {
                 return RedirectToAction("PAN_CARD", "Home");
             }
@@ -11137,7 +11137,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             if (!string.IsNullOrWhiteSpace(ackno))
             {
                 string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/PAN_Slip"), ackno + "*");
-                if (filesInDirectory.Count() == 0)
+                if (!filesInDirectory.Length > 0)
                 {
                     return RedirectToAction("PAN_CARD", "Home");
                 }
