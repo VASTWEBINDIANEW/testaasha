@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for displaying TDS (Tax Deducted at Source) and GST reports across all user levels.
+    /// </summary>
     public class TDSReportModel
     {
         public IEnumerable<Vastwebmulti.Models.TDS_Report_Result> TDSAdmin { get; set; }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -28,6 +28,9 @@ using Vastwebmulti.Hubs;
 using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.API.Controllers
 {
+        /// <summary>
+        /// API Area - Handles API user authentication, callback processing, recharge and payment API endpoints
+        /// </summary>
     [Authorize(Roles = "API")]
     [CutomAttributforpasscodeset()]
     [Low_Bal_CustomFilter()]
@@ -63,6 +66,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         AppNotification notify = new AppNotification();
         ALLSMSSend smssend = new ALLSMSSend();
         #region SignalR
+        /// <summary>
+        /// Test endpoint for SignalR real-time notification functionality.
+        /// </summary>
         public ActionResult TestSignlR()
         {
             var userid = User.Identity.Name;
@@ -89,12 +95,18 @@ namespace Vastwebmulti.Areas.API.Controllers
             objNotifHub.SendNotification(objNotif.SentTo);
         }
         #endregion
+        /// <summary>
+        /// Displays and filters the main API recharge report.
+        /// </summary>
         public ActionResult Index()
         {
             var operator_value = db.Operator_Code.Distinct().ToList();
             ViewBag.Operator = new SelectList(operator_value, "new_opt_code", "operator_Name");
             return View();
         }
+        /// <summary>
+        /// Displays and filters the main API recharge report.
+        /// </summary>
         [HttpPost]
         public ActionResult Index(string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string txtmob)
         {
@@ -104,6 +116,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             ViewBag.chk = "post";
             return View();
         }
+        /// <summary>
+        /// Exports the recharge report to Excel.
+        /// </summary>
         public ActionResult ExcelRechargereport(string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string txtmob)
         {
             DataTable dtt = new DataTable("Grid");
@@ -146,7 +161,7 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
                     });
-            if (rowdata.Count > 0)
+            if (rowdata.Any())
             {
 
                 string stus = "";
@@ -206,6 +221,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             public bool NoMoredata { get; set; }
         }
         [ChildActionOnly]
+        /// <summary>
+        /// Returns the recharge report partial view.
+        /// </summary>
         public ActionResult _Rechargereport(string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string txtmob)
         {
             string userid = User.Identity.GetUserId();
@@ -232,6 +250,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(rowdata);
         }
 
+        /// <summary>
+        /// Generates the recharge report as a PDF.
+        /// </summary>
         public ActionResult PDFRechargereport(string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string txtmob)
         {
             string userid = User.Identity.GetUserId();
@@ -271,6 +292,9 @@ namespace Vastwebmulti.Areas.API.Controllers
                 return sw.GetStringBuilder().ToString();
             }
         }
+        /// <summary>
+        /// Returns paginated recharge records for infinite scroll.
+        /// </summary>
         [HttpPost]
         public ActionResult InfiniteScroll(int pageindex, DateTime txt_frm_date, DateTime txt_to_date, string ddl_status, string Operator, string txtmob)
         {
@@ -292,6 +316,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return Json(jsonmodel);
         }
 
+        /// <summary>
+        /// Submits a dispute for a recharge transaction.
+        /// </summary>
         public ActionResult dispute(string id, string txtregion)
         {
             try
@@ -318,6 +345,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Dmt Report
+        /// <summary>
+        /// Displays the DMT (Domestic Money Transfer) report.
+        /// </summary>
         [HttpGet]
         public ActionResult DMT_Report()
         {
@@ -340,6 +370,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var proc_Response = db.money_transfer_report_paging("APIID", userid, "ALL", "ALL", Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), "ALL", 1, 50000).ToList();
             return View(proc_Response);
         }
+        /// <summary>
+        /// Displays the DMT (Domestic Money Transfer) report.
+        /// </summary>
         [HttpPost]
         public ActionResult DMT_Report(string txt_frm_date, string txt_to_date, string ddl_status, string ddl_Type)
         {
@@ -373,6 +406,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(proc_Response);
         }
 
+        /// <summary>
+        /// Exports the DMT report to Excel.
+        /// </summary>
         public ActionResult ExcelDMT_Report(string txt_frm_date, string txt_to_date, string ddl_status, string ddl_Type)
         {
             var userid = User.Identity.GetUserId();
@@ -422,7 +458,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             //dataTbl.Columns.Add("API Response", typeof(string));
             dataTbl.Columns.Add("Response Date", typeof(string));
 
-            if (proc_Response.Count > 0)
+            if (proc_Response.Any())
             {
                 foreach (var item in proc_Response)
                 {
@@ -453,6 +489,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Generates the IMPS transaction detail as a PDF.
+        /// </summary>
         public ActionResult IMPSPDF(string Idno)
         {
             var user = User.Identity.GetUserId();
@@ -477,6 +516,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
         //DMT Report End
 
+        /// <summary>
+        /// Calculates and returns total recharge amounts for a date range.
+        /// </summary>
         [HttpPost]
         public ActionResult FindTotal(string txt_frm_date, string txt_to_date, string txtmob, string ddl_status, string Operator)
         {
@@ -563,6 +605,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         #region Generate_Token
+        /// <summary>
+        /// Generates an API authentication token for the user.
+        /// </summary>
         public ActionResult Generate_Token()
         {
             ViewData["success"] = TempData["success"];
@@ -576,6 +621,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(show);
         }
         // Genertate Token with Ip address
+        /// <summary>
+        /// Adds an IP address to the API whitelist.
+        /// </summary>
         public ActionResult insertipaddress(string ipaddress)
         {
             try
@@ -624,6 +672,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return Convert.ToBase64String(resultArray, 0, resultArray.Length);
         }
 
+        /// <summary>
+        /// Deletes a whitelisted IP address by ID.
+        /// </summary>
         public JsonResult DeleteIpaddress(int idno)
         {
             if (idno > 0)
@@ -641,6 +692,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Add New Response Url
+        /// <summary>
+        /// Adds a new API callback/response URL.
+        /// </summary>
         [HttpPost]
         public ActionResult AddUrl(string apiurl)
         {
@@ -663,6 +717,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Edit Response Url
+        /// <summary>
+        /// Edits an existing API response URL.
+        /// </summary>
         [HttpPost]
         public ActionResult EditResponseUrl(string txtid, string editapiurl)
         {
@@ -688,6 +745,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return RedirectToAction("APIDocument");
         }
 
+        /// <summary>
+        /// Deletes an API response URL by ID.
+        /// </summary>
         public JsonResult DeleteResponseurl(int id)
         {
             if (id > 0)
@@ -703,6 +763,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
         }
         #endregion
+        /// <summary>
+        /// Displays the API documentation page.
+        /// </summary>
         public ActionResult APIDOC()
         {
             bool? payoutapists = false;
@@ -726,18 +789,27 @@ namespace Vastwebmulti.Areas.API.Controllers
 
             return View();
         }
+        /// <summary>
+        /// Displays the DMT API documentation page.
+        /// </summary>
         public ActionResult DMTDOC()
         {
             ViewBag.websiteurl = db.Admin_details.SingleOrDefault().WebsiteUrl;
             return View();
         }
         //Complaint Request 
+        /// <summary>
+        /// Displays the complaint submission form for API users.
+        /// </summary>
         public ActionResult Complaint()
         {
             var userid = User.Identity.GetUserId();
             var ch = db.proc_Complaint_request(userid, "").ToList();
             return View(ch);
         }
+        /// <summary>
+        /// Submits a new complaint from the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult Complaint_insert(string message)
         {
@@ -764,6 +836,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return RedirectToAction("Complaint");
         }
 
+        /// <summary>
+        /// Displays the API GST invoicing report.
+        /// </summary>
         public ActionResult Gst_Invocing_API_report()
         {
             var userid = User.Identity.GetUserId();
@@ -780,6 +855,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
         }
 
+        /// <summary>
+        /// Exports the API GST invoicing report to Excel.
+        /// </summary>
         public ActionResult ExcelGst_Invocing_API_report()
         {
             var userid = User.Identity.GetUserId();
@@ -802,7 +880,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dtt.Columns.Add("RCH Comm", typeof(decimal));
             dtt.Columns.Add("RCH GST", typeof(decimal));
             dtt.Columns.Add("Total GST ", typeof(decimal));
-            if (show.Count > 0)
+            if (show.Any())
             {
                 foreach (var item in show)
                 {
@@ -833,6 +911,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
         }
 
+        /// <summary>
+        /// Generates the API GST invoicing report as a PDF.
+        /// </summary>
         public ActionResult GST_Invocing_Report_Pdf()
         {
             var userid = User.Identity.GetUserId();
@@ -986,6 +1067,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
             return sb.ToString().TrimEnd();
         }
+        /// <summary>
+        /// Displays the API user dashboard with balance, stats and recent transactions.
+        /// </summary>
         public ActionResult Dashboard()
         {
             var userid = User.Identity.GetUserId();
@@ -1234,6 +1318,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
         //User wise Operator comm report
+        /// <summary>
+        /// Displays the user-wise operator commission report.
+        /// </summary>
         public ActionResult User_wise_operator_comm()
         {
             var userid = User.Identity.GetUserId();
@@ -1248,6 +1335,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(ch);
         }
 
+        /// <summary>
+        /// Displays the user-wise operator commission report.
+        /// </summary>
         [HttpPost]
         public ActionResult User_wise_operator_comm(string txt_frm_date, string txt_to_date, string ddl_top = "ALL")
         {
@@ -1282,6 +1372,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(ch);
         }
 
+        /// <summary>
+        /// Exports the user-wise operator commission report to Excel.
+        /// </summary>
         public ActionResult ExcelUser_wise_operator_comm(string txt_frm_date, string txt_to_date, string ddl_top = "ALL")
         {
             var userid = User.Identity.GetUserId();
@@ -1318,7 +1411,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Income", typeof(string));
             dataTbl.Columns.Add("Total sucess", typeof(string));
 
-            if (ch.Count > 0)
+            if (ch.Any())
             {
                 foreach (var item in ch)
                 {
@@ -1349,6 +1442,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(ch);
         }
 
+        /// <summary>
+        /// Generates the user-wise operator commission report as a PDF.
+        /// </summary>
         public ActionResult PDFUser_wise_operator_comm(string txt_frm_date, string txt_to_date, string ddl_top = "ALL")
         {
             var userid = User.Identity.GetUserId();
@@ -1386,6 +1482,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
         //show today and yesterday business
         #region show today and yesterday business
+        /// <summary>
+        /// Shows all recharge transactions filtered by type.
+        /// </summary>
         public ActionResult Show_All_Recharge(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -1417,6 +1516,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
         #endregion
         //My Credit Balance
+        /// <summary>
+        /// Checks and returns the current API user wallet balance.
+        /// </summary>
         [HttpGet]
         public ActionResult Chkbalance()
         {
@@ -1439,6 +1541,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
 
+        /// <summary>
+        /// Places a purchase order for the API user.
+        /// </summary>
         public ActionResult PlacePurchaseOrder(string payto, string txtcode, string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
     string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
     string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -1677,6 +1782,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Shows the credit received report from admin.
+        /// </summary>
         public ActionResult Show_Credit_report_by_admin()
         {
             var userid = User.Identity.GetUserId();
@@ -1686,6 +1794,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
         //today Recived balaance from admin
 
+        /// <summary>
+        /// Displays the total balance transfer summary for the API user.
+        /// </summary>
         public ActionResult Totalbaltransfer()
         {
             var userid = User.Identity.GetUserId();
@@ -1696,6 +1807,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Displays funds received from admin with date filter.
+        /// </summary>
         public ActionResult ReceiveFund_by_admin()
         {
             var userid = User.Identity.GetUserId();
@@ -1708,12 +1822,18 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Help and Support
+        /// <summary>
+        /// Displays the API user help and support page.
+        /// </summary>
         public ActionResult Help()
         {
             var admininfo = db.Admin_details.FirstOrDefault();
             ViewBag.admin = admininfo;
             return View();
         }
+        /// <summary>
+        /// Displays and manages purchase orders sent by the API user.
+        /// </summary>
         [HttpGet]
         public ActionResult SendPurchaseOrder()
         {
@@ -1748,6 +1868,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             model = db.select_api_pur_order(userid, "ALL", dt, to_date).ToList();
             return View(model);
         }
+        /// <summary>
+        /// Displays and manages purchase orders sent by the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult SendPurchaseOrder(string txt_frm_date, string txt_to_date)
         {
@@ -1781,6 +1904,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return PartialView("_FundTransferAdminToAPi_userPartial", model);
         }
 
+        /// <summary>
+        /// Exports the sent purchase order report to Excel.
+        /// </summary>
         public ActionResult ExcelSendPurchaseOrder(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -1860,6 +1986,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
             return View(model);
         }
+        /// <summary>
+        /// Generates the sent purchase order report as a PDF.
+        /// </summary>
         public ActionResult PDFSendPurchaseOrder(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -1891,6 +2020,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             model = db.select_api_pur_order(userid, "ALL", dt, to_date).ToList();
             return new ViewAsPdf(model);
         }
+        /// <summary>
+        /// Shows all API request records for a date range.
+        /// </summary>
         public ActionResult ShowALLAPIRequest(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -1910,6 +2042,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Displays funds received from admin with date filter.
+        /// </summary>
         [HttpPost]
         public ActionResult ReceiveFund_by_admin(string txt_frm_date, string txt_to_date)
         {
@@ -1929,6 +2064,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(show);
         }
 
+        /// <summary>
+        /// Exports the received fund report to Excel.
+        /// </summary>
         public ActionResult ExcelReceiveFund_by_admin(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -1957,7 +2095,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Date", typeof(string));
 
 
-            if (show.Count > 0)
+            if (show.Any())
             {
                 foreach (var item in show)
                 {
@@ -1990,6 +2128,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(show);
         }
 
+        /// <summary>
+        /// Generates the received fund report as a PDF.
+        /// </summary>
         public ActionResult PDFReceiveFund_by_admin(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -2009,6 +2150,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Displays and filters the purchase order list for API user.
+        /// </summary>
         public ActionResult Purchase_Order()
         {
             try
@@ -2054,6 +2198,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Displays and filters the purchase order list for API user.
+        /// </summary>
         [HttpPost]
         public ActionResult Purchase_Order(string txt_frm_date, string txt_to_date)
         {
@@ -2096,6 +2243,9 @@ namespace Vastwebmulti.Areas.API.Controllers
                 return RedirectToAction("Purchase_Order");
             }
         }
+        /// <summary>
+        /// Processes and submits a new purchase order.
+        /// </summary>
         [HttpPost]
         public ActionResult purchageorder(string Paymode, string type, string utrno, string Comment, decimal balance, string accountno, string pancard, string branch, decimal? dipositCharge, string partyAcc, string AccHolderName)
         {
@@ -2192,12 +2342,18 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
         //Fund Received Pdf
+        /// <summary>
+        /// Redirects to the invoice PDF generation page.
+        /// </summary>
         public ActionResult GotoPDF(string From, string Value, string DistOldBal, string Date)
         {
             string userid = User.Identity.GetUserId();
             return new Rotativa.ActionAsPdf("InvoicePDF", new { dlmloginid = userid, From = From, Value = Value, DistOldBal = DistOldBal, Date = Date });
         }
 
+        /// <summary>
+        /// Generates and returns the fund transfer invoice as PDF.
+        /// </summary>
         public ActionResult InvoicePDF(string dlmloginid, string From, string Value, string DistOldBal, string Date)
         {
             var userdetaild = db.api_user_details.Where(a => a.apiid == dlmloginid).SingleOrDefault();
@@ -2217,6 +2373,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(PDF_Content);
             //return View();
         }
+        /// <summary>
+        /// Displays and manages the API user commission settings.
+        /// </summary>
         public ActionResult Commission()
         {
             var userid = User.Identity.GetUserId();
@@ -2348,6 +2507,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(sb);
         }
 
+        /// <summary>
+        /// Displays and manages the API user commission settings.
+        /// </summary>
         [HttpPost]
         public ActionResult Commission(string ddlcomm)
         {
@@ -2480,6 +2642,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             ViewData["type"] = ddlcomm;
             return View(sb);
         }
+        /// <summary>
+        /// Displays the API user ledger report with date filtering.
+        /// </summary>
         public ActionResult Ledger_Report()
         {
             var userid = User.Identity.GetUserId();
@@ -2489,6 +2654,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var ledger = db.Retailer_Cr_Dr_Report("API", userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
             return View(ledger);
         }
+        /// <summary>
+        /// Displays the API user ledger report with date filtering.
+        /// </summary>
         [HttpPost]
         public ActionResult Ledger_Report(DateTime txt_frm_date,DateTime txt_to_date)
         {
@@ -2499,6 +2667,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var ledger = db.Retailer_Cr_Dr_Report("API", userid, txt_frm_date, txt_to_date).ToList();
             return View(ledger);
         }
+        /// <summary>
+        /// Exports the ledger report to Excel.
+        /// </summary>
         public ActionResult ExcelLedger_Report(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -2519,7 +2690,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Balance", typeof(string));
             dataTbl.Columns.Add("Date", typeof(string));
 
-            if (ledger.Count > 0)
+            if (ledger.Any())
             {
                 foreach (var item in ledger)
                 {
@@ -2549,6 +2720,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
         }
 
+        /// <summary>
+        /// Generates the ledger report as a PDF.
+        /// </summary>
         public ActionResult PDFLedger_Report(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -2562,12 +2736,18 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Displays the bank information page for fund deposit reference.
+        /// </summary>
         public ActionResult Bank_Information()
         {
             var ch = db.bank_info.Where(x => x.userid == "Admin").ToList();
 
             return View(ch);
         }
+        /// <summary>
+        /// Displays and filters the web login report for API users.
+        /// </summary>
         public ActionResult Web_Login()
         {
             var userid = User.Identity.GetUserName();
@@ -2576,6 +2756,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var Login_details = (db.Login_info.Where(aa => aa.UserId == userid && aa.CurrentLoginTime >= txt_frm_date && aa.CurrentLoginTime <= txt_to_date && aa.LoginFrom == "Web").Take(100).OrderByDescending(aa => aa.Idno)).ToList();
             return View(Login_details);
         }
+        /// <summary>
+        /// Displays and filters the web login report for API users.
+        /// </summary>
         [HttpPost]
         public ActionResult Web_Login(string txt_frm_date, string txt_to_date)
         {
@@ -2598,6 +2781,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Exports the web login report to Excel.
+        /// </summary>
         public ActionResult ExcelWeb_Login(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -2627,7 +2813,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Current Login Details", typeof(string));
 
 
-            if (Login_details.Count > 0)
+            if (Login_details.Any())
             {
 
 
@@ -2663,6 +2849,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Generates the web login report as a PDF.
+        /// </summary>
         public ActionResult PDFWeb_Login(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -2683,6 +2872,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return new ViewAsPdf(Login_details);
         }
 
+        /// <summary>
+        /// Displays the web login failure report for API users.
+        /// </summary>
         public ActionResult Web_LoginFailed()
         {
             var userid = User.Identity.GetUserName();
@@ -2691,6 +2883,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var Faild_Login_details = (db.Failed_Login_info.Where(aa => aa.EmailId == userid && aa.LoginTime >= txt_frm_date && aa.LoginTime <= txt_to_date && aa.LoginFrom == "Web").Take(100).OrderByDescending(aa => aa.Idno)).ToList();
             return View(Faild_Login_details);
         }
+        /// <summary>
+        /// Displays the web login failure report for API users.
+        /// </summary>
         [HttpPost]
         public ActionResult Web_LoginFailed(string txt_frm_date, string txt_to_date)
         {
@@ -2713,6 +2908,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(Faild_Login_details);
         }
 
+        /// <summary>
+        /// Exports the web login failure report to Excel.
+        /// </summary>
         public ActionResult ExcelWeb_LoginFailed(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -2739,7 +2937,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Login Date", typeof(string));
 
 
-            if (Faild_Login_details.Count > 0)
+            if (Faild_Login_details.Any())
             {
 
 
@@ -2772,6 +2970,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
             return View(Faild_Login_details);
         }
+        /// <summary>
+        /// Displays the dispute report with date filters.
+        /// </summary>
         public ActionResult Dispute_Report()
         {
             ViewData["success"] = TempData["success"];
@@ -2788,6 +2989,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var disputelist = db.show_dispute_list(userid, frm_date, to_date).ToList();
             return View(disputelist);
         }
+        /// <summary>
+        /// Displays the dispute report with date filters.
+        /// </summary>
         [HttpPost]
         public ActionResult Dispute_Report(string txt_frm_date, string txt_to_date)
         {
@@ -2808,6 +3012,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Exports the dispute report to Excel.
+        /// </summary>
         public ActionResult ExcelDispute_Report(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -2837,7 +3044,7 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
 
-            if (disputelist.Count > 0)
+            if (disputelist.Any())
             {
 
                 foreach (var item in disputelist)
@@ -2871,6 +3078,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(disputelist);
         }
 
+        /// <summary>
+        /// Generates the dispute report as a PDF.
+        /// </summary>
         public ActionResult PDFDispute_Report(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -2890,6 +3100,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Day Book Report
+        /// <summary>
+        /// Displays the API user daybook report.
+        /// </summary>
         [HttpGet]
         public ActionResult api_Daybook_Report()
         {
@@ -2902,6 +3115,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             rep.DaybookLive = db.daybook_api_report(userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
             return View(rep);
         }
+        /// <summary>
+        /// Displays the API user daybook report.
+        /// </summary>
         [HttpPost]
         public ActionResult api_Daybook_Report(string txt_frm_date)
         {
@@ -2922,6 +3138,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(rep);
 
         }
+        /// <summary>
+        /// Exports the API daybook report to Excel.
+        /// </summary>
         public ActionResult Excelapi_Daybook_Report(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -2999,6 +3218,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Generates the API daybook report as a PDF.
+        /// </summary>
         public ActionResult PDFapi_Daybook_Report(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -3020,6 +3242,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         #region Manage
+        /// <summary>
+        /// Displays the recharge API URL configuration page.
+        /// </summary>
         public ActionResult Recharge_Url()
         {
             var userid = User.Identity.GetUserId();
@@ -3027,6 +3252,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var ch = (from tbl in db.Operator_Code select tbl);
             return View(ch);
         }
+        /// <summary>
+        /// Displays and manages API response URLs.
+        /// </summary>
         public ActionResult Response_Url()
         {
             string userid = User.Identity.GetUserId();
@@ -3035,6 +3263,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var ch = db.API_select_apiupdateurl(userid);
             return View(ch);
         }
+        /// <summary>
+        /// Displays and manages API response URLs.
+        /// </summary>
         [HttpPost]
         public ActionResult Response_Url(string apiurl)
         {
@@ -3044,7 +3275,10 @@ namespace Vastwebmulti.Areas.API.Controllers
             TempData["success"] = "API Response Url Add Successfully..";
             return View(ch);
         }
-        //[HttpPost]
+        //        /// <summary>
+        /// Edits an existing API response URL.
+        /// </summary>
+[HttpPost]
         public ActionResult Edit_ResponseUrl(string txtid, string editapiurl)
         {
             try
@@ -3060,6 +3294,9 @@ namespace Vastwebmulti.Areas.API.Controllers
                 return RedirectToAction("Response_Url");
             }
         }
+        /// <summary>
+        /// Displays and manages whitelisted IP addresses for API access.
+        /// </summary>
         public ActionResult IPAddress()
         {
             string userid = User.Identity.GetUserId();
@@ -3068,6 +3305,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var ch = (from ff in db.Api_ip_address where ff.userid == userid select ff).ToList();
             return View(ch);
         }
+        /// <summary>
+        /// Adds a new IP address to the API whitelist.
+        /// </summary>
         [HttpPost]
         public ActionResult insertapiip(string apiip)
         {
@@ -3081,6 +3321,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             db.SaveChanges();
             return RedirectToAction("IPAddress");
         }
+        /// <summary>
+        /// Removes an IP address from the API whitelist.
+        /// </summary>
         public ActionResult deleteip(string Id)
         {
             int idnn = Convert.ToInt32(Id);
@@ -3092,6 +3335,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             db.SaveChanges();
             return Json("", JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Downloads the API integration reference document.
+        /// </summary>
         public ActionResult Download()
         {
             var FileVirtualPath = "~/moneyapi/MoneyTransferAPI.zip";
@@ -3102,6 +3348,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
         //Don't Change the Action Name If Any Changes Occurs tehn Is HarmFull For PassCode
 
+        /// <summary>
+        /// Handles passcode setting by type for the API user.
+        /// </summary>
         public ActionResult PasscodeSettingByrem(string passcodetype)
         {
             int isupdateauto = 0;
@@ -3185,6 +3434,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return Json(isupdateauto, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Verifies the API user passcode.
+        /// </summary>
         public ActionResult PassCodeVeryFY()
         {
             var userid = User.Identity.GetUserId();
@@ -3207,6 +3459,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Validates the API user passcode/password.
+        /// </summary>
         public ActionResult CHECKPASSCODEPASSWORD(string Passscodes)
         {
             VastwebmultiEntities db = new VastwebmultiEntities();
@@ -3230,6 +3485,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
         }
 
+        /// <summary>
+        /// Resends the passcode password to the API user.
+        /// </summary>
         public ActionResult ResendPASSCODEPASSWORD()
         {
             VastwebmultiEntities db = new VastwebmultiEntities();
@@ -3320,6 +3578,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
 
+        /// <summary>
+        /// Displays and manages the API user profile information.
+        /// </summary>
         public new ActionResult Profile()
         {
             string userid = User.Identity.GetUserId();
@@ -3341,12 +3602,18 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(userDetails);
         }
 
+        /// <summary>
+        /// Returns API user profile data as JSON.
+        /// </summary>
         public JsonResult Showapiprofile(string apiid)
         {
             var ch = db.api_user_details.Where(a => a.apiid == apiid).ToList();
             return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Updates the API user profile fields.
+        /// </summary>
         [HttpPost]
         public ActionResult UpdateapiProfile(string txtid1, string txtfrimname, string txtcity, string txtaddress, int txtzipcode, int State, int District)
         {
@@ -3369,12 +3636,18 @@ namespace Vastwebmulti.Areas.API.Controllers
             return RedirectToAction("Profile");
         }
 
+        /// <summary>
+        /// Returns mobile and PAN card details for API user profile.
+        /// </summary>
         public JsonResult Showmobileandpancardprofile(string apiid)
         {
             var ch = db.api_user_details.Where(a => a.apiid == apiid).ToList();
             return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Updates the PAN card, mobile and Aadhaar details for the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult UpdatePanccardandmobile(string txtid2, string txtname, string txtaadhaarcard, string txtpancard, string txtgst, string ddlPosition, string ddlBusinessType)
         {
@@ -3396,12 +3669,18 @@ namespace Vastwebmulti.Areas.API.Controllers
             TempData["success"] = "Update Successfully.";
             return RedirectToAction("Profile");
         }
+        /// <summary>
+        /// Returns bank information for the API user as JSON.
+        /// </summary>
         public JsonResult ShowBankinfo(string apiid)
         {
             var ch = db.api_user_details.Where(a => a.apiid == apiid).ToList();
             return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Updates existing bank account information for the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult UpdateBankinfromation(string txtid3, string txtaccholder, string txtbankaccountno, string txtifsc, string txtbankname, string txtbranchaddress)
         {
@@ -3424,6 +3703,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Upload Aadhaar Crad Doc
+        /// <summary>
+        /// Handles the upload of Aadhaar card document for the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult UploadAadharcarddoc(string txtaadharid)
         {
@@ -3459,6 +3741,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Upload Pancard Crad Doc
+        /// <summary>
+        /// Handles the upload of PAN card document for the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult UploadPancardcarddoc(string txtpancardid)
         {
@@ -3494,6 +3779,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Upload Service Aggrement Card Doc
+        /// <summary>
+        /// Handles the upload of service agreement document for the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult UploadServiceAggrementdoc(string txtserviceid)
         {
@@ -3530,6 +3818,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
         //Upload Registraction Certificate Card Doc
+        /// <summary>
+        /// Handles the upload of registration certificate for the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult UploadRegistractionCertificatedoc(string txtRegistractionid)
         {
@@ -3565,6 +3856,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
         //Upload Registraction Certificate Card Doc
+        /// <summary>
+        /// Handles the upload of address proof document for the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult UploadAddressProofdoc(string txtAddressproofid)
         {
@@ -3599,6 +3893,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View();
         }
         //Upload Profile Image
+        /// <summary>
+        /// Handles the upload of profile image for the API user.
+        /// </summary>
         [HttpPost]
         public ActionResult UploadProfileimage(string txtprofileid)
         {
@@ -3633,6 +3930,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View();
         }
         //delete Profile Doc 
+        /// <summary>
+        /// Deletes a profile document by API user ID and document type.
+        /// </summary>
         public JsonResult DelereprofileDoc(string apiid, string Docname)
         {
             if (apiid != null && Docname == "Aadhaar")
@@ -3676,17 +3976,26 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns a list of districts for the selected state as JSON.
+        /// </summary>
         public JsonResult FillDistict(int State)
         {
             var cities = db.District_Desc.Where(c => c.State_id == State);
             return Json(cities, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Displays the change password form and processes password change requests.
+        /// </summary>
         public ActionResult ChangePassword()
         {
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Displays the change password form and processes password change requests.
+        /// </summary>
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -3729,6 +4038,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Displays and manages API token generation settings.
+        /// </summary>
         public ActionResult TokenSetting()
         {
             var userid = User.Identity.GetUserId();
@@ -3736,6 +4048,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
             return View(tokeninfo);
         }
+        /// <summary>
+        /// Displays and manages API token generation settings.
+        /// </summary>
         [HttpPost]
         public ActionResult TokenSetting(string enterip, string otp)
         {
@@ -3777,6 +4092,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Sends OTP for API token generation.
+        /// </summary>
         public ActionResult tokenotp(string enterip)
         {
             var userid = User.Identity.GetUserId();
@@ -3838,6 +4156,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         {
             return _random.Next(min, max);
         }
+        /// <summary>
+        /// Deletes an API authentication token.
+        /// </summary>
         [HttpPost]
         public ActionResult DeleteToken(string token)
         {
@@ -3848,6 +4169,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Displays the operator code reference page for API integration.
+        /// </summary>
         public ActionResult Operatorcode()
         {
             var chk = db.Operator_Code.Where(aa => aa.Operator_type == "Prepaid"
@@ -3857,6 +4181,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             aa.Operator_type == "LPG Gas" || aa.Operator_type == "Water" || aa.Operator_type == "Fastag" || aa.Operator_type == "Loan").ToList().OrderBy(aa => aa.Operator_type);
             return View(chk);
         }
+        /// <summary>
+        /// Displays the balance check API documentation and test page.
+        /// </summary>
         public ActionResult Balancecheck()
         {
             var websiteurl = db.Admin_details.SingleOrDefault().WebsiteUrl;
@@ -3865,6 +4192,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Displays the status check API documentation and test page.
+        /// </summary>
         public ActionResult StatusCheck()
         {
             var websiteurl = db.Admin_details.SingleOrDefault().WebsiteUrl;
@@ -3873,6 +4203,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Displays and processes the API user GST sell report.
+        /// </summary>
         public ActionResult ApiSellgst()
         {
             var userid = User.Identity.GetUserId();
@@ -3923,6 +4256,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             ViewBag.apiid = new SelectList(selectList, "Value", "Text");
             return View(respp);
         }
+        /// <summary>
+        /// Displays and processes the API user GST sell report.
+        /// </summary>
         [HttpPost]
         public ActionResult ApiSellgst(string Month, string Year)
         {
@@ -3974,6 +4310,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             ViewBag.apiid = new SelectList(selectList, "Value", "Text");
             return View(respp);
         }
+        /// <summary>
+        /// Prints the API user GST sell invoice.
+        /// </summary>
         public ActionResult Print_sell_Gst_apiid(string Month, string Year)
         {
             string apiid = User.Identity.GetUserId();
@@ -4060,6 +4399,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return new ViewAsPdf("Print_sell_Gst_apiid", entries);
         }
 
+        /// <summary>
+        /// Displays and processes the API user GST purchase report.
+        /// </summary>
         public ActionResult ApiPurchasegst()
         {
             var userid = User.Identity.GetUserId();
@@ -4110,6 +4452,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             ViewBag.apiid = new SelectList(selectList, "Value", "Text");
             return View(respp);
         }
+        /// <summary>
+        /// Displays and processes the API user GST purchase report.
+        /// </summary>
         [HttpPost]
         public ActionResult ApiPurchasegst(string Month, string Year)
         {
@@ -4153,6 +4498,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var respp = db.show_sell_invoice_api(apiid, Month, Year).ToList();
             return View(respp);
         }
+        /// <summary>
+        /// Prints the API user GST purchase invoice.
+        /// </summary>
         public ActionResult Print_Purchase_Gst_Api(string Month, string Year)
         {
             string apiid = User.Identity.GetUserId();
@@ -4242,6 +4590,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return new ViewAsPdf("Print_Purchase_Gst_Api", entries);
         }
 
+        /// <summary>
+        /// Displays the GST document upload page for API user.
+        /// </summary>
         public ActionResult uploadgst()
         {
             var userid = User.Identity.GetUserId();
@@ -4276,6 +4627,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var chk = db.Api_upload_gst.Where(aa => aa.Apiid == userid && aa.monthchk == month && aa.yearchk == year).ToList();
             return View(chk);
         }
+        /// <summary>
+        /// Displays the GST document upload page for API user.
+        /// </summary>
         [HttpPost]
         public ActionResult uploadgst(string Month, string Year)
         {
@@ -4311,10 +4665,13 @@ namespace Vastwebmulti.Areas.API.Controllers
             var chk = db.Api_upload_gst.Where(aa => aa.Apiid == userid && aa.monthchk == Month && aa.yearchk == Year).ToList();
             return View(chk);
         }
+        /// <summary>
+        /// Handles the GST file upload submission.
+        /// </summary>
         public ActionResult uploadgstfile()
         {
             var userid = User.Identity.GetUserId();
-            if (Request.Files.Count > 0)
+            if (Request.Files.Any())
             {
                 try
                 {
@@ -4359,6 +4716,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Displays the API user recharge GST sell report.
+        /// </summary>
         public ActionResult ApiRechargeSellgst()
         {
             var userid = User.Identity.GetUserId();
@@ -4409,6 +4769,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             ViewBag.apiid = new SelectList(selectList, "Value", "Text");
             return View(respp);
         }
+        /// <summary>
+        /// Displays the API user recharge GST sell report.
+        /// </summary>
         [HttpPost]
         public ActionResult ApiRechargeSellgst(string Month, string Year)
         {
@@ -4460,6 +4823,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             ViewBag.apiid = new SelectList(selectList, "Value", "Text");
             return View(respp);
         }
+        /// <summary>
+        /// Prints the API user recharge GST sell invoice.
+        /// </summary>
         public ActionResult Print_sell_Gst_recharge_apiid(string Month, string Year)
         {
             string apiid = User.Identity.GetUserId();
@@ -4546,6 +4912,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return new ViewAsPdf("Print_sell_Gst_recharge_apiid", entries);
         }
 
+        /// <summary>
+        /// Displays the recharge GST document upload page.
+        /// </summary>
         public ActionResult uploadgstRecharge()
         {
             var userid = User.Identity.GetUserId();
@@ -4580,6 +4949,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var chk = db.Api_Recharge_upload_gst.Where(aa => aa.Apiid == userid && aa.monthchk == month && aa.yearchk == year).ToList();
             return View(chk);
         }
+        /// <summary>
+        /// Displays the recharge GST document upload page.
+        /// </summary>
         [HttpPost]
         public ActionResult uploadgstRecharge(string Month, string Year)
         {
@@ -4615,10 +4987,13 @@ namespace Vastwebmulti.Areas.API.Controllers
             var chk = db.Api_Recharge_upload_gst.Where(aa => aa.Apiid == userid && aa.monthchk == Month && aa.yearchk == Year).ToList();
             return View(chk);
         }
+        /// <summary>
+        /// Handles the recharge GST file upload submission.
+        /// </summary>
         public ActionResult uploadgstfileRecharge()
         {
             var userid = User.Identity.GetUserId();
-            if (Request.Files.Count > 0)
+            if (Request.Files.Any())
             {
                 try
                 {
@@ -4663,6 +5038,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Displays the payment gateway transfer report.
+        /// </summary>
         public ActionResult GatewayTRANSFER()
         {
             ViewBag.msg = TempData["msg"];
@@ -4687,6 +5065,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(chk);
         }
 
+        /// <summary>
+        /// Displays the payment gateway transfer report.
+        /// </summary>
         [HttpPost]
         public ActionResult GatewayTRANSFER(DateTime txt_frm_date, DateTime txt_to_date)
         {
@@ -4712,6 +5093,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return View(chk);
         }
 
+        /// <summary>
+        /// Generates the gateway transfer report as a PDF.
+        /// </summary>
         public ActionResult PDFGatewayTRANSFER(DateTime txt_frm_date, DateTime txt_to_date)
         {
             ViewBag.chk = "post";
@@ -4735,6 +5119,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             return new ViewAsPdf(chk);
         }
 
+        /// <summary>
+        /// Exports the gateway transfer report to Excel.
+        /// </summary>
         public ActionResult Execel_Gateway_TRANSFER(DateTime txt_frm_date, DateTime txt_to_date)
         {
 
@@ -4787,6 +5174,9 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
 
 
+        /// <summary>
+        /// Displays the new gateway transfer management page.
+        /// </summary>
         [HttpPost]
         public ActionResult GatewayTransfer_new(decimal txtamt, string ddl_type, string latss, string longloc)
         {
@@ -4897,15 +5287,21 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
             return RedirectToAction("GatewayTRANSFER");
         }
+        /// <summary>
+        /// Displays the WhatsApp integration documentation.
+        /// </summary>
         public ActionResult WhatsappDocument()
         {
             return View();
         }
+        /// <summary>
+        /// Displays the WhatsApp login management page.
+        /// </summary>
         public ActionResult WhatsappLogin()
         {
             var userid = User.Identity.GetUserId();
             var chkk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).ToList();
-            if (chkk.Count > 0)
+            if (chkk.Any())
             {
                 if (chkk[0].qrdeatils != "")
                 {
@@ -4932,13 +5328,16 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
             return View(chkk);
         }
+        /// <summary>
+        /// Registers a new WhatsApp mobile number for API integration.
+        /// </summary>
         [HttpPost]
         public ActionResult whatsapp_login_insert(string mobile)
         {
             var userid = User.Identity.GetUserId();
             var msg = "";
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid && aa.status.ToUpper() == "SUCCESS").ToList();
-            if (purchasecheck.Count > 0)
+            if (purchasecheck.Any())
             {
                 var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 var purchasedate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().purchasedate;
@@ -4999,6 +5398,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Processes WhatsApp login for a registered entry.
+        /// </summary>
         [HttpPost]
         public ActionResult whatsapp_login(int id)
         {
@@ -5008,7 +5410,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             if (chk != null)
             {
                 var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
-                if (purchasecheck.Count > 0)
+                if (purchasecheck.Any())
                 {
                     var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                     if (expdate >= DateTime.Now)
@@ -5071,6 +5473,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Refreshes the WhatsApp session for a given entry.
+        /// </summary>
         [HttpPost]
         public ActionResult whatsapp_Refresh(int id)
         {
@@ -5078,7 +5483,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var msg = "";
             var chk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
-            if (purchasecheck.Count > 0)
+            if (purchasecheck.Any())
             {
                 var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)
@@ -5136,6 +5541,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Checks the WhatsApp connection status for a given entry.
+        /// </summary>
         [HttpPost]
         public ActionResult whatsapp_Status(int id)
         {
@@ -5143,7 +5551,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var msg = "";
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
             var chk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
-            if (purchasecheck.Count > 0)
+            if (purchasecheck.Any())
             {
                 var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)
@@ -5190,6 +5598,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Logs out from WhatsApp session for a given entry.
+        /// </summary>
         [HttpPost]
         public ActionResult whatsapp_logout(int id)
         {
@@ -5197,7 +5608,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var msg = "";
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
             var chk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
-            if (purchasecheck.Count > 0)
+            if (purchasecheck.Any())
             {
                 var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)
@@ -5244,6 +5655,9 @@ namespace Vastwebmulti.Areas.API.Controllers
 
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Displays and processes WhatsApp service purchase.
+        /// </summary>
         public ActionResult WhatsappPurchase()
         {
             var userid = User.Identity.GetUserId();
@@ -5252,6 +5666,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             model.Report = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).OrderByDescending(aa => aa.purchasedate).ToList();
             return View(model);
         }
+        /// <summary>
+        /// Displays and processes WhatsApp service purchase.
+        /// </summary>
         [HttpPost]
         public ActionResult WhatsappPurchase(string idno, bool gsten)
         {
@@ -5321,6 +5738,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Displays the WhatsApp messaging activity report.
+        /// </summary>
         public ActionResult Whatsapp_Report()
         {
             var userid = User.Identity.GetUserId();
@@ -5331,6 +5751,9 @@ namespace Vastwebmulti.Areas.API.Controllers
             var disputelist = db.whatsapp_report(userid, frm_date, to_date).ToList();
             return View(disputelist);
         }
+        /// <summary>
+        /// Displays the WhatsApp messaging activity report.
+        /// </summary>
         [HttpPost]
         public ActionResult Whatsapp_Report(string txt_frm_date, string txt_to_date)
         {

@@ -6,6 +6,9 @@ using System.Net;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// Business logic class for retailer remote location and service area management
+    /// </summary>
     public class RetailerRemloclogic
     {
 

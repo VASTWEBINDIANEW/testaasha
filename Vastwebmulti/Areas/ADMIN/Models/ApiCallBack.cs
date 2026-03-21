@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for handling API callback request and response data.
+    /// </summary>
     public class ApiCallBack
     {
         public int idno { get; set; }

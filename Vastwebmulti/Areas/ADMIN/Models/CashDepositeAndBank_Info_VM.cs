@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +6,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model combining cash deposit credit charge configurations and bank account information.
+    /// </summary>
     public class CashDepositeAndBank_Info_VM
     {
         public List<Retailerchargelist> creditchargeRetailer { get; set; }

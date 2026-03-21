@@ -8,6 +8,9 @@ using System.Xml;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// Service class handling all recharge API calls - GET/POST/XML type API processing and response parsing
+    /// </summary>
     public class RechargeServices
     {
         public static ApiResponse Recharge(RechargeapiInfo apiinfo, string mobile, string optcode, decimal amount, string OrderId)
@@ -16,7 +19,9 @@ namespace Vastwebmulti.Models
             ApiResponse result = new ApiResponse();
             try
             {
-                var idno = (from rch in db.Recharge_info where rch.Mobile == mobile where rch.amount == amount where rch.Rstaus == "Request Send" || rch.Rstaus == "Request Sent" select rch.idno).SingleOrDefault().ToString();
+                // Use FirstOrDefault to safely get the recharge record id (avoids NullReferenceException)
+                var rechRecord = (from rch in db.Recharge_info where rch.Mobile == mobile where rch.amount == amount where rch.Rstaus == "Request Send" || rch.Rstaus == "Request Sent" select rch.idno).FirstOrDefault();
+                var idno = rechRecord.ToString();
                 int RechId = Convert.ToInt32(idno);
                 var apiremain = "0";
                 var api_response = "";
@@ -27,8 +32,10 @@ namespace Vastwebmulti.Models
                 var requrl = "";
                 string amt = amount.ToString();
 
-                var apioptocdechk = db.SRS_API.Where(aa => aa.api == apiinfo.apiendpoint && aa.opt_code == optcode).SingleOrDefault();
-                var opttype = db.Operator_Code.Where(aa => aa.new_opt_code == optcode).Single().Operator_type;
+                var apioptocdechk = db.SRS_API.FirstOrDefault(aa => aa.api == apiinfo.apiendpoint && aa.opt_code == optcode);
+                // Use FirstOrDefault instead of Single to avoid InvalidOperationException if multiple/no records
+                var opttypeRec = db.Operator_Code.FirstOrDefault(aa => aa.new_opt_code == optcode);
+                var opttype = opttypeRec != null ? opttypeRec.Operator_type : "";
 
                 if (opttype.ToUpper() == "PREPAID" || opttype.ToUpper() == "DTH")
                 {

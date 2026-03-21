@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +6,9 @@ using System.Web.Mvc;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Represents commission slab configuration for Fino Bank CMS services.
+    /// </summary>
     public class Fino_CMS_Slab
     {
         public List<FinoCommon> common { get; set; }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for managing prepaid mobile recharge commission slab configurations across all user roles.
+    /// </summary>
     public class PrepaidSlab
     {
         public List<Recharge_Amount_range_info> AmountRange { get; set; }

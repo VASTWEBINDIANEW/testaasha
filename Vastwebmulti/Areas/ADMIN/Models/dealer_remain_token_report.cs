@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for displaying the remaining token balance report for dealers.
+    /// </summary>
     public class dealer_remain_token_report
     {
         public string DealerId { get; set; }

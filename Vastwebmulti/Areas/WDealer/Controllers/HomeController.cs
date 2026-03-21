@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Newtonsoft.Json;
@@ -24,6 +24,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.WDealer.Controllers
 {
     [Authorize(Roles = "Whitelabeldealer")]
+    /// <summary>
+    /// WDealer Area - Manages WhiteLabel Dealer dashboard, fund management and retailer oversight
+    /// </summary>
     public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -57,6 +60,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         #region Retailer List
         //GET : Retailer List
         [HttpGet]
+        /// <summary>
+        /// [GET] Default landing action for this area
+        /// </summary>
         public ActionResult Index()
         {
             WhitelabelRetailerModel viewModel = new WhitelabelRetailerModel();
@@ -520,7 +526,7 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             //{
             //    var userid = User.Identity.GetUserId();
             //    var disresult = db.Whitelabel_Retailer_Details.Where(p => p.slab_name == slabname).ToList();
-            //    if (disresult.Count > 0)
+            //    if (disresult.Any())
             //    {
             //        TempData["api"] = "This slab is Already Assign To Whitelabel Retailer User..";
             //    }
@@ -541,6 +547,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
 
 
         #region Fundtransfer To Retailer
+        /// <summary>
+        /// [GET] Displays the dealer-level fund transfer page
+        /// </summary>
         public ActionResult FundTransferDealer(string tabname = "")
         {
             WhitelabelDealerfundtransfer vmodel = new WhitelabelDealerfundtransfer();
@@ -793,6 +802,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         #endregion
 
         //find transfer WL to Dlm
+        /// <summary>
+        /// [GET] Validates dealer security before allowing fund transfer
+        /// </summary>
         public ActionResult ChkSecurityDealerToFundTransfer(string txtcode, string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
        string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
        string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -1456,6 +1468,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return RedirectToAction("purcharge_request");
         }
         //Show Credit Report
+        /// <summary>
+        /// [GET] Displays credit ledger summary report
+        /// </summary>
         public ActionResult show_credit_Report()
         {
             var userid = User.Identity.GetUserId();
@@ -1472,6 +1487,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region DASHBORAD
+        /// <summary>
+        /// [GET] Displays the main dashboard overview
+        /// </summary>
         public ActionResult Dashboard()
         {
             var userid = User.Identity.GetUserId();
@@ -1584,6 +1602,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
 
         //Edit Profile 
+        /// <summary>
+        /// [GET] Displays the profile edit form
+        /// </summary>
         public ActionResult Edit_Profile(string Retailerid)
         {
             var show = db.whitelabel_Dealer_Details.Find(Retailerid);
@@ -1592,6 +1613,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(show);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Saves updated profile information
+        /// </summary>
         public ActionResult Edit_Profile(string DealerId, whitelabel_Dealer_Details dealerdetails)
         {
             try
@@ -1642,6 +1666,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
         //Change Password 
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays the change-password form
+        /// </summary>
         public ActionResult ChangePassword()
         {
 
@@ -1651,6 +1678,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// [POST] Processes the password change request
+        /// </summary>
         public async Task<ActionResult> ChangePassword([Bind(Prefix = "Item1")] ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -1747,6 +1777,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Login
+        /// <summary>
+        /// [GET] Displays the web login page
+        /// </summary>
         public ActionResult WebLogin()
         {
             var userid = User.Identity.GetUserId();
@@ -1756,6 +1789,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(Login_details);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Processes web login credentials
+        /// </summary>
         public ActionResult WebLogin(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -1781,6 +1817,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
 
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays failed web login attempts
+        /// </summary>
         public ActionResult WebLoginFailed()
         {
             var userid = User.Identity.GetUserId();
@@ -1790,6 +1829,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(Faild_Login_details);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Processes failed login attempt data
+        /// </summary>
         public ActionResult WebLoginFailed(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -2136,6 +2178,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
         #region Money Transfer Report 
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays the money transfer report
+        /// </summary>
         public ActionResult Money_Transfer_Report()
         {
             Money_transfer_Report_whitelabel money = new Money_transfer_Report_whitelabel();
@@ -2165,6 +2210,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(money);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters money transfer report by date
+        /// </summary>
         public ActionResult Money_Transfer_Report(string txt_frm_date, string txt_to_date,
       string allretailer, string allapiuser, string ddl_top, string ddl_status, string api_name, string btntype)
         {
@@ -2251,6 +2299,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region mPossReport
+        /// <summary>
+        /// [GET] Displays mPOS transaction report
+        /// </summary>
         public ActionResult m_Possreport()
         {
             var userid = User.Identity.GetUserId();
@@ -2267,6 +2318,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters mPOS report by date range
+        /// </summary>
         public ActionResult m_Possreport(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -2289,6 +2343,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Start GST Report 
+        /// <summary>
+        /// [GET] Displays GST invoice report
+        /// </summary>
         public ActionResult GST_Report()
         {
             string userid = User.Identity.GetUserId();
@@ -2326,6 +2383,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(gst);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters GST report by date range
+        /// </summary>
         public ActionResult GST_Report(string txt_frm_date, string txt_to_date, HttpPostedFileBase file)
         {
             string userid = User.Identity.GetUserId();
@@ -2531,6 +2591,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #region Reports
         //start recharge report
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays recharge transaction report
+        /// </summary>
         public ActionResult Recharge_Report()
         {
 
@@ -2563,6 +2626,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(viewModel);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters recharge report by date
+        /// </summary>
         public ActionResult Recharge_Report(string btntype, string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string ddl_top, string txtmob, string allretailer)
         {
 
@@ -2757,6 +2823,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region  pancrad Report
+        /// <summary>
+        /// [GET] Displays PAN card transaction report
+        /// </summary>
         public ActionResult Pancard_Report()
         {
             string userid = User.Identity.GetUserId();
@@ -2773,6 +2842,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters PAN card report by date
+        /// </summary>
         public ActionResult Pancard_Report(string txt_frm_date, string txt_to_date, string allretailer, string ddl_top, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -2830,6 +2902,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Aeps_Report
+        /// <summary>
+        /// [GET] Displays AEPS transaction report
+        /// </summary>
         public ActionResult Aeps_Report()
         {
             string userid = User.Identity.GetUserId();
@@ -2846,6 +2921,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters AEPS report by date
+        /// </summary>
         public ActionResult Aeps_Report(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_top, string ddl_status, string api_name, string allapiuser)
         {
             var retailerid = "";
@@ -2929,6 +3007,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Ecommerce Reports
+        /// <summary>
+        /// [GET] Displays e-commerce transaction report
+        /// </summary>
         public ActionResult Ecommerce_Report()
         {
             string userid = User.Identity.GetUserId();
@@ -2974,6 +3055,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Dealer Gst Invocie Report
+        /// <summary>
+        /// [GET] Generates GST invoicing report for dealers
+        /// </summary>
         public ActionResult Gst_Invocing_Dealer_report()
         {
             var userid = User.Identity.GetUserId();
@@ -2989,6 +3073,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(show);
         }
 
+        /// <summary>
+        /// [GET] Generates PDF export of the GST invoicing report
+        /// </summary>
         public ActionResult GST_Invocing_Report_Pdf()
         {
             var userid = User.Identity.GetUserId();

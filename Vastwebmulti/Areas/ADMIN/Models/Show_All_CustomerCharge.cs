@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,6 +6,9 @@ using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for displaying all customer-facing charge configurations.
+    /// </summary>
     public class Show_All_CustomerCharge
     {
         public List<Prepaid> Prepaid { set; get; }

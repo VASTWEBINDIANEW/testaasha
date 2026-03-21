@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for managing MicroATM service commission slab configurations.
+    /// </summary>
     public class MicroAtmSlabModel
     {
         public List<Common_Microatm_comm> common { get; set; }

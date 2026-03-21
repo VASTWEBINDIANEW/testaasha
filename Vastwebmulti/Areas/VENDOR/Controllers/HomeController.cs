@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using Rotativa;
@@ -21,6 +21,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
 {
  
     [Authorize(Roles = "Vendor")]
+    /// <summary>
+    /// VENDOR Area - Manages Vendor dashboard - product/service listings, billing and vendor account management
+    /// </summary>
     public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -51,6 +54,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         VastwebmultiEntities db = new VastwebmultiEntities();
         VastBazaartoken Responsetoken = new VastBazaartoken();
         // GET: VENDOR/Home
+        /// <summary>
+        /// [GET] - Displays the main dashboard/home page
+        /// </summary>
         public ActionResult Index()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -64,6 +70,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] - Lists all products for the vendor
+        /// </summary>
         public ActionResult ProductList()
         {
             try
@@ -96,6 +105,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// [GET] - Displays the add product form
+        /// </summary>
         public ActionResult AddProduct()
         {
             try
@@ -114,6 +126,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Processes adding a new product
+        /// </summary>
         public ActionResult AddProduct(ProductModel model)
         {
             try
@@ -152,6 +167,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return RedirectToAction("ProductList");
         }
 
+        /// <summary>
+        /// [GET] - Displays the edit product form
+        /// </summary>
         public ActionResult EditProduct(int id)
         {
             try
@@ -197,6 +215,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Saves updated product details
+        /// </summary>
         public ActionResult EditProduct(ProductModel model)
         {
             try
@@ -243,6 +264,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Handles product image upload
+        /// </summary>
         public ActionResult ImgUpload(int ProductID)
         {
             if (ProductID > 0)
@@ -276,6 +300,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays list of products marked for deletion
+        /// </summary>
         public ActionResult DeleteproductList()
         {
             try
@@ -294,6 +321,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Updates the delete/active status of a product
+        /// </summary>
         public ActionResult UpdateDeleteStatus(int idno)
         {
             try
@@ -315,6 +345,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return RedirectToAction("ProductList");
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] - Permanently removes a product by ID
+        /// </summary>
         public ActionResult RemoveProduct(int id)
         {
             try
@@ -337,6 +370,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Creates a duplicate copy of an existing product
+        /// </summary>
         public ActionResult ReplicateProduct(int id)
         {
             try
@@ -369,6 +405,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] - Displays product attributes management page
+        /// </summary>
         public ActionResult Attributes()
         {
             try
@@ -396,6 +435,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Assigns an attribute value to a product
+        /// </summary>
         public ActionResult AssignAttribute(int ProductId, string AttName, string AttValue, int QTY)
         {
             try
@@ -464,6 +506,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         #region E-commerce Report
+        /// <summary>
+        /// [GET] - Displays e-commerce transaction report
+        /// </summary>
         public ActionResult Ecommerce_Report()
         {
 
@@ -487,6 +532,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters and displays e-commerce report by date range and status
+        /// </summary>
         public ActionResult Ecommerce_Report(string category, int ddl_top, string ddl_status, string txt_frm_date, string txt_to_date)
         {
             VastwebmultiEntities db = new VastwebmultiEntities();
@@ -515,6 +563,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return View(vv);
         }
 
+        /// <summary>
+        /// [GET] - Generates a bill invoice PDF for an order
+        /// </summary>
         public ActionResult ProductBillInvoice(int id)
                {
             try
@@ -669,6 +720,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
         #endregion
 
+        /// <summary>
+        /// [GET] - Shows product detail statistics
+        /// </summary>
         public ActionResult Product_details()
         {
             try
@@ -698,6 +752,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters product detail report by category and date
+        /// </summary>
         public ActionResult Product_details(string Cateid, string ddl_status, int ddl_top, string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -754,6 +811,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
         //Change Password 
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays the change password form
+        /// </summary>
         public ActionResult ChangePassword()
         {
 
@@ -794,6 +854,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
         //Profile
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays the user profile details
+        /// </summary>
         public new ActionResult Profile()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -819,6 +882,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         //Edit Profile 
+        /// <summary>
+        /// [GET] - Displays the profile edit form
+        /// </summary>
         public ActionResult Edit_Profile(int idno)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -831,6 +897,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Saves updated profile information
+        /// </summary>
         public ActionResult Edit_Profile(int idno, Vendor_details vendor)
         {
             try
@@ -895,6 +964,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 return Json(new SelectList(district.ToArray(), "Dist_id", "Dist_Desc"), JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// [GET] - Lists all vendor orders
+        /// </summary>
         public ActionResult OrderList()
         {
             try
@@ -953,6 +1025,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters orders by category, status and date range
+        /// </summary>
         public ActionResult OrderList(string Cateid, string ddl_status, int ddl_top, string txt_frm_date, string txt_to_date)
         {
             try
@@ -1111,6 +1186,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// [GET] - Displays order list filtered by type or message
+        /// </summary>
         public ActionResult OrderList1(string type, string Message)
         {
             try
@@ -1168,6 +1246,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// [GET] - Updates the fulfillment status of an order
+        /// </summary>
         public ActionResult UpdateOrderStatus(int idno, int OrderId, string status, string retailerid, string role)
         {
             try
@@ -1200,6 +1281,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             //return Json("Failed"); 
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] - Generates and downloads an e-commerce order invoice PDF
+        /// </summary>
         public ActionResult EcommInvoicePdf(int OrderID)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1238,12 +1322,18 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         #region WalletToBankAmountTransfer
+        /// <summary>
+        /// [GET] - Displays wallet to bank transfer form
+        /// </summary>
         public ActionResult WalletToBankAmountTransfer()
         {
             var entries = db.WalletToBankAmountTransferCharges.Where(a => a.UserRole == "Seller").ToList();
             return View(entries);
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] - Displays wallet unload/withdrawal report
+        /// </summary>
         public ActionResult WalletUnloadReport()
         {
             var userid = User.Identity.GetUserId();
@@ -1253,6 +1343,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return View(entries);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters wallet unload report by date range
+        /// </summary>
         public ActionResult WalletUnloadReport(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -1271,6 +1364,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return View(entries);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Submits a wallet to bank transfer request
+        /// </summary>
         public ActionResult AddWalletToBankRequest(decimal Amount, string Type)
         {
             var userid = User.Identity.GetUserId();

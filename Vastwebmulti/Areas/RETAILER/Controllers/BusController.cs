@@ -22,6 +22,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
 
+    /// <summary>
+    /// RETAILER Area - Manages bus ticket search, seat selection, booking, payment, cancellation, and reporting for retailers.
+    /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
     public class BusController : Controller
@@ -62,6 +65,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 _userManager = value;
             }
         }
+        /// <summary>
+        /// GET/POST Searches available buses for a given source, destination, and journey date.
+        /// </summary>
         public ActionResult Search(string txtSourceBus, string txtDestinationBus, DateTime txt_frm_dateBus)
         {
             try
@@ -202,12 +208,18 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// GET Renders the partial bus filter view with company name for the given search result model.
+        /// </summary>
         public PartialViewResult _BusFilter(BusSearchResultVM model)
         {
             var FirmName = db.Admin_details.FirstOrDefault().Companyname;
             ViewBag.FirmName = FirmName;
             return PartialView(model);
         }
+        /// <summary>
+        /// GET Fetches the seat layout for a selected bus trip and populates boarding/dropping points.
+        /// </summary>
         [HttpGet]
         public ActionResult GetBusLayout(string ResultIndex, string TraceId)
         {
@@ -381,6 +393,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return PartialView(new SeatsLayoutVM());
             }
         }
+        /// <summary>
+        /// GET Redirects to the referring page for the passenger info entry step.
+        /// </summary>
         public ActionResult PaxInfo()
         {
             try
@@ -399,6 +414,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// POST Collects passenger info and seat selections and prepares the booking view model for confirmation.
+        /// </summary>
         [HttpPost]
         public ActionResult PaxInfo(string txtSourceBus, string txtDestinationBus, string txt_frm_dateBus, string ResultIndex, string BoardingPoints, string DropingPoints, string selectedSeats, string selectedSeatsName)
         {
@@ -487,6 +505,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// POST Blocks and confirms bus seat booking, processes payment, and records backup balance info.
+        /// </summary>
         [HttpPost]
         public ActionResult SeatBooking(BusPaxInfoVM model)
         {
@@ -494,7 +515,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             {
                 var userid = User.Identity.GetUserId();
 
-                var retailer = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+                var retailer = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
                 #region Hit_Client
                 var token = string.Empty;
                 token = getAuthToken();
@@ -612,13 +633,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             , TraceId, model.selectedSeats, JsonConvert.SerializeObject(model.bookInfo), 0, Idno, IsSuccess, Message);
                             try
                             {
-                                var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                                var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                                var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                                var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                                var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
+                                var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
-                                var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
-                                var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                                var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                                var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
+                                var dlmdetails = db.Remain_dealer_balance.FirstOrDefault(aa => aa.DealerID == retailerdetails.DealerId);
+                                var Masterdetails = db.Remain_superstokist_balance.FirstOrDefault(aa => aa.SuperStokistID == dealerdetails.SSId);
 
                                 var admininfo = db.Admin_details.SingleOrDefault();
                                 Backupinfo back = new Backupinfo();
@@ -701,13 +722,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                     "Failed", "", "", "", "", IsSuccess, Message);
                                     try
                                     {
-                                        var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                                        var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                                        var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                                        var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                                        var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
+                                        var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
-                                        var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
-                                        var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                                        var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                                        var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
+                                        var dlmdetails = db.Remain_dealer_balance.FirstOrDefault(aa => aa.DealerID == retailerdetails.DealerId);
+                                        var Masterdetails = db.Remain_superstokist_balance.FirstOrDefault(aa => aa.SuperStokistID == dealerdetails.SSId);
 
                                         var admininfo = db.Admin_details.SingleOrDefault();
                                         Backupinfo back = new Backupinfo();
@@ -785,13 +806,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                         db.proc_UpdateBusBooking(Idno.Value.ToString(), userid, totalFare, response.Content, 1, "Failed", "", "", "", "", IsSuccess, Message);
                                         try
                                         {
-                                            var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                                            var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                                            var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                                            var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                                            var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
+                                            var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
-                                            var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
-                                            var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                                            var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                                            var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
+                                            var dlmdetails = db.Remain_dealer_balance.FirstOrDefault(aa => aa.DealerID == retailerdetails.DealerId);
+                                            var Masterdetails = db.Remain_superstokist_balance.FirstOrDefault(aa => aa.SuperStokistID == dealerdetails.SSId);
 
                                             var admininfo = db.Admin_details.SingleOrDefault();
                                             Backupinfo back = new Backupinfo();
@@ -874,10 +895,16 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// GET Displays the bus booking report page.
+        /// </summary>
         public ActionResult BusBookingReport()
         {
             return View();
         }
+        /// <summary>
+        /// POST Displays the bus booking report filtered by date range and status.
+        /// </summary>
         [HttpPost]
         public ActionResult BusBookingReport(string txt_frm_date, string txt_to_date, string ddl_status)
         {
@@ -889,6 +916,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             public string HTMLString { get; set; }
             public bool NoMoredata { get; set; }
         }
+        /// <summary>
+        /// GET Renders the partial bus ticket report child action filtered by date range, status, and PNR.
+        /// </summary>
         [ChildActionOnly]
         public ActionResult _ticketbusreport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
@@ -934,6 +964,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //var rowdata = db.Sp_Recharge_info_LazyLoad(1, pagesize, "Retailer", userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), Operator, txtmob, ddl_status).ToList();
             //return View(rowdata);
         }
+        /// <summary>
+        /// GET Generates a PDF version of the bus ticket report for a given date range and status.
+        /// </summary>
         public ActionResult PDF_TicketBusReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -969,6 +1002,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return new ViewAsPdf(proc_Response);
             }
         }
+        /// <summary>
+        /// GET Exports the bus ticket report as an Excel file for a given date range and status.
+        /// </summary>
         public ActionResult Excel_Ticketbus_Report(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1052,6 +1088,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return sw.GetStringBuilder().ToString();
             }
         }
+        /// <summary>
+        /// POST Returns paginated bus report HTML via infinite scroll for the given date range and status.
+        /// </summary>
         [HttpPost]
         public ActionResult InfiniteScroll_bus(int pageindex, string ddl_status, DateTime frm_date, DateTime to_date)
         {
@@ -1075,6 +1114,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(jsonmodel);
         }
 
+        /// <summary>
+        /// POST Fetches bus booking details from the provider using the given TraceId.
+        /// </summary>
         [HttpPost]
         public ActionResult getBookingDetails(string TraceId)
         {
@@ -1147,6 +1189,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(JsonConvert.SerializeObject(ajaxRespo));
             }
         }
+        /// <summary>
+        /// POST Confirms bus seat cancellation and records the refund and cancellation history.
+        /// </summary>
         [HttpPost]
         public ActionResult seatCancellationConfirm(string TraceId, string BusId, string Ticketno)
         {
@@ -1158,7 +1203,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     var ajaxRespo = new { Status = "Failed", Message = "Invalid or empty booking id." };
                     return Json(JsonConvert.SerializeObject(ajaxRespo));
                 }
-                var ticket = db.BusTicketingDetails.SingleOrDefault(a => a.RetailerId == userid && a.TraceId == TraceId && a.TicketStatus == "Confirmed");
+                var ticket = db.BusTicketingDetails.FirstOrDefault(a => a.RetailerId == userid && a.TraceId == TraceId && a.TicketStatus == "Confirmed");
                 if (ticket == null)
                 {
                     var ajaxRespo = new { Status = "Failed", Message = "Invalid ticket for cancellation." };
@@ -1249,6 +1294,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(JsonConvert.SerializeObject(ajaxRespo));
             }
         }
+        /// <summary>
+        /// GET Displays the bus ticket cancellation report for today's date.
+        /// </summary>
         public ActionResult cancellationReport()
         {
             try
@@ -1269,6 +1317,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// POST Displays the bus ticket cancellation report filtered by date range.
+        /// </summary>
         [HttpPost]
         public ActionResult cancellationReport(string txt_frm_date, string txt_to_date)
         {
@@ -1297,6 +1348,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// GET Generates a PDF of the bus cancellation report for the specified date range.
+        /// </summary>
         public ActionResult PDFCancellationReport(string txt_frm_date, string txt_to_date)
         {
             try
@@ -1324,6 +1378,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// GET Exports the bus cancellation report as an Excel file for the specified date range.
+        /// </summary>
         public ActionResult ExcelancellationReport(string txt_frm_date, string txt_to_date)
         {
 
@@ -1382,6 +1439,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             Response.End();
             return View();
         }
+        /// <summary>
+        /// GET Returns autocomplete bus city suggestions matching the search term from a local JSON file.
+        /// </summary>
         [OutputCache(Duration = 2000, VaryByParam = "term")]
         public JsonResult GetBusStopName(string term)
         {
@@ -1404,13 +1464,16 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(new List<string>(), JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// GET Test action for development purposes.
+        /// </summary>
         public ActionResult test()
         {
             return View();
         }
         public IRestResponse tokencheck()
         {
-            var apidetails = db.Money_API_URLS.Where(aa => aa.API_Name == "VASTWEB").SingleOrDefault();
+            var apidetails = db.Money_API_URLS.FirstOrDefault(aa => aa.API_Name == "VASTWEB");
             var token = apidetails == null ? "" : apidetails.Token;
             var apiid = apidetails == null ? "" : apidetails.API_ID;
             var apiidpwd = apidetails == null ? "" : apidetails.Api_pwd;
@@ -1510,6 +1573,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
 
+        /// <summary>
+        /// GET Generates a PDF ticket for a completed bus booking identified by TraceId.
+        /// </summary>
         public ActionResult Bus_Print_Pdf(string TraceId)
         {
             try
@@ -1587,7 +1653,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         pdf.BookingDetails = JsonConvert.DeserializeObject<BusDetailsResponseModel>(task.Result.Content);
                         //retailer info
                         var userid = User.Identity.GetUserId();
-                        var rem = db.Retailer_Details.SingleOrDefault(a => a.RetailerId == userid);
+                        var rem = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == userid);
                         var markup = db.Convence_Fees.Where(a => a.RetailerId == rem.RetailerId && a.Role == "Bus").FirstOrDefault();
                         pdf.retailerAddress = rem.Address;
                         pdf.retailerEmail = rem.Email;

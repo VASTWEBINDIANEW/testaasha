@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// Model for storing and displaying QR code generation details.
+    /// </summary>
     public class QRCODE_Details
     {
         public IEnumerable<details> QRDetails { get; set; }

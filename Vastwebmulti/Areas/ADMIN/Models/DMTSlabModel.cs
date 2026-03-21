@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +7,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
     #region DMT1
+    /// <summary>
+    /// Aggregate view model for managing Domestic Money Transfer (DMT) commission slabs across all user roles.
+    /// </summary>
     public class DMTSlabModel
     {
         public List<imps_common_comm> common { get; set; }

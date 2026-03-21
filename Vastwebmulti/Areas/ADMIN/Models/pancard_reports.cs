@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
+    /// <summary>
+    /// View model for displaying PAN card application and processing reports.
+    /// </summary>
     public class pancard_reports
     {
         public IEnumerable<pancard_transation> pancard_Transations_report_new { get; set; }

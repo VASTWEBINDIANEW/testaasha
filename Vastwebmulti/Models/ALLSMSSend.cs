@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Vastwebmulti.Models
 {
+    /// <summary>
+    /// Utility class for sending SMS and WhatsApp notifications to all user types
+    /// </summary>
     public class ALLSMSSend
     {
         VastwebmultiEntities db = new VastwebmultiEntities();
@@ -33,8 +36,9 @@ namespace Vastwebmulti.Models
                 }
                 text = string.Format(text, "1230");
                 var apinamechange = apiurls.Replace("tttt", frmmobile).Replace("mmmm", text).Replace("iiii", Templateid);
-                var whatsts = db.Email_show_passcode.SingleOrDefault();
-                if (whatsts.whatsappapists == false)
+                // Use FirstOrDefault with null check to avoid NullReferenceException
+                var whatsts = db.Email_show_passcode.FirstOrDefault();
+                if (whatsts != null && whatsts.whatsappapists == false)
                 {
                     sms_api_entry sms = new sms_api_entry();
                     sms.apiname = apinamechange;

@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Vastwebmulti.Areas.ADMIN.Models
 {
 
+    /// <summary>
+    /// Model representing a white-label partner user account and its configuration.
+    /// </summary>
     public class Whitelabel_user
     {
         [Required(ErrorMessage = "Enter The Whitelabel Virtual Value")]

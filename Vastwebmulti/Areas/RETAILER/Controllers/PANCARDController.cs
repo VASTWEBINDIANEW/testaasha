@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using RestSharp;
 using Rotativa;
@@ -19,6 +19,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
 
+    /// <summary>
+    /// RETAILER Area - Handles PAN card application, status tracking and document upload for retailers
+    /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
     public class PANCARDController : Controller
@@ -28,26 +31,29 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         string VastbazaarBaseUrl = "http://api.vastbazaar.com/";
         //string VastbazaarBaseUrl = "http://localhost:65209/";
 
+        /// <summary>
+        /// GET - Main listing/management page
+        /// </summary>
         public ActionResult Index()
         {
             var status = ""; var message = "";
             var userid = User.Identity.GetUserId();
-            var remdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
+            var remdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
             if (remdetails.pancardsts == "Y")
             {
-                var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == remdetails.DealerId).SingleOrDefault();
+                var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == remdetails.DealerId);
                 if (dealerdetails.pancardsts == "Y")
                 {
                     var check = "OK";
 
-                    var checkfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD").SingleOrDefault();
-                    var checkALLfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL").SingleOrDefault();
+                    var checkfreeservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD");
+                    var checkALLfreeservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "ALL");
                     if (checkfreeservice.IsFree == true)
                     {
                         if (checkALLfreeservice.IsFree == false)
                         {
 
-                            var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
+                            var retailerautorenseting = db.autopaidserviceRenewalsettings.FirstOrDefault(x => x.retailerid == userid)?.auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
                                 var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
@@ -56,8 +62,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
                                     if (expiredate == DateTime.Now.Date)
                                     {
-                                        var chkadminperservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false).SingleOrDefault();
-                                        var chkadminallservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL" && aa.IsFree == false).SingleOrDefault();
+                                        var chkadminperservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false);
+                                        var chkadminallservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "ALL" && aa.IsFree == false);
                                         System.Data.Entity.Core.Objects.ObjectParameter Status = new System.Data.Entity.Core.Objects.ObjectParameter("Status", typeof(string));
                                         System.Data.Entity.Core.Objects.ObjectParameter Message = new System.Data.Entity.Core.Objects.ObjectParameter("Message", typeof(string));
                                         if (chkadminallservice != null && retailerautorenseting == "ALL")
@@ -112,7 +118,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             //var chk = db.PaidService_auto.Where(aa => aa.Userid == userid && aa.ServiceName == "PANCARD").SingleOrDefault().AutoSts;
 
 
-                            var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
+                            var retailerautorenseting = db.autopaidserviceRenewalsettings.FirstOrDefault(x => x.retailerid == userid)?.auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
                                 var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
@@ -121,8 +127,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
                                     if (expiredate == DateTime.Now.Date)
                                     {
-                                        var chkadminperservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false).SingleOrDefault();
-                                        var chkadminallservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL" && aa.IsFree == false).SingleOrDefault();
+                                        var chkadminperservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false);
+                                        var chkadminallservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "ALL" && aa.IsFree == false);
                                         System.Data.Entity.Core.Objects.ObjectParameter Status = new System.Data.Entity.Core.Objects.ObjectParameter("Status", typeof(string));
                                         System.Data.Entity.Core.Objects.ObjectParameter Message = new System.Data.Entity.Core.Objects.ObjectParameter("Message", typeof(string));
                                         if (chkadminallservice != null && retailerautorenseting == "ALL")
@@ -171,7 +177,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         if (checkALLfreeservice.IsFree == true)
                         {
 
-                            var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
+                            var retailerautorenseting = db.autopaidserviceRenewalsettings.FirstOrDefault(x => x.retailerid == userid)?.auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
                                 var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
@@ -180,8 +186,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
                                     if (expiredate >= DateTime.Now.Date)
                                     {
-                                        var chkadminperservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false).SingleOrDefault();
-                                        var chkadminallservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL" && aa.IsFree == false).SingleOrDefault();
+                                        var chkadminperservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false);
+                                        var chkadminallservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "ALL" && aa.IsFree == false);
                                         System.Data.Entity.Core.Objects.ObjectParameter Status = new System.Data.Entity.Core.Objects.ObjectParameter("Status", typeof(string));
                                         System.Data.Entity.Core.Objects.ObjectParameter Message = new System.Data.Entity.Core.Objects.ObjectParameter("Message", typeof(string));
 
@@ -249,7 +255,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
 
-                    //var checkfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD").SingleOrDefault();
+                    //var checkfreeservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD");
                     //if (checkfreeservice.IsFree == false)
                     //{
                     //    var chk = db.PaidService_auto.Where(aa => aa.Userid == userid && aa.ServiceName == "PANCARD").SingleOrDefault().AutoSts;
@@ -257,7 +263,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     //    {
                     //        System.Data.Entity.Core.Objects.ObjectParameter Status = new System.Data.Entity.Core.Objects.ObjectParameter("Status", typeof(string));
                     //        System.Data.Entity.Core.Objects.ObjectParameter Message = new System.Data.Entity.Core.Objects.ObjectParameter("Message", typeof(string));
-                    //        int serviceid = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD").SingleOrDefault().Idno;
+                    //        int serviceid = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD").Idno;
                     //        var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                     //    }
                     //    var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
@@ -368,6 +374,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(json, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// GET Returns the current retailer's profile information as JSON for use in PAN card forms.
+        /// </summary>
         public ActionResult Userinfo()
         {
             var userid = User.Identity.GetUserId();
@@ -395,6 +404,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(q, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// GET Renders the partial PSA registration form pre-filled with the retailer's details.
+        /// </summary>
         [HttpGet]
         public ActionResult RegisterPSA()
         {
@@ -410,18 +422,21 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             model.pincode = entry.Pincode.ToString();
             model.psaname = entry.Frm_Name ?? "";
             model.dob = entry.dateofbirth ?? "";
-            model.state = db.State_Desc.Where(y => y.State_id == entry.State).SingleOrDefault().State_name;
+            model.state = db.State_Desc.FirstOrDefault(y => y.State_id == entry.State)?.State_name;
             return PartialView(model);
         }
+        /// <summary>
+        /// POST Submits PSA registration details to the provider and saves the outlet record on success.
+        /// </summary>
         [HttpPost]
         public ActionResult RegisterPSA(string txtpanname, string txtfirmnmpan, string txtemailpan, string panphone, string dobpan, string panpancard, string aadharpan, string txtaddresspan, string pinpan)
         {
             try
             {
                 var userid = User.Identity.GetUserId();
-                var remdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                var statenm = db.State_Desc.Where(aa => aa.State_id == remdetails.State).SingleOrDefault().State_name;
-                var distnm = db.District_Desc.Where(aa => aa.State_id == remdetails.State && aa.Dist_id == remdetails.District).SingleOrDefault().Dist_Desc;
+                var remdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                var statenm = db.State_Desc.FirstOrDefault(aa => aa.State_id == remdetails.State)?.State_name;
+                var distnm = db.District_Desc.FirstOrDefault(aa => aa.State_id == remdetails.State && aa.Dist_id == remdetails.District)?.Dist_Desc;
 
                 Models.RegisterPSAModel model = new Models.RegisterPSAModel();
                 model.psaname = txtfirmnmpan;
@@ -551,10 +566,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// POST - Update or check status
+        /// </summary>
         public ActionResult CheckStatus()
         {
             var userid = User.Identity.GetUserId();
-            var UTIRequestId = db.VastBazaarRetailerOutlets.Where(a => a.RetailerId == userid && a.IsPanConfirmed == true).SingleOrDefault().outlet_id;
+            var UTIRequestId = db.VastBazaarRetailerOutlets.FirstOrDefault(a => a.RetailerId == userid && a.IsPanConfirmed == true)?.outlet_id;
             var RequestObject = new
             {
                 requestid = UTIRequestId,
@@ -612,6 +630,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -631,6 +652,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport(string ddl_status, string ddl_top, string txt_frm_date, string txt_to_date)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -666,6 +690,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult _TokenPurchaseReport(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -709,6 +736,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport_new()
         {
             var userid = User.Identity.GetUserId();
@@ -722,6 +752,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport_new(string ddl_status, string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -753,6 +786,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport_new_manual()
         {
             var userid = User.Identity.GetUserId();
@@ -766,6 +802,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport_new_manual(string ddl_status, string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -795,6 +834,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         }
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult PDF_TokenPurchaseReport(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -831,6 +873,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult PDF_TokenPurchaseReport1(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -862,6 +907,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         }
 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult PDF_TokenPurchaseReport1_manual(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -892,6 +940,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         }
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult Excel_TokenPurchase_Report(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -952,6 +1003,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult Excel_TokenPurchase_Report1(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1019,6 +1073,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         } 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult Excel_TokenPurchase_Report1_manual(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1093,6 +1150,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// POST Returns paginated PAN card report HTML via infinite scroll for the given date range and status.
+        /// </summary>
         [HttpPost]
         public ActionResult InfiniteScroll(int pageindex, string txt_frm_date, string txt_to_date, string ddl_status)
         {
@@ -1143,27 +1203,30 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         //    var response = util.GetUTILoginCredentials(userid);
         //    return Json(response.ToString());
         //}
+        /// <summary>
+        /// POST Deducts balance and purchases UTI PAN card tokens via the provider API for the retailer.
+        /// </summary>
         [HttpPost]
         public ActionResult buyUTIToken(decimal? amount)
         {
             try
             {
                 var userid = User.Identity.GetUserId();
-                var retailer = db.Retailer_Details.Where(s => s.RetailerId == userid).SingleOrDefault();
-                var psaid = db.VastBazaarRetailerOutlets.Where(s => s.RetailerId == userid).SingleOrDefault().outlet_id;
+                var retailer = db.Retailer_Details.FirstOrDefault(s => s.RetailerId == userid);
+                var psaid = db.VastBazaarRetailerOutlets.FirstOrDefault(s => s.RetailerId == userid)?.outlet_id;
                 string requestid = Guid.NewGuid().ToString();
                 var token = getAuthToken();
                 System.Data.Entity.Core.Objects.ObjectParameter output = new System.Data.Entity.Core.Objects.ObjectParameter("Output", typeof(string));
                 var measge = db.proc_insert_PAN_CARD12(userid, amount, requestid, output).SingleOrDefault().msg;
                 try
                 {
-                    var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                    var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                    var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                    var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                    var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
+                    var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
-                    var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
-                    var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                    var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                    var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
+                    var dlmdetails = db.Remain_dealer_balance.FirstOrDefault(aa => aa.DealerID == retailerdetails.DealerId);
+                    var Masterdetails = db.Remain_superstokist_balance.FirstOrDefault(aa => aa.SuperStokistID == dealerdetails.SSId);
 
                     var admininfo = db.Admin_details.SingleOrDefault();
                     Backupinfo back = new Backupinfo();
@@ -1226,17 +1289,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     dynamic resp = JsonConvert.DeserializeObject(response2.Content);
                     if (resp.Content.ADDINFO.Status == "Failed")
                     {
-                        var entry = db.pancard_transation.Where(s => s.requestid == requestid).SingleOrDefault();
+                        var entry = db.pancard_transation.FirstOrDefault(s => s.requestid == requestid);
                         db.proc_PAN_CARD_Refund_new(Convert.ToString(entry.idno), "Failed", "Rejected", requestid);
                         try
                         {
-                            var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-                            var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                            var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                            var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
+                            var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
+                            var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
-                            var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
-                            var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                            var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                            var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
+                            var dlmdetails = db.Remain_dealer_balance.FirstOrDefault(aa => aa.DealerID == retailerdetails.DealerId);
+                            var Masterdetails = db.Remain_superstokist_balance.FirstOrDefault(aa => aa.SuperStokistID == dealerdetails.SSId);
 
                             var admininfo = db.Admin_details.SingleOrDefault();
                             Backupinfo back = new Backupinfo();
@@ -1301,6 +1364,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// POST - Update or check status
+        /// </summary>
         public ActionResult GetTokenStatus(string id)
         {
             InstantPayComnUtil util = new InstantPayComnUtil();
@@ -1316,6 +1382,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(response.ToString());
         }
 
+        /// <summary>
+        /// POST - User logout and session clear
+        /// </summary>
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
@@ -1323,7 +1392,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
         public IRestResponse tokencheck()
         {
-            var apidetails = db.Money_API_URLS.Where(aa => aa.API_Name == "VASTWEB").SingleOrDefault();
+            var apidetails = db.Money_API_URLS.FirstOrDefault(aa => aa.API_Name == "VASTWEB");
             var token = apidetails == null ? "" : apidetails.Token;
             var apiid = apidetails == null ? "" : apidetails.API_ID;
             var apiidpwd = apidetails == null ? "" : apidetails.Api_pwd;
@@ -1426,6 +1495,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         [HttpPost]
+        /// <summary>
+        /// POST - Save form data to database
+        /// </summary>
         public ActionResult CorrectionSubmit(string Title, string NameAsPerAadhar, DateTime? DateOfBirth, string FatherName, string Gender, string AadharNo, string AAdharRegisterNo, string CustomerMobileNo, string UserState, string EmailId, string PanCardNo, HttpPostedFileBase AAdharFrontImg, HttpPostedFileBase AAdharBackImg, HttpPostedFileBase SupportingDocument, string SupportingDocumentName, string CorrectionsType)
         {
             if (string.IsNullOrEmpty(Title))
