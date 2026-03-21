@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using Rotativa;
@@ -21,6 +21,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
 {
  
     [Authorize(Roles = "Vendor")]
+    /// <summary>
+    /// VENDOR Area - Manages Vendor dashboard - product/service listings, billing and vendor account management
+    /// </summary>
     public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;

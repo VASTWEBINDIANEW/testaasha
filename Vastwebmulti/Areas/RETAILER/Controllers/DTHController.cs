@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using org.vwipl;
 using RestSharp;
@@ -13,6 +13,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
 
+    /// <summary>
+    /// RETAILER Area - Manages DTH (Direct-to-Home) recharge, new connections and plan management for retailers
+    /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
     public class DTHController : Controller
@@ -430,11 +433,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return response;
         }
         // GET: RETAILER/DTH
+        /// <summary>
+        /// GET/POST - Manage booking
+        /// </summary>
         public ActionResult DTHBooking()
         {
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// GET - View detail of a specific record
+        /// </summary>
         public ActionResult GetPackageDetails(string Code)
         {
             string respo = new InstantPayComnUtil().getOperatorDetails(Code);

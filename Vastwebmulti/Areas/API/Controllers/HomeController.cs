@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -28,6 +28,9 @@ using Vastwebmulti.Hubs;
 using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.API.Controllers
 {
+    /// <summary>
+    /// API Area - Handles API user authentication, callback processing, recharge and payment API endpoints
+    /// </summary>
     [Authorize(Roles = "API")]
     [CutomAttributforpasscodeset()]
     [Low_Bal_CustomFilter()]
@@ -146,7 +149,7 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
                     });
-            if (rowdata.Count > 0)
+            if (rowdata.Any())
             {
 
                 string stus = "";
@@ -422,7 +425,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             //dataTbl.Columns.Add("API Response", typeof(string));
             dataTbl.Columns.Add("Response Date", typeof(string));
 
-            if (proc_Response.Count > 0)
+            if (proc_Response.Any())
             {
                 foreach (var item in proc_Response)
                 {
@@ -802,7 +805,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dtt.Columns.Add("RCH Comm", typeof(decimal));
             dtt.Columns.Add("RCH GST", typeof(decimal));
             dtt.Columns.Add("Total GST ", typeof(decimal));
-            if (show.Count > 0)
+            if (show.Any())
             {
                 foreach (var item in show)
                 {
@@ -1318,7 +1321,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Income", typeof(string));
             dataTbl.Columns.Add("Total sucess", typeof(string));
 
-            if (ch.Count > 0)
+            if (ch.Any())
             {
                 foreach (var item in ch)
                 {
@@ -1957,7 +1960,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Date", typeof(string));
 
 
-            if (show.Count > 0)
+            if (show.Any())
             {
                 foreach (var item in show)
                 {
@@ -2519,7 +2522,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Balance", typeof(string));
             dataTbl.Columns.Add("Date", typeof(string));
 
-            if (ledger.Count > 0)
+            if (ledger.Any())
             {
                 foreach (var item in ledger)
                 {
@@ -2627,7 +2630,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Current Login Details", typeof(string));
 
 
-            if (Login_details.Count > 0)
+            if (Login_details.Any())
             {
 
 
@@ -2739,7 +2742,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             dataTbl.Columns.Add("Login Date", typeof(string));
 
 
-            if (Faild_Login_details.Count > 0)
+            if (Faild_Login_details.Any())
             {
 
 
@@ -2837,7 +2840,7 @@ namespace Vastwebmulti.Areas.API.Controllers
 
 
 
-            if (disputelist.Count > 0)
+            if (disputelist.Any())
             {
 
                 foreach (var item in disputelist)
@@ -4314,7 +4317,7 @@ namespace Vastwebmulti.Areas.API.Controllers
         public ActionResult uploadgstfile()
         {
             var userid = User.Identity.GetUserId();
-            if (Request.Files.Count > 0)
+            if (Request.Files.Any())
             {
                 try
                 {
@@ -4618,7 +4621,7 @@ namespace Vastwebmulti.Areas.API.Controllers
         public ActionResult uploadgstfileRecharge()
         {
             var userid = User.Identity.GetUserId();
-            if (Request.Files.Count > 0)
+            if (Request.Files.Any())
             {
                 try
                 {
@@ -4905,7 +4908,7 @@ namespace Vastwebmulti.Areas.API.Controllers
         {
             var userid = User.Identity.GetUserId();
             var chkk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).ToList();
-            if (chkk.Count > 0)
+            if (chkk.Any())
             {
                 if (chkk[0].qrdeatils != "")
                 {
@@ -4938,7 +4941,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var userid = User.Identity.GetUserId();
             var msg = "";
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid && aa.status.ToUpper() == "SUCCESS").ToList();
-            if (purchasecheck.Count > 0)
+            if (purchasecheck.Any())
             {
                 var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 var purchasedate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().purchasedate;
@@ -5008,7 +5011,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             if (chk != null)
             {
                 var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
-                if (purchasecheck.Count > 0)
+                if (purchasecheck.Any())
                 {
                     var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                     if (expdate >= DateTime.Now)
@@ -5078,7 +5081,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var msg = "";
             var chk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
-            if (purchasecheck.Count > 0)
+            if (purchasecheck.Any())
             {
                 var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)
@@ -5143,7 +5146,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var msg = "";
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
             var chk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
-            if (purchasecheck.Count > 0)
+            if (purchasecheck.Any())
             {
                 var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)
@@ -5197,7 +5200,7 @@ namespace Vastwebmulti.Areas.API.Controllers
             var msg = "";
             var purchasecheck = db.Whatsapp_purchase.Where(aa => aa.apiid == userid).ToList();
             var chk = db.Whatsapp_user_details.Where(aa => aa.userid == userid).SingleOrDefault();
-            if (purchasecheck.Count > 0)
+            if (purchasecheck.Any())
             {
                 var expdate = purchasecheck.OrderByDescending(aa => aa.purchasedate).FirstOrDefault().renewaldate;
                 if (expdate >= DateTime.Now)

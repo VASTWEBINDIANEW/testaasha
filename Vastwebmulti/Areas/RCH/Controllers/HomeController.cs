@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -25,6 +25,9 @@ using System.Web.Helpers;
 namespace Vastwebmulti.Areas.RCH.Controllers
 {
     [Authorize(Roles = "RCH")]
+    /// <summary>
+    /// RCH Area - Handles recharge processing callbacks, status updates and transaction reconciliation
+    /// </summary>
     public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -53,6 +56,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
         }
         // GET: RCH/Home
         VastwebmultiEntities db = new VastwebmultiEntities();
+        /// <summary>
+        /// [GET] - Displays today's manual recharge transactions with success/failure/pending summary counts
+        /// </summary>
         public ActionResult Index()
         {
             string userid = User.Identity.GetUserId();
@@ -70,6 +76,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] - Filters and displays manual recharge transactions by date range and status
+        /// </summary>
         public ActionResult Index(string txt_frm_date, string txt_to_date, string DDLsts, string txtamount)
         {
             if (txtamount == null || txtamount == "")
@@ -137,6 +146,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
 
             }
         }
+        /// <summary>
+        /// [GET] - Marks a recharge transaction as SUCCESS and redirects to the dashboard
+        /// </summary>
         public ActionResult success(string idno)
         {
             try
@@ -162,6 +174,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
                 return RedirectToAction("Index");
             }
         }
+        /// <summary>
+        /// [GET] - Marks a recharge transaction as FAILED and redirects to the dashboard
+        /// </summary>
         public ActionResult failed(string fid)
         {
             try
@@ -185,6 +200,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
                 return RedirectToAction("Index");
             }
         }
+        /// <summary>
+        /// [GET] - Resends a pending recharge request via the SRS system
+        /// </summary>
         public ActionResult resend(string fid)
         {
             try
@@ -199,6 +217,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
                 return RedirectToAction("Index");
             }
         }
+        /// <summary>
+        /// [GET] - Marks a recharge transaction as SUCCESS and redirects to the dashboard
+        /// </summary>
         public ActionResult failed_to_success(string fid)
         {
             try
@@ -230,18 +251,24 @@ namespace Vastwebmulti.Areas.RCH.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] - Renders the RCH operator dashboard view
+        /// </summary>
         public ActionResult Dashboard()
         {
             return View();
         }
 
+        /// <summary>
+        /// [GET] - Adds or updates a manual operator configuration for the RCH user
+        /// </summary>
         public ActionResult submit_operator1(string Operatorids, string opnamelistbyid, int? textminiamount, int? textmaxamount)
         {
             try
             {
                 string userid = User.Identity.GetUserId();
                 var lists = db.Manual_opt_sts.Where(s => s.@operator == opnamelistbyid && s.respID == userid).ToList();
-                if (lists.Count == 0)
+                if (!lists.Any())
                 {
 
 
@@ -273,6 +300,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
 
             return RedirectToAction("Operator_Manage", "Home");
         }
+        /// <summary>
+        /// [GET] - JSON - returns all operator codes filtered by operator type for dropdown binding
+        /// </summary>
         public JsonResult FillAllOperator(string opname)
         {
             var type = db.Operator_Code.Where(x => x.Operator_type == opname).ToList();
@@ -291,12 +321,18 @@ namespace Vastwebmulti.Areas.RCH.Controllers
            
         }
 
+        /// <summary>
+        /// [GET] - Displays the add-operator form for recharge configuration
+        /// </summary>
         public ActionResult addoperaterforrecharge()
         {
             ViewData["mesage1"] = TempData["message1"];
 
             return View();
         }
+        /// <summary>
+        /// [GET] - Shows all manually configured operators for the current RCH user
+        /// </summary>
         public ActionResult Operator_Manage()
         {
             string userid = User.Identity.GetUserId();
@@ -304,6 +340,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Bulk-enables or bulk-disables all manually configured operators
+        /// </summary>
         public ActionResult Operator_manage(string but)
         {
             string userid = User.Identity.GetUserId();
@@ -326,6 +365,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
             var ch = db.Select_manual_opt(userid);
             return View(ch);
         }
+        /// <summary>
+        /// [GET] - Toggles the active/inactive status of a single manual operator entry
+        /// </summary>
         public ActionResult manualedit(string id, string sts)
         {
             try
@@ -352,6 +394,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] - Renders the change-password form for the RCH user
+        /// </summary>
         public ActionResult ChangePassword()
         {
 
@@ -418,6 +463,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
         }
 
         //Edit Profile 
+        /// <summary>
+        /// [GET] - Displays the RCH user profile edit form
+        /// </summary>
         public ActionResult Edit_Profile(string RchId)
         {
 
@@ -427,6 +475,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
             return View(show);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] - Saves updated profile information including optional photo upload
+        /// </summary>
         public ActionResult Edit_Profile(string RchId, RCH_Details rchdetails)
         {
             try

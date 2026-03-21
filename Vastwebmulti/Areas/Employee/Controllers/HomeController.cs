@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using java.awt;
 using Microsoft.AspNet.Identity;
@@ -41,6 +41,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 {
     [Authorize(Roles = "Employee")]
 
+    /// <summary>
+    /// Employee Area - Manages Employee portal - task management, attendance and operational support functions
+    /// </summary>
     public class HomeController : Controller
     {
         // GET: Employee/Home
@@ -2808,7 +2811,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             dataTbl.Columns.Add("Response Time", typeof(string));
             dataTbl.Columns.Add("Operator ID", typeof(string));
 
-            if (rowdata.Count > 0)
+            if (rowdata.Any())
             {
                 foreach (var item in rowdata)
                 {
@@ -3116,7 +3119,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             string frm_date = frm.ToString("yyyy-MM-dd");
             string to_date = to.ToString("yyyy-MM-dd");
             var respo = db.all_dispute_list(1, 1000000, ddl_status, frm_date, to_date).ToList();
-            if (respo.Count > 0)
+            if (respo.Any())
             {
                 foreach (var item in respo)
                 {
@@ -3157,7 +3160,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 // Sabhi matching records fetch karo
                 var disputes = db.dispute_list.Where(a => a.rch_id == idn.ToString()).ToList();
 
-                if (disputes.Count == 0)
+                if (!disputes.Any())
                 {
                     TempData["error"] = "No dispute entry found with this ID.";
                     return RedirectToAction("Dispute_list");
@@ -3213,7 +3216,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             dataTbl.Columns.Add("Day's", typeof(string));
             dataTbl.Columns.Add("Status", typeof(string));
 
-            if (ch.Count > 0)
+            if (ch.Any())
             {
                 foreach (var item in ch)
                 {
@@ -3877,7 +3880,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
             var respo = db.money_transfer_report_paging(ddlusers, userid, ddl_status, "VASTWEB", Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), ddl_Type, 1, 10000000).ToList();
 
-            if (respo.Count > 0)
+            if (respo.Any())
             {
                 foreach (var item in respo)
                 {
@@ -5171,7 +5174,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             dt2.Columns.Add("Admin Income", typeof(string));
 
             var respo = db.Mpos_Report_New_paging(1, 100000, ddlusers, userid, ddl_status, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
-            if (respo.Count > 0)
+            if (respo.Any())
             {
                 foreach (var item in respo)
                 {
@@ -5741,7 +5744,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
             var respo = db.Aeps_Report_New(ddlusers, userid, ddl_status, 0, "", "", "", ddl_settletype, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), 1, 100000).ToList();
 
-            if (respo.Count > 0)
+            if (respo.Any())
             {
                 foreach (var item in respo)
                 {
@@ -6546,7 +6549,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             dataTbl.Columns.Add("Master Tds", typeof(string));
             dataTbl.Columns.Add("Master Remain Post", typeof(string));
 
-            if (chk.Count > 0)
+            if (chk.Any())
             {
                 foreach (var item in chk)
                 {
@@ -7186,7 +7189,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
             var respo = db.PAN_CARD_IPAY_Token_report_paging(1, 10000000, userid, ddlusers, ddl_status, frm_date, to_date).ToList();
-            if (respo.Count > 0)
+            if (respo.Any())
             {
                 foreach (var item in respo)
                 {
@@ -7922,7 +7925,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             dataTbl.Columns.Add("Operator ID", typeof(string));
             dataTbl.Columns.Add("Date Time", typeof(string));
 
-            if (ch.Count > 0)
+            if (ch.Any())
             {
                 foreach (var item in ch)
                 {
@@ -9069,7 +9072,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 DateTime fromto = to_date.AddDays(1);
                 var respo = db.Select_balance_Super_stokist(usernm, frm_date, fromto).ToList();
 
-                if (respo.Count > 0)
+                if (respo.Any())
                 {
                     foreach (var item in respo)
                     {
@@ -9098,7 +9101,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 dtt.Columns.Add("Bank Name", typeof(string));
                 DateTime fromto = to_date.AddDays(1);
                 var respo = db.select_admin_to_Dealer("Admin", usernm, frm_date, fromto).OrderByDescending(a => a.date_dlm).ToList();
-                if (respo.Count > 0)
+                if (respo.Any())
                 {
                     foreach (var item in respo)
                     {
@@ -9131,7 +9134,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 DateTime fromto = to_date.AddDays(1);
                 var respo = db.select_dlm_rem(userid, frm_date, fromto, usernm, 1, 1500).ToList();
 
-                if (respo.Count > 0)
+                if (respo.Any())
                 {
                     foreach (var item in respo)
                     {
@@ -9163,7 +9166,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 DateTime fromto = to_date.AddDays(1);
                 var respo = db.API_balance_transfer_report(usernm, "ALL", frm_date, fromto).ToList();
 
-                if (respo.Count > 0)
+                if (respo.Any())
                 {
                     foreach (var item in respo)
                     {
@@ -9194,7 +9197,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 dtt.Columns.Add("Bank Name", typeof(string));
                 DateTime fromto = to_date.AddDays(1);
                 var respo = db.whitelabel_balance_transfer_report(usernm, "ALL", frm_date, fromto).ToList();
-                if (respo.Count > 0)
+                if (respo.Any())
                 {
                     foreach (var item in respo)
                     {
@@ -9649,12 +9652,12 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             {
                 var masterlist = Details.Where(x => !string.IsNullOrEmpty(x.SuperstokistName) && x.SuperstokistName.ToUpper().Contains(usernm.ToUpper())).ToList();
                 listall = masterlist;
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbyfrm = Details.Where(x => x.FarmName.ToUpper().Contains(usernm.ToUpper())).ToList();
                     listall = filterbyfrm;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbymob = Details.Where(x => x.Mobile.ToUpper().Contains(usernm.ToUpper())).ToList();
                     listall = filterbymob;
@@ -9702,12 +9705,12 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             {
                 var masterlist = Details.Where(x => !string.IsNullOrEmpty(x.SuperstokistName) && x.SuperstokistName.ToUpper().Contains(usernm.ToUpper())).ToList();
                 listall = masterlist;
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbyfrm = Details.Where(x => x.FarmName.ToUpper().Contains(usernm.ToUpper())).ToList();
                     listall = filterbyfrm;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbymob = Details.Where(x => x.Mobile.ToUpper().Contains(usernm.ToUpper())).ToList();
                     listall = filterbymob;
@@ -10029,7 +10032,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             try
             {
                 var isdealerexist = db.Dealer_Details.Where(s => s.SSId == ssiddelete).ToList();
-                if (isdealerexist.Count > 0)
+                if (isdealerexist.Any())
                 {
                     throw new Exception("Not Allow To Delete, First Change The Distributor.");
                 }
@@ -10140,12 +10143,12 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             {
                 var dealerlist = Details.Where(x => !string.IsNullOrEmpty(x.FarmName) && x.FarmName.ToUpper().Contains(usernm.ToUpper())).ToList();
                 listall = dealerlist;
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbyname = Details.Where(x => x.DealerName.ToUpper().Contains(usernm.ToUpper())).ToList();
                     listall = filterbyname;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbymob = Details.Where(x => x.Mobile.ToUpper().Contains(usernm.ToUpper())).ToList();
                     listall = filterbymob;
@@ -10208,12 +10211,12 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             {
                 var dealerlist = Details.Where(x => !string.IsNullOrEmpty(x.FarmName) && x.FarmName.ToUpper().Contains(usernm.ToUpper())).ToList();
                 listall = dealerlist;
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbyname = Details.Where(x => x.DealerName.ToUpper().Contains(usernm.ToUpper())).ToList();
                     listall = filterbyname;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbymob = Details.Where(x => x.Mobile.ToUpper().Contains(usernm.ToUpper())).ToList();
                     listall = filterbymob;
@@ -10439,17 +10442,17 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 usernminput = null;
                 //var dealerlist = Details.Where(x => !string.IsNullOrEmpty(x.DealerFarmName) && x.DealerFarmName.ToUpper().Contains(usernm.ToUpper())).ToList();
                 //listall = dealerlist;
-                //if (listall.Count == 0)
+                //if (!listall.Any())
                 //{
                 //    var filterbyfrm = Details.Where(x => x.Frm_Name.ToUpper().Contains(usernm.ToUpper())).ToList();
                 //    listall = filterbyfrm;
                 //}
-                //if (listall.Count == 0)
+                //if (!listall.Any())
                 //{
                 //    var filterbyremname = Details.Where(x => x.RetailerName.ToUpper().Contains(usernm.ToUpper())).ToList();
                 //    listall = filterbyremname;
                 //}
-                //if (listall.Count == 0)
+                //if (!listall.Any())
                 //{
                 //    var filterbymob = Details.Where(x => x.Mobile.ToUpper().Contains(usernm.ToUpper())).ToList();
                 //    listall = filterbymob;
@@ -10462,22 +10465,22 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 var dealerlist = Details.Where(x => !string.IsNullOrEmpty(x.DealerFarmName) && x.DealerFarmName.ToUpper().Contains(usernminput.ToUpper())).ToList();
                 listall = dealerlist;
 
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbymob = Details.Where(x => x.Mobile.ToUpper().StartsWith(usernminput.ToUpper())).ToList();
                     listall = filterbymob;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbyfrm = Details.Where(x => x.Frm_Name.ToUpper().Contains(usernminput.ToUpper())).ToList();
                     listall = filterbyfrm;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbyremname = Details.Where(x => x.RetailerName.ToUpper().Contains(usernminput.ToUpper())).ToList();
                     listall = filterbyremname;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbymob = Details.Where(x => x.DealerFarmName.ToUpper().Contains(usernminput.ToUpper())).ToList();
                     listall = filterbymob;
@@ -10523,17 +10526,17 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             {
                 var dealerlist = Details.Where(x => x.DealerId == usernm).ToList();
                 listall = dealerlist;
-                //if (listall.Count == 0)
+                //if (!listall.Any())
                 //{
                 //    var filterbyfrm = Details.Where(x => x.Frm_Name.ToUpper().Contains(usernm.ToUpper())).ToList();
                 //    listall = filterbyfrm;
                 //}
-                //if (listall.Count == 0)
+                //if (!listall.Any())
                 //{
                 //    var filterbyremname = Details.Where(x => x.RetailerName.ToUpper().Contains(usernm.ToUpper())).ToList();
                 //    listall = filterbyremname;
                 //}
-                //if (listall.Count == 0)
+                //if (!listall.Any())
                 //{
                 //    var filterbymob = Details.Where(x => x.Mobile.ToUpper().Contains(usernm.ToUpper())).ToList();
                 //    listall = filterbymob;
@@ -10546,22 +10549,22 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 var dealerlist = Details.Where(x => !string.IsNullOrEmpty(x.DealerFarmName) && x.DealerFarmName.ToUpper().Contains(usernminput.ToUpper())).ToList();
                 listall = dealerlist;
 
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbymob = Details.Where(x => x.Mobile.ToUpper().StartsWith(usernminput.ToUpper())).ToList();
                     listall = filterbymob;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbyfrm = Details.Where(x => x.Frm_Name.ToUpper().Contains(usernminput.ToUpper())).ToList();
                     listall = filterbyfrm;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbyremname = Details.Where(x => x.RetailerName.ToUpper().Contains(usernminput.ToUpper())).ToList();
                     listall = filterbyremname;
                 }
-                if (listall.Count == 0)
+                if (!listall.Any())
                 {
                     var filterbymob = Details.Where(x => x.DealerFarmName.ToUpper().Contains(usernminput.ToUpper())).ToList();
                     listall = filterbymob;
@@ -10603,7 +10606,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             dataTbl.Columns.Add("Update Date", typeof(string));
             dataTbl.Columns.Add("Device Info", typeof(string));
 
-            if (results.Count > 0)
+            if (results.Any())
             {
                 foreach (var item in results)
                 {
@@ -12039,7 +12042,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 //}
                 var reatilerto = db.Retailer_Details.Where(p => p.RetailerId == hdMDDLM).FirstOrDefault().RetailerId;
                 var retaileremaillid = db.Retailer_Details.Where(p => p.RetailerId == hdMDDLM).FirstOrDefault().Email;
-                //if (remid.Count > 0)
+                //if (remid.Any())
                 //{
                 //    reatilerto = remid.Single().RetailerId;
                 //    retaileremaillid = remid.Single().Email;
@@ -12221,7 +12224,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 DateTime fromto = to_date.AddDays(1);
                 var respo = db.dealer_to_rem_fund_report(frm_date, fromto, usernm, "ALL", 1, 500).ToList().ToList();
 
-                if (respo.Count > 0)
+                if (respo.Any())
                 {
                     foreach (var item in respo)
                     {
@@ -12263,7 +12266,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                     // vmodel.show_rem_to_rem_balByAdmin_Recived = db.show_rem_to_rem_balByAdmin("ALL", usernm, fromdate, Todate, 1, 5000).ToList();
 
                 }
-                if (respo.Count > 0)
+                if (respo.Any())
                 {
                     foreach (var item in respo)
                     {
@@ -12296,7 +12299,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 DateTime fromto = to_date.AddDays(1);
                 var respo = db.Master_to_dealer_report_BYAdmin(frm_date, fromto, usernm, "ALL", 1, 500).ToList().ToList();
 
-                if (respo.Count > 0)
+                if (respo.Any())
                 {
                     foreach (var item in respo)
                     {
@@ -13060,7 +13063,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                     var proc_Response = db.proc_FlightReport(1, 1000000, ddl_status, retailerid, DealerId, MasterId, null, null, PNR, null, null, frm_date, to_date).ToList();
 
-                    if (proc_Response.Count > 0)
+                    if (proc_Response.Any())
                     {
                         foreach (var item in proc_Response)
                         {
@@ -13668,7 +13671,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 if (respo.StatusCode == 200 && respo.Content != null && respo.Content.ResponseCode == 0 && respo.Content.ADDINFO.Error.ErrorCode == 0)
                 {
                     var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-                    if (logo.Count > 0)
+                    if (logo.Any())
                     {
                         ViewBag.logoimage = logo.SingleOrDefault().LogoImage;
                     }
@@ -13741,7 +13744,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 if (respo.StatusCode == 200 && respo.Content != null && respo.Content.ResponseCode == 0 && respo.Content.ADDINFO.Error.ErrorCode == 0)
                 {
                     var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-                    if (logo.Count > 0)
+                    if (logo.Any())
                     {
                         ViewBag.logoimage = logo.SingleOrDefault().LogoImage;
                     }
@@ -13814,7 +13817,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 if (respo.StatusCode == 200 && respo.Content != null && respo.Content.ResponseCode == 0 && respo.Content.ADDINFO.Error.ErrorCode == 0)
                 {
                     var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-                    if (logo.Count > 0)
+                    if (logo.Any())
                     {
                         ViewBag.logoimage = logo.SingleOrDefault().LogoImage;
                     }
@@ -13887,7 +13890,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 if (respo.StatusCode == 200 && respo.Content != null && respo.Content.ResponseCode == 0 && respo.Content.ADDINFO.Error.ErrorCode == 0)
                 {
                     var logo = db.tblHeaderLogoes.Where(p => p.Role == "ADMIN").ToList();
-                    if (logo.Count > 0)
+                    if (logo.Any())
                     {
                         ViewBag.logoimage = logo.SingleOrDefault().LogoImage;
                     }
@@ -14323,7 +14326,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                     dataTbl.Columns.Add("Booking Time", typeof(string));
 
 
-                    if (proc_Response.Count > 0)
+                    if (proc_Response.Any())
                     {
 
 
@@ -14755,7 +14758,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                     dataTbl.Columns.Add("Booking Id", typeof(string));
 
 
-                    if (ch.Count > 0)
+                    if (ch.Any())
                     {
 
 

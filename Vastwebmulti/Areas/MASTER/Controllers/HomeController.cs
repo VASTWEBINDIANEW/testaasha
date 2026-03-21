@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -31,6 +31,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.MASTER.Controllers
 {
+    /// <summary>
+    /// MASTER Area - Manages Master Dealer dashboard, wallet, fund transfers, retailer management and reports
+    /// </summary>
     [Authorize(Roles = "master")]
     [CutomAttributforpasscodeset()]
     [Low_Bal_CustomFilter()]
@@ -97,6 +100,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
         #endregion
         //Dashboard 
+/// <summary>
+/// Displays the master dealer dashboard with balance overview, news and recharge stats.
+/// </summary>
         public ActionResult Dashboard()
         {
             try
@@ -398,6 +404,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
 
         //check master balance
+/// <summary>
+/// Returns the master dealer's current credit balance and outstanding dealer balances.
+/// </summary>
         public ActionResult Chkbalance()
         {
             var userid = User.Identity.GetUserId();
@@ -415,6 +424,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             });
         }
 
+/// <summary>
+/// Displays the outstanding balance report for all dealers under this master.
+/// </summary>
         public ActionResult Show_Dealer_outstandingreport()
         {
             var userid = User.Identity.GetUserId();
@@ -483,6 +495,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
         //show today and yesterday business
         #region show today and yesterday business
+/// <summary>
+/// Returns today or yesterday recharge chart data for the master dealer.
+/// </summary>
         public ActionResult Show_All_Recharge(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -519,6 +534,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         #endregion
 
         #region Notification
+/// <summary>
+/// Displays the notification management page for sending messages to dealers.
+/// </summary>
         public ActionResult Notification()
         {
             ViewData["success"] = TempData["success"];
@@ -553,6 +571,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
         #endregion End Notification
         #region  Master Income
+/// <summary>
+/// Displays the master dealer income report for the current date.
+/// </summary>
         public ActionResult Master_income()
         {
             var userid = User.Identity.GetUserId();
@@ -668,6 +689,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             return RedirectToAction("Actual_Master_income");
         }
 
+/// <summary>
+/// Displays the master dealer home index page with operator and service listings.
+/// </summary>
         public ActionResult Index()
         {
             try
@@ -723,6 +747,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
         }
 
+/// <summary>
+/// Displays the signup token management page for assigning tokens to dealers.
+/// </summary>
         public ActionResult SignupTokens()
         {
             var userid = User.Identity.GetUserId();
@@ -738,7 +765,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             var dealers = dealrs.Select(a => new SelectListItem { Text = a.Email + " - " + a.Mobile, Value = a.DealerId }).ToList();
             ViewBag.ddlDealers = dealers;
             var msvalue = _db.TokenValueByAdmins.ToList();
-            if (msvalue.Count > 0)
+            if (msvalue.Any())
             {
                 ViewBag.mastervalue = msvalue.SingleOrDefault().MasterValue;
                 ViewBag.masterToken = ch;
@@ -798,7 +825,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
                 entries = entries.Where(a => a.DealerId == dealerId);
             }
             var msvalue = _db.TokenValueByAdmins.ToList();
-            if (msvalue.Count > 0)
+            if (msvalue.Any())
             {
                 ViewBag.masterToken = ch;
                 ViewBag.mastervalue = msvalue.SingleOrDefault().MasterValue;
@@ -1151,6 +1178,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
         //end
         //Complaint Request 
+/// <summary>
+/// Displays the list of complaints raised by the master dealer.
+/// </summary>
         public ActionResult Complaint()
         {
             var userid = User.Identity.GetUserId();
@@ -1616,6 +1646,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             }
         }
 
+/// <summary>
+/// Displays the master dealer hold commission transfer reports.
+/// </summary>
         public ActionResult Masterhold_comm_reports()
         {
 
@@ -1648,6 +1681,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
 
         #region TDSReport
+/// <summary>
+/// Displays the TDS (Tax Deducted at Source) report for the master dealer.
+/// </summary>
         public ActionResult TDSReport()
         {
             var userid = User.Identity.GetUserId();
@@ -1761,6 +1797,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         #endregion
 
         #region Master Gst Invocing Report
+/// <summary>
+/// Displays the GST invoicing report for the master dealer.
+/// </summary>
         public ActionResult Gst_Invocing_Master_report()
         {
             var userid = User.Identity.GetUserId();
@@ -2325,6 +2364,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         }
         //Change Password 
         [HttpGet]
+/// <summary>
+/// Displays the change-password form for the master dealer account.
+/// </summary>
         public ActionResult ChangePassword()
         {
 
@@ -2388,6 +2430,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
                 ModelState.AddModelError("", error);
             }
         }
+        /// <summary>
+        /// Processes new dealer registration submitted by the master dealer.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult> InsertDealer(MASTER.Models.DealerModel model, string ddlrole)
         {
@@ -2618,6 +2663,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         //Start Slab Setting 
         #region SlabSetting
         //GET : Show Slab Name 
+/// <summary>
+/// Displays the slab generation and commission configuration page for the master.
+/// </summary>
         public ActionResult generateSlab()
         {
             ResultSetViewModel viewModel = new ResultSetViewModel();
@@ -2673,7 +2721,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
                 {
                     var userid = User.Identity.GetUserId();
                     var disresult = db.Dealer_Details.Where(p => p.slab_name == slabname).ToList();
-                    if (disresult.Count > 0)
+                    if (disresult.Any())
                     {
                         TempData["api"] = "This slab is Already Assign To Distributor User..";
                     }
@@ -2692,6 +2740,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
         #region Account
 
+/// <summary>
+/// Displays the fund transfer page for sending funds to a dealer.
+/// </summary>
         public ActionResult SendFund()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -2966,6 +3017,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
 
 
 
+/// <summary>
+/// Displays the fund transfer management page showing all incoming and outgoing fund requests.
+/// </summary>
         public ActionResult FUNDTRANSFER()
         {
             FundTransferViewModel vmodel = new FundTransferViewModel();
@@ -10022,7 +10076,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
         public ActionResult uploadgstfile()
         {
             var userid = User.Identity.GetUserId();
-            if (Request.Files.Count > 0)
+            if (Request.Files.Any())
             {
                 try
                 {
@@ -10605,7 +10659,7 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             var userid = User.Identity.GetUserId();
 
             var chk = db.daywisecommsetforusers.Where(s => s.userid == userid && s.role == "Master").ToList();
-            if (chk.Count == 0)
+            if (!chk.Any())
             {
                 daywisecommsetforuser d1 = new daywisecommsetforuser();
                 d1.role = "Master";

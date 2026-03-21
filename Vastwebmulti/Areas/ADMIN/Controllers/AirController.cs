@@ -18,6 +18,9 @@ using Vastwebmulti.Models;
                                           
 namespace Vastwebmulti.Areas.ADMIN.Controllers
 {
+    /// <summary>
+    /// ADMIN Area - Manages flight ticket reports, cancellations, and ticket viewing/printing
+    /// </summary>
     //Remote
     [Authorize(Roles = "Admin")]
     public class AirController : Controller
@@ -59,6 +62,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 _userManager = value;
             }
         }
+        /// <summary>
+        /// GET - Displays the flight ticket report page with user filter dropdowns.
+        /// </summary>
         [HttpGet]
         public ActionResult TicketReport()
         {
@@ -111,6 +117,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// POST - Filters and returns the flight ticket report by date range.
+        /// </summary>
         [HttpPost]
         public ActionResult TicketReport(string txt_frm_date, string txt_to_date)
         {
@@ -167,6 +176,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// Child action - Renders the partial ticket report view filtered by the provided criteria.
+        /// </summary>
         [ChildActionOnly]
         public ActionResult _ticketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
@@ -282,6 +294,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// POST - Returns a paginated chunk of ticket report data as JSON for infinite scroll.
+        /// </summary>
         [HttpPost]
         public ActionResult scroll_TicketReport(int pageindex, string txt_frm_date, string txt_to_date, string PNR, string ddl_status, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
@@ -420,6 +435,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             public string HTMLString { get; set; }
             public bool NoMoredata { get; set; }
         }
+        /// <summary>
+        /// GET - Exports the flight ticket report to an Excel file for download.
+        /// </summary>
         public ActionResult ExcelTicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
             try
@@ -553,7 +571,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
 
                     var proc_Response = db.proc_FlightReport(1, 1000000, ddl_status, retailerid, DealerId, MasterId, null, null, PNR, null, null, frm_date, to_date).ToList();
 
-                    if (proc_Response.Count > 0)
+                    if (proc_Response.Any())
                     {
                         foreach (var item in proc_Response)
                         {
@@ -598,6 +616,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// GET - Exports the flight ticket report as a PDF for download.
+        /// </summary>
         public ActionResult PDFTicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
             try
@@ -715,6 +736,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// GET - Returns JSON totals (success, failed, pending) for the flight ticket report by date range.
+        /// </summary>
         public ActionResult TotalticketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
             try
@@ -838,6 +862,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// POST - Fetches live flight booking status from the provider API and returns JSON.
+        /// </summary>
         [HttpPost]
         public ActionResult GetFlightStatus(TicketBookinDetailsModel model)
         {
@@ -897,6 +924,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
             //return View(respo);
         }
+        /// <summary>
+        /// GET - Displays the flight cancellation report for today's date.
+        /// </summary>
         public ActionResult CancellationReport()
         {
             try
@@ -942,6 +972,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// POST - Filters and displays the flight cancellation report by date range and user.
+        /// </summary>
         [HttpPost]
         public ActionResult CancellationReport(string txt_frm_date, string txt_to_date, int? ddl_top, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabe)
         {
@@ -1055,6 +1088,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// POST - Checks the cancellation request status with the provider and updates the refund record.
+        /// </summary>
         [HttpPost]
         public ActionResult CancellationStatus(int ChangeReqId, int idno)
         {
@@ -1127,6 +1163,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return Json(JsonConvert.SerializeObject(jsrespo));
             }
         }
+        /// <summary>
+        /// GET - Displays the full flight ticket details view including fare and baggage information.
+        /// </summary>
         [HttpGet]
         public ActionResult ViewTicket(int idno, string firsName, string lastName)
         {

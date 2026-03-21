@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using RestSharp;
 using Rotativa;
@@ -19,6 +19,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
 
+    /// <summary>
+    /// RETAILER Area - Handles PAN card application, status tracking and document upload for retailers
+    /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
     public class PANCARDController : Controller
@@ -28,6 +31,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         string VastbazaarBaseUrl = "http://api.vastbazaar.com/";
         //string VastbazaarBaseUrl = "http://localhost:65209/";
 
+        /// <summary>
+        /// GET - Main listing/management page
+        /// </summary>
         public ActionResult Index()
         {
             var status = ""; var message = "";
@@ -551,6 +557,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// POST - Update or check status
+        /// </summary>
         public ActionResult CheckStatus()
         {
             var userid = User.Identity.GetUserId();
@@ -612,6 +621,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -631,6 +643,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport(string ddl_status, string ddl_top, string txt_frm_date, string txt_to_date)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -666,6 +681,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult _TokenPurchaseReport(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -709,6 +727,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport_new()
         {
             var userid = User.Identity.GetUserId();
@@ -722,6 +743,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport_new(string ddl_status, string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -753,6 +777,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport_new_manual()
         {
             var userid = User.Identity.GetUserId();
@@ -766,6 +793,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult TokenPurchaseReport_new_manual(string ddl_status, string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -795,6 +825,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         }
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult PDF_TokenPurchaseReport(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -831,6 +864,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult PDF_TokenPurchaseReport1(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -862,6 +898,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         }
 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult PDF_TokenPurchaseReport1_manual(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -892,6 +931,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         }
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult Excel_TokenPurchase_Report(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -952,6 +994,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult Excel_TokenPurchase_Report1(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1019,6 +1064,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         } 
+        /// <summary>
+        /// GET - View transaction or activity report
+        /// </summary>
         public ActionResult Excel_TokenPurchase_Report1_manual(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1301,6 +1349,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// POST - Update or check status
+        /// </summary>
         public ActionResult GetTokenStatus(string id)
         {
             InstantPayComnUtil util = new InstantPayComnUtil();
@@ -1316,6 +1367,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(response.ToString());
         }
 
+        /// <summary>
+        /// POST - User logout and session clear
+        /// </summary>
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
@@ -1426,6 +1480,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         [HttpPost]
+        /// <summary>
+        /// POST - Save form data to database
+        /// </summary>
         public ActionResult CorrectionSubmit(string Title, string NameAsPerAadhar, DateTime? DateOfBirth, string FatherName, string Gender, string AadharNo, string AAdharRegisterNo, string CustomerMobileNo, string UserState, string EmailId, string PanCardNo, HttpPostedFileBase AAdharFrontImg, HttpPostedFileBase AAdharBackImg, HttpPostedFileBase SupportingDocument, string SupportingDocumentName, string CorrectionsType)
         {
             if (string.IsNullOrEmpty(Title))

@@ -1,4 +1,4 @@
-﻿using LinqToExcel;
+using LinqToExcel;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -39,6 +39,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
     [Authorize(Roles = "Whitelabel")]
 
+    /// <summary>
+    /// WHITELABEL Area - Manages WhiteLabel partner dashboard, branding settings, sub-user management and financial reports
+    /// </summary>
     public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -71,6 +74,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         VastwebmultiEntities db = new VastwebmultiEntities();
         #region Dashboard
         // GET: WHITELABEL/Home
+        /// <summary>
+        /// [GET] Displays the WhiteLabel admin dashboard with account totals, news and API settings
+        /// </summary>
         public ActionResult Dashboard()
         {
             var userid = User.Identity.GetUserId();
@@ -282,6 +288,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json(new { Status = type, Recharge = rechargeandbill, Moneytransfer = moneytransfer, Aeps = Aeps, Pancard = Pancard });
         }
+        /// <summary>
+        /// [GET] Displays the main index page with virtual and real balance overview
+        /// </summary>
         public ActionResult Index()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -360,6 +369,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #region ALLUSERS
         #region MasterUserList
+        /// <summary>
+        /// [GET] Displays the list of all Master Dealers under this WhiteLabel
+        /// </summary>
         public ActionResult Master_list()
         {
             var userid = User.Identity.GetUserId();
@@ -378,6 +390,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Searches and filters Master Dealer list by Master ID
+        /// </summary>
         public ActionResult Master_list(string MID)
         {
             var userid = User.Identity.GetUserId();
@@ -631,6 +646,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return RedirectToAction("Master_list");
             }
         }
+        /// <summary>
+        /// [GET] Toggles email verification status for a Master Dealer
+        /// </summary>
         public ActionResult emailverify(string ssid)
         {
             var userid = User.Identity.GetUserId();
@@ -649,6 +667,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_Whitelabel_Masterlist", viewModel);
 
         }
+        /// <summary>
+        /// [GET] Initiates OTP-verified deletion of a Master Dealer
+        /// </summary>
         public ActionResult DeleteMD(string ssid)
         {
             var userid = User.Identity.GetUserId();
@@ -717,6 +738,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// [POST] Confirms Master Dealer deletion after OTP verification
+        /// </summary>
         public ActionResult ConfirmDeleteOTP(string ssiddelete, string Deleteotp)
         {
             var userid = User.Identity.GetUserId();
@@ -752,6 +776,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Distributor
+        /// <summary>
+        /// [GET] Displays all Distributor/Dealer details under this WhiteLabel
+        /// </summary>
         public ActionResult Dealer_details()
         {
             var userid = User.Identity.GetUserId();
@@ -805,6 +832,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] Initiates OTP-verified deletion of a Dealer
+        /// </summary>
         public ActionResult DeleteDD(string DealerId)
         {
             var check = db.Whitelabel_Retailer_Details.Where(aa => aa.DealerId == DealerId).FirstOrDefault();
@@ -871,6 +901,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// [POST] Confirms Dealer deletion after OTP verification
+        /// </summary>
         public ActionResult ConfirmDeleteDealerOTP(string DealerIddelete, string Deleteotp)
         {
             try
@@ -959,6 +992,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// [GET] Toggles email verification status for a Dealer
+        /// </summary>
         public ActionResult emailverifyfordealer(string dealerid)
         {
             var userid = User.Identity.GetUserId();
@@ -1250,6 +1286,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #region Retailer List
         //GET : Retailer List
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays the list of all Retailers under this WhiteLabel
+        /// </summary>
         public ActionResult Retailer_list()
         {
             var userid = User.Identity.GetUserId();
@@ -1289,6 +1328,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] Toggles email verification status for a Retailer
+        /// </summary>
         public ActionResult emailverifyforRetailer(string RetailerId)
         {
             var userid = User.Identity.GetUserId();
@@ -1359,6 +1401,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] Initiates OTP-verified deletion of a Retailer
+        /// </summary>
         public ActionResult DeleteRetailer(string RetailerId)
         {
             var check = db.Whitelabel_Retailer_Details.Where(aa => aa.RetailerId == RetailerId).SingleOrDefault();
@@ -1424,6 +1469,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// [POST] Confirms Retailer deletion after OTP verification
+        /// </summary>
         public ActionResult ConfirmDeleteRetailerOTP(string RetailerIddelete, string Deleteotp)
         {
             var userid = User.Identity.GetUserId();
@@ -2019,6 +2067,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region DeleteUserReport
+        /// <summary>
+        /// [GET] Displays deleted-user activity report
+        /// </summary>
         public ActionResult DeleteUserReport()
         {
             var userid = User.Identity.GetUserId();
@@ -2996,6 +3047,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //################## End Paid Service ##########################
         #endregion
         #region SMS and EMAIL Setting
+        /// <summary>
+        /// [GET] Displays SMS notification configuration settings
+        /// </summary>
         public ActionResult SMS_Setting()
         {
             return PartialView();
@@ -3009,6 +3063,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(show, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Saves SMS gateway configuration settings
+        /// </summary>
         public ActionResult SMSSettingSave(string[] ch, string MsgType)
         {
             var userid = User.Identity.GetUserId();
@@ -3145,6 +3202,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             TempData["msg"] = "Email Confirmation Update Successfully.";
             return RedirectToAction("Retailer_list");
         }
+        /// <summary>
+        /// [GET] Displays OTP entry form for mobile verification
+        /// </summary>
         public ActionResult InsertOTP()
         {
             ViewData["Mobile"] = TempData["Mobile"];
@@ -3156,12 +3216,15 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Validates the OTP entered for mobile number confirmation
+        /// </summary>
         public ActionResult InsertOTP(string txtcode)
         {
             var type = "";
             var mobile = "";
             var data = db.MobileOtps.Where(p => p.Otp == txtcode).ToList();
-            if (data.Count > 0)
+            if (data.Any())
             {
                 type = data.Single().Type;
                 mobile = data.Single().mobileno;
@@ -3237,6 +3300,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #region New Live Recharge Report
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays operator-wise recharge and bill payment transaction report
+        /// </summary>
         public ActionResult Operator_report_new(string prtname, string type, string ddlusers, string allmaster1, string alldealer, string allretailer, string Whitelabel, string API, string ddl_status, string Operator)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -3294,6 +3360,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters operator transaction report by date and user
+        /// </summary>
         public ActionResult Operator_report_new(string ddlusers, string allmaster1, string alldealer, string allretailer, string API, string Whitelabel, string txt_frm_date, string txtmob, string txt_to_date, string ddl_status, string txtdemo, string ddl_top, string lapuno11, string Operator)
         {
             ViewBag.ddlusers = ddlusers;
@@ -3360,6 +3429,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         [ChildActionOnly]
         //[HttpPost]
+        /// <summary>
+        /// [POST] Renders recharge report partial view with filters
+        /// </summary>
         public ActionResult _showRechargeReport(string txt_frm_date, string txt_to_date, string txtmob, string ddl_status, string lapuno11, string Operator, string ddlusers, string allmaster1, string alldealer, string allretailer, string Whitelabel, string API, string txtdemo)
         {
             var optname = "";
@@ -3586,6 +3658,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Displays detailed view of a single recharge record
+        /// </summary>
         public ActionResult Recharge_report_View(int Idno)
         {
             var details = db.Recharge_report_View_Details(Idno);
@@ -3705,6 +3780,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             public bool NoMoredata { get; set; }
         }
         [HttpGet]
+        /// <summary>
+        /// [GET] Shows operator report summary by type
+        /// </summary>
         public ActionResult show_Operator_report_new(string prtname, string type)
         {
             var userid = User.Identity.GetUserId();
@@ -3749,6 +3827,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// [GET] Shows operator report summary by date range
+        /// </summary>
         public ActionResult show_Operator_report_new1(string prtname, string type, string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -3905,6 +3986,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #region DMT Report
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays money transfer report for today
+        /// </summary>
         public ActionResult Money_Transfer_Report()
         {
             Money_transfer_Report_whitelabel money = new Money_transfer_Report_whitelabel();
@@ -3941,6 +4025,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters money transfer report by date
+        /// </summary>
         public ActionResult Money_Transfer_Report(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -3985,6 +4072,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] Renders money transfer report partial view with filters
+        /// </summary>
         public ActionResult _Money_Transfer_Report(string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -4205,6 +4295,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return View();
         }
+        /// <summary>
+        /// [GET] Generates PDF export of the money transfer report
+        /// </summary>
         public ActionResult PDFMoneyReport(string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string alldealer, string allretailer)
         {
             var userid = User.Identity.GetUserId();
@@ -4306,6 +4399,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #region AEPS_Report
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays AEPS (Aadhaar Enabled Payment System) transaction report
+        /// </summary>
         public ActionResult AepsReport()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -4324,6 +4420,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters AEPS report by date and user
+        /// </summary>
         public ActionResult AepsReport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -4345,6 +4444,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] Renders AEPS report partial view with applied filters
+        /// </summary>
         public ActionResult _AepsReport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -4662,6 +4764,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
 
+        /// <summary>
+        /// [GET] Generates PDF export of the AEPS transaction report
+        /// </summary>
         public ActionResult PDFAepsReport(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -4756,6 +4861,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             //return View(ch);
         }
 
+        /// <summary>
+        /// [GET] Returns total aggregates for the AEPS report
+        /// </summary>
         public ActionResult AepsReport_Total(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -4853,6 +4961,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Displays detailed view of a single AEPS transaction
+        /// </summary>
         public ActionResult AepsReport_View(int Idno)
         {
             var detail = db.spWhitelabel_Aeps_Report_New_View(Idno);
@@ -5108,6 +5219,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("M_Poss");
         }
 
+        /// <summary>
+        /// [GET] Displays mPOS transaction report
+        /// </summary>
         public ActionResult m_Possreport()
         {
 
@@ -5135,6 +5249,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters mPOS report by date range
+        /// </summary>
         public ActionResult m_Possreport(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -5206,6 +5323,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] Renders Micro ATM / mPOS report partial view
+        /// </summary>
         public ActionResult _m_Possreport(string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -5498,6 +5618,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return View();
         }
+        /// <summary>
+        /// [GET] Generates PDF export of the mPOS report
+        /// </summary>
         public ActionResult PDFmPossReport(string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string alldealer, string allretailer)
         {
             var userid = User.Identity.GetUserId();
@@ -5655,6 +5778,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Pancard Report
+        /// <summary>
+        /// [GET] Displays WhiteLabel PAN card transaction report
+        /// </summary>
         public ActionResult Whitelable_pancardreport()
 
         {
@@ -5675,6 +5801,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters PAN card report by date
+        /// </summary>
         public ActionResult Whitelable_pancardreport(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -5757,6 +5886,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// [GET] Renders WhiteLabel PAN card report partial view
+        /// </summary>
         public ActionResult _Whitelable_pancardreport(string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -5839,6 +5971,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Returns next page of PAN card report records for infinite scroll
+        /// </summary>
         public ActionResult InfiniteScroll_PancardReport(string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -6036,6 +6171,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return View();
         }
+        /// <summary>
+        /// [GET] Generates PDF export of the PAN card report
+        /// </summary>
         public ActionResult PDFPanCardReport(string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string alldealer, string allretailer)
         {
             string userid = "";
@@ -6102,6 +6240,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return new ViewAsPdf(respo);
         }
 
+        /// <summary>
+        /// [GET] Returns aggregate totals for PAN card transactions
+        /// </summary>
         public ActionResult FindTotalPanCardReport(string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string alldealer, string allretailer)
         {
             string userid = "";
@@ -6357,7 +6498,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //        {
         //            var userid = User.Identity.GetUserId();
         //            var disresult = db.whitelabel_Dealer_Details.Where(p => p.slab_name == slabname).ToList();
-        //            if (disresult.Count > 0)
+        //            if (disresult.Any())
         //            {
         //                TempData["api"] = "This slab is Already Assign To Whitelabel Distributor User..";
         //            }
@@ -7194,6 +7335,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region News and Notification
+        /// <summary>
+        /// [GET] Displays message/notification management page
+        /// </summary>
         public ActionResult Message()
         {
             var userid = User.Identity.GetUserId();
@@ -7208,6 +7352,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(noti);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Posts a new message or notification to selected users
+        /// </summary>
         public ActionResult Message(string ddltop, string txtmessage, string txtname)
         {
             var userid = User.Identity.GetUserId();
@@ -7413,6 +7560,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #region SMS
         //GET : SMS API Details
+        /// <summary>
+        /// [GET] Displays SMS API integration settings and template management
+        /// </summary>
         public ActionResult SMSAPI()
         {
             Whitelabel_SMSViewModel vmodel = new Whitelabel_SMSViewModel();
@@ -7743,6 +7893,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
 
         }
+        /// <summary>
+        /// [GET] Displays SMS API provider settings
+        /// </summary>
         public ActionResult SMSAPISetting()
         {
             Whitelabel_SMSViewModel vmodel = new Whitelabel_SMSViewModel();
@@ -8030,6 +8183,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Security
+        /// <summary>
+        /// [GET] Displays web login activity and security monitoring page
+        /// </summary>
         public ActionResult WebLogin()
         {
             DateTime txt_frm_date = DateTime.Now;
@@ -8049,6 +8205,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(vmoel);
         }
 
+        /// <summary>
+        /// [GET] Displays two-factor and security settings configuration
+        /// </summary>
         public ActionResult ChangeSecuritySetting()
         {
             var userid = User.Identity.GetUserId();
@@ -8074,6 +8233,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
 
+        /// <summary>
+        /// [GET] Filters web login history records by role and date
+        /// </summary>
         public ActionResult WebLoginFilter(DateTime? txt_frm_date, DateTime? txt_to_date, string ddlRoleName, string ddlfirmname, string ddlType)
         {
             var userid = User.Identity.GetUserId();
@@ -8085,6 +8247,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             vmoel.WLoginHistory = db.spWhitelabel_login_history(userid, ddlRoleName, ddlfirmname, ddlType, txt_frm_date, to_date).ToList();
             return PartialView("_WebLoginHistory", vmoel);
         }
+        /// <summary>
+        /// [GET] Filters mobile app login history records
+        /// </summary>
         public ActionResult APPLoginFilter(DateTime? txt_APPfrm_date, string ddlAppRoleName, string ddlAppfirmname, string ddlType1)
         {
             var userid = User.Identity.GetUserId();
@@ -8377,6 +8542,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json(status, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// [GET] Lists users blocked from login
+        /// </summary>
         public ActionResult BlockLoginUsersList(string role, string roleId)
         {
             var userid = User.Identity.GetUserId();
@@ -8392,6 +8560,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Unblocks a user from logging in
+        /// </summary>
         public ActionResult UnBlock_Login(string UserRole, string block_login_User)
         {
             int status = 0;
@@ -8962,7 +9133,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                         entry.type = entry.type;
                         db.SaveChanges();
                     }
-                    if (count.Count > 0)
+                    if (count.Any())
                     {
                         var entry = db.Whitelabel_WalletToBankAmountTransferRequests.Where(a => a.Idno == idNo).FirstOrDefault();
                         entry.Status = "Success";
@@ -9191,6 +9362,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Prepaid and DTH Slab Setting
+        /// <summary>
+        /// [GET] Displays prepaid recharge commission slab configuration
+        /// </summary>
         public ActionResult Prepaid_Slab_setting()
         {
             var userid = User.Identity.GetUserId();
@@ -9917,6 +10091,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Postpaid and Utility Slab Setting
+        /// <summary>
+        /// [GET] Displays postpaid and utility bill commission slab configuration
+        /// </summary>
         public ActionResult PostpaidUtility_Slab_setting()
         {
             var userid = User.Identity.GetUserId();
@@ -11013,6 +11190,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Money Transfer Slab Setting DMT2
+        /// <summary>
+        /// [GET] Displays DMT2 money transfer commission slab configuration
+        /// </summary>
         public ActionResult Money_Transfer_Slab_DMT2()
         {
             var userid = User.Identity.GetUserId();
@@ -13726,6 +13906,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #endregion End Monry Transfer Setting
         #region Pancard Slab Setting
+        /// <summary>
+        /// [GET] Displays PAN card service commission slab configuration
+        /// </summary>
         public ActionResult Pancard_Slab_Setting()
         {
             var userid = User.Identity.GetUserId();
@@ -14605,6 +14788,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region SlabAeps
+        /// <summary>
+        /// [GET] Displays AEPS service commission slab configuration
+        /// </summary>
         public ActionResult AepsSlab()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -15735,6 +15921,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //}
         #endregion SlabAeps_old
         #region MIcro_atm
+        /// <summary>
+        /// [GET] Displays Micro ATM commission slab configuration
+        /// </summary>
         public ActionResult Micro_Atm()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -18614,6 +18803,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #region Operator_Code Block_Unblock
         [HttpGet]
+        /// <summary>
+        /// [GET] Lists available operators and their configurations
+        /// </summary>
         public ActionResult OperatorIndex()
         {
             var userid = User.Identity.GetUserId();
@@ -20609,6 +20801,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #region Outer Theme
         //****************************************************
+        /// <summary>
+        /// [GET] Displays the branding/logo customization page
+        /// </summary>
         public ActionResult Outside_logo()
         {
             var userid = User.Identity.GetUserId();
@@ -20630,7 +20825,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             var lg = db.tblWhiteLabelLoginBackImages.Where(p => p.UserID == userid && p.Role == "WHITELABEL").ToList();
 
-            if (lg.Count > 0)
+            if (lg.Any())
             {
                 var repeatImg = lg.SingleOrDefault(a => a.UsedFor == "Repeat");
                 ViewBag.showimg2 = repeatImg != null ? repeatImg.otherimage : null;
@@ -20680,7 +20875,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 var admin = "WHITELABEL";
                 tblOutsideLogo logo = new tblOutsideLogo();
                 var roletype = db.tblOutsideLogoes.Where(p => p.UserId == userid && p.Role == admin).ToList();
-                var role = roletype.Count == 0 ? "" : roletype.SingleOrDefault().Role;
+                var role = !roletype.Any() ? "" : roletype.SingleOrDefault().Role;
                 var vv = db.tblOutsideLogoes.FirstOrDefault();
                 if (role == admin)
                 {
@@ -20716,6 +20911,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Uploads background content for the login page
+        /// </summary>
         public ActionResult Login_Content_outside(IEnumerable<HttpPostedFileBase> files)
         {
             var userid = User.Identity.GetUserId();
@@ -20804,7 +21002,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             var roletype = people.Where(p => p.UserId == userid).ToList();
 
-            var role = roletype.Count == 0 ? "" : roletype.SingleOrDefault().Role;
+            var role = !roletype.Any() ? "" : roletype.SingleOrDefault().Role;
 
             var v = people.Where(p => p.UserId == userid).FirstOrDefault();
             if (role == admin)
@@ -20936,7 +21134,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 var admin = "WHITELABEL";
                 tblHeaderLogo logo = new tblHeaderLogo();
                 var roletype = db.tblHeaderLogoes.Where(p => p.UserId == userid && p.Role == admin).ToList();
-                var role = roletype.Count == 0 ? "" : roletype.SingleOrDefault().Role;
+                var role = !roletype.Any() ? "" : roletype.SingleOrDefault().Role;
                 var vv = db.tblHeaderLogoes.Where(p => p.UserId == userid).FirstOrDefault();
                 if (role == admin)
                 {
@@ -21031,7 +21229,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 var admin = "WHITELABEL";
                 tblfavicon favicon = new tblfavicon();
                 var roletype = db.tblfavicons.Where(p => p.UserId == userid && p.Role == admin).ToList();
-                var role = roletype.Count == 0 ? "" : roletype.SingleOrDefault().Role;
+                var role = !roletype.Any() ? "" : roletype.SingleOrDefault().Role;
                 var vv = db.tblfavicons.FirstOrDefault();
                 if (role == admin)
                 {
@@ -21087,11 +21285,14 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
 
         }
+        /// <summary>
+        /// [GET] Returns current login page background images (set 2)
+        /// </summary>
         public ActionResult _LoginPageBackgroundImages2()
         {
             var userid = User.Identity.GetUserId();
             var lg = db.tblWhiteLabelLoginBackImages.Where(a => a.UserID == userid && a.Role == "WHITELABEL" && a.UsedFor == "Repeat").ToList();
-            if (lg.Count > 0)
+            if (lg.Any())
             {
                 ViewBag.img = lg.SingleOrDefault().ImageUrl;
                 ViewBag.showimg2 = lg.SingleOrDefault(a => a.UsedFor == "Repeat").otherimage;
@@ -21099,6 +21300,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(ViewBag.showimg2, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Uploads background images for the login page
+        /// </summary>
         public ActionResult BackLogin_Content()
         {
             var userid = User.Identity.GetUserId();
@@ -21139,7 +21343,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 var admin = "WHITELABEL";
 
                 var roletype = db.tblWhiteLabelLoginBackImages.Where(p => p.UserID == userid && p.Role == admin && p.UsedFor == usedfor).ToList();
-                var role = roletype.Count == 0 ? "" : roletype.SingleOrDefault().Role;
+                var role = !roletype.Any() ? "" : roletype.SingleOrDefault().Role;
                 if (role == admin && roletype.SingleOrDefault().UsedFor == usedfor)
                 {
                     var id = (from tbl in db.tblWhiteLabelLoginBackImages where (tbl.UserID == userid && tbl.UsedFor == usedfor) select tbl).SingleOrDefault();
@@ -21170,11 +21374,14 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewBag.login = db.tblLoginContents.Where(a => a.UserId == userid).ToList();
             return View();
         }
+        /// <summary>
+        /// [GET] Returns current login page background images (set 3)
+        /// </summary>
         public ActionResult _LoginPageBackgroundImages3()
         {
             var userid = User.Identity.GetUserId();
             var lg = db.tblWhiteLabelLoginBackImages.Where(a => a.UserID == userid && a.Role == "WHITELABEL" && a.UsedFor == "Single").ToList();
-            if (lg.Count > 0)
+            if (lg.Any())
             {
                 ViewBag.img = lg.SingleOrDefault().ImageUrl;
                 ViewBag.showimg3 = lg.SingleOrDefault(a => a.UsedFor == "Single").otherimage;
@@ -21713,6 +21920,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Bank_Info
+        /// <summary>
+        /// [GET] Displays bank account and wallet information management page
+        /// </summary>
         public ActionResult Bank_info()
         {
             var userid = User.Identity.GetUserId();
@@ -21871,6 +22081,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #region Change Password
         //Change Password
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays the change password form for WhiteLabel admin
+        /// </summary>
         public ActionResult ChangePassword()
         {
             return View();
@@ -21879,6 +22092,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// [POST] Processes the password change request
+        /// </summary>
         public async Task<ActionResult> ChangePassword([Bind(Prefix = "Item1")] ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -22332,7 +22548,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
                         ADMIN.ViewModel.Whitelabel_TargetSetviewmodel vmodel = new ADMIN.ViewModel.Whitelabel_TargetSetviewmodel();
                         var NextMonthTarget = db.Whitelabel_RetailerSetTarget.Where(a => a.Date.Value.Month == month && a.Date.Value.Year == year && a.WhitelabelId == userid).ToList();
-                        if (NextMonthTarget.Count == 0) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabelretailer", "nextmonth", month, year); }
+                        if (!NextMonthTarget.Any()) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabelretailer", "nextmonth", month, year); }
                         vmodel.remTargetCategory = NextMonthTarget;
 
                         List<SelectListItem> giftlist = new List<SelectListItem>();
@@ -22353,7 +22569,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
                         ADMIN.ViewModel.Whitelabel_TargetSetviewmodel vmodel = new ADMIN.ViewModel.Whitelabel_TargetSetviewmodel();
                         var CurrentMonthTarget = db.Whitelabel_RetailerSetTarget.Where(a => a.Date.Value.Month == month && a.Date.Value.Year == year && a.WhitelabelId == userid).ToList();
-                        if (CurrentMonthTarget.Count == 0) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabelretailer", "currentmonth", month, year); }
+                        if (!CurrentMonthTarget.Any()) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabelretailer", "currentmonth", month, year); }
                         vmodel.remTargetCategory = CurrentMonthTarget;
 
                         List<SelectListItem> giftlist = new List<SelectListItem>();
@@ -22409,7 +22625,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
                         ADMIN.ViewModel.Whitelabel_TargetSetviewmodel vmodel = new ADMIN.ViewModel.Whitelabel_TargetSetviewmodel();
                         var DealerNextMonthTarget = db.Whitelabel_DealerSetTarget.Where(a => a.Date.Value.Month == month && a.Date.Value.Year == year && a.WhitelabelId == userid).ToList();
-                        if (DealerNextMonthTarget.Count == 0) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabeldealer", "nextmonth", month, year); }
+                        if (!DealerNextMonthTarget.Any()) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabeldealer", "nextmonth", month, year); }
                         vmodel.dlmTargetCategory = DealerNextMonthTarget;
 
                         List<SelectListItem> giftlist = new List<SelectListItem>();
@@ -22430,7 +22646,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
                         ADMIN.ViewModel.Whitelabel_TargetSetviewmodel vmodel = new ADMIN.ViewModel.Whitelabel_TargetSetviewmodel();
                         var DealerCurrentMonthTarget = db.Whitelabel_DealerSetTarget.Where(a => a.Date.Value.Month == month && a.Date.Value.Year == year && a.WhitelabelId == userid).ToList();
-                        if (DealerCurrentMonthTarget.Count == 0) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabeldealer", "currentmonth", month, year); }
+                        if (!DealerCurrentMonthTarget.Any()) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabeldealer", "currentmonth", month, year); }
                         vmodel.dlmTargetCategory = DealerCurrentMonthTarget;
 
                         List<SelectListItem> giftlist = new List<SelectListItem>();
@@ -22487,7 +22703,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
                         ADMIN.ViewModel.Whitelabel_TargetSetviewmodel vmodel = new ADMIN.ViewModel.Whitelabel_TargetSetviewmodel();
                         var MasterNextMonthTarget = db.Whitelabel_superstockistsettarget.Where(a => a.Date.Value.Month == month && a.Date.Value.Year == year && a.WhitelabelId == userid).ToList();
-                        if (MasterNextMonthTarget.Count == 0) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabelmaster", "nextmonth", month, year); }
+                        if (!MasterNextMonthTarget.Any()) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabelmaster", "nextmonth", month, year); }
                         vmodel.mdTargetCategory = MasterNextMonthTarget;
 
                         List<SelectListItem> giftlist = new List<SelectListItem>();
@@ -22509,7 +22725,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
                         ADMIN.ViewModel.Whitelabel_TargetSetviewmodel vmodel = new ADMIN.ViewModel.Whitelabel_TargetSetviewmodel();
                         var MastetCurrentMonthTarget = db.Whitelabel_superstockistsettarget.Where(a => a.Date.Value.Month == month && a.Date.Value.Year == year && a.WhitelabelId == userid).ToList();
-                        if (MastetCurrentMonthTarget.Count == 0) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabelmaster", "currentmonth", month, year); }
+                        if (!MastetCurrentMonthTarget.Any()) { db.spWhitelabel_InsertDefaultTarget(userid, "Whitelabelmaster", "currentmonth", month, year); }
                         vmodel.mdTargetCategory = MastetCurrentMonthTarget;
 
                         List<SelectListItem> giftlist = new List<SelectListItem>();
@@ -22886,6 +23102,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Updates WhiteLabel admin address and location profile
+        /// </summary>
         public ActionResult UpdateAddressProfile(int hdidadmin, int? txtid, string txtcompany, string txtaddress, int txtzipcode, int State, int District)
         {
             var userid = User.Identity.GetUserId();
@@ -22914,6 +23133,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Updates PAN card, mobile number and KYC details for WhiteLabel admin
+        /// </summary>
         public ActionResult UpdatePanccardandmobile(int? hdid1, int? txtid1, string txtname, string txtmobile, string txtaadhaarcard, string txtpancard, string txtgst, string txtTAN)
         {
             var userid = User.Identity.GetUserId();
@@ -22941,6 +23163,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Handles profile image upload for WhiteLabel admin
+        /// </summary>
         public ActionResult Uploadprofileimage()
         {
             var userid = User.Identity.GetUserId();
@@ -23411,6 +23636,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region EmailSecurity
+        /// <summary>
+        /// [GET] Displays SMTP email security configuration page
+        /// </summary>
         public ActionResult Email_Security()
         {
             var userid = User.Identity.GetUserId();
@@ -23437,6 +23665,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Saves SMTP email security configuration settings
+        /// </summary>
         public ActionResult Email_Security(string SMTPHost, string EmailID, string Paswrd, int Port)
         {
             var userid = User.Identity.GetUserId();
@@ -23494,7 +23725,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             try
             {
                 var CHKEntry = db.Whitelabel_priorityEmail.Where(a => a.Userid == userid).ToList();
-                if (CHKEntry.Count > 0)
+                if (CHKEntry.Any())
                 {
                     var ch = db.Whitelabel_priorityEmail.Where(a => a.idno == idno && a.Userid == userid).SingleOrDefault();
                     db.Whitelabel_priorityEmail.Remove(ch);
@@ -23687,6 +23918,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Start Fund Transfer
+        /// <summary>
+        /// [GET] Displays fund transfer page for sending funds to Master Dealers
+        /// </summary>
         public ActionResult Fund_transfer()
         {
             var userid = User.Identity.GetUserId();
@@ -23983,6 +24217,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] Generates Excel export of fund transfer records
+        /// </summary>
         public ActionResult GenerateExcellFileFundTransfer(string tabID, DateTime frm_date, DateTime to_date, string usernm)
         {
             Whitelabel_Fundtransferviewmodel vmodel = new Whitelabel_Fundtransferviewmodel();
@@ -24083,6 +24320,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
 
+        /// <summary>
+        /// [GET] Generates PDF export of fund transfer records
+        /// </summary>
         public ActionResult FundtransferPdfGenerate(string tabID, DateTime frm_date, DateTime to_date, string usernm)
         {
             var userid = User.Identity.GetUserId();
@@ -24478,6 +24718,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //}
         #endregion
         #region User to User FundTransfer
+        /// <summary>
+        /// [GET] Displays user-to-user fund transfer management page
+        /// </summary>
         public ActionResult Fund_User()
         {
             var userid = User.Identity.GetUserId();
@@ -24919,6 +25162,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] Displays Master-to-Dealer fund transfer history and controls
+        /// </summary>
         public ActionResult MasterToDealer()
         {
             var userid = User.Identity.GetUserId();
@@ -25242,7 +25488,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 //}
                 var reatilerto = db.Whitelabel_Retailer_Details.Where(p => p.RetailerId == hdMDDLM && p.Whitelabelid == whitelabelid).FirstOrDefault().RetailerId;
                 var retaileremaillid = db.Whitelabel_Retailer_Details.Where(p => p.RetailerId == hdMDDLM && p.Whitelabelid == whitelabelid).FirstOrDefault().Email;
-                //if (remid.Count > 0)
+                //if (remid.Any())
                 //{
                 //    reatilerto = remid.Single().RetailerId;
                 //    retaileremaillid = remid.Single().Email;
@@ -25665,6 +25911,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //        }
         //    }
 
+        /// <summary>
+        /// [GET] Displays the purchase/fund request form to request funds from Admin
+        /// </summary>
         public ActionResult FundTransfer()
         {
             //RetailerFundRequestViewmodel vmodel = new RetailerFundRequestViewmodel();
@@ -26603,6 +26852,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //        }
         //    }
         // Ledger Report
+        /// <summary>
+        /// [GET] Displays WhiteLabel ledger report for today
+        /// </summary>
         public ActionResult Ledger_Report()
         {
             var userid = User.Identity.GetUserId();
@@ -26614,6 +26866,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ledger);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters and displays WhiteLabel ledger report by date range
+        /// </summary>
         public ActionResult Ledger_Report(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -26661,6 +26916,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //        var ledger = db.whitelabel_Retailer_Cr_Dr_Report("Dealer", alldealer, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
         //        return View(ledger);
         //    }
+        /// <summary>
+        /// [GET] Displays retailer-level ledger report for today
+        /// </summary>
         public ActionResult Retailer_Ledger_Report()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -26672,6 +26930,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ledger);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters retailer ledger report by retailer and date range
+        /// </summary>
         public ActionResult Retailer_Ledger_Report(string allretailer, string txt_frm_date, string txt_to_date)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -26691,6 +26952,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         // Day Book Report
+        /// <summary>
+        /// [GET] Displays the day book report for current date
+        /// </summary>
         public ActionResult Day_book_Report()
         {
             ADMIN.Models.DayBookreport rep = new ADMIN.Models.DayBookreport();
@@ -26703,6 +26967,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(rep);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters and displays day book report by date
+        /// </summary>
         public ActionResult Day_book_Report(string txt_frm_date)
         {
             ViewBag.chk = "post";
@@ -26922,6 +27189,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Complaint
+        /// <summary>
+        /// [GET] Displays complaints and support tickets by type and user
+        /// </summary>
         public ActionResult Complaint(string type, string userid)
         {
             var email = User.Identity.GetUserName();
@@ -26959,6 +27229,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Disputelist
+        /// <summary>
+        /// [GET] Displays list of all pending and resolved disputes
+        /// </summary>
         public ActionResult Dispute_list()
         {
             string txt_frm_date = DateTime.Now.ToString();
@@ -27003,6 +27276,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region WhitelabelEarning
+        /// <summary>
+        /// [GET] Displays WhiteLabel total earnings summary
+        /// </summary>
         public ActionResult WhitelabelEarning()
         {
             var userid = User.Identity.GetUserId();
@@ -27034,6 +27310,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Myincome_Report
+        /// <summary>
+        /// [GET] Displays WhiteLabel personal income report
+        /// </summary>
         public ActionResult Whitelabel_Myincome()
         {
             var userid = User.Identity.GetUserId();
@@ -27066,6 +27345,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #region My Fund Recive Report
         [HttpGet]
+        /// <summary>
+        /// [GET] Displays fund received/credited report
+        /// </summary>
         public ActionResult Fund_recive_report()
         {
             var userid = User.Identity.GetUserId();
@@ -27076,6 +27358,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Displays fund receipt transaction report
+        /// </summary>
         public ActionResult Fund_recive_report(string txt_frm_date, string txt_to_date, string Type)
         {
             var userid = User.Identity.GetUserId();
@@ -27097,6 +27382,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region GSTStatus
+        /// <summary>
+        /// [GET] Displays GST configuration status and settings
+        /// </summary>
         public ActionResult GSTStatus()
         {
             return View();
@@ -27108,6 +27396,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             var show = db.GSTSettingStatusWhitelabels.Where(a => a.Whitelabelid == userid).ToList();
             return Json(show, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// [GET] Saves GST configuration settings
+        /// </summary>
         public ActionResult GSTSettingSave(string[] ch)
         {
             var userid = User.Identity.GetUserId();
@@ -27844,6 +28135,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         #region  Gst_Invocing_Dealer_report
+        /// <summary>
+        /// [GET] Displays GST invoice report for Dealers
+        /// </summary>
         public ActionResult Gst_Invocing_Dealer_report()
         {
             var userid = User.Identity.GetUserId();
@@ -27860,6 +28154,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(show);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Generates GST invoicing report for dealers
+        /// </summary>
         public ActionResult Gst_Invocing_Dealer_report(string alldealer)
         {
             var userid = User.Identity.GetUserId();
@@ -27885,6 +28182,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] Displays GST invoice report for Retailers
+        /// </summary>
         public ActionResult Gst_Invocing_Retailer_report()
         {
             var userid = User.Identity.GetUserId();
@@ -27903,6 +28203,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// [POST] Generates GST invoicing report for retailers
+        /// </summary>
         public ActionResult Gst_Invocing_Retailer_report(string allretailer)
         {
 
@@ -27930,6 +28233,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// [GET] Displays account-verified GST invoicing report
+        /// </summary>
         public ActionResult Account_verify_Gst_Invocing_report()
         {
             var userid = User.Identity.GetUserId();
@@ -27947,6 +28253,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(show);
         }
         [HttpPost]
+        /// <summary>
+        /// [POST] Filters account-verified GST invoicing data
+        /// </summary>
         public ActionResult Account_verify_Gst_Invocing_report(string allretailer)
         {
             var userid = User.Identity.GetUserId();
@@ -27972,6 +28281,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
 
         }
+        /// <summary>
+        /// [GET] Displays GST invoice report for WhiteLabel admin
+        /// </summary>
         public ActionResult Gst_Invocing_Whitelabel_report()
         {
             var userid = User.Identity.GetUserId();
@@ -27986,6 +28298,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(show);
         }
 
+        /// <summary>
+        /// [GET] Generates PDF export of the GST invoicing report
+        /// </summary>
         public ActionResult GST_Invocing_Report_Pdf(string id, string Role)
         {
             var userid = User.Identity.GetUserId();
@@ -28730,6 +29045,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #region UPI
 
 
+        /// <summary>
+        /// [GET] Displays UPI payment charge configuration and report
+        /// </summary>
         public ActionResult UPICharges()
         {
             var userid = User.Identity.GetUserId();
