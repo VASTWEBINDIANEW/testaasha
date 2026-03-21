@@ -1198,7 +1198,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             {
                 var userid = User.Identity.GetUserId();
                 var retailer = db.Retailer_Details.FirstOrDefault(s => s.RetailerId == userid);
-                var psaid = db.VastBazaarRetailerOutlets.Where(s => s.RetailerId == userid).SingleOrDefault().outlet_id;
+                var psaid = db.VastBazaarRetailerOutlets.FirstOrDefault(s => s.RetailerId == userid)?.outlet_id;
                 string requestid = Guid.NewGuid().ToString();
                 var token = getAuthToken();
                 System.Data.Entity.Core.Objects.ObjectParameter output = new System.Data.Entity.Core.Objects.ObjectParameter("Output", typeof(string));
@@ -1274,7 +1274,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     dynamic resp = JsonConvert.DeserializeObject(response2.Content);
                     if (resp.Content.ADDINFO.Status == "Failed")
                     {
-                        var entry = db.pancard_transation.Where(s => s.requestid == requestid).SingleOrDefault();
+                        var entry = db.pancard_transation.FirstOrDefault(s => s.requestid == requestid);
                         db.proc_PAN_CARD_Refund_new(Convert.ToString(entry.idno), "Failed", "Rejected", requestid);
                         try
                         {
@@ -1377,7 +1377,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
         public IRestResponse tokencheck()
         {
-            var apidetails = db.Money_API_URLS.Where(aa => aa.API_Name == "VASTWEB").SingleOrDefault();
+            var apidetails = db.Money_API_URLS.FirstOrDefault(aa => aa.API_Name == "VASTWEB");
             var token = apidetails == null ? "" : apidetails.Token;
             var apiid = apidetails == null ? "" : apidetails.API_ID;
             var apiidpwd = apidetails == null ? "" : apidetails.Api_pwd;
