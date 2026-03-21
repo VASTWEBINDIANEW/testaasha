@@ -46,14 +46,14 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 {
                     var check = "OK";
 
-                    var checkfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD").SingleOrDefault();
-                    var checkALLfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL").SingleOrDefault();
+                    var checkfreeservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD");
+                    var checkALLfreeservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "ALL");
                     if (checkfreeservice.IsFree == true)
                     {
                         if (checkALLfreeservice.IsFree == false)
                         {
 
-                            var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
+                            var retailerautorenseting = db.autopaidserviceRenewalsettings.FirstOrDefault(x => x.retailerid == userid)?.auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
                                 var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
@@ -62,8 +62,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
                                     if (expiredate == DateTime.Now.Date)
                                     {
-                                        var chkadminperservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false).SingleOrDefault();
-                                        var chkadminallservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL" && aa.IsFree == false).SingleOrDefault();
+                                        var chkadminperservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false);
+                                        var chkadminallservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "ALL" && aa.IsFree == false);
                                         System.Data.Entity.Core.Objects.ObjectParameter Status = new System.Data.Entity.Core.Objects.ObjectParameter("Status", typeof(string));
                                         System.Data.Entity.Core.Objects.ObjectParameter Message = new System.Data.Entity.Core.Objects.ObjectParameter("Message", typeof(string));
                                         if (chkadminallservice != null && retailerautorenseting == "ALL")
@@ -118,7 +118,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             //var chk = db.PaidService_auto.Where(aa => aa.Userid == userid && aa.ServiceName == "PANCARD").SingleOrDefault().AutoSts;
 
 
-                            var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
+                            var retailerautorenseting = db.autopaidserviceRenewalsettings.FirstOrDefault(x => x.retailerid == userid)?.auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
                                 var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
@@ -127,8 +127,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
                                     if (expiredate == DateTime.Now.Date)
                                     {
-                                        var chkadminperservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false).SingleOrDefault();
-                                        var chkadminallservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL" && aa.IsFree == false).SingleOrDefault();
+                                        var chkadminperservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false);
+                                        var chkadminallservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "ALL" && aa.IsFree == false);
                                         System.Data.Entity.Core.Objects.ObjectParameter Status = new System.Data.Entity.Core.Objects.ObjectParameter("Status", typeof(string));
                                         System.Data.Entity.Core.Objects.ObjectParameter Message = new System.Data.Entity.Core.Objects.ObjectParameter("Message", typeof(string));
                                         if (chkadminallservice != null && retailerautorenseting == "ALL")
@@ -177,7 +177,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         if (checkALLfreeservice.IsFree == true)
                         {
 
-                            var retailerautorenseting = db.autopaidserviceRenewalsettings.Where(x => x.retailerid == userid).SingleOrDefault().auto_set;
+                            var retailerautorenseting = db.autopaidserviceRenewalsettings.FirstOrDefault(x => x.retailerid == userid)?.auto_set;
                             if (retailerautorenseting == "ALL" || retailerautorenseting == "PER")
                             {
                                 var chkklatestdate = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
@@ -186,8 +186,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                     var expiredate = chkklatestdate.ExpiryDate.Date.AddDays(-1);
                                     if (expiredate >= DateTime.Now.Date)
                                     {
-                                        var chkadminperservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false).SingleOrDefault();
-                                        var chkadminallservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL" && aa.IsFree == false).SingleOrDefault();
+                                        var chkadminperservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD" && aa.IsFree == false);
+                                        var chkadminallservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "ALL" && aa.IsFree == false);
                                         System.Data.Entity.Core.Objects.ObjectParameter Status = new System.Data.Entity.Core.Objects.ObjectParameter("Status", typeof(string));
                                         System.Data.Entity.Core.Objects.ObjectParameter Message = new System.Data.Entity.Core.Objects.ObjectParameter("Message", typeof(string));
 
@@ -255,7 +255,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
 
-                    //var checkfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD").SingleOrDefault();
+                    //var checkfreeservice = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD");
                     //if (checkfreeservice.IsFree == false)
                     //{
                     //    var chk = db.PaidService_auto.Where(aa => aa.Userid == userid && aa.ServiceName == "PANCARD").SingleOrDefault().AutoSts;
@@ -263,7 +263,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     //    {
                     //        System.Data.Entity.Core.Objects.ObjectParameter Status = new System.Data.Entity.Core.Objects.ObjectParameter("Status", typeof(string));
                     //        System.Data.Entity.Core.Objects.ObjectParameter Message = new System.Data.Entity.Core.Objects.ObjectParameter("Message", typeof(string));
-                    //        int serviceid = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "PANCARD").SingleOrDefault().Idno;
+                    //        int serviceid = db.PaidServicesChargeLists.FirstOrDefault(aa => aa.ServiceName == "PANCARD").Idno;
                     //        var msg = db.proc_PurchasePaidServices(userid, serviceid, Status, Message).SingleOrDefault();
                     //    }
                     //    var servicecheck = db.PaidServicesPaymentHistories.Where(aa => aa.UserId == userid && aa.ServiceName == "PANCARD").OrderByDescending(aa => aa.PurchaseDate).FirstOrDefault();
@@ -416,7 +416,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             model.pincode = entry.Pincode.ToString();
             model.psaname = entry.Frm_Name ?? "";
             model.dob = entry.dateofbirth ?? "";
-            model.state = db.State_Desc.Where(y => y.State_id == entry.State).SingleOrDefault().State_name;
+            model.state = db.State_Desc.FirstOrDefault(y => y.State_id == entry.State)?.State_name;
             return PartialView(model);
         }
         [HttpPost]
@@ -426,8 +426,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             {
                 var userid = User.Identity.GetUserId();
                 var remdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
-                var statenm = db.State_Desc.Where(aa => aa.State_id == remdetails.State).SingleOrDefault().State_name;
-                var distnm = db.District_Desc.Where(aa => aa.State_id == remdetails.State && aa.Dist_id == remdetails.District).SingleOrDefault().Dist_Desc;
+                var statenm = db.State_Desc.FirstOrDefault(aa => aa.State_id == remdetails.State)?.State_name;
+                var distnm = db.District_Desc.FirstOrDefault(aa => aa.State_id == remdetails.State && aa.Dist_id == remdetails.District)?.Dist_Desc;
 
                 Models.RegisterPSAModel model = new Models.RegisterPSAModel();
                 model.psaname = txtfirmnmpan;
@@ -563,7 +563,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         public ActionResult CheckStatus()
         {
             var userid = User.Identity.GetUserId();
-            var UTIRequestId = db.VastBazaarRetailerOutlets.Where(a => a.RetailerId == userid && a.IsPanConfirmed == true).SingleOrDefault().outlet_id;
+            var UTIRequestId = db.VastBazaarRetailerOutlets.FirstOrDefault(a => a.RetailerId == userid && a.IsPanConfirmed == true)?.outlet_id;
             var RequestObject = new
             {
                 requestid = UTIRequestId,
@@ -1210,8 +1210,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                     var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
                     var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
-                    var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                    var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                    var dlmdetails = db.Remain_dealer_balance.FirstOrDefault(aa => aa.DealerID == retailerdetails.DealerId);
+                    var Masterdetails = db.Remain_superstokist_balance.FirstOrDefault(aa => aa.SuperStokistID == dealerdetails.SSId);
 
                     var admininfo = db.Admin_details.SingleOrDefault();
                     Backupinfo back = new Backupinfo();
@@ -1283,8 +1283,8 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                             var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
                             var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
-                            var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                            var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                            var dlmdetails = db.Remain_dealer_balance.FirstOrDefault(aa => aa.DealerID == retailerdetails.DealerId);
+                            var Masterdetails = db.Remain_superstokist_balance.FirstOrDefault(aa => aa.SuperStokistID == dealerdetails.SSId);
 
                             var admininfo = db.Admin_details.SingleOrDefault();
                             Backupinfo back = new Backupinfo();
