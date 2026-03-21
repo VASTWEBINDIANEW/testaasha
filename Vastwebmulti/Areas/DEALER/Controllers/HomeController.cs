@@ -547,10 +547,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             });
         }
         #endregion
-        [HttpGet]
         /// <summary>
         /// Displays and manages the dealer profile information.
         /// </summary>
+        [HttpGet]
         public new ActionResult Profile()
         {
             string userid = User.Identity.GetUserId();
@@ -867,10 +867,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
 
-        [HttpPost]
         /// <summary>
         /// Updates the PAN card, mobile and Aadhaar details for the dealer profile.
         /// </summary>
+        [HttpPost]
         public ActionResult UpdatePanccardandmobile(string txtid2, string txtname, string txtaadhaarcard, string txtpancard, string txtgst, string ddlPosition, string ddlBusinessType)
         {
             try
@@ -1009,10 +1009,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
         }
 
-        [HttpPost]
         /// <summary>
         /// Updates existing bank account information for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult UpdateBankinfromation(string txtid3, string txtaccholder, string txtbankaccountno, string txtifsc, string txtbankname, string txtbranchaddress)
         {
             try
@@ -1052,10 +1052,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var ch = db.show_all_user_income(Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), "Dealer", dealerid).ToList();
             return View(ch);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the actual dealer income report with date filtering.
         /// </summary>
+        [HttpPost]
         public ActionResult Actual_Dealer_income(string txt_frm_date)
         {
             var dealerid = User.Identity.GetUserId();
@@ -1076,10 +1076,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
         #endregion
         //Upload Aadhaar Crad Doc
-        [HttpPost]
         /// <summary>
         /// Handles the upload of Aadhaar card document for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult UploadAadharcarddoc(string txtaadharid)
         {
             try
@@ -1139,10 +1139,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Upload Pancard Crad Doc
-        [HttpPost]
         /// <summary>
         /// Handles the upload of PAN card document for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult UploadPancardcarddoc(string txtpancardid)
         {
             try
@@ -1179,10 +1179,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         //Upload Service Aggrement Card Doc
-        [HttpPost]
         /// <summary>
         /// Handles the upload of service agreement document for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult UploadServiceAggrementdoc()
         {
             try
@@ -1218,10 +1218,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Upload Registraction Certificate Card Doc
-        [HttpPost]
         /// <summary>
         /// Handles the upload of registration certificate document for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult UploadRegistractionCertificatedoc()
         {
             try
@@ -1259,10 +1259,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         //Upload Registraction Certificate Card Doc
-        [HttpPost]
         /// <summary>
         /// Handles the upload of address proof document for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult UploadAddressProofdoc()
         {
             try
@@ -1298,10 +1298,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Upload Profile Image
-        [HttpPost]
         /// <summary>
         /// Handles the upload of profile image for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult UploadProfileimage(string txtprofileid)
         {
             try
@@ -1522,10 +1522,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         }
-        [HttpGet]
 /// <summary>
 /// Displays the change-password form for the dealer account.
 /// </summary>
+        [HttpGet]
         public ActionResult ChangePassword()
         {
             ViewData["success"] = TempData["success"];
@@ -1671,10 +1671,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return RedirectToAction("ChangePassword");
         }
 
-        [HttpPost]
         /// <summary>
         /// Processes the transaction PIN reset form submission.
         /// </summary>
+        [HttpPost]
         public ActionResult Edit_Reset_TransPin([Bind(Prefix = "Item2")] ChangeTransactionViewModel model)
         {
             var userid = User.Identity.GetUserId();
@@ -1788,10 +1788,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Day Book Report
-        [HttpGet]
 /// <summary>
 /// Displays the dealer day-book report for the current date.
 /// </summary>
+        [HttpGet]
         public ActionResult Dealer_Daybook_Report()
         {
             var userid = User.Identity.GetUserId();
@@ -1803,10 +1803,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             rep.DayBookLive = db.daybook_dealer_report(userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
             return View(rep);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the dealer daybook report with date range filtering.
         /// </summary>
+        [HttpPost]
         public ActionResult Dealer_Daybook_Report(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -1858,10 +1858,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             }
         }
         // Post : Add New Slab
-        [HttpPost]
         /// <summary>
         /// Adds a new commission slab name for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult AddSlabname(ResultSetViewModel result)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -2393,10 +2393,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
         #endregion
 
-        [HttpPost]
         /// <summary>
         /// Displays the send fund page and processes fund transfer to retailers.
         /// </summary>
+        [HttpPost]
         public ActionResult SendFund(string txt_frm_date, string txt_to_date, string RetailerId1)
         {
 
@@ -2513,10 +2513,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             //return Json(ch, JsonRequestBehavior.AllowGet);
         }
-        [HttpPost]
         /// <summary>
         /// Displays fund transfer detail view by transaction ID.
         /// </summary>
+        [HttpPost]
         public ActionResult SendFund1_View(int Idno)
         {
 
@@ -3469,10 +3469,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return Json("errorss", JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
         /// <summary>
         /// Updates a dealer-to-retailer purchase order status.
         /// </summary>
+        [HttpPost]
         public ActionResult updatepurchage_dlmTOret(int hdidno, string hdtype, string txtcommentwrite)
         {
             var userid = User.Identity.GetUserId();
@@ -3563,10 +3563,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
 
-        [HttpPost]
         /// <summary>
         /// Transfers balance from dealer to retailer account.
         /// </summary>
+        [HttpPost]
         public ActionResult Dealer_retailer_bal(string RetailerId, string balance, string ddl_fund_type, string comment)
         {
             try
@@ -3822,10 +3822,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //fund recive from admin
-        [HttpGet]
 /// <summary>
 /// Shows the fund received from the admin report for the current day.
 /// </summary>
+        [HttpGet]
         public ActionResult ReceiveFund_by_admin()
         {
             var userid = User.Identity.GetUserId();
@@ -3836,10 +3836,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var show = db.dealer_total_fund_recive_by_admin(userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
             return View(show);
         }
-        [HttpPost]
         /// <summary>
         /// Displays funds received from admin with date filter.
         /// </summary>
+        [HttpPost]
         public ActionResult ReceiveFund_by_admin(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -3858,10 +3858,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View(show);
         }
         // fund recive from master
-        [HttpGet]
         /// <summary>
         /// Displays funds received from master dealer with date filter.
         /// </summary>
+        [HttpGet]
         public ActionResult ReceiveFund_by_master()
         {
             var userid = User.Identity.GetUserId();
@@ -3872,10 +3872,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var show = db.dealer_total_fund_recive_by_master(userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
             return View(show);
         }
-        [HttpPost]
         /// <summary>
         /// Displays funds received from master dealer with date filter.
         /// </summary>
+        [HttpPost]
         public ActionResult ReceiveFund_by_master(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -4014,10 +4014,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             }
         }
-        [HttpPost]
         /// <summary>
         /// Displays and filters the purchase order list for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult PurchaseOrder(string txt_frm_date, string txt_to_date)
         {
             try
@@ -4059,10 +4059,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 return RedirectToAction("Index");
             }
         }
-        [HttpPost]
         /// <summary>
         /// Processes and submits a new purchase order.
         /// </summary>
+        [HttpPost]
         public ActionResult purchageorder(string payto, string Paymode, string type, string utrno, string Comment, decimal balance, string accountno, string txttoaccountno, string pancard, string branch, decimal? dipositCharge, string partyAcc, string AccHolderName)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -4268,10 +4268,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var ch = db.select_rem_pur_order("ALL", userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
             return View(ch);
         }
-        [HttpPost]
         /// <summary>
         /// Displays and processes purchase requests.
         /// </summary>
+        [HttpPost]
         public ActionResult purcharge_request(string txt_frm_date, string txt_to_date)
         {
             string userid = User.Identity.GetUserId();
@@ -4294,10 +4294,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
 
-        [HttpPost]
         /// <summary>
         /// Updates a dealer purchase order record.
         /// </summary>
+        [HttpPost]
         public ActionResult updatepurchage_dlm(int id, string type, string txtcomment, string HD_frm_date, string HD_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -4486,10 +4486,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             }
             return RedirectToAction("Complaint");
         }
-        [HttpPost]
         /// <summary>
         /// Registers a new retailer under the dealer.
         /// </summary>
+        [HttpPost]
         public async Task<ActionResult> InsertRetailer(RetailerModel model)
         {
             var appDbContext = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
@@ -4892,10 +4892,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
         }
         //POST : Delaer Search
-        [HttpPost]
         /// <summary>
         /// Searches for retailers by name or ID.
         /// </summary>
+        [HttpPost]
         public ActionResult RetailerSearch(string userid)
         {
             db.Configuration.ProxyCreationEnabled = false;
@@ -4906,10 +4906,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Edit Retailer List 
-        [HttpPost]
         /// <summary>
         /// Displays and processes the retailer edit form.
         /// </summary>
+        [HttpPost]
         public ActionResult Editretailer(RetailerModel model)
         {
             try
@@ -5336,10 +5336,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View(model);
         }
-        [HttpPost]
         /// <summary>
         /// Displays and manages UPI dealer charge settings.
         /// </summary>
+        [HttpPost]
         public ActionResult UPIDealerCharges(string ddlname, string Retailerid, string ddlstatus, DateTime txt_frm_date, DateTime txt_to_date)
         {
             ViewBag.chk = "post";
@@ -5625,10 +5625,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             ViewBag.allretailer = new SelectList(db.select_retailer_for_ddl(userid), "RetailerId", "RetailerName", null).ToList();
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Sends a notification to retailers under the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult Send_Notification(string retailerid, string txtMsgBody)
         {
             if (retailerid == "" || retailerid == null)
@@ -5665,10 +5665,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var Login_details = (db.Login_info.Where(aa => aa.UserId == userid && aa.CurrentLoginTime >= txt_frm_date && aa.CurrentLoginTime <= txt_to_date && aa.LoginFrom == "Web").Take(100).OrderByDescending(aa => aa.Idno)).ToList();
             return View(Login_details);
         }
-        [HttpPost]
         /// <summary>
         /// Handles the dealer web login page and authentication.
         /// </summary>
+        [HttpPost]
         public ActionResult WebLogin(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -5690,10 +5690,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
         }
         //Login Failed
-        [HttpGet]
         /// <summary>
         /// Displays the web login failed page with error details.
         /// </summary>
+        [HttpGet]
         public ActionResult WebLoginFailed()
         {
             var userid = User.Identity.GetUserName();
@@ -5702,10 +5702,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var Faild_Login_details = (db.Failed_Login_info.Where(aa => aa.EmailId == userid && aa.LoginTime >= txt_frm_date && aa.LoginTime <= txt_to_date && aa.LoginFrom == "Web").Take(100).OrderByDescending(aa => aa.Idno)).ToList();
             return View(Faild_Login_details);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the web login failed page with error details.
         /// </summary>
+        [HttpPost]
         public ActionResult WebLoginFailed(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -6103,10 +6103,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             ViewBag.allow = info;
             return View(sb);
         }
-        [HttpPost]
         /// <summary>
         /// Displays and manages all operator/recharge information.
         /// </summary>
+        [HttpPost]
         public ActionResult All_Operator_Info(string ddlcomm)
         {
             var userid = User.Identity.GetUserId();
@@ -6356,10 +6356,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var ch1 = db.select_operator_retailer(rem, opttype).ToList();
             return View(ch1);
         }
-        [HttpPost]
         /// <summary>
         /// Blocks or unblocks an operator option for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult BlockOPT(string rem, string opttype)
         {
             var userid = User.Identity.GetUserId();
@@ -6376,10 +6376,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
         //end
         //Retailer_Slab
-        [HttpGet]
         /// <summary>
         /// Displays and manages retailer commission slabs.
         /// </summary>
+        [HttpGet]
         public ActionResult Retailer_Slab()
         {
             string userid = User.Identity.GetUserId();
@@ -6388,10 +6388,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var ch = (from jj in db.retailer_slab where jj.retailer_id == "" select jj);
             return View(ch);
         }
-        [HttpPost]
         /// <summary>
         /// Displays and manages retailer commission slabs.
         /// </summary>
+        [HttpPost]
         public ActionResult Retailer_Slab(string slabnm)
         {
             string userid = User.Identity.GetUserId();
@@ -6402,10 +6402,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Dealer Ledger Report
-        [HttpGet]
         /// <summary>
         /// Displays the dealer ledger with date range filtering.
         /// </summary>
+        [HttpGet]
         public ActionResult DealerLedger()
         {
             var userid = User.Identity.GetUserId();
@@ -6416,10 +6416,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View(ledger);
         }
 
-        [HttpPost]
         /// <summary>
         /// Displays the dealer ledger with date range filtering.
         /// </summary>
+        [HttpPost]
         public ActionResult DealerLedger(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -6477,10 +6477,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View();
         }
         //Money Transfer Report 
-        [HttpGet]
         /// <summary>
         /// Displays the money transfer report with filters.
         /// </summary>
+        [HttpGet]
         public ActionResult Money_Transfer_Report()
         {
             Money_transfer_report money = new Money_transfer_report();
@@ -6502,10 +6502,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Displays the money transfer report with filters.
         /// </summary>
+        [HttpPost]
         public ActionResult Money_Transfer_Report(string txt_frm_date, string txt_to_date, string allretailer, string allapiuser, string ddl_status, string ddl_Type)
         {
 
@@ -6957,10 +6957,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             }
         }
 
-        [HttpPost]
         /// <summary>
         /// Returns operator options for a given service type.
         /// </summary>
+        [HttpPost]
         public JsonResult Getopt(string ID)
         {
             var Operator1 = db.Operator_Code.Distinct().Where(a => a.Operator_type == ID).ToList();
@@ -6973,10 +6973,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             ViewBag.Operator = new SelectList(selectopt, "Value", "Text");
             return Json(new SelectList(selectopt.ToArray(), "Value", "Text"), JsonRequestBehavior.AllowGet);
         }
-        [HttpGet]
         /// <summary>
         /// Displays the recharge transaction report with date filters.
         /// </summary>
+        [HttpGet]
         public ActionResult Recharge_Report()
         {
             string userid = User.Identity.GetUserId();
@@ -6987,10 +6987,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Displays the recharge transaction report with date filters.
         /// </summary>
+        [HttpPost]
         public ActionResult Recharge_Report(string btntype, string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string ddl_top, string txtmob, string allretailer)
         {
             string userid = User.Identity.GetUserId();
@@ -7380,10 +7380,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         //HotelReport
-        [HttpGet]
         /// <summary>
         /// Displays the hotel booking report with date filters.
         /// </summary>
+        [HttpGet]
         public ActionResult Hotel_Report()
         {
 
@@ -7393,10 +7393,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Displays the hotel booking report with date filters.
         /// </summary>
+        [HttpPost]
         public ActionResult Hotel_Report(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string allretailer, string TXNID)
         {
             ViewBag.chk = "post";
@@ -7667,10 +7667,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return new ViewAsPdf(respo);
         }
-        [HttpGet]
         /// <summary>
         /// Displays and manages hotel/flight cancellation queue.
         /// </summary>
+        [HttpGet]
         public ActionResult CancellationQueue()
         {
             var userid = User.Identity.GetUserId();
@@ -7687,10 +7687,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             //ViewData["totalp"] = proc_Response.Where(s => s.TicketStatus.ToUpper().Contains("Proccessed")).Sum(s => Convert.ToInt32(s.totalOfferedFare));
             return View(proc_Response);
         }
-        [HttpPost]
         /// <summary>
         /// Displays and manages hotel/flight cancellation queue.
         /// </summary>
+        [HttpPost]
         public ActionResult CancellationQueue(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string allretailer, string BookingId)
         {
             ViewBag.chk = "post";
@@ -7732,10 +7732,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //BusReport
-        [HttpGet]
         /// <summary>
         /// Displays the bus booking report with date filters.
         /// </summary>
+        [HttpGet]
         public ActionResult Bus_Report()
         {
             var userid = User.Identity.GetUserId();
@@ -7743,10 +7743,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             ViewBag.allretailer = new SelectList(db.select_retailer_for_ddl(userid), "RetailerId", "Frm_Name", null).ToList();
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Displays the bus booking report with date filters.
         /// </summary>
+        [HttpPost]
         public ActionResult Bus_Report(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string allretailer, string allwhitelabel, string TicketNo)
         {
             ViewBag.chk = "post";
@@ -8001,10 +8001,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Flightreport
-        [HttpGet]
         /// <summary>
         /// Displays the flight booking report with date filters.
         /// </summary>
+        [HttpGet]
         public ActionResult Flight_Report()
         {
             var userid = User.Identity.GetUserId();
@@ -8014,10 +8014,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Displays the flight booking report with date filters.
         /// </summary>
+        [HttpPost]
         public ActionResult Flight_Report(string txt_frm_date, string txt_to_date, int? ddl_top, string ddl_status, string PNR, string allretailer)
         {
             ViewBag.chk = "post";
@@ -8302,10 +8302,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         }
-        [HttpGet]
         /// <summary>
         /// Displays the cancellation report for bookings.
         /// </summary>
+        [HttpGet]
         public ActionResult CancellationReport()
         {
             var userid = User.Identity.GetUserId();
@@ -8361,10 +8361,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         //m_poss
-        [HttpGet]
         /// <summary>
         /// Displays the mPOS transaction report.
         /// </summary>
+        [HttpGet]
         public ActionResult m_possreport()
         {
             var userid = User.Identity.GetUserId();
@@ -8375,10 +8375,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         }
-        [HttpPost]
         /// <summary>
         /// Displays the mPOS transaction report.
         /// </summary>
+        [HttpPost]
         public ActionResult m_possreport(string ddl_status, string txt_frm_date, string txt_to_date, string allretailer)
         {
             ViewBag.chk = "post";
@@ -8714,10 +8714,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
 
-        [HttpGet]
         /// <summary>
         /// Displays the AEPS (Aadhaar Enabled Payment) transaction report.
         /// </summary>
+        [HttpGet]
         public ActionResult AepsReport()
         {
             var userid = User.Identity.GetUserId();
@@ -8727,10 +8727,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Displays the AEPS (Aadhaar Enabled Payment) transaction report.
         /// </summary>
+        [HttpPost]
         public ActionResult AepsReport(string txt_frm_date, string txt_to_date, string allretailer, string ddl_status)
         {
             var loginid = User.Identity.GetUserId();
@@ -9068,10 +9068,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         //pancardreport
-        [HttpGet]
         /// <summary>
         /// Displays the PAN card service transaction report.
         /// </summary>
+        [HttpGet]
         public ActionResult Pancard_report()
         {
             var userid = User.Identity.GetUserId();
@@ -9165,10 +9165,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View(ch);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the new format PAN card transaction report.
         /// </summary>
+        [HttpPost]
         public ActionResult Pancard_report_new(string ddl_status, string txt_frm_date, string txt_to_date, string allretailer)
         {
             if (txt_frm_date == null && txt_to_date == null)
@@ -9618,10 +9618,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //MicroATMReport
-        [HttpGet]
         /// <summary>
         /// Displays the Micro ATM transaction report.
         /// </summary>
+        [HttpGet]
         public ActionResult MIcroAtmReport()
         {
             var userid = User.Identity.GetUserId();
@@ -9631,10 +9631,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Displays the Micro ATM transaction report.
         /// </summary>
+        [HttpPost]
         public ActionResult MIcroAtmReport(string txt_frm_date, string txt_to_date, string allretailer, string ddl_status)
         {
             var loginid = User.Identity.GetUserId();
@@ -9697,10 +9697,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //CashDepositreport
-        [HttpGet]
         /// <summary>
         /// Displays the cash deposit transaction report.
         /// </summary>
+        [HttpGet]
         public ActionResult CashDepositReport()
         {
             var userid = User.Identity.GetUserId();
@@ -9708,10 +9708,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             ViewBag.allretailer = new SelectList(db.select_retailer_for_ddl(userid), "RetailerId", "Frm_Name", null).ToList();
             return View();
         }
-        [HttpPost]
         /// <summary>
         /// Displays the cash deposit transaction report.
         /// </summary>
+        [HttpPost]
         public ActionResult CashDepositReport(string txt_frm_date, string txt_to_date, string allretailer, string ddl_status)
         {
             var loginid = User.Identity.GetUserId();
@@ -9771,10 +9771,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
 
-        [HttpGet]
         /// <summary>
         /// Displays the Indo-Nepal remittance transaction history.
         /// </summary>
+        [HttpGet]
         public ActionResult IndoNepalHistory()
         {
             string userid = User.Identity.GetUserId();
@@ -9812,10 +9812,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             ViewData["totalp"] = ch.Where(s => s.status.ToUpper().Contains("PENDING")).Sum(s => Convert.ToInt32(s.Amount));
             return View(ch);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the Indo-Nepal remittance transaction history.
         /// </summary>
+        [HttpPost]
         public ActionResult IndoNepalHistory(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_top, string ddl_status, string api_name, string allapiuser, string txtmob)
         {
             string userid = User.Identity.GetUserId();
@@ -9959,10 +9959,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             return View(report);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the prepaid card transaction report.
         /// </summary>
+        [HttpPost]
         public ActionResult Prepaid_Card_report(string allretailer, DateTime txt_frm_date, DateTime txt_to_date)
         {
             string userid = User.Identity.GetUserId();
@@ -10016,10 +10016,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View(Liverechargecount);
         }
 
-        [HttpPost]
         /// <summary>
         /// Displays the gift card management and report page.
         /// </summary>
+        [HttpPost]
         public ActionResult Giftcard(string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string ddl_top, string allretailer)
         {
             var userid = "";
@@ -10110,10 +10110,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View(vv);
         }
 
-        [HttpPost]
         /// <summary>
         /// Displays the e-commerce transaction report.
         /// </summary>
+        [HttpPost]
         public ActionResult Ecommerce_Report(string category, int ddl_top, string ddl_status, string txt_frm_date, string txt_to_date, string allretailer)
         {
             var loginid = User.Identity.GetUserId();
@@ -10202,10 +10202,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
              });
             return View(gst);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the GST transaction report with date filters.
         /// </summary>
+        [HttpPost]
         public ActionResult GST_Report(string txt_frm_date, string txt_to_date, HttpPostedFileBase file)
         {
             string userid = User.Identity.GetUserId();
@@ -10284,10 +10284,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
         //Download GST declaration form
-        [HttpGet]
         /// <summary>
         /// Downloads the GST declaration form document.
         /// </summary>
+        [HttpGet]
         public FileResult Download_Declaration_form()
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/GST_Declaration"), "*.docx");
@@ -10295,10 +10295,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return File(filesInDirectory[0], "application/force-download", Path.GetFileName(filesInDirectory[0]));
         }
         //GST Invocing 
-        [HttpPost]
         /// <summary>
         /// Displays the GST invoicing management page.
         /// </summary>
+        [HttpPost]
         public ActionResult GST_Invoicing(DateTime month)
         {
 
@@ -10461,10 +10461,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
 
-        [HttpPost]
         /// <summary>
         /// Displays and processes UPI transfer transactions for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult UPITRANSFER_Dealer(DateTime txt_frm_date, DateTime txt_to_date)
         {
             ViewBag.chk = "post";
@@ -10553,10 +10553,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View(entries);
         }
 
-        [HttpPost]
         /// <summary>
         /// Displays the token purchase page and processes token purchases.
         /// </summary>
+        [HttpPost]
         public ActionResult TokenPurchase(int tokenCount)
         {
             try
@@ -10687,10 +10687,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             model.TDSDealer = db.TDS_Report_Dealer(Convert.ToDateTime(txt_frm_date), Convert.ToDateTime(to_date), userid).ToList();
             return View(model);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the TDS (Tax Deducted at Source) report.
         /// </summary>
+        [HttpPost]
         public ActionResult TDSReport(string submit)
         {
             var useridid = User.Identity.GetUserId();
@@ -10749,10 +10749,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             model.GSTDealer = db.GST_Report_Dealer_All(Convert.ToDateTime(txt_frm_date), Convert.ToDateTime(to_date), userid).ToList();
             return View(model);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the GST compliance report.
         /// </summary>
+        [HttpPost]
         public ActionResult GSTReport(string submit)
         {
             GSTReportModel model = new GSTReportModel();
@@ -11009,10 +11009,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             ViewData["Totalf"] = ch.Where(s => s.Status == "Failed").Sum(s => Convert.ToInt32(s.Amount));
             return View(ch);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the DTH recharge booking report.
         /// </summary>
+        [HttpPost]
         public ActionResult DthBookingReport(string ddl_top, string ddl_status, string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -11057,10 +11057,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View(ch);
         }
 
-        [HttpPost]
         /// <summary>
         /// Displays the Micro ATM rental charge report for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult Dealer_Microatm_rental_report(DateTime txt_frm_date, DateTime txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -11123,10 +11123,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             ViewBag.apiid = new SelectList(selectList, "Value", "Text");
             return View(respp);
         }
-        [HttpPost]
         /// <summary>
         /// Displays and processes dealer GST sell report.
         /// </summary>
+        [HttpPost]
         public ActionResult DealerSellgst(string Month, string Year)
         {
             string dealerid = User.Identity.GetUserId();
@@ -11313,10 +11313,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             var chk = db.Dealer_upload_gst.Where(aa => aa.dealerid == userid && aa.monthchk == month && aa.yearchk == year).ToList();
             return View(chk);
         }
-        [HttpPost]
         /// <summary>
         /// Displays the GST document upload page.
         /// </summary>
+        [HttpPost]
         public ActionResult uploadgst(string Month, string Year)
         {
             var userid = User.Identity.GetUserId();
@@ -11432,10 +11432,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View(chk);
         }
 
-        [HttpPost]
         /// <summary>
         /// Displays the payment gateway transfer report.
         /// </summary>
+        [HttpPost]
         public ActionResult GatewayTRANSFER(DateTime txt_frm_date, DateTime txt_to_date)
         {
 
@@ -11542,10 +11542,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
 
-        [HttpPost]
         /// <summary>
         /// Displays the new gateway transfer management page.
         /// </summary>
+        [HttpPost]
         public ActionResult GatewayTransfer_new(decimal txtamt, string ddl_type, string latss, string longloc)
         {
             var userid = User.Identity.GetUserId();
@@ -11942,10 +11942,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 return RedirectToAction("All_Operator_Info");
             }
         }
-        [HttpPost]
         /// <summary>
         /// Returns the prepaid commission partial view.
         /// </summary>
+        [HttpPost]
         public ActionResult _prepaid_comm(PrepaidSlab model)
         {
             var userid = User.Identity.GetUserId();
@@ -11981,10 +11981,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return PartialView(pmodel);
             // return RedirectToAction("Prepaid_Slab_setting");
         }
-        [HttpPost]
         /// <summary>
         /// Returns the user prepaid slab partial view.
         /// </summary>
+        [HttpPost]
         public PartialViewResult _UserPrepaidSlab(string role, string userid, string ddlUserIdrem, string dlmid, PrepaidSlab model2, string ddlUserId, string Button)
         {
             var masterid = User.Identity.GetUserId();
@@ -12261,10 +12261,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return View();
         }
 
-        [HttpPost]
         /// <summary>
         /// Adds a commission setting for a dealer seller.
         /// </summary>
+        [HttpPost]
         public ActionResult AddSeller_Commission(string optcode, decimal? Sellcomm = 0)
         {
             try
@@ -12333,10 +12333,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return PartialView("_Edit_Seller_Commission");
         }
 
-        [HttpPost]
         /// <summary>
         /// Saves updated commission values for a seller.
         /// </summary>
+        [HttpPost]
         public ActionResult UpdateSeller_Commission(int? Idno, decimal? Sellcomm = 0)
         {
             try
@@ -12396,10 +12396,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             }
             return Json(new {list= chk , lst1 = Decrypt(chk[0].Password) , list2 = rchpin }, JsonRequestBehavior.AllowGet);
         }
-        [HttpPost]
         /// <summary>
         /// Edits an existing SIM card information entry.
         /// </summary>
+        [HttpPost]
         public ActionResult EditSIMINFO1( string Simnumber,string Password, string Circlecode,string RechargePin, string Imeino, string minbal , string Daylimit,string Operator, string posid, string Macaddress)
         {        SimDetail_Info d1 = new SimDetail_Info();
                 var dealerid = User.Identity.GetUserId();
@@ -12481,10 +12481,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
               
         }
-        [HttpPost]
         /// <summary>
         /// Toggles SIM card on/off status.
         /// </summary>
+        [HttpPost]
         public async Task<ActionResult> simonoff(string switch1, int? idno)
         {  var messege = "";
             try
@@ -12592,10 +12592,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 return PartialView("_SimINfo", d11);
             }
         }
-        [HttpPost]
         /// <summary>
         /// Checks the balance for a SIM card entry.
         /// </summary>
+        [HttpPost]
         public ActionResult CheckbalSiminfo(int idno)
         {
             var userid = User.Identity.GetUserId();
@@ -12726,10 +12726,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return Json(new { list = message }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
         /// <summary>
         /// Saves new SIM card details to the dealer account.
         /// </summary>
+        [HttpPost]
         public ActionResult Add_SIM_Details(string drop2, string Zone , string USERID, string Password, string RechargePin, string Imeino, string Daylimit, string minbal, string posid, string Macaddress, string Remark   )
         { var dealerid = User.Identity.GetUserId();
             
@@ -12897,10 +12897,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             return PartialView("_Edit_SIM_Details");
         }
 
-        [HttpPost]
         /// <summary>
         /// Saves updated SIM information for a seller.
         /// </summary>
+        [HttpPost]
         public ActionResult UpdateSeller_SIM(int? Idno, decimal? dailyhome_limit, decimal? dailyrom_limit, string circle, int? simnumber, string simname,
             string userid, string password, string pin, decimal? remainbal, decimal? totalrecharge, decimal? purchasecomm)
         {
@@ -13003,10 +13003,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
            
             return View(chk);
         }
-        [HttpPost]
         /// <summary>
         /// Adds a selling operator option for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult ADDSELLINGOPT(string drop1 , string drop2, decimal comm1)
         {var userid = User.Identity.GetUserId();
             var chkd = db.Recharge_sell_by_dealer.Where(s => s.Dealerid == userid && s.registration_Status == true && s.Status == true).ToList();
@@ -13101,10 +13101,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
         }
 
-        [HttpGet]
         /// <summary>
         /// Displays the sell recharge transaction report.
         /// </summary>
+        [HttpGet]
         public ActionResult sellRechargeReport()
         { var userid = User.Identity.GetUserId();
             var chkd = db.Recharge_sell_by_dealer.Where(s => s.Dealerid == userid && s.registration_Status == true && s.Status == true).ToList();
@@ -13138,10 +13138,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             }
         }
 
-        [HttpPost]
         /// <summary>
         /// Displays the sell recharge transaction report.
         /// </summary>
+        [HttpPost]
         public ActionResult sellRechargeReport(string txt_frm_date, string txt_to_date, string ddl_status, string Operator)
         {
             var userid = User.Identity.GetUserId();
@@ -13212,10 +13212,10 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 return View(dfg);
          
         }
-        [HttpPost]
         /// <summary>
         /// Displays the extra commission report for the dealer.
         /// </summary>
+        [HttpPost]
         public ActionResult Extracomm_Report(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();

@@ -1207,9 +1207,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 {
                     var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
                     var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
-                    var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                    var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
-                    var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
+                    var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
                     var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
                     var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
 
@@ -1280,9 +1280,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                         {
                             var retailerdetails = db.Retailer_Details.FirstOrDefault(aa => aa.RetailerId == userid);
                             var dealerdetails = db.Dealer_Details.FirstOrDefault(aa => aa.DealerId == retailerdetails.DealerId);
-                            var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                            var masterdetails = db.Superstokist_details.FirstOrDefault(aa => aa.SSId == dealerdetails.SSId);
 
-                            var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == userid).SingleOrDefault();
+                            var remdetails = db.Remain_reteller_balance.FirstOrDefault(aa => aa.RetellerId == userid);
                             var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
                             var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
 
