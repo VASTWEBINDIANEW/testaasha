@@ -81,20 +81,7 @@ namespace Vastwebmulti.Models
                         client.Timeout = -1;
                         var request = new RestRequest(Method.GET);
                         IRestResponse response = client.Execute(request);
-                        Console.WriteLine(response.Content);
                         var resp = response.Content;
-                        //var client = new RestClient(apinamechange);
-                        //var request = new RestRequest(Method.GET);
-                        //var task = Task.Run(() =>
-                        //{
-                        //    return client.Execute(request).Content;
-                        //});
-                        //bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
-                        //var resp = "";
-                        //if (isCompletedSuccessfully == true)
-                        //{
-                        //    resp = task.Result;
-                        //}
                         sms_api_entry sms = new sms_api_entry();
                         sms.apiname = apinamechange;
                         sms.msg = text;
@@ -134,10 +121,9 @@ namespace Vastwebmulti.Models
         {
             try
             {
-                bool isSmsOn = db.apisms.Any(s => s.sts == "Y");
-                if (isSmsOn)
+                var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
+                if (smsapi.Any())
                 {
-                    var smsapi = db.apisms.Where(x => x.sts == "Y").ToList();
 
                     var smsapionsts = smsapi.Where(s => s.api_type == "whatsapp").SingleOrDefault();
                     if (whatsapp_status == "Y" && smsapionsts != null)
@@ -188,51 +174,6 @@ namespace Vastwebmulti.Models
             sendsmsallnew(remmobile, msgssss, urlss, tempid);
         }
 
-        //public void sendsmsall123(string frmmobile,string text, string smsType)
-        //{
-        //    var adminfirm = db.Admin_details.SingleOrDefault().Companyname;
-        //    text = text + " Regards " + adminfirm;
-        //    System.Data.Entity.Core.Objects.ObjectParameter output = new
-        //    System.Data.Entity.Core.Objects.ObjectParameter("Output", typeof(string));
-        //    try { 
-        //    var msg = db.priority_sms_send_new(frmmobile, text, smsType, output).Single().msg;
-        //    if (msg != "free" && msg != "sim")
-        //    {
-        //            var client = new RestClient(msg);
-        //            var request = new RestRequest(Method.GET);
-        //            var task = Task.Run(() =>
-        //            {
-        //                return client.Execute(request).Content;
-        //            });
-        //            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(2));
-        //            var resp = "";
-        //            if (isCompletedSuccessfully == true)
-        //            {
-        //                resp = task.Result;
-        //            }
-
-        //            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(msg);
-        //            //request.Timeout = 5000;
-        //            //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        //            //StreamReader sr = new StreamReader(response.GetResponseStream());
-        //            //var s = sr.ReadToEnd();
-        //            sms_api_entry sms = new sms_api_entry();
-        //            sms.apiname = msg;
-        //            sms.msg = text;
-
-        //            sms.m_date = System.DateTime.Now;
-        //            sms.response = resp;
-        //            db.sms_api_entry.Add(sms);
-        //            db.SaveChanges();
-
-        //        }
-        //    }
-        //    catch
-        //    {
-
-        //    }
-        //}
-
 
         public void SendEmailAll(string recepientEmail, string textMsg, string subject, string ToCC, int waittime = 5000)
         {
@@ -259,7 +200,7 @@ namespace Vastwebmulti.Models
                 var msg = db.whitelabel_priority_sms_send_new(whitelabelid, frmmobile, text, smsType, output).Single().msg;
                 if (msg != "free" && msg != "sim")
                 {
-                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(msg);
                     request.Timeout = 15000;
                     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -276,9 +217,17 @@ namespace Vastwebmulti.Models
                     db.SaveChanges();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                db.sms_api_entry.Add(new sms_api_entry
+                {
+                    apiname = "sendsmsallwhitelabel",
+                    msg = text,
+                    m_date = DateTime.Now,
+                    response = ex.Message,
+                    messagefor = whitelabelid
+                });
+                db.SaveChanges();
             }
         }
 
@@ -304,7 +253,7 @@ namespace Vastwebmulti.Models
                 text = string.Format(text, "1230");
                 var apinamechange = apiurls.Replace("tttt", frmmobile).Replace("mmmm", text).Replace("iiii", Templateid);
 
-                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 var client = new RestClient(apinamechange);
                 var request = new RestRequest(Method.GET);
 
@@ -350,20 +299,14 @@ namespace Vastwebmulti.Models
         {
             try
             {
-                bool isSmsOn = db.whitelabel_apisms.Any(s => s.sts == "Y" && s.userfor == whitelabelid);
-                if (isSmsOn)
+                var smsapionsts = db.whitelabel_apisms.Where(x => x.sts == "Y" && x.userfor == whitelabelid).FirstOrDefault();
+                if (sms_status == "Y" && smsapionsts != null)
                 {
-                    var smsapionsts = db.whitelabel_apisms.Where(x => x.sts == "Y" && x.userfor == whitelabelid).FirstOrDefault();
-
-                    if (sms_status == "Y" && smsapionsts != null)
+                    var smsstypes = db.Whitelabel_Sending_SMS_Templates.Where(x => x.SMS_TYPE == sms_type && x.SMSAPIID == smsapionsts.id && x.whitelabelId == whitelabelid).SingleOrDefault();
+                    if (smsstypes != null)
                     {
-                        var smsstypes = db.Whitelabel_Sending_SMS_Templates.Where(x => x.SMS_TYPE == sms_type && x.SMSAPIID == smsapionsts.id && x.whitelabelId == whitelabelid).SingleOrDefault();
-                        if (smsstypes != null)
-                        {
-                            callSms_whitelabel(whitelabelid, smsstypes, smsapionsts.smsapi, remmobile, vals);
-                        }
+                        callSms_whitelabel(whitelabelid, smsstypes, smsapionsts.smsapi, remmobile, vals);
                     }
-
                 }
             }
             catch (Exception ex)

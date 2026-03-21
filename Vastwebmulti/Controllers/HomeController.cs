@@ -65,7 +65,7 @@ namespace Vastwebmulti.Controllers
             using (VastwebmultiEntities db = new VastwebmultiEntities())
             {
                 var checkOne = db.Admin_details.ToList();
-                if (checkOne.Count() > 0)
+                if (checkOne.Any())
                 {
                     return RedirectToAction("Index1", "Home");
                 }
@@ -101,7 +101,7 @@ namespace Vastwebmulti.Controllers
                 using (VastwebmultiEntities db = new VastwebmultiEntities())
                 {
                     var checkOne = db.Admin_details.ToList();
-                    if (checkOne.Count() > 0)
+                    if (checkOne.Any())
                     {
                         TempData["aa"] = "Admin Can only One Time Register !!!";
                         return RedirectToAction("Index1", "Home");
@@ -235,7 +235,7 @@ namespace Vastwebmulti.Controllers
 
 
                         string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/AdminApk/" + currentwebsitess), "*.apk");
-                        if (filesInDirectory.Count() == 0)
+                        if (filesInDirectory.Length == 0)
                         {
                             ViewBag.urllink = null;
                         }
@@ -579,7 +579,7 @@ namespace Vastwebmulti.Controllers
 
 
                 var chkk = DB.WhiteLabel_Badges.Where(p => p.UserRole == "ADMIN").ToList();
-                if (chkk.Count() > 0)
+                if (chkk.Any())
                 {
                     ViewBag.checkBadge = DB.WhiteLabel_Badges.Where(p => p.UserRole == "ADMIN").ToList();
 
@@ -1678,7 +1678,7 @@ namespace Vastwebmulti.Controllers
 
                     string extension = System.IO.Path.GetExtension(Request.Files["Adminapk"].FileName).ToLower();
                     string[] dirs = Directory.GetFiles(Server.MapPath("~/AdminApk/"), "*.apk");
-                    if (dirs.Count() > 0)
+                    if (dirs.Length > 0)
                     {
                         TempData["error"] = "Delete Old File to Upload New Apk.";
                     }
