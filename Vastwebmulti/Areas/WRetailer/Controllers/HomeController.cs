@@ -11114,7 +11114,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         public ActionResult PAN_FirstPageDownLoad(string ackno)
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/PAN_FirstPage"), ackno + "*");
-            if (!filesInDirectory.Length > 0)
+            if (filesInDirectory.Length == 0)
             {
                 return RedirectToAction("PAN_CARD", "Home");
             }
@@ -11123,7 +11123,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         public ActionResult PAN_DocDownLoad(string ackno)
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/PAN_DOC_PDF"), ackno + "*");
-            if (!filesInDirectory.Length > 0)
+            if (filesInDirectory.Length == 0)
             {
                 return RedirectToAction("PAN_CARD", "Home");
             }
@@ -11137,7 +11137,7 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             if (!string.IsNullOrWhiteSpace(ackno))
             {
                 string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/PAN_Slip"), ackno + "*");
-                if (!filesInDirectory.Length > 0)
+                if (filesInDirectory.Length == 0)
                 {
                     return RedirectToAction("PAN_CARD", "Home");
                 }
