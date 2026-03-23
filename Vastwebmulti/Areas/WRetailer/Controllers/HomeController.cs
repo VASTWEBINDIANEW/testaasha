@@ -230,12 +230,13 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             string frm_date = Convert.ToDateTime(txt_frm_date).Date.ToString("yyyy-MM-dd");
             string to_date = Convert.ToDateTime(txt_to_date).AddDays(1).ToString("yyyy-MM-dd");
             Vastwebmulti.Areas.WRetailer.Models.remmulti viewModel = new Vastwebmulti.Areas.WRetailer.Models.remmulti();
-            ViewBag.Newsletter = (from gg in db.Message_top where (gg.users == "WRetailer" || gg.users == "All") where gg.status == "Y" select gg).ToList();
+            ViewBag.Newsletter = (from gg in db.Message_top where (gg.users == "WRetailer" || gg.users == "All") where gg.status == "Y" select gg).AsNoTracking().ToList();
             viewModel.allopt = db.Apps_opt_all().ToList();
-            viewModel.optcode = (from aa in db.Operator_Code where aa.new_opt_code == "ADB" select aa).ToList();
+            viewModel.optcode = (from aa in db.Operator_Code where aa.new_opt_code == "ADB" select aa).AsNoTracking().ToList();
             ViewBag.state = new SelectList(db.Select_State_Details(), "State_Id", "State_Name");
 
-            var allvalue = db.Operator_Code.ToList();
+            // Load all operator codes once with AsNoTracking (read-only), then filter in memory
+            var allvalue = db.Operator_Code.AsNoTracking().ToList();
             // operator code prepaid mobile
             var pre = allvalue.Where(a => a.Operator_type == "PrePaid").ToList();
             ViewBag.perpaid = new SelectList(pre, "new_opt_code", "operator_Name");
