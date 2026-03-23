@@ -471,6 +471,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return RedirectToAction("DTHBooking");
         }
         [HttpPost]
+        /// <summary>
+        /// DTH recharge ka payment process karta hai customer ki details aur package ke saath
+        /// </summary>
         public ActionResult DoPayment(string STB, string ConOpt, string ddlPackage, string packageAmt, string txtName, string txtMobile, string customerAddress, string txtPIN)
         {
             try

@@ -1426,6 +1426,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return "Failed";
             }
         }
+        /// <summary>
+        /// POST - Passenger details submit karne par flight ticket book karta hai aur payment process karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult Ticket(FlightDetailsVM model)
         {
@@ -2942,11 +2945,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// GET - Flight ticket booking report page dikhata hai.
+        /// </summary>
         [HttpGet]
         public ActionResult TicketReport()
         {
             return View();
         }
+        /// <summary>
+        /// POST - Date range, status aur PNR filter se ticket report page load karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult TicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
@@ -2959,6 +2968,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             public string HTMLString { get; set; }
             public bool NoMoredata { get; set; }
         }
+        /// <summary>
+        /// Date, status aur PNR filter se ticket report partial view render karta hai.
+        /// </summary>
         [ChildActionOnly]
         public ActionResult _ticketreport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {

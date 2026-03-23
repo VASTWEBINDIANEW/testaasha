@@ -640,7 +640,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// POST - Returns the hotel passenger guest list for a given transaction ID as a partial view.
+        /// POST - Diye gaye transaction ID ke liye hotel passenger ki guest list partial view mein return karta hai
         /// </summary>
         [HttpPost]
         public ActionResult GuestDetails(string TXNID)
@@ -659,7 +659,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Returns the hotel price breakdown for a given transaction ID as a partial view.
+        /// POST - Diye gaye transaction ID ke liye hotel price breakdown partial view mein dikhata hai
         /// </summary>
         [HttpPost]
         public ActionResult HotelPriceDetails(string TXNID)
@@ -678,7 +678,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Fetches live hotel booking status from the provider and updates the booking record.
+        /// POST - Provider se live hotel booking status fetch karke booking record update karta hai
         /// </summary>
         [HttpPost]
         public ActionResult HotelBookingStatus(string TXNID)
