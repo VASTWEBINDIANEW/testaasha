@@ -127,7 +127,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             int Nxtyear = todaysDate.AddMonths(1).Year;
 
             TargetSetviewmodel vmodel = new TargetSetviewmodel();
-            var allOn = db.tblDealerSetTargets.Where(a => a.Status == true).ToList();
+            var allOn = db.tblDealerSetTargets.AsNoTracking().Where(a => a.Status == true).ToList();
             vmodel.dlmTargetCategory = allOn.Where(a => a.Date.Value.Month == month && a.Date.Value.Year == year).ToList();
             vmodel.dlmTargetCategoryNxt = allOn.Where(a => a.Date.Value.Month == Nxtmonth && a.Date.Value.Year == Nxtyear).ToList();
             vmodel.productItems = db.tblPruductGifts.ToList();
@@ -163,8 +163,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                     try
                     {
 
-                        var check = db.admin_to_dealer.Where(x => x.dealerid == userid && x.balance_from == adminid && x.Head == "AutoFund").ToList();
-                        noofcount = check.Where(x => x.date_dlm.Value.Date == todaydate.Date).Count();
+                        noofcount = db.admin_to_dealer.Count(x => x.dealerid == userid && x.balance_from == adminid && x.Head == "AutoFund" && x.date_dlm.Value.Date == todaydate.Date);
                         var sdd = db.admin_to_dealer.Where(x => x.dealerid == userid && x.balance_from == adminid && x.Head == "AutoFund").OrderByDescending(x => x.idno).FirstOrDefault();
                         if (sdd != null)
                         {
@@ -305,8 +304,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                     try
                     {
 
-                        var check = db.admin_to_dealer.Where(x => x.dealerid == userid && x.balance_from == remdetailsallinform.SSId && x.Head == "AutoFund").ToList();
-                        noofcount = check.Where(x => x.date_dlm.Value.Date == todaydate.Date).Count();
+                        noofcount = db.admin_to_dealer.Count(x => x.dealerid == userid && x.balance_from == remdetailsallinform.SSId && x.Head == "AutoFund" && x.date_dlm.Value.Date == todaydate.Date);
                         var sdd = db.admin_to_dealer.Where(x => x.dealerid == userid && x.balance_from == remdetailsallinform.SSId && x.Head == "AutoFund").OrderByDescending(x => x.idno).FirstOrDefault();
                         if (sdd != null)
                         {

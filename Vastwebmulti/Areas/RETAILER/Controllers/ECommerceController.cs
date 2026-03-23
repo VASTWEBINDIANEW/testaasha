@@ -64,15 +64,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             var ChkKYC = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
             if (ChkKYC.PSAStatus == "Y" && ChkKYC.AadhaarStatus == "Y" && ChkKYC.ShopwithSalfieStatus == "Y")
             {
-                var freeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ECOMM").SingleOrDefault();
-                var ALLfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL").SingleOrDefault();
-                if (freeservice.IsFree == true && ALLfreeservice.IsFree == true)
+                // Load service config once - reused throughout this method
+                var checkfreeservice = db.PaidServicesChargeLists.AsNoTracking().Where(aa => aa.ServiceName == "ECOMM").SingleOrDefault();
+                var checkALLfreeservice = db.PaidServicesChargeLists.AsNoTracking().Where(aa => aa.ServiceName == "ALL").SingleOrDefault();
+                if (checkfreeservice.IsFree == true && checkALLfreeservice.IsFree == true)
                 {
-
                     check = "OK";
                 }
-                var checkfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ECOMM").SingleOrDefault();
-                var checkALLfreeservice = db.PaidServicesChargeLists.Where(aa => aa.ServiceName == "ALL").SingleOrDefault();
                 if (checkfreeservice.IsFree == true)
                 {
                     if (checkALLfreeservice.IsFree == false)

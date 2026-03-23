@@ -63,7 +63,7 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             {
                 var userid = User.Identity.GetUserId();
                 //Vonder Profile Details
-                var vv = db.Vendor_details.FirstOrDefault(a => a.userid == userid);
+                var vv = db.Vendor_details.AsNoTracking().FirstOrDefault(a => a.userid == userid);
                 ViewBag.email = vv.emailid;
                 ViewBag.image = vv.Photo;
                 return View();
@@ -114,7 +114,7 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             {
                 using (VastwebmultiEntities db = new VastwebmultiEntities())
                 {
-                    ViewBag.category = new SelectList(db.Catagories.Where(a=>a.IsDeleted==false).ToList(), "CatID", "CatName").ToList();
+                    ViewBag.category = new SelectList(db.Catagories.AsNoTracking().Where(a=>a.IsDeleted==false).ToList(), "CatID", "CatName").ToList();
                     //ViewBag.Catagories = new SelectList(db.SubCatagories.ToList(), "SubCatID", "SubCatName").ToList();
                     return View();
                 }

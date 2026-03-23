@@ -64,18 +64,18 @@ namespace Vastwebmulti.Areas.FeeCollector.Controllers
         public ActionResult Index()
         {
             var userid = User.Identity.GetUserId();
-            var vv = db.FeeCollector_details.SingleOrDefault(a => a.FCId == userid);
+            var vv = db.FeeCollector_details.AsNoTracking().SingleOrDefault(a => a.FCId == userid);
             ViewBag.email = vv.Email;
             ViewBag.image = vv.Photo;
             //Admin Contact Details
-            var contact = db.Admin_details.SingleOrDefault();
+            var contact = db.Admin_details.AsNoTracking().SingleOrDefault();
             ViewBag.mobile1 = contact.mobile;
             ViewBag.mobile2 = contact.mobile1;
             ViewBag.customercareno = contact.CustomerCare_No;
             ViewBag.email1 = contact.email;
             ViewBag.email2 = contact.email1;
             //show News for master
-            ViewBag.news = (from pp in db.Message_top where (pp.users == "Distributor" || pp.users == "All") where pp.status == "Y" select pp).ToList();
+            ViewBag.news = (from pp in db.Message_top.AsNoTracking() where (pp.users == "Distributor" || pp.users == "All") where pp.status == "Y" select pp).ToList();
             ////Retailers
             //var stackedchart = db.show_all_active_inactive_rem_list().ToList();
             //int actRtl = stackedchart.Where(a => a.type == "ACTIVE").Count();

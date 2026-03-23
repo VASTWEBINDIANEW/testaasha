@@ -77,7 +77,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 ViewBag.txt_frm_dateBus = txt_frm_dateBus;
                 ViewBag.chk = "post";
                 var userid = User.Identity.GetUserId();
-                var entry = db.Convence_Fees.FirstOrDefault(a => a.RetailerId == userid && a.Role == "Bus");
+                var entry = db.Convence_Fees.AsNoTracking().FirstOrDefault(a => a.RetailerId == userid && a.Role == "Bus");
                 if (entry != null)
                 {
                     ViewBag.RetailerMarkup = entry.Amount;
@@ -86,7 +86,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 {
                     ViewBag.RetailerMarkup = 0;
                 }
-                var slabbus = db.Slab_Bus.FirstOrDefault(aa => aa.UserId == userid).marginPercentage;
+                var slabbus = db.Slab_Bus.AsNoTracking().FirstOrDefault(aa => aa.UserId == userid).marginPercentage;
                 ViewBag.charge = slabbus;
                 var sts = db.Retailer_Details.Where(a => a.RetailerId == userid && a.Bussts == "Y" && a.Bussts != null).Any();
                 if (sts == true)
