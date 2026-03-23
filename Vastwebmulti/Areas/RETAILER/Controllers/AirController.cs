@@ -66,15 +66,14 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         [OutputCache(Duration = 2000, VaryByParam = "term")]
         public JsonResult GetSourceName(string term)
         {
-            List<string> planets = (from p in db.Airport_info
+            List<string> planets = (from p in db.Airport_info.AsNoTracking()
                                     where p.Airport_Name.StartsWith(term) || p.City_Name.StartsWith(term) || p.Aiport_Code.StartsWith(term)
                                     select p.Airport_Name + "," + p.City_Name + "," + p.Country_name + "(" + p.Aiport_Code + ")").ToList<string>();
-            //select p.AirportName).ToList<string>() ;
             return Json(planets, JsonRequestBehavior.AllowGet);
         }
         public PartialViewResult _AirFilter(AirSearchResultVM model)
         {
-            var FirmName = db.Admin_details.FirstOrDefault().Companyname;
+            var FirmName = db.Admin_details.AsNoTracking().FirstOrDefault().Companyname;
             ViewBag.FirmName = FirmName;
             return PartialView(model);
         }

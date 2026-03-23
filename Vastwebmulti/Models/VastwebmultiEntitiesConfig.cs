@@ -9,6 +9,15 @@ namespace Vastwebmulti.Models
     public partial class VastwebmultiEntities
     {
         /// <summary>
+        /// Disables EF schema initialization check on startup — the database already exists (DB-first).
+        /// This prevents EF from running compatibility checks on every app start, improving startup time.
+        /// </summary>
+        static VastwebmultiEntities()
+        {
+            Database.SetInitializer<VastwebmultiEntities>(null);
+        }
+
+        /// <summary>
         /// Creates a context optimized for read-heavy (non-tracking) operations.
         /// Disables proxy creation and lazy loading to reduce memory overhead and prevent unintended N+1 queries.
         /// Use this for report pages, dashboards, and any action that only reads data without updating.

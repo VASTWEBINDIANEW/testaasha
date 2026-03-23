@@ -118,12 +118,12 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         public ActionResult Dashboard()
         {
             var userid = User.Identity.GetUserId();
-            var vv = _db.Whitelabel_Superstokist_details.SingleOrDefault(a => a.SSId == userid);
+            var vv = _db.Whitelabel_Superstokist_details.AsNoTracking().SingleOrDefault(a => a.SSId == userid);
             ViewBag.email = vv.Email;
             ViewBag.image = vv.Photo;
             //show News for WMASTER
             var whitelabelid = vv.Whitelabelid;
-            ViewBag.news = (from pp in _db.Message_top where (pp.users == "WMaster" || pp.users == "All") where pp.status == "Y" && pp.UserId == whitelabelid select pp).ToList();
+            ViewBag.news = (from pp in _db.Message_top.AsNoTracking() where (pp.users == "WMaster" || pp.users == "All") where pp.status == "Y" && pp.UserId == whitelabelid select pp).ToList();
 
             ViewBag.showholiday = 0;
 
@@ -135,7 +135,7 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             int Nxtyear = todaysDate.AddMonths(1).Year;
 
             Whitelabel_TargetSetviewmodel vmodel = new Whitelabel_TargetSetviewmodel();
-            var allOn = _db.Whitelabel_superstockistsettarget.Where(a => a.WhitelabelId == whitelabelid && a.Status == true).ToList();
+            var allOn = _db.Whitelabel_superstockistsettarget.AsNoTracking().Where(a => a.WhitelabelId == whitelabelid && a.Status == true).ToList();
             vmodel.mdTargetCategory = allOn.Where(a => a.Date.Value.Month == month && a.Date.Value.Year == year).ToList();
             vmodel.mdTargetCategoryNxt = allOn.Where(a => a.Date.Value.Month == Nxtmonth && a.Date.Value.Year == Nxtyear).ToList();
             vmodel.productItems = _db.Whitelabel_PruductGift.Where(a => a.Whitelabelid == whitelabelid).ToList();

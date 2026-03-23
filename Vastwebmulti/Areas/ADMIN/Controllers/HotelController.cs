@@ -76,7 +76,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 var userid = User.Identity.GetUserId();
                 using (VastwebmultiEntities db = new VastwebmultiEntities())
                 {
-                    var stands = db.Superstokist_details.ToList();
+                    var stands = db.Superstokist_details.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList = from s in stands
                                                              select new SelectListItem
                                                              {
@@ -84,7 +84,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                                                                  Text = s.FarmName.ToString()
                                                              };
 
-                    var totalwhitelabel = db.WhiteLabel_userList.ToList();
+                    var totalwhitelabel = db.WhiteLabel_userList.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList1 = from s in totalwhitelabel
                                                               select new SelectListItem
                                                               {
@@ -130,7 +130,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 using (VastwebmultiEntities db = new VastwebmultiEntities())
                 {
                     // show master id 
-                    var stands = db.Superstokist_details.ToList();
+                    var stands = db.Superstokist_details.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList = from s in stands
                                                              select new SelectListItem
                                                              {
@@ -138,7 +138,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                                                                  Text = s.FarmName.ToString()
                                                              };
 
-                    var totalwhitelabel = db.WhiteLabel_userList.ToList();
+                    var totalwhitelabel = db.WhiteLabel_userList.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList1 = from s in totalwhitelabel
                                                               select new SelectListItem
                                                               {
@@ -202,7 +202,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 using (VastwebmultiEntities db = new VastwebmultiEntities())
                 {
                     // show master id 
-                    var stands = db.Superstokist_details.ToList();
+                    var stands = db.Superstokist_details.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList = from s in stands
                                                              select new SelectListItem
                                                              {
@@ -210,7 +210,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                                                                  Text = s.FarmName.ToString()
                                                              };
 
-                    var totalwhitelabel = db.WhiteLabel_userList.ToList();
+                    var totalwhitelabel = db.WhiteLabel_userList.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList1 = from s in totalwhitelabel
                                                               select new SelectListItem
                                                               {
@@ -317,7 +317,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 using (VastwebmultiEntities db = new VastwebmultiEntities())
                 {
                     // show master id 
-                    var stands = db.Superstokist_details.ToList();
+                    var stands = db.Superstokist_details.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList = from s in stands
                                                              select new SelectListItem
                                                              {
@@ -325,7 +325,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                                                                  Text = s.FarmName.ToString()
                                                              };
 
-                    var totalwhitelabel = db.WhiteLabel_userList.ToList();
+                    var totalwhitelabel = db.WhiteLabel_userList.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList1 = from s in totalwhitelabel
                                                               select new SelectListItem
                                                               {
@@ -390,7 +390,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 using (VastwebmultiEntities db = new VastwebmultiEntities())
                 {
                     // show master id 
-                    var stands = db.Superstokist_details.ToList();
+                    var stands = db.Superstokist_details.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList = from s in stands
                                                              select new SelectListItem
                                                              {
@@ -399,7 +399,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                                                              };
                     ViewBag.allmaster = new SelectList(selectList, "Value", "Text");
                     //show whitelabel
-                    var totalwhitelabel = db.WhiteLabel_userList.ToList();
+                    var totalwhitelabel = db.WhiteLabel_userList.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList1 = from s in totalwhitelabel
                                                               select new SelectListItem
                                                               {
@@ -448,7 +448,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 using (VastwebmultiEntities db = new VastwebmultiEntities())
                 {
                     // show master id 
-                    var stands = db.Superstokist_details.ToList();
+                    var stands = db.Superstokist_details.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList = from s in stands
                                                              select new SelectListItem
                                                              {
@@ -457,7 +457,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                                                              };
                     ViewBag.allmaster = new SelectList(selectList, "Value", "Text");
                     //show whitelabel
-                    var totalwhitelabel = db.WhiteLabel_userList.ToList();
+                    var totalwhitelabel = db.WhiteLabel_userList.AsNoTracking().ToList();
                     IEnumerable<SelectListItem> selectList1 = from s in totalwhitelabel
                                                               select new SelectListItem
                                                               {

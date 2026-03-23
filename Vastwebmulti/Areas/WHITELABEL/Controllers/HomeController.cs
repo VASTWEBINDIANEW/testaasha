@@ -81,9 +81,11 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         {
             var userid = User.Identity.GetUserId();
             //admin Profile Details
-            var vv = db.WhiteLabel_userList.Where(p => p.WhiteLabelID == userid).ToList();
-            ViewBag.email = vv.SingleOrDefault().EmailId;
-            ViewBag.image = vv.SingleOrDefault().Photo;
+            // Load user record once, reuse for email, image and RoboticAPI
+            var vv = db.WhiteLabel_userList.AsNoTracking().Where(p => p.WhiteLabelID == userid).SingleOrDefault();
+            ViewBag.email = vv.EmailId;
+            ViewBag.image = vv.Photo;
+            ViewBag.RoboticAPI = vv.Allow_RoboticsApi;
             //Top Tailes
             var ch = db.Whitelabel_Total_account(userid).ToList();
             ViewData["total"] = ch.Single().total;
@@ -92,7 +94,7 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewData["whitelabelretailer"] = ch.Single().totalrem;
             ViewData["whitelabelMaster"] = ch.Single().totalmaster;
             //Whitelabel News
-            var news = (from pp in db.Message_top where (pp.users == "Whitelabel" || pp.users == "All") where pp.status == "Y" select pp).ToList();
+            var news = (from pp in db.Message_top.AsNoTracking() where (pp.users == "Whitelabel" || pp.users == "All") where pp.status == "Y" select pp).ToList();
             if (news.Any())
             {
                 ViewBag.news = news.FirstOrDefault().message;
@@ -103,34 +105,27 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 ViewBag.news = null;
                 ViewBag.newimg = null;
             }
-
-            ViewBag.RoboticAPI = db.WhiteLabel_userList.Where(a => a.WhiteLabelID == userid).SingleOrDefault().Allow_RoboticsApi;
             return View();
         }
         [HttpPost]
         public ActionResult UpdateVirtualbal(string txtvirtual)
         {
             var userid = User.Identity.GetUserId();
-            var virtuaval = db.whitelabel_virtual_remain.Where(aa => aa.whitelabelid == userid).Single().remain;
+            // Load the record once for read, then use tracked entity for update
+            var obj = db.whitelabel_virtual_remain.Where(aa => aa.whitelabelid == userid).SingleOrDefault();
+            var virtuaval = obj.remain;
             decimal txtval = Convert.ToDecimal(txtvirtual);
             if (txtval > virtuaval)
             {
-                whitelabel_virtual_remain obj = (from pp in db.whitelabel_virtual_remain
-                                                 where pp.whitelabelid == userid
-                                                 select pp).SingleOrDefault();
                 obj.remain = txtval;
                 db.SaveChanges();
 
-                var total = db.whitelabel_virtual_remain.Where(aa => aa.whitelabelid == userid).Single().remain;
+                var total = obj.remain;
                 var ch = db.Whitelabel_Total_account(userid).ToList();
                 if (ch.Single().total != total)
                 {
                     decimal val = Convert.ToDecimal(total) - Convert.ToDecimal(ch.Single().total);
-                    var remain = db.whitelabel_virtual_remain.Where(aa => aa.whitelabelid == userid).SingleOrDefault().remain;
-                    whitelabel_virtual_remain objCourse = (from p in db.whitelabel_virtual_remain
-                                                           where p.whitelabelid == userid
-                                                           select p).SingleOrDefault();
-                    objCourse.remain = remain + val;
+                    obj.remain = obj.remain + val;
                     obj.ParmanentValue = txtval;
                     db.SaveChanges();
                 }

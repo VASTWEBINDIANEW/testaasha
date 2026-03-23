@@ -25,9 +25,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             {
                 string userid = User.Identity.GetUserId();
                 Whitelabel_Retailer_Details ch = db.Whitelabel_Retailer_Details.Where(m => m.RetailerId == userid).Single();
-                var gt = db.State_Desc.ToList();
+                var gt = db.State_Desc.AsNoTracking().ToList();
                 ViewBag.ddlstate = gt;
-                var cities = db.District_Desc.Where(c => c.State_id == ch.State).ToList();
+                var cities = db.District_Desc.AsNoTracking().Where(c => c.State_id == ch.State).ToList();
                 ViewBag.cities = cities;
                 return View(ch);
             }
