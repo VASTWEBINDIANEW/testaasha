@@ -4671,7 +4671,7 @@ namespace Vastwebmulti.Areas.API.Controllers
         public ActionResult uploadgstfile()
         {
             var userid = User.Identity.GetUserId();
-            if (Request.Files.Any())
+            if (Request.Files.AllKeys.Any())
             {
                 try
                 {
@@ -4993,7 +4993,7 @@ namespace Vastwebmulti.Areas.API.Controllers
         public ActionResult uploadgstfileRecharge()
         {
             var userid = User.Identity.GetUserId();
-            if (Request.Files.Any())
+            if (Request.Files.AllKeys.Any())
             {
                 try
                 {

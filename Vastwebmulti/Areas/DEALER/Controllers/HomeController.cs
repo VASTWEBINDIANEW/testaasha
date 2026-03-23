@@ -11357,7 +11357,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         public ActionResult uploadgstfile()
         {
             var userid = User.Identity.GetUserId();
-            if (Request.Files.Any())
+            if (Request.Files.AllKeys.Any())
             {
                 try
                 {
