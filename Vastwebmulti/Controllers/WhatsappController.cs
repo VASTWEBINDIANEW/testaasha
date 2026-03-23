@@ -10,6 +10,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Controllers
 {
+    /// <summary>
+    /// WhatsApp SMS bhejne ke liye controller — user authentication karke message send karta hai.
+    /// </summary>
     public class WhatsappController : Controller
     {
         // GET: Whatsapp
@@ -18,6 +21,9 @@ namespace Vastwebmulti.Controllers
         {
             db = new VastwebmultiEntities();
         }
+        /// <summary>
+        /// Given mobile number par WhatsApp message bhejta hai, pehle user aur token validate karta hai.
+        /// </summary>
         [HttpGet]
         public string whatsappSendSMS(string userid, string tokenid, string message, string mobile)
         {
@@ -161,6 +167,9 @@ namespace Vastwebmulti.Controllers
         //public string whatsappstatus()
         //{
         //}
+        /// <summary>
+        /// TripleDES algorithm se encrypted string ko decrypt karta hai.
+        /// </summary>
         public string Decrypt(string input, string key)
         {
             byte[] inputArray = Convert.FromBase64String(input);
@@ -173,6 +182,9 @@ namespace Vastwebmulti.Controllers
             tripleDES.Clear();
             return UTF8Encoding.UTF8.GetString(resultArray);
         }
+        /// <summary>
+        /// Request se client ka Internet IP address nikalta hai.
+        /// </summary>
         public string GetComputer_InternetIP()
         {
             string ipaddress;

@@ -12,6 +12,9 @@ namespace Vastwebmulti.Models
     using System;
     using System.Collections.Generic;
     
+    /// <summary>
+    /// Dealer ke liye TDS ki information store karne wala model — service-wise TDS data dealer level par rakhta hai.
+    /// </summary>
     public partial class TDSControllerDealer
     {
         public int idno { get; set; }

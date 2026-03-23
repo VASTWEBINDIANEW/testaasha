@@ -108,6 +108,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdateVirtualbal(string txtvirtual)
         {
             var userid = User.Identity.GetUserId();
@@ -139,12 +142,18 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
 
         }
+        /// <summary>
+        /// Is action ka kaam 'Master_account_detail' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Master_account_detail()
         {
             var userid = User.Identity.GetUserId();
             var ch = db.Whitelabel_Master_Reamin_Cr_report(userid).ToList();
             return View(ch);
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult ExportToExcel_to_Master()
         {
             var userid = User.Identity.GetUserId();
@@ -175,12 +184,18 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             Response.End();
             return View();
         }
+        /// <summary>
+        /// Is action ka kaam 'Distributor_account_detail' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Distributor_account_detail()
         {
             var userid = User.Identity.GetUserId();
             var ch = db.Whitelabel_dealer_Reamin_Cr_report(userid).ToList();
             return View(ch);
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult ExportToExcel_to_dealer()
         {
             var userid = User.Identity.GetUserId();
@@ -212,12 +227,18 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             Response.End();
             return View();
         }
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult Retailer_accoumt_detail()
         {
             var userid = User.Identity.GetUserId();
             var ch = db.Whitelabel_retailer_Reamin_Cr_report(userid).ToList();
             return View(ch);
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult ExportToExcel_to_Retailer()
         {
             var userid = User.Identity.GetUserId();
@@ -250,6 +271,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
         //show today and yesterday business
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Show_All_Recharge(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -306,6 +330,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return View(dash);
             }
         }
+        /// <summary>
+        /// Is action ka kaam 'PSAsts' se related operation handle karna hai.
+        /// </summary>
         public ActionResult PSAsts(string id)
         {
             var sts = (from pp in db.Whitelabel_Retailer_Details where pp.RetailerId == id select pp).Single().PSAStatus;
@@ -324,6 +351,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Retailer_list");
         }
+        /// <summary>
+        /// AEPS (Aadhaar Enabled Payment System) se related operation karta hai.
+        /// </summary>
         public ActionResult AepsMposstatus(string id)
         {
             var sts = (from pp in db.Whitelabel_Retailer_Details where pp.RetailerId == id select pp).Single().AepsMposstatus;
@@ -343,6 +373,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("Retailer_list");
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'levelvalue' se related operation handle karna hai.
+        /// </summary>
         public ActionResult levelvalue()
         {
             var userid = User.Identity.GetUserId();
@@ -405,6 +438,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(viewModel);
         }
         //fill District 
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult DistrictList(int Id)
         {
             var district = from s in db.District_Desc
@@ -413,6 +449,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewBag.district = new SelectList(district, "Dist_id", "Dist_Desc").ToList();
             return Json(new SelectList(district.ToArray(), "Dist_id", "Dist_Desc"), JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Is action ka kaam 'MasterlistPart' se related operation handle karna hai.
+        /// </summary>
         public PartialViewResult MasterlistPart()
         {
             var userid = User.Identity.GetUserId();
@@ -433,6 +472,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return PartialView("_Whitelabel_Masterlist", viewModel);
         }
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public JsonResult MasterIdSearch(string ssid)
         {
             var userid = User.Identity.GetUserId();
@@ -454,6 +496,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(new { list = ch, state = ViewBag.state1 }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public PartialViewResult _SelectDlmID(string MdId)
         {
             var Details = db.whitelabel_Select_Dealer_total(MdId, "").ToList();
@@ -462,6 +507,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_SelectDlmID", dlmViewModel);
         }
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public async Task<ActionResult> insert_master_super(Whitelabel_MasterDistributerModel model, string role)
         {
             var userid = User.Identity.GetUserId();
@@ -608,6 +656,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_master_dealer(string ssid, string NameEdit, string FirmEdit, string pancardEdit, string AadhaarEdit, string gstEdit, string StateEdit, string DistrictEdit, string AddressEdit, string PinEdit)
         {
             try
@@ -802,6 +853,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult SelectRetailerID(string MdId)
         {
             var userid = User.Identity.GetUserId();
@@ -810,6 +864,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             RIViewModel.Select_Retailer_list = Details;
             return PartialView("_SelectRID", RIViewModel);
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public JsonResult DealerByIdSearch(string ssid)
         {
             var userid = User.Identity.GetUserId();
@@ -930,6 +987,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult DealerlistPart()
         {
             var userid = User.Identity.GetUserId();
@@ -948,6 +1008,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_Distributer_dealer(string DealerId, string NameEdit, string FirmEdit, string pancardEdit, string AadhaarEdit, string gstEdit, string StateEdit, string DistrictEdit, string AddressEdit, string PinEdit)
         {
             Whitelabel_DealerModel viewModel = new Whitelabel_DealerModel();
@@ -1012,6 +1075,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
 
         [HttpPost]
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult Approveddealersts(string val, string DealerId)
         {
 
@@ -1054,6 +1120,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult Rejecteddealersts(string val, string DealerId)
         {
             var dealerdetail = db.whitelabel_Dealer_Details.Where(aa => aa.DealerId == DealerId).SingleOrDefault();
@@ -1100,6 +1169,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public async Task<ActionResult> insert_super(string masterid, string Name, string FarmName, int State, int District, string Mb, string Address, int Pincode, string Email, string pancard, string adharcard, string gst, string ddlrole)
         {
             string msg = "";
@@ -1306,6 +1378,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(viewmodel);
         }
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public JsonResult RetailerByIdSearch(string RetailerId)
         {
             var userid = User.Identity.GetUserId();
@@ -1349,6 +1424,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_Retailer_List(string RetailerId, string NameEdit, string FirmEdit, string pancardEdit, string AadhaarEdit, string gstEdit, string StateEdit, string DistrictEdit, string AddressEdit, string PinEdit, int CappingEdit, string DOBEdit)
         {
             Whitelabel_RetailerDetalsModel viewmodel = new Whitelabel_RetailerDetalsModel();
@@ -1501,6 +1579,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult ApprovedRetailersts(string val, string RetailerId)
         {
 
@@ -1546,6 +1627,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult RejectedRetailersts(string val, string RetailerId)
         {
             var Retailerdetail = db.Whitelabel_Retailer_Details.Where(aa => aa.RetailerId == RetailerId).SingleOrDefault();
@@ -1592,6 +1676,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult RetailerlistPart()
         {
             var userid = User.Identity.GetUserId();
@@ -1613,6 +1700,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public async Task<ActionResult> Insert_retailer(string DealerId, string retailename1, int State1, int District1, string Mobile1, string Address1, string Pincode1, string email1, string firmnm1, string txtadharcardno, string txtpencardno, int txtcapping, string txtgstno, string txtgstnos, int? Pin, string password1)
         {
             var msg = "";
@@ -1816,6 +1906,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         // POST : Retailer Slab Search
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult slabsearch(string userid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1855,6 +1948,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Convert.ToBase64String(cipherTextBytes);
         }
         //delete retailers
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public JsonResult Delete_Retailer(string retailerid)
         {
             if (retailerid != null && retailerid != "")
@@ -1878,6 +1974,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         //GET : Update Retailer Status
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Updateretailer_ststus(string id)
         {
 
@@ -1908,6 +2007,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         //GET : Update Retailer money Status
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Updateretailer_money_ststus(string id)
         {
 
@@ -1939,6 +2041,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         // POST : Retailer Search
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult RetailerSearch(string userid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1973,12 +2078,18 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return Json(JsonConvert.SerializeObject(ch), JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult ShowDlminformation(string DealerId)
         {
             var ch = db.whitelabel_Dealer_Details.Where(ii => ii.DealerId == DealerId);
             return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult ShowReminformation(string RetailerId)
         {
             var ch = db.Show_whitelabel_retailer_information_admin(RetailerId).ToList();
@@ -1987,6 +2098,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         //POST : Edit Retailer User
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_Retailer_user(string txtremid, string txtRetailername, int State, int District, string txtAddress, int txtpincode1, string txtmobilenew, string txtfirmname, string txtemailnew, string txtadharcardno1, string txtpencardno1, int txtcapping1, string txtgstno1, string aepsMID, string aepsMPIN, string PartnerID)
         {
             try
@@ -2074,6 +2188,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Move Users
+        /// <summary>
+        /// Is action ka kaam 'Switch_Users' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Switch_Users()
         {
             var userid = User.Identity.GetUserId();
@@ -2109,6 +2226,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             model.ShowRetailerDealerSwitch_Result = null;
             return View(model);
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult FetchDetails(string id)
         {
             var userid = User.Identity.GetUserId();
@@ -2128,6 +2248,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(userlist, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult FetchRetailerDetails(string id)
         {
             var userid = User.Identity.GetUserId();
@@ -2148,6 +2271,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
 
+        /// <summary>
+        /// Password ya settings change/reset karta hai.
+        /// </summary>
         public PartialViewResult ChangeTabtype(string Utype)
         {
             vmSwitchWhitelabelUserModel model = new vmSwitchWhitelabelUserModel();
@@ -2166,6 +2292,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult DealerMD_switch(string dealerid, string masterid)
         {
             var userid = User.Identity.GetUserId();
@@ -2204,6 +2333,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult dealer_retailer_Switch(string remid, string dlmid)
         {
             var userid = User.Identity.GetUserId();
@@ -2269,6 +2401,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScrollSwitchuser(int pageindex, string Utype)
         {
 
@@ -2301,11 +2436,17 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Set_Referral
+        /// <summary>
+        /// Is action ka kaam 'Set_Referral' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Set_Referral()
         {
             return View();
         }
 
+        /// <summary>
+        /// Is action ka kaam 'SetRefferedList' se related operation handle karna hai.
+        /// </summary>
         public ActionResult SetRefferedList()
         {
             var userid = User.Identity.GetUserId();
@@ -2361,6 +2502,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(sb.ToString(), JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public JsonResult InsertRefferalsetting(string reftype, decimal minlimit, int noofday, string sharingtype, decimal sharingvalue, string catetype)
         {
             var userid = User.Identity.GetUserId();
@@ -2397,6 +2541,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json("Something Wrong", JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public JsonResult CHKSTATSETREFFEREDONTIME()
         {
             var userid = User.Identity.GetUserId();
@@ -2409,6 +2556,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public JsonResult CHKSTATSETREFFERED(string name, bool status)
         {
             var userid = User.Identity.GetUserId();
@@ -2430,6 +2580,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public JsonResult InsertRefferalsettingEditdata(string reftype, decimal minlimit, int noofday, string sharingtype, decimal sharingvalue, string catetype)
         {
             var userid = User.Identity.GetUserId();
@@ -2461,6 +2614,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json("Something Wrong", JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public JsonResult DeleteReferedCode(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -2483,6 +2639,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult GetRefferalSetting()
         {
             var userid = User.Identity.GetUserId();
@@ -2492,6 +2651,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region SignUp Setting
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult RetailerCreationCharge()
         {
             var userid = User.Identity.GetUserId();
@@ -2563,6 +2725,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Token purchase ya management handle karta hai.
+        /// </summary>
         public JsonResult DLM_BuyTokenHistory(string dealerId)
         {
             var userid = User.Identity.GetUserId();
@@ -2608,6 +2773,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(Tkn_PaidSer.RetailerCreationTokenVM, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Token purchase ya management handle karta hai.
+        /// </summary>
         public JsonResult MD_BuyTokenHistory(string masterId)
         {
             var userid = User.Identity.GetUserId();
@@ -2656,6 +2824,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult addJoiningToken(string ddlDealer, int tokenCount)
         {
             var userid = User.Identity.GetUserId();
@@ -2797,6 +2968,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult addJoiningTokenMaster(string ddlMaster, int tokenCount)
         {
             var userid = User.Identity.GetUserId();
@@ -2934,6 +3108,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// Token purchase ya management handle karta hai.
+        /// </summary>
         public PartialViewResult _Md_dlm_RemainToken()
         {
             var userid = User.Identity.GetUserId();
@@ -2944,6 +3121,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_Md_dlm_RemainToken", RemToken);
         }
 
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public PartialViewResult _DlmSignUpRight(string DealerID)
         {
             var userid = User.Identity.GetUserId();
@@ -2955,6 +3135,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return PartialView("_DlmSignUpRight", Tkn_PaidSer);
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult dealer_sts_default_Authorise(string dealerid)
         {
             var userid = User.Identity.GetUserId();
@@ -2971,6 +3154,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return new EmptyResult();
         }
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _SetJoingChargeStatus(string CreationType, bool val)
         {
             var userid = User.Identity.GetUserId();
@@ -2989,6 +3175,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_SetJoingChargeStatus", Vmmm);
         }
 
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult EditSiginUpFees(Whitelabel_RetailerCreationCharge model)
         {
             var userid = User.Identity.GetUserId();
@@ -3005,6 +3194,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Paid Services
+        /// <summary>
+        /// Is action ka kaam 'PaidServices' se related operation handle karna hai.
+        /// </summary>
         public ActionResult PaidServices()
         {
             var userid = User.Identity.GetUserId();
@@ -3012,6 +3204,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(entries);
         }
 
+        /// <summary>
+        /// Is action ka kaam 'PaidServicesChargeByID' se related operation handle karna hai.
+        /// </summary>
         public ActionResult PaidServicesChargeByID(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -3022,6 +3217,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdatePaidService(int Idno, string ddlChargeType, string ddlServiceName, decimal Price)
         {
             var userid = User.Identity.GetUserId();
@@ -3051,6 +3249,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #region For SMS
         [HttpGet]
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult Check_UnchekSMS_Setting()
         {
             var userid = User.Identity.GetUserId();
@@ -3137,6 +3338,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
         #region For EMAIL
         [HttpGet]
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult Check_UnchekEMAIL_Setting()
         {
             var userid = User.Identity.GetUserId();
@@ -3148,6 +3352,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Status update ya check karta hai.
+        /// </summary>
         public ActionResult Psastatus(string id)
         {
             var sts = (from pp in db.Whitelabel_Retailer_Details where pp.RetailerId == id select pp).Single().PSAStatus;
@@ -3167,6 +3374,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("Retailer_list");
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult DealerEmailconfrimation(string id)
         {
             var sts = (from pp in db.Users where pp.UserId == id select pp).Single().EmailConfirmed;
@@ -3182,6 +3392,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             TempData["msg"] = "Email Confirmation Update Successfully.";
             return RedirectToAction("Dealer_details");
         }
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult RetailerEmailconfrimation(string id)
         {
             var sts = (from pp in db.Users where pp.UserId == id select pp).Single().EmailConfirmed;
@@ -3287,6 +3500,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #endregion
 
+        /// <summary>
+        /// OTP generate ya verify karta hai.
+        /// </summary>
         public ActionResult ForgotpassLink()
         {
             var userid = User.Identity.GetUserId();
@@ -3540,6 +3756,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll(int pageindex, string txt_frm_date, string txt_to_date, string txtmob, string ddl_status, string lapuno11, string Operator, string ddlusers, string allmaster1, string alldealer, string allretailer, string txtdemo)
         {
             var optname = "";
@@ -3661,6 +3880,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             var details = db.Recharge_report_View_Details(Idno);
             return Json(details, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Records ko search/filter karta hai.
+        /// </summary>
         public ActionResult FindTotal(string txt_frm_date, string txtmob, string txt_to_date, string ddl_status, string lapuno11, string Operator, string ddlusers, string allmaster1, string alldealer, string allretailer, string API, string Whitelabel)
         {
             var optname = "";
@@ -3769,6 +3991,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Is class ka kaam JsonModel area ke operations handle karna hai.
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
@@ -3882,6 +4107,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(ch, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Transaction ko success mark karta hai.
+        /// </summary>
         public ActionResult Successall(string idnval, string optval)
         {
             string[] idnnstring = idnval.Split(',');
@@ -3922,6 +4150,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             var dict = jss.Deserialize<dynamic>(responsemsg);
             return Json(dict, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Transaction ko failed mark karta hai.
+        /// </summary>
         public ActionResult Failedall(string idnval, string optval)
         {
             string[] idnnstring = idnval.Split(',');
@@ -4133,6 +4364,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult MoneyInfiniteScroll(int pageindex, string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string alldealer, string allretailer)
         {
             var userid = User.Identity.GetUserId();
@@ -4347,6 +4581,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return new ViewAsPdf(respo);
         }
 
+        /// <summary>
+        /// Money transfer se related operation karta hai.
+        /// </summary>
         public ActionResult MoneyFindTotal(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             var userid = User.Identity.GetUserId();
@@ -4530,6 +4767,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
 
         }
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll_Aeps(string txt_frm_date, string txt_to_date, string ddlusers, string allmaster1, string alldealer, string allretailer, string allwhitelabel1, string ddl_status, string api_name, string allapiuser, string ddl_settletype, int pageindex)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -4969,6 +5209,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region M-poss
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult M_Poss()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -4981,6 +5224,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult M_Poss(MposSlabModel model)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -4999,6 +5245,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("M_Poss");
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserMposSlab(string role, string userid)
         {
             MposSlabModel model = new MposSlabModel();
@@ -5150,6 +5399,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView(model);
         }
         [HttpPost]
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult M_PossUserWise(MposSlabModel model, string ddlUserId, string role, string credite_type, string credite_typeAll)
         {
 
@@ -5394,6 +5646,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult mPossInfiniteScroll(int pageindex, string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string alldealer, string allretailer)
         {
             var userid = User.Identity.GetUserId();
@@ -5684,6 +5939,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return new ViewAsPdf(respo);
         }
 
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult mPossFindTotal(string txt_frm_date, string txt_to_date, string ddlusers, string ddl_status, string alldealer, string allretailer)
         {
             var userid = User.Identity.GetUserId();
@@ -5761,6 +6019,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult MposStatus(int idno)
         {
             var entites = db.mPosInfoes.Where(aa => aa.Idno == idno).SingleOrDefault();
@@ -6322,6 +6583,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //GET : Show Slab Name 
 
         [HttpGet]
+        /// <summary>
+        /// Is action ka kaam 'Customer_Charge' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Customer_Charge(string ddltype)
         {
             Models.Show_All_CustomerCharge ch = new Models.Show_All_CustomerCharge();
@@ -6356,6 +6620,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'Customer_Charge' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Customer_Charge(string ddltype, string l)
         {
             Models.Show_All_CustomerCharge ch = new Models.Show_All_CustomerCharge();
@@ -6390,6 +6657,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewData["type"] = ddltype;
             return View(ch);
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult EditCustomerCharge(Models.Show_All_CustomerCharge show, string ID)
         {
             var ddltype = "";
@@ -6435,6 +6705,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return RedirectToAction("Customer_Charge", new { ddltype = ID });
         }
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult generateSlab()
         {
             ADMIN.Models.ResultSetViewModel viewModel = new ADMIN.Models.ResultSetViewModel();
@@ -7150,6 +7423,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         //        return RedirectToAction("ShowAllSlab", new { slabfor = slabfor, Operatortype = opttype, slabname = slabname });
         //    }
         //}
+        /// <summary>
+        /// Commission ya income report dikhata hai.
+        /// </summary>
         public ActionResult Flight_Commission()
         {
             var userid = User.Identity.GetUserId();
@@ -7166,6 +7442,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                           }).ToList();
             return View(ch);
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult EditFlightCommission(Show_all_flight_commission show, string ID)
         {
             if (ID == "Flight")
@@ -7389,6 +7668,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// User ya service block/unblock karta hai.
+        /// </summary>
         public ActionResult blockmessage(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -7410,6 +7692,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(ch, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'delMessage' se related operation handle karna hai.
+        /// </summary>
         public ActionResult delMessage(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -7424,6 +7709,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(ch, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'PopupImageUpload' se related operation handle karna hai.
+        /// </summary>
         public ActionResult PopupImageUpload(string file, string headercontent)
         {
             var userid = User.Identity.GetUserId();
@@ -7461,6 +7749,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             var Message_top = (from gg in db.Whitelabel_Desktop_Popup.Where(a => a.whitelabelid == userid) select gg).ToList();
             return Json(Message_top, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public JsonResult Delete_desktopsts()
         {
             var userid = User.Identity.GetUserId();
@@ -7474,6 +7765,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             var ch = (from gg in db.Whitelabel_Desktop_Popup.Where(a => a.whitelabelid == userid) select gg).ToList();
             return Json(ch, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Update_desktopsts(string sts)
         {
             var userid = User.Identity.GetUserId();
@@ -7495,6 +7789,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'HolidayAdd' se related operation handle karna hai.
+        /// </summary>
         public ActionResult HolidayAdd(string date, string desc)
         {
             var userid = User.Identity.GetUserId();
@@ -7514,6 +7811,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return Json("", JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult Deleteholiday(DateTime date)
         {
             var userid = User.Identity.GetUserId();
@@ -7522,6 +7822,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return Json("", JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Updateholiday(string type, DateTime date)
         {
             var userid = User.Identity.GetUserId();
@@ -7602,6 +7905,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadExcelfileforsendingsmstemplate(HttpPostedFileBase FileUpload)
         {
 
@@ -7715,6 +8021,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// Is action ka kaam 'copypastedeveloper' se related operation handle karna hai.
+        /// </summary>
         public ActionResult copypastedeveloper()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -7795,6 +8104,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
 
+        /// <summary>
+        /// Is action ka kaam 'Save_SMS_Templates' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Save_SMS_Templates(int? ddlAPIfill, string idst, string txttemplate_id, string txttemplateformate)
         {
 
@@ -7845,6 +8157,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             // return Json("OK", JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult DeleteTemplatebyid(int id)
         {
             var tablefordelete = db.Whitelabel_Sending_SMS_Templates.Find(id);
@@ -7855,6 +8170,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public PartialViewResult AddSmsApi(string smsapiurl)
         {
             using (VastwebmultiEntities dbb = new VastwebmultiEntities())
@@ -7922,6 +8240,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult deletesmsapi(int id)
         {
             Whitelabel_SMSViewModel vmodel = new Whitelabel_SMSViewModel();
@@ -7955,6 +8276,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_APISETTINGS", vmodel);
         }
 
+        /// <summary>
+        /// Is action ka kaam 'SMSAPISTSetting' se related operation handle karna hai.
+        /// </summary>
         public ActionResult SMSAPISTSetting(int id)
         {
             var chk = (from ff in db.whitelabel_apisms where ff.id == id select ff).SingleOrDefault().sts.ToString();
@@ -7990,6 +8314,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_APISETTINGS", ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _APISMSHISTORY(string txt_frm_date, string txt_to_date, string txtmsg)
         {
             Whitelabel_SMSViewModel vmodel = new Whitelabel_SMSViewModel();
@@ -8013,6 +8340,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public ActionResult Send_API_SMS(string Userform1, string txtmobileNo, string txtMsgBody)
         {
             var userid = User.Identity.GetUserId();
@@ -8157,6 +8487,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_APISMSHISTORY", vmodel);
         }
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Showsendsms()
         {
             string txt_frm_date = DateTime.Now.ToString();
@@ -8167,6 +8500,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Showsendsms(string txt_frm_date, string txt_to_date, string txtmsg)
         {
             ViewBag.chk = "post";
@@ -8255,6 +8591,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             vmode.Apploginhistory = db.spWhitelabel_Failed_login_history(userid, ddlAppRoleName, ddlAppfirmname, ddlType1, txt_APPfrm_date, to_date).ToList();
             return PartialView("_Apploginhistory", vmode);
         }
+        /// <summary>
+        /// User ya service block/unblock karta hai.
+        /// </summary>
         public ActionResult AttemptBlockFilter(DateTime? txt_Attemptfrm_date)
         {
             if (txt_Attemptfrm_date.ToString() == "") { txt_Attemptfrm_date = DateTime.Now.Date; }
@@ -8267,6 +8606,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_AttemptBlockHistory", vmode);
 
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public ActionResult FillUsersBaseOnRole(string role, string userlist, string userid)
         {
             List<BlockUserlistmodel> vm = null;
@@ -8402,6 +8744,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return PartialView("_BlockLoginUser", vm);
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillUsersList(string role, string type)
         {
             var userid = User.Identity.GetUserId();
@@ -8475,6 +8820,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// OTP generate ya verify karta hai.
+        /// </summary>
         public ActionResult mailChangeOTP()
         {
             try
@@ -8509,6 +8857,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// User login ya logout handle karta hai.
+        /// </summary>
         public JsonResult BlockLoginUsers(string UserRoleBlocklogin, string block_login_User)
         {
             var userid = User.Identity.GetUserId();
@@ -8590,6 +8941,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json(status, JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillUserInformation(string idno, string role)
         {
             string firm = "", name = "", mobile = "", Address = "", imgname = "";
@@ -8625,6 +8979,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(new { firm = firm, name = name, mobile = mobile, Address = Address, imgname = imgname }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult GetLoctaion(string Latitude, string Logitude)
         {
             //string latitude = "13.0988683";
@@ -8652,6 +9009,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'Unlockuserid' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Unlockuserid(string userid)
         {
             try
@@ -8668,6 +9028,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Cash Charges
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult CashDepositCharge()
         {
             var userid = User.Identity.GetUserId();
@@ -8762,6 +9125,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewBag.sts = sts1;
             return View(CashBank);
         }
+        /// <summary>
+        /// Wallet se related operation handle karta hai.
+        /// </summary>
         public ActionResult UnblockWallet()
         {
             var userid = User.Identity.GetUserId();
@@ -8792,6 +9158,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(chk.sts, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult _EditPurchageOrder(string Masterid)
         {
             var userid = User.Identity.GetUserId();
@@ -8833,6 +9202,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_EditPurchageOrder", pmodel);
         }
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult _EditPurchageOrder(string Masterid, Whitelabel_CashDepositeAndBank_Info_VM pmodel1)
         {
             var userid = User.Identity.GetUserId();
@@ -8894,6 +9266,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _CashDepositCharge(string Retailerid)
         {
             var userid = User.Identity.GetUserId();
@@ -8937,6 +9312,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_CashDepositCharge", pmodel);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _CashDepositCharge(string Retailerid, Whitelabel_CashDepositeAndBank_Info_VM pmodel1)
         {
             var userid = User.Identity.GetUserId();
@@ -9001,6 +9379,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _dlm_CashDepositCharge(string Dealerid)
         {
             var userid = User.Identity.GetUserId();
@@ -9044,6 +9425,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_dlm_CashDepositCharge", pmodel);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _dlm_CashDepositCharge(string Dealerid, Whitelabel_CashDepositeAndBank_Info_VM pmodel1)
         {
             var userid = User.Identity.GetUserId();
@@ -9108,6 +9492,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Bank details manage karta hai.
+        /// </summary>
         public ActionResult AcceptWalletToBank(int idNo, string txnpass, string RRN, string txtcomment)
         {
             try
@@ -9197,6 +9584,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult Unload_Retailer_Wallet(string ddlusers, string RetailerId, string VendorId, string Whitelabel, string ddlstatus, string txt_frm_date, string txt_to_date)
         {
             Whitelabel_CashDepositeAndBank_Info_VM WltUnLd = new Whitelabel_CashDepositeAndBank_Info_VM();
@@ -9236,6 +9626,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Transaction ya activity ka report dikhata hai.
+        /// </summary>
         public JsonResult WLActionReport(int Idno, string UserType)
         {
             var userid = User.Identity.GetUserId();
@@ -9272,10 +9665,16 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region WalletToBankTransfer
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult WalletToBankSlab()
         {
             return View();
         }
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult _WalletToBankSlabList(string Role)
         {
             var userid = User.Identity.GetUserId();
@@ -9287,6 +9686,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_WalletToBankSlabList", CashBank);
         }
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddWalletToBankSlab(decimal amtFromTatkal, decimal amtToTatkal, decimal IMPSFee, decimal NEFTFee, string Role)
         {
             var userid = User.Identity.GetUserId();
@@ -9306,6 +9708,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult EditWalletToBankSlab(int id, string Role)
         {
             var userid = User.Identity.GetUserId();
@@ -9316,6 +9721,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_EditWalletToBankSlabList", CashBank);
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult EditWalletToBankSlab1(int Idno, decimal AmtFromTatkal, decimal AmtToTatkal, decimal TimeTakesTatkal, decimal chargeTatkal, decimal chargeTatkalNEFT, string Role)
         {
             var userid = User.Identity.GetUserId();
@@ -9343,6 +9751,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult DeleteWalletToBankSlab(int id, string Role)
         {
             var userid = User.Identity.GetUserId();
@@ -9378,6 +9789,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _prepaid_comm(PrepaidSlab model)
         {
             var userid = User.Identity.GetUserId();
@@ -9405,6 +9819,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView(pmodel);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserPrepaidSlab(string role, string userid, string ddlUserIdrem, string dlmid, PrepaidSlab model2, string ddlUserId, string Button)
         {
             var CurrUserid = User.Identity.GetUserId();
@@ -10077,6 +10494,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public JsonResult fillretailer(string dealerid)
         {
             var userid = User.Identity.GetUserId();
@@ -10121,6 +10541,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _common_utility_comm(PostpaidUtilitySlab model, string ddlVal)
         {
             var userid = User.Identity.GetUserId();
@@ -10174,6 +10597,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserPostpaidUtilitySlab(string role, string userid, string ddlUserIdrem, string dlmid, PostpaidUtilitySlab model2, string ddlUserId, string ddlVal1, string Button)
         {
             var CurrUserid = User.Identity.GetUserId();
@@ -11028,6 +11454,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult _UpdatePostpaidUtilitySlab(PostpaidUtilitySlab model, string ddlUserId, string role, string Retailerid)
         {
             var userid = User.Identity.GetUserId();
@@ -11097,6 +11526,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return RedirectToAction("PostpaidUtility_Slab_setting");
         }
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult postpaidcharge()
         {
             var userid = User.Identity.GetUserId();
@@ -11112,6 +11544,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("PostpaidUtility_Slab_setting");
         }
+        /// <summary>
+        /// Is action ka kaam 'Electricitycharge' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Electricitycharge()
         {
             var userid = User.Identity.GetUserId();
@@ -11127,6 +11562,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("PostpaidUtility_Slab_setting");
         }
+        /// <summary>
+        /// Is action ka kaam 'landlinecharge' se related operation handle karna hai.
+        /// </summary>
         public ActionResult landlinecharge()
         {
             var userid = User.Identity.GetUserId();
@@ -11142,6 +11580,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("PostpaidUtility_Slab_setting");
         }
+        /// <summary>
+        /// Is action ka kaam 'gascharge' se related operation handle karna hai.
+        /// </summary>
         public ActionResult gascharge()
         {
             var userid = User.Identity.GetUserId();
@@ -11158,6 +11599,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("PostpaidUtility_Slab_setting");
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _utility_charge_type(string usertype, string rchtype)
         {
             var userid = User.Identity.GetUserId();
@@ -11198,6 +11642,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult _Common_Money_transfer(DMT2SlabModel model)
         {
             var userid = User.Identity.GetUserId();
@@ -11267,6 +11714,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model1);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserDMTSlab_DMT2(string role, string userid, DMT2SlabModel model2, string ddlUserId, string Button, string ddlUserIdrem, string dlmid)
         {
             var CurrUserid = User.Identity.GetUserId();
@@ -13520,6 +13970,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Update_DMT2Slab(DMT2SlabModel model, string ddlUserId, string role)
         {
             var userid = User.Identity.GetUserId();
@@ -13778,6 +14231,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("Money_Transfer_Slab_DMT2");
         }
 
+        /// <summary>
+        /// GST report ya invoice generate karta hai.
+        /// </summary>
         public ActionResult Imps2_comm_gststs(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -13793,6 +14249,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Money_Transfer_Slab_DMT2");
         }
+        /// <summary>
+        /// TDS report dikhata hai.
+        /// </summary>
         public ActionResult Imps2_comm_tdssts(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -13808,6 +14267,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Money_Transfer_Slab_DMT2");
         }
+        /// <summary>
+        /// GST report ya invoice generate karta hai.
+        /// </summary>
         public ActionResult Imps2_comm_gststs_master(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -13823,6 +14285,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Money_Transfer_Slab_DMT2");
         }
+        /// <summary>
+        /// TDS report dikhata hai.
+        /// </summary>
         public ActionResult Imps2_comm_tdssts_master(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -13838,6 +14303,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Money_Transfer_Slab_DMT2");
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult Imps2_comm_gststs_dealer(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -13853,6 +14321,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Money_Transfer_Slab_DMT2");
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult Imps2_comm_tdssts_Dealer(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -13868,6 +14339,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Money_Transfer_Slab_DMT2");
         }
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult Imps2_comm_gststs_Retailer(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -13883,6 +14357,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Money_Transfer_Slab_DMT2");
         }
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult Imps2_comm_tdssts_Retailer(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -13915,6 +14392,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// PAN card se related operation karta hai.
+        /// </summary>
         public ActionResult _Common_pancard(PancardSlabModel model)
         {
             var userid = User.Identity.GetUserId();
@@ -13942,6 +14422,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserPANSlab(string role, string userid, PancardSlabModel model2, string ddlUserId, string Button, string ddlUserIdrem, string dlmid)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -14693,6 +15176,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult _UpdatePANSlab(PancardSlabModel model, string ddlUserId, string role)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -14801,6 +15287,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             catch { return View(model); }
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _common_aeps(WhitelabelAEPSCommonModel model)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -14819,6 +15308,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserAepsSlab(string role, string userid, WhitelabelAEPSCommonModel model2, string ddlUserId, string Button, string ddlUserIdrem, string dlmid)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -15542,6 +16034,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// AEPS (Aadhaar Enabled Payment System) se related operation karta hai.
+        /// </summary>
         public ActionResult AepsUserWise(WhitelabelAEPSCommonModel model, string ddlUserId, string role)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -15946,6 +16441,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _Common_Microatm(MicroAtmSlabModel model)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -15961,6 +16459,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserMicroatmSlab(string role, string userid, MicroAtmSlabModel model12, string ddlUserId, string credite_type, string credite_typeAll, string Button, string ddlUserIdrem, string dlmid)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -16702,6 +17203,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #endregion
         #region slabmicroatm
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult MIcroatm_Cash_Slab()
         {
             MicroatmcashCommonModel model = new MicroatmcashCommonModel();
@@ -16719,6 +17223,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _common_Microatm_cash(MicroatmcashCommonModel model)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -16736,6 +17243,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserMicroAtm_Cash_Slab(string role, string userid, MicroatmcashCommonModel model2, string ddlUserId, string Button, string ddlUserIdrem, string dlmid)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -17395,6 +17905,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Cash deposit ya withdrawal handle karta hai.
+        /// </summary>
         public ActionResult MicroAtm_Cash_UserWise(MicroatmcashCommonModel model, string ddlUserId, string role)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -17471,6 +17984,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Gift card Slab Setting
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Giftcard_Slab_setting()
         {
             var userid = User.Identity.GetUserId();
@@ -17490,6 +18006,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _common_giftCard(Whitelabel_GiftcardSlab model)
         {
             var userid = User.Identity.GetUserId();
@@ -17517,6 +18036,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserGiftcardSlab(string role, string userid, string Retailerid, Whitelabel_GiftcardSlab model, string ddlUserId, string Button)
         {
             var CurrUserid = User.Identity.GetUserId();
@@ -18020,6 +18542,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult _UpdateGiftcardSlab(Whitelabel_GiftcardSlab model, string ddlUserId, string role, string Retailerid)
         {
             var userid = User.Identity.GetUserId();
@@ -18088,6 +18613,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         #endregion
         #region Security Slab Setting
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Security_Slab_setting()
         {
             var userid = User.Identity.GetUserId();
@@ -18106,6 +18634,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _Security_comm(Whitelabel_SecuritySlab model)
         {
             var userid = User.Identity.GetUserId();
@@ -18133,6 +18664,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             // return RedirectToAction("Prepaid_Slab_setting");
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserSecuritySlab(string role, string userid, string ddlUserIdrem, string dlmid, Whitelabel_SecuritySlab model2, string ddlUserId, string Button)
         {
             var CurrUserid = User.Identity.GetUserId();
@@ -18900,6 +19434,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewBag.onlyoptype = new SelectList(selectoptypetlist, "Value", "Text");
             return View(vmodel);
         }
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public JsonResult FillOperatorType(string name)
         {
             var userid = User.Identity.GetUserId();
@@ -18969,6 +19506,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(ViewBag.Operatorsname, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Grid ya table data bind karta hai.
+        /// </summary>
         public JsonResult BindService(string name)
         {
             if (name == "Utility")
@@ -19018,6 +19558,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json(ViewBag.serviceid, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult OnCreditBlockRetailer(string rem, string operatornameid, string RequiredCategory, string RequireCategory, string service123)
         {
             var userid = User.Identity.GetUserId();
@@ -19179,6 +19722,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(results, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// User ya service block/unblock karta hai.
+        /// </summary>
         public ActionResult BlockUser(string rem, string operatornameid, string RequiredCategory, string RequireCategory, string service123)
         {
             var userid = User.Identity.GetUserId();
@@ -19312,6 +19858,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json(status, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// User ya service block/unblock karta hai.
+        /// </summary>
         public ActionResult BlockUserList(string opid, string retid, string serid, string categoryname)
         {
             var userid = User.Identity.GetUserId();
@@ -19381,6 +19930,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return Json(new { retailer = ViewBag.retailer1, category = ViewBag.RequiredCategory, list = mylist }, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult ShowBlockUserList()
         {
             var userid = User.Identity.GetUserId();
@@ -19399,6 +19951,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json(myList, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult BlockDealerList(string opid, string retid, string serid, string categoryname)
         {
             var userid = User.Identity.GetUserId();
@@ -19470,6 +20025,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(new { dealer = ViewBag.DDistributorlist, category = ViewBag.DDService, list = mylist }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult BlockDealerUser(string Distributorlist, string DOperator, string DCategory, string DService)
         {
             var userid = User.Identity.GetUserId();
@@ -19590,6 +20148,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             status = db.SaveChanges();
             return Json(status, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Status update ya check karta hai.
+        /// </summary>
         public ActionResult StatusupdateOnCredit(int? id, string rem, string opertype)
         {
             var userid = User.Identity.GetUserId();
@@ -19661,6 +20222,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json(new { status = status, list = myList }, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Status update ya check karta hai.
+        /// </summary>
         public JsonResult statusupdate(int? id, string rem, string opertype)
         {
             var userid = User.Identity.GetUserId();
@@ -19736,6 +20300,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json(new { status = status, list = myList }, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Status update ya check karta hai.
+        /// </summary>
         public JsonResult Dealaerstatusupdate(int? id, string rem, string opertype)
         {
             var userid = User.Identity.GetUserId();
@@ -19803,6 +20370,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return Json(new { status = status, list = myList }, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public PartialViewResult ShowPrePaidDTHService(int? id, string catename, string opertype)
         {
             var userid = User.Identity.GetUserId();
@@ -20092,6 +20662,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return PartialView("_PrePaidDTHService", resulttable);
         }
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public JsonResult BindOperatorname(string name)
         {
             var userid = User.Identity.GetUserId();
@@ -20113,6 +20686,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public PartialViewResult BindTableOperatorname(string name, string opertype)
         {
             var userid = User.Identity.GetUserId();
@@ -20226,6 +20802,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return PartialView("_PrePaidDTHService", resulttable);
         }
+        /// <summary>
+        /// User ya service block/unblock karta hai.
+        /// </summary>
         public JsonResult BlockAllAPI(string name)
         {
             var userid = User.Identity.GetUserId();
@@ -20306,6 +20885,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
 
+        /// <summary>
+        /// Grid ya table data bind karta hai.
+        /// </summary>
         public JsonResult BindDistributor()
         {
             var userid = User.Identity.GetUserId();
@@ -20328,6 +20910,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
 
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public ActionResult BlockOperatorPrepaid(int? id, string statuschk, string opertype, DateTime? blockdate = null)
         {
             vmWhitelabel_OperatorIndex vmodel = new vmWhitelabel_OperatorIndex();
@@ -20841,6 +21426,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'Outside_logo' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Outside_logo(string file)
         {
             var userid = User.Identity.GetUserId();
@@ -20966,6 +21554,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewBag.login = db.tblLoginContents.Where(a => a.UserId == userid).ToList();
             return Json(ViewBag.login, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// User login ya logout handle karta hai.
+        /// </summary>
         public JsonResult delLoginContent1(int Id)
         {
             var userid = User.Identity.GetUserId();
@@ -20983,6 +21574,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddColor(Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.Whitelabel_LogoBackColor personModel)
         {
             var userid = User.Identity.GetUserId();
@@ -21068,6 +21662,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         [ValidateInput(false)]
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'AboutUsContext' se related operation handle karna hai.
+        /// </summary>
         public ActionResult AboutUsContext(Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs personModel)
         {
             var userid = User.Identity.GetUserId();
@@ -21100,6 +21697,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'Header_logo' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Header_logo(string file)
         {
             var userid = User.Identity.GetUserId();
@@ -21159,6 +21759,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             ViewBag.logoHeaderimage = v;
             return Json(ViewBag.logoHeaderimage, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Is action ka kaam 'delLogo1' se related operation handle karna hai.
+        /// </summary>
         public JsonResult delLogo1(int Id)
         {
             var userid = User.Identity.GetUserId();
@@ -21175,6 +21778,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
 
         }
+        /// <summary>
+        /// Is action ka kaam 'delfavicon' se related operation handle karna hai.
+        /// </summary>
         public JsonResult delfavicon(int Id)
         {
             var userid = User.Identity.GetUserId();
@@ -21193,6 +21799,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'Outside_favicon' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Outside_favicon(string file)
         {
             var userid = User.Identity.GetUserId();
@@ -21256,6 +21865,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'StausUpdate' se related operation handle karna hai.
+        /// </summary>
         public JsonResult StausUpdate(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -21383,6 +21995,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return Json(ViewBag.showimg3, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// User login ya logout handle karta hai.
+        /// </summary>
         public JsonResult delBackLogin_ContentRepeat(string Type)
         {
             var userid = User.Identity.GetUserId();
@@ -21403,6 +22018,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Social Media
+        /// <summary>
+        /// Is action ka kaam 'Socialmedia' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Socialmedia()
         {
             var userid = User.Identity.GetUserId();
@@ -21413,6 +22031,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return View();
         }
+        /// <summary>
+        /// Is action ka kaam 'Social_Media' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Social_Media(string socialType, string link)
         {
             var userid = User.Identity.GetUserId();
@@ -21650,6 +22271,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// Is action ka kaam 'delfooterlink' se related operation handle karna hai.
+        /// </summary>
         public JsonResult delfooterlink(int Id)
         {
             var userid = User.Identity.GetUserId();
@@ -21677,6 +22301,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #endregion
         #region Social Badges
+        /// <summary>
+        /// Is action ka kaam 'BadgeMedia' se related operation handle karna hai.
+        /// </summary>
         public ActionResult BadgeMedia(string BadgeType, string Badgelink)
         {
             var userid = User.Identity.GetUserId();
@@ -21889,6 +22516,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return Json(ViewBag.Badges, JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Is action ka kaam 'delBadgesMedia' se related operation handle karna hai.
+        /// </summary>
         public JsonResult delBadgesMedia(int Id)
         {
             var userid = User.Identity.GetUserId();
@@ -21926,6 +22556,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             bank.walletinfo = db.Whitelabel_Wallet_info.Where(aa => aa.userid == userid).ToList();
             return View(bank);
         }
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddBank(string Banknm, string BranchName, string ifsccode, string accountno, string accounttype, string accountholder, string City)
         {
             var userid = User.Identity.GetUserId();
@@ -21943,6 +22576,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return RedirectToAction("Bank_info");
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult Deletebank(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -21951,6 +22587,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             db.SaveChanges();
             return Json("", JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddWallet(string walletnm, string walletno, string walletholdername)
         {
             var userid = User.Identity.GetUserId();
@@ -21966,6 +22605,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("Bank_info");
         }
 
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult Deletewallet(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -22113,6 +22755,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Request/message dobara bhejta hai.
+        /// </summary>
         public ActionResult Resend_Transactionpass(string txtemail)
         {
             string userid = User.Identity.GetUserId();
@@ -22151,6 +22796,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             //TempData["success"] = "Your Transaction Password Send Successfully in Your Mail Id . Please Check Your Mail Id.";
             return RedirectToAction("ChangePassword");
         }
+        /// <summary>
+        /// Request/message dobara bhejta hai.
+        /// </summary>
         public ActionResult Resend_Securitypass(string txtsecuritemail)
         {
             string userid = User.Identity.GetUserId();
@@ -22189,6 +22837,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_Transactionpass([Bind(Prefix = "Item2")] ChangeTransactionViewModel model)
         {
             try
@@ -22227,6 +22878,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_Securitypass([Bind(Prefix = "Item3")] ChangeSecurityViewModel model)
         {
             try
@@ -22273,6 +22927,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Set Target
+        /// <summary>
+        /// Is action ka kaam 'Set_target' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Set_target()
         {
             var userid = User.Identity.GetUserId();
@@ -22346,6 +23003,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return View(vmodel);
             }
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdateSetTargerRetailer(int targetID, string settarget, string offertype, string txt60achive, string txt70achive, string txt80achive, string txt90achive, string txt100achive, string ddl60achive, string ddl70achive, string ddl80achive, string ddl90achive, string ddl100achive)
         {
             var userid = User.Identity.GetUserId();
@@ -22385,6 +23045,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdateSetTargerDealer(int targetID, string settarget, string offertype, string txt60achive, string txt70achive, string txt80achive, string txt90achive, string txt100achive, string ddl60achive, string ddl70achive, string ddl80achive, string ddl90achive, string ddl100achive)
         {
             var userid = User.Identity.GetUserId();
@@ -22424,6 +23087,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdateSetTargerMaster(int targetID, string settarget, string offertype, string txt60achive, string txt70achive, string txt80achive, string txt90achive, string txt100achive, string ddl60achive, string ddl70achive, string ddl80achive, string ddl90achive, string ddl100achive)
         {
             var userid = User.Identity.GetUserId();
@@ -22464,6 +23130,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Status update ya check karta hai.
+        /// </summary>
         public ActionResult TargetAchiveStatus(int targetId, string userRole)
         {
             var userid = User.Identity.GetUserId();
@@ -22506,6 +23175,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult ShowRetailerMonthWiseSetTarget(string monthVal)
         {
             var userid = User.Identity.GetUserId();
@@ -22584,6 +23256,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult ShowDealerMonthWiseSetTarget(string monthVal)
         {
             var userid = User.Identity.GetUserId();
@@ -22661,6 +23336,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult ShowMasterMonthWiseSetTarget(string monthVal)
         {
             var userid = User.Identity.GetUserId();
@@ -22740,6 +23418,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch (Exception ex) { return Json("", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Is action ka kaam 'AchivedHistory' se related operation handle karna hai.
+        /// </summary>
         public ActionResult AchivedHistory(string monthVal, string userRole, string UserId, string ddlcategory)
         {
             var wAdmin = User.Identity.GetUserId();
@@ -22851,6 +23532,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return PartialView("_achivedhistory", vmodel);
             }
         }
+        /// <summary>
+        /// Is action ka kaam 'TopUserByTab' se related operation handle karna hai.
+        /// </summary>
         public ActionResult TopUserByTab(string valuess = "current", int pageIndex = 0, int pageSize = 10)
         {
             var userid = User.Identity.GetUserId();
@@ -22885,6 +23569,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json(sb.ToString(), JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillAddEditDropDown()
         {
             var userid = User.Identity.GetUserId();
@@ -22905,6 +23592,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'InserProductinsetTarget' se related operation handle karna hai.
+        /// </summary>
         public ActionResult InserProductinsetTarget()
         {
             var userid = User.Identity.GetUserId();
@@ -22939,12 +23629,18 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("Failed", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public ActionResult FillProductGiftTable()
         {
             var userid = User.Identity.GetUserId();
             var result = db.Whitelabel_PruductGift.Where(a => a.Whitelabelid == userid).ToList();
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult DeleteProductGiftImage(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -22985,6 +23681,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("Failed", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddTermCondotionFor(string termcondition, string conditionfor)
         {
             var userid = User.Identity.GetUserId();
@@ -23020,6 +23719,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json(html.ToString(), JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public ActionResult FillAllTermCondition(string conditionfor = "Retailer")
         {
             var userid = User.Identity.GetUserId();
@@ -23040,6 +23742,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json(html.ToString(), JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult DeleteTermconditionbyid(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -23056,6 +23761,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             catch { return Json("", JsonRequestBehavior.AllowGet); }
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public ActionResult FillSuperStockkistSetTarget()
         {
             var userid = User.Identity.GetUserId();
@@ -23065,6 +23773,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult FillDealerSetTarget()
         {
             var userid = User.Identity.GetUserId();
@@ -23075,6 +23786,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
         #region Profile
         [HttpGet]
+        /// <summary>
+        /// User profile details dikhata ya update karta hai.
+        /// </summary>
         public new ActionResult Profile()
         {
             var userid = User.Identity.GetUserId();
@@ -23198,6 +23912,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         //Upload Aadhaar Crad Doc
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadAadharcarddoc(int? txtaadharid)
         {
             var userid = User.Identity.GetUserId();
@@ -23262,6 +23979,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         //Upload Pancard Crad Doc
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadPancardcarddoc(int? txtpancardid)
         {
             var userid = User.Identity.GetUserId();
@@ -23325,6 +24045,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return thePictureDataAsString;
         }
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult ShowingImages(int id, string imgtype)
         {
             var userid = User.Identity.GetUserId();
@@ -23354,6 +24077,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         //Upload Service Aggrement Card Doc
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadServiceAggrementdoc(int? txtserviceid)
         {
             var userid = User.Identity.GetUserId();
@@ -23389,6 +24115,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         //delete Profile Doc 
+        /// <summary>
+        /// User profile details dikhata ya update karta hai.
+        /// </summary>
         public JsonResult DelereprofileDoc(int ID, string Docname)
         {
             var userid = User.Identity.GetUserId();
@@ -23419,17 +24148,26 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return Json("Failed", JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillDistict(int State)
         {
             var cities = db.District_Desc.Where(c => c.State_id == State);
             return Json(cities, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult ShowAddressprofile(int ID)
         {
             var userid = User.Identity.GetUserId();
             var ch = db.WhiteLabel_userList.Where(a => a.Idno == ID && a.WhiteLabelID == userid).ToList();
             return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public JsonResult UpdateSupportData(int ID, string Email, string Mobile)
         {
             var userid = User.Identity.GetUserId();
@@ -23448,6 +24186,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'DisableTwoFactor' se related operation handle karna hai.
+        /// </summary>
         public async Task<JsonResult> DisableTwoFactor(string UserRole, string btnVal, string UserrId)
         {
             if (UserRole.Contains("Whitelabelmaster"))
@@ -23535,6 +24276,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult GetTwoFactor(string UserRole)
         {
             var userid = User.Identity.GetUserId();
@@ -23601,6 +24345,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         [ValidateInput(false)]
         [HttpPost]
+        /// <summary>
+        /// OTP generate ya verify karta hai.
+        /// </summary>
         public ActionResult AdminOTPStatus(string RoleName, string Status)
         {
             var UserStatus = db.WhitelabelProfileAllUserOTPs.Where(a => a.RoleName == RoleName).SingleOrDefault();
@@ -23714,6 +24461,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 }
             }
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult DeleteEmail(int idno)
         {
             var userid = User.Identity.GetUserId();
@@ -23734,6 +24484,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public PartialViewResult _EmailHistory(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -23763,6 +24516,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_EmailHistory", viewmodel);
         }
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult GetEmailbyId(int idno)
         {
             var userid = User.Identity.GetUserId();
@@ -23782,6 +24538,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_Email_Security(int idno, string SMTPHost, string EmailID, string Paswrd, int Port)
         {
             int res = 0;
@@ -23806,6 +24565,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return Json(new { status = "Failed", Message = "Something Went Wrong !!!" });
             }
         }
+        /// <summary>
+        /// Is action ka kaam 'Email_enablessl' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Email_enablessl(int id)
         {
             var userid = User.Identity.GetUserId();
@@ -23839,6 +24601,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public JsonResult SendEmail(SendMail SM)
         {
             var userid = User.Identity.GetUserId();
@@ -23949,6 +24714,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             vmodel.ddlwalletInfo = fillwallet.AsEnumerable();
             return View(vmodel);
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillMasterDistributorDropDownList(string nameoftab)
         {
             Whitelabel_Fundtransferviewmodel vmodel = new Whitelabel_Fundtransferviewmodel();
@@ -23979,6 +24747,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(vmodel.ddldistributorInfo);
         }
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public PartialViewResult TABCHANGEFORFUNDTRANSFER(string nameoftab, string usernm, string txt_frm_date, string txt_to_date, string txtsearch)
         {
 
@@ -24048,6 +24819,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult ChkSecurityPassRetailer(string txtcode, string hdSuperstokistID, string hdPaymentMode,
             string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
             string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -24348,6 +25122,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult D_Creditchk(string Dealerid)
         {
             decimal? dlmbal;
@@ -24365,6 +25142,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(new { currntcr = ch, rembal = dlmbal }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult ChkSecurityPass(string txtcode, string hdSuperstokistID, string hdPaymentMode,
             string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
             string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -24735,6 +25515,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(vmodel);
         }
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult FundUserAdmin_MD_dealer_Generate_Unique_ID()
         {
             //var adminuserid = User.Identity.GetUserId();
@@ -24746,6 +25529,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(transferid, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult Fundtransfer_AdminDealer_to_Rem_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -24759,6 +25545,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(transferid, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult Fundtransfer_AdminRem_to_Rem_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -24833,6 +25622,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return transferids;
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public JsonResult FillDealerDropDownList(string nameoftab)
         {
             Whitelabel_Fundtransferviewmodel vmodel = new Whitelabel_Fundtransferviewmodel();
@@ -24866,6 +25658,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json("rav i");
 
         }
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult GenerateExcellFileFundUser_to_User(string tabID, DateTime frm_date, DateTime to_date, string usernm)
         {
 
@@ -24969,6 +25764,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             return View();
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult FundUserToUserPdfGenerate(string tabID, DateTime frm_date, DateTime to_date, string usernm)
         {
             DataTable dtt = new DataTable();
@@ -24997,6 +25795,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
 
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult MDTODealer(string tabtype, string usernm, string txt_frm_date, string txt_to_date, string msg, string txtsearch)
         {
             Whitelabel_FundUserViewModel vmodel = new Whitelabel_FundUserViewModel();
@@ -25053,6 +25854,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
             return PartialView("_FundUserListPart", vmodel);
         }
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult MToDLM_Creditchk(string MID, string dlmid)
         {
 
@@ -25071,6 +25875,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
 
         }
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult DLMTORLM_Creditchk(string retailerid, string dlmid)
         {
 
@@ -25104,6 +25911,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return selectList;
         }
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public JsonResult BindRetailerByID(string did)
         {
 
@@ -25126,6 +25936,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(new { dealer = dealer, bnkinfo = query.AsEnumerable(), walletinfo = fillwallet.AsEnumerable() }, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public JsonResult BindDealerByID(string ssid)
         {
 
@@ -25148,6 +25961,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return Json(new { dealer = dealer, bnkinfo = query.AsEnumerable(), walletinfo = fillwallet.AsEnumerable() }, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult GetRetailerByID(string retID)
         {
             var userid = User.Identity.GetUserId();
@@ -25180,6 +25996,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult MasterToDealer(string Masterid1, string Dealerid, DateTime txt_frm_date, DateTime txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -25208,6 +26027,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ch);
         }
 
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult ChkSecurityPassmastertodlm_bal(string txtcode, string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
             string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
             string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -25464,6 +26286,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
             //return Json(ch, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult ChkSecurityPassRetailertoRetailer_bal(string txtcode, string hdSuperstokistID, string hdMDDLM, string hdMDComments, string hdPaymentAmount)
         {
             try
@@ -25921,6 +26746,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult PurchasertequestWhiteLabelToadmin(string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
     string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
     string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -26006,6 +26834,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
 
+        /// <summary>
+        /// Is action ka kaam 'WLTOADMIN' se related operation handle karna hai.
+        /// </summary>
         public PartialViewResult WLTOADMIN(string tabtype, string txt_frm_date, string txt_to_date, string msg = "")
         {
             DateTime fromdate;
@@ -26043,6 +26874,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
 
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult R_Creditchk()
         {
             string userid = User.Identity.GetUserId();
@@ -26988,6 +27822,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
         #region Set API 
         [HttpGet]
+        /// <summary>
+        /// Is action ka kaam 'Api_nm' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Api_nm()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27004,6 +27841,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'Api_nm' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Api_nm(string apinm, string apiurl, string CheckbalUrl)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27038,6 +27878,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
         //Edit Api 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Editapi_nm(string txtid, string txtapiname, string txtapiurl, string viewurledit)
         {
             try
@@ -27066,6 +27909,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         //delete
+        /// <summary>
+        /// Is action ka kaam 'Delte_API_From_info' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Delte_API_From_info(int idno)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27081,6 +27927,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         //Move Operator
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public ActionResult Api_Operator(string id)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27117,6 +27966,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public ActionResult Api_Operator(string apinm, string txtidno, string txtapinm, string txtoptnm, string txtapiopt, string txtpurcharge, string purchasetype, string[] myCategories)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27161,6 +28013,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             var chList = firstlist.DistinctBy(a => a.opt_code).ToList();
             return View(chList);
         }
+        /// <summary>
+        /// Status update ya check karta hai.
+        /// </summary>
         public ActionResult Api_Status(string id, string apinm)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27204,11 +28059,17 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             //var ch = db.proc_Complaint_request("", "All").ToList();
             return View(viewmodel);
         }
+        /// <summary>
+        /// Records ko search/filter karta hai.
+        /// </summary>
         public JsonResult SearchComplaint(int idno)
         {
             var ch = db.whitelabel_searchcomplaint(idno).ToList();
             return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Complaint submit ya list karta hai.
+        /// </summary>
         public ActionResult Complaint_edit(int id, string response, string type, string useridd)
         {
             whitelabel_complaint_request objCourse = (from p in db.whitelabel_complaint_request
@@ -27235,6 +28096,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Transaction dispute handle karta hai.
+        /// </summary>
         public ActionResult Dispute_list(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             DateTime frm = Convert.ToDateTime(txt_frm_date);
@@ -27250,6 +28114,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             var ch = db.whitelabel_all_dispute_list(Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), ddl_status);
             return View(ch);
         }
+        /// <summary>
+        /// Is action ka kaam 'diputerejected' se related operation handle karna hai.
+        /// </summary>
         public ActionResult diputerejected(string idno, string txtregion)
         {
             try
@@ -27284,6 +28151,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'WhitelabelEarning' se related operation handle karna hai.
+        /// </summary>
         public ActionResult WhitelabelEarning(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -27318,6 +28188,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission ya income report dikhata hai.
+        /// </summary>
         public ActionResult Whitelabel_Myincome(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -27385,6 +28258,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
         [HttpGet]
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult Check_UnchekGSTSetting()
         {
             var userid = User.Identity.GetUserId();
@@ -27415,6 +28291,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Broadband_Slab_setting
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Broadband_Slab_setting()
         {
             var userid = User.Identity.GetUserId();
@@ -27438,6 +28317,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Broadband_Slab_setting(Models.Broadbandslab model)
         {
             var userid = User.Identity.GetUserId();
@@ -27453,6 +28335,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("Broadband_Slab_setting");
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserBoradbandSlab(string role, string userid, string Retailerid)
         {
             Models.Broadbandslab model = new Models.Broadbandslab();
@@ -27599,6 +28484,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult _UpdateBroadbandSlab(Models.Broadbandslab model, string ddlUserId, string role, string Retailerid)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27651,6 +28539,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Water_Slab_setting
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Water_Slab_setting()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27673,6 +28564,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Water_Slab_setting(Models.Waterslab model)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27688,6 +28582,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("Water_Slab_setting");
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserWaterSlab(string role, string userid, string Retailerid)
         {
             Models.Waterslab model = new Models.Waterslab();
@@ -27827,6 +28724,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult _UpdateWaterSlab(Models.Waterslab model, string ddlUserId, string role, string Retailerid)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27877,6 +28777,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         #endregion
 
         #region Insurance  Slab Setting
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Insurance_Slab_setting()
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27900,6 +28803,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Insurance_Slab_setting(Models.InsuranceSlab model)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -27915,6 +28821,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("Insurance_Slab_setting");
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public PartialViewResult _UserInsuranceSlab(string role, string userid, string Retailerid)
         {
             Models.InsuranceSlab model = new Models.InsuranceSlab();
@@ -28060,6 +28969,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult _UpdateInsuranceSlab(Models.InsuranceSlab model, string ddlUserId, string role, string Retailerid)
         {
             var whitelabelid = User.Identity.GetUserId();
@@ -28110,6 +29022,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return RedirectToAction("Insurance_Slab_setting");
         }
         #endregion
+        /// <summary>
+        /// Is action ka kaam 'Finanicalsts' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Finanicalsts(string id)
         {
             var sts = (from pp in db.Whitelabel_Retailer_Details where pp.RetailerId == id select pp).Single().moneysts;
@@ -28603,6 +29518,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View();
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult Account_Verify_Gst_Pdf(string id)
         {
             var userid = User.Identity.GetUserId();
@@ -28757,6 +29675,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
 
         #region whitelabel_admin_slab
 
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult OperatorSlab()
         {
             string userid = User.Identity.GetUserId();
@@ -29093,6 +30014,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'UPICharges' se related operation handle karna hai.
+        /// </summary>
         public ActionResult UPICharges(string ddlname, string Retailerid, string Dealerid, string Masterid, string Whitelabelid, string ddlstatus, DateTime txt_frm_date, DateTime txt_to_date, string ddlfiltertable)
         {
             var useridd = User.Identity.GetUserId();
@@ -29184,6 +30108,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Show_ManualUPI_REQ()
         {
             var userid = User.Identity.GetUserId();
@@ -29195,6 +30122,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Show_ManualUPI_REQ(DateTime txt_frm_date, DateTime txt_to_date, string ddlstatus)
         {
             var userid = User.Identity.GetUserId();
@@ -29203,6 +30133,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return View(result);
         }
 
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult _upi_slabList()
         {
             var userid = User.Identity.GetUserId();
@@ -29214,6 +30147,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             model.Admin_UPIs = db.Whitelabel_Admin_UPI.Where(u => u.whitelabelid == userid).ToList();
             return PartialView(model);
         }
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddUpiCharge(decimal min, decimal charge)
         {
             var userid = User.Identity.GetUserId();
@@ -29239,6 +30175,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             model.Admin_UPIs = db.Whitelabel_Admin_UPI.Where(u => u.whitelabelid == userid).ToList();
             return PartialView("_upi_slabList", model);
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult DeleteUpiSlab()
         {
             var userid = User.Identity.GetUserId();
@@ -29252,6 +30191,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             model.Admin_UPIs = db.Whitelabel_Admin_UPI.Where(u => u.whitelabelid == userid).ToList();
             return PartialView("_upi_slabList", model);
         }
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public ActionResult SENDOTP()
         {
             var userid = User.Identity.GetUserId();
@@ -29280,6 +30222,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             model.msg = "OTPSEND SUCCESSFULLY";
             return PartialView("_upi_SelfList", model);
         }
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddUpiSelf(string upiid, decimal min, string otp, decimal max)
         {
             var userid = User.Identity.GetUserId();
@@ -29309,6 +30254,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             model.Upi_slabs = db.Whitelabel_Upi_slab.Where(s => s.whitelabelid == userid).ToList();
             return PartialView("_upi_SelfList", model);
         }
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public ActionResult _upi_SelfList()
         {
             var userid = User.Identity.GetUserId();
@@ -29320,6 +30268,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             model.Upi_slabs = db.Whitelabel_Upi_slab.Where(s => s.whitelabelid == userid).ToList();
             return PartialView(model);
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult DeleteUpiself()
         {
             var userid = User.Identity.GetUserId();
@@ -29334,6 +30285,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
             return PartialView("_upi_SelfList", model);
         }
 
+        /// <summary>
+        /// Is action ka kaam 'Hide_Show_UPI' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Hide_Show_UPI(string usefor)
         {
 
@@ -29376,6 +30330,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
         }
 
 
+        /// <summary>
+        /// Transaction ko success mark karta hai.
+        /// </summary>
         public ActionResult UPI_Manual_Pending_To_Success(int? hideupiidres, string hideupiidrestypes, string txtBankRRN, string txtcode)
         {
             var userid = User.Identity.GetUserId();
@@ -29517,6 +30474,9 @@ namespace Vastwebmulti.Areas.WHITELABEL.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// User login ya logout handle karta hai.
+        /// </summary>
         public void TryLogin()
         {
             var response = tokencheck();

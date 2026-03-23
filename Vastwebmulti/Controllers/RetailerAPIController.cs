@@ -16,9 +16,15 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Controllers
 {
 
+    /// <summary>
+    /// Retailer API controller — image upload, document upload, KYC video, aur company policy data ke liye API endpoints provide karta hai.
+    /// </summary>
     public class RetailerAPIController : ApiController
     {
 
+        /// <summary>
+        /// Database se saare authorized IP addresses delete karta hai — admin ke liye IP whitelist clear karne ka kaam karta hai.
+        /// </summary>
         [HttpPost]
         [Route("Website/Admin/DeleteAdminAuthoriseLIPADDRESS")]
 
@@ -47,6 +53,9 @@ namespace Vastwebmulti.Controllers
 
         }
 
+        /// <summary>
+        /// User ki profile photo upload karta hai — base64 image ko server par save karke user record update karta hai.
+        /// </summary>
         [HttpPost]
         [Route("api/user/UploadUserImages")]
         public HttpResponseMessage UploadUserImages(Imagephoto model)

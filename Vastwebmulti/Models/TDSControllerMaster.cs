@@ -12,6 +12,9 @@ namespace Vastwebmulti.Models
     using System;
     using System.Collections.Generic;
     
+    /// <summary>
+    /// Master/Super Stockist ke liye TDS ki information store karne wala model — service-wise TDS data master level par rakhta hai.
+    /// </summary>
     public partial class TDSControllerMaster
     {
         public int idno { get; set; }

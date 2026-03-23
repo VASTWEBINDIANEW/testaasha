@@ -16,6 +16,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 {
 
     [Authorize(Roles = "Whitelabelretailer")]
+    /// <summary>
+    /// Is class ka kaam PANCARDController area ke operations handle karna hai.
+    /// </summary>
     public class PANCARDController : Controller
     {
         VastwebmultiEntities db = new VastwebmultiEntities();
@@ -23,6 +26,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         string VastbazaarBaseUrl = "http://api.vastbazaar.com/";
         //string VastbazaarBaseUrl = "http://localhost:65209/";
 
+        /// <summary>
+        /// Main dashboard ya home page dikhata hai.
+        /// </summary>
         public ActionResult Index()
         {
             try
@@ -95,6 +101,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
 
+        /// <summary>
+        /// Is action ka kaam 'Userinfo' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Userinfo()
         {
             try
@@ -118,6 +127,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'RegisterPSA' se related operation handle karna hai.
+        /// </summary>
         public ActionResult RegisterPSA(string txtpanname, string txtfirmnmpan, string txtemailpan, string panphone, string dobpan, string panpancard, string aadharpan, string txtaddresspan, string pinpan)
         {
             try
@@ -144,6 +156,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
 
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult CheckStatus()
         {
             try
@@ -171,6 +186,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Token purchase ya management handle karta hai.
+        /// </summary>
         public ActionResult buyUTIToken(string digitalCount, string physicalCount)
         {
             try
@@ -200,6 +218,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdatePSA()
         {
             try
@@ -226,6 +247,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdatePSA(string txtpanname, string txtfirmnmpan, string panpancard, string aadharpan, string txtaddresspan, string pinpan)
         {
             try
@@ -315,6 +339,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Transaction ya activity ka report dikhata hai.
+        /// </summary>
         public ActionResult TokenPurchaseReport()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -334,6 +361,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Transaction ya activity ka report dikhata hai.
+        /// </summary>
         public ActionResult TokenPurchaseReport(string ddl_status, string ddl_top, string txt_frm_date, string txt_to_date)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -369,6 +399,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// Transaction ya activity ka report dikhata hai.
+        /// </summary>
         public ActionResult _TokenPurchaseReport(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -405,6 +438,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll(int pageindex, string txt_frm_date, string txt_to_date, string ddl_status)
         {
             string userid = User.Identity.GetUserId();
@@ -421,6 +457,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             jsonmodel.HTMLString = renderPartialViewtostring("_TokenPurchaseReport", tbrow);
             return Json(jsonmodel);
         }
+        /// <summary>
+        /// Is class ka kaam JsonModel area ke operations handle karna hai.
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
@@ -442,6 +481,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult GetTokenStatus(string id)
         {
             InstantPayComnUtil util = new InstantPayComnUtil();
@@ -457,6 +499,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(response.ToString());
         }
 
+        /// <summary>
+        /// User login ya logout handle karta hai.
+        /// </summary>
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
@@ -546,6 +591,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
 
+        /// <summary>
+        /// User login ya logout handle karta hai.
+        /// </summary>
         public void TryLogin()
         {
             var response = tokencheck();

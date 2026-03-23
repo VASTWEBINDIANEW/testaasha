@@ -12,6 +12,9 @@ namespace Vastwebmulti.Models
     using System;
     using System.Collections.Generic;
     
+    /// <summary>
+    /// TDS (Tax Deducted at Source) ki information store karne wala model — retailer ke liye service-wise TDS data rakhta hai.
+    /// </summary>
     public partial class TDSController
     {
         public int idno { get; set; }

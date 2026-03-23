@@ -15,10 +15,16 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
+    /// <summary>
+    /// Retailer ke DTH recharge, AEPS registration aur payment se related kaam karta hai
+    /// </summary>
     public class DTHController : Controller
     {
         VastwebmultiEntities db = new VastwebmultiEntities();
         string VastbazaarBaseUrl = "http://api.vastbazaar.com/";
+        /// <summary>
+        /// AEPS merchant registration check karta hai aur OTP bhejne ki process shuru karta hai
+        /// </summary>
         public ActionResult Aepscheck()
         {
             var userid = User.Identity.GetUserId();
@@ -123,6 +129,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
             return View();
         }
+        /// <summary>
+        /// AEPS OTP verify karta hai aur ICICI se transaction validate karta hai
+        /// </summary>
         public ActionResult AepscheckVerify(string otp, string primaryKeyId, string encodeFPTxnId)
         {
             var userid = User.Identity.GetUserId();
@@ -223,6 +232,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
             return View();
         }
+        /// <summary>
+        /// AEPS fingerprint verify karta hai ICICI API ke through
+        /// </summary>
         public ActionResult FingerVerify()
         {
             string primaryKeyId = "128"; string encodeFPTxnId = "EKYKF1017396030421154029853I";
@@ -326,6 +338,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
             return View();
         }
+        /// <summary>
+        /// Vastbazaar API ka valid auth token return karta hai, zaroori ho to naya fetch karta hai
+        /// </summary>
         public string getAuthToken()
         {
             try
@@ -394,6 +409,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// Database mein stored Vastbazaar API token ko forcefully update karta hai
+        /// </summary>
         public void UpdateAuthToken()
         {
             var response = tokencheck();
@@ -430,11 +448,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return response;
         }
         // GET: RETAILER/DTH
+        /// <summary>
+        /// DTH recharge booking ka main page dikhata hai
+        /// </summary>
         public ActionResult DTHBooking()
         {
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// DTH operator code ke basis par package details fetch karta hai
+        /// </summary>
         public ActionResult GetPackageDetails(string Code)
         {
             string respo = new InstantPayComnUtil().getOperatorDetails(Code);
@@ -447,6 +471,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return RedirectToAction("DTHBooking");
         }
         [HttpPost]
+        /// <summary>
+        /// DTH recharge ka payment process karta hai customer ki details aur package ke saath
+        /// </summary>
         public ActionResult DoPayment(string STB, string ConOpt, string ddlPackage, string packageAmt, string txtName, string txtMobile, string customerAddress, string txtPIN)
         {
             try

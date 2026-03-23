@@ -1391,6 +1391,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
         //Change Password 
+        /// <summary>
+        /// Password ya passcode se related kaam karta hai.
+        /// </summary>
         public void Passcode3(string ids)
         {
 
@@ -2371,6 +2374,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             SendPushNotification(userid, "https://www.google.com", "Testing", "SignalR");
             return View();
         }
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public void SendPushNotification(string ReceiverMailID, string RedirectUrl, string Message, string Title)
         {
             NotificationHub objNotifHub = new NotificationHub();
@@ -4774,6 +4780,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             }
         }
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public void vastbazzarretailer(pininsert model)
         {
             try
@@ -4817,6 +4826,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             catch { }
         }
 
+        /// <summary>
+        /// Is class ka kaam pininsert area ke operations handle karna hai.
+        /// </summary>
         public class pininsert
         {
             public string Mobile { get; set; }
@@ -6935,6 +6947,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         //End money transfer report
 
         //start recharge report
+        /// <summary>
+        /// Is class ka kaam JsonModel area ke operations handle karna hai.
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
@@ -12959,6 +12974,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
 
+        /// <summary>
+        /// Is class ka kaam RemotePost area ke operations handle karna hai.
+        /// </summary>
         public class RemotePost
         {
             private System.Collections.Specialized.NameValueCollection Inputs = new System.Collections.Specialized.NameValueCollection();
@@ -12966,11 +12984,17 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             public string Method = "post";
             public string FormName = "form1";
 
+            /// <summary>
+            /// Naya record insert/add karta hai database mein.
+            /// </summary>
             public void Add(string name, string value)
             {
                 Inputs.Add(name, value);
             }
 
+            /// <summary>
+            /// mPOS transaction handle karta hai.
+            /// </summary>
             public void Post()
             {
                 System.Web.HttpContext.Current.Response.Clear();

@@ -79,6 +79,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         VastBazaartoken Responsetoken = new VastBazaartoken();
         string VastbazaarBaseUrl = "http://api.vastbazaar.com/";
         string Websitename = "";
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public void SendPushNotification(string ReceiverMailID, string RedirectUrl, string Message, string Title)
         {
             VastwebmultiEntities db = new VastwebmultiEntities();
@@ -124,6 +127,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             ViewBag.District = db.District_Desc.Where(a => a.State_id == state).Select(a => new SelectListItem { Text = a.Dist_Desc, Value = a.Dist_id.ToString() }).ToList();
             return View(userDetails);
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillDistict(int State)
         {
             var cities = db.District_Desc.Where(c => c.State_id == State);
@@ -2685,6 +2691,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
+        /// <summary>
+        /// Is action ka kaam 'codelist' se related operation handle karna hai.
+        /// </summary>
         public JsonResult codelist(string port)
         {
             try
@@ -2698,6 +2707,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
+        /// <summary>
+        /// Is action ka kaam 'chhkbopt' se related operation handle karna hai.
+        /// </summary>
         public JsonResult chhkbopt(string id, string aa)
         {
             string[] words = aa.Split(',');
@@ -3048,6 +3060,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
+        /// <summary>
+        /// Is action ka kaam 'ApiUserResponse' se related operation handle karna hai.
+        /// </summary>
         protected void ApiUserResponse(int Idno, string rch_from, string fid, string status, string operatorId)
         {
             var role = (from rol in db.Roles join user in db.UserRoles on rol.RoleId equals user.RoleId where user.UserId == rch_from select rol.Name).SingleOrDefault().ToString();
@@ -6315,6 +6330,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Write")]
+        /// <summary>
+        /// AEPS (Aadhaar Enabled Payment System) se related operation karta hai.
+        /// </summary>
         public JsonResult AepsStatus(string txnid)
         {
             try
@@ -8345,6 +8363,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult Fundtransfer_Admin_to_MD_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -8357,6 +8378,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult FundtransferAdmin_To_dealer_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -9602,6 +9626,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Read")]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public PartialViewResult TABCHANGEFORFUNDTRANSFER(string nameoftab, string usernm, string txt_frm_date, string txt_to_date, string txtsearch, string paymode)
         {
 
@@ -9725,6 +9752,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(ch);
         }
 
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillMasterDistributorDropDownList(string nameoftab)
         {
             EmployeFundtransferviewmodel vmodel = new EmployeFundtransferviewmodel();
@@ -9879,6 +9909,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult FundtransferAdmin_To_Webapi_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -9896,6 +9929,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult FundtransferAdmin_To_API_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -9910,6 +9946,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult FundtransferAdmin_To_Retailer_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -10128,6 +10167,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Is action ka kaam 'MasterlistPart' se related operation handle karna hai.
+        /// </summary>
         public PartialViewResult MasterlistPart()
         {
 
@@ -10150,6 +10192,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public PartialViewResult _SelectDlmID(string MdId)
         {
             var Details = db.Select_Dealer_total(MdId).ToList();
@@ -10158,6 +10203,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return PartialView("_SelectDlmID", dlmViewModel);
         }
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public async Task<ActionResult> insert_master_super(MasterDistributerModel model, string role)
         {
             string message = "";
@@ -10614,6 +10662,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult SelectRetailerID(string MdId)
         {
             var Details = db.Dealer_retailer(MdId, "Distibutor", 1, 3000).ToList();
@@ -10623,6 +10674,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public JsonResult DealerByIdSearch(string ssid)
         {
             ViewData["value"] = "";
@@ -10707,6 +10761,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult DealerlistPart()
         {
 
@@ -11065,6 +11122,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [ValidateInput(false)]
 
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public JsonResult RetailerByIdSearch(string RetailerId)
         {
             ViewData["value"] = "";
@@ -11494,6 +11554,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult RetailerlistPart(string dealerid)
         {
 
@@ -11536,6 +11599,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult RetailerSearchBy(string txtmob)
         {
 
@@ -11877,6 +11943,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult MDTODealer(string tabtype, string usernm, string remreciverss, string txt_frm_date, string txt_to_date, string msg, string txtsearch)
         {
             EmployeeFundUserViewModel vmodel = new EmployeeFundUserViewModel();
@@ -11963,6 +12032,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult FundUserAdmin_MD_dealer_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -12459,6 +12531,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult Fundtransfer_AdminRem_to_Rem_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -12630,6 +12705,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public JsonResult Fundtransfer_AdminDealer_to_Rem_Generate_Unique_ID()
         {
             var adminuserid = User.Identity.GetUserId();
@@ -12890,6 +12968,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult GetRetailerByID(string retID)
         {
             var dbData = db.Retailer_Details.Where(x => !x.RetailerId.Equals(retID)).ToList();
@@ -12898,6 +12979,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public JsonResult BindRetailerByID(string did)
         {
 
@@ -12921,6 +13005,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public JsonResult BindDealerByID(string ssid)
         {
 
@@ -12959,6 +13046,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return selectList;
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public JsonResult FillDealerDropDownList(string nameoftab)
         {
             EmployeFundtransferviewmodel vmodel = new EmployeFundtransferviewmodel();
@@ -14523,6 +14613,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public void UpdateAuthToken()
         {
             var response = tokencheck();
@@ -16050,6 +16143,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
+        /// <summary>
+        /// Is class ka kaam JsonModel area ke operations handle karna hai.
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
