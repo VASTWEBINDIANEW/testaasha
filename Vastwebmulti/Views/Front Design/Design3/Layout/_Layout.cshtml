@@ -1,4 +1,4 @@
-﻿@using Vastwebmulti.Models;
+@using Vastwebmulti.Models;
 @model RegisterViewModel
 <!DOCTYPE html>
 <html lang="en">
@@ -35,37 +35,23 @@
         {
             if (currenturl.Contains("LOCALHOST"))
             {
-                whitelabelid = db2.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+                whitelabelid = db2.WhiteLabel_userList.AsNoTracking().Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
             }
             else
             {
-                whitelabelid = db2.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+                whitelabelid = db2.WhiteLabel_userList.AsNoTracking().Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
             }
         }
         catch { }
-        var faviconlogo = db2.tblfavicons.Where(p => p.UserId == whitelabelid).ToList();
-        if (faviconlogo.Count() > 0)
+        var faviconRec = db2.tblfavicons.AsNoTracking().FirstOrDefault(p => p.UserId == whitelabelid);
+        if (faviconRec != null)
         {
-            //if (faviconlogo.SingleOrDefault().Role == "WHITELABEL")
-            //{
-            favimage = faviconlogo.SingleOrDefault().faviconimage;
-            //}
+            favimage = faviconRec.faviconimage;
         }
-        else
-        {
-            <link rel="icon" href="" type="image/x-icon" />
-        }
-        var image = db2.tblfooterImages.Where(p => p.UserId == whitelabelid).ToList();
-        if (image.Count > 0)
-        {
-            ViewBag.image = image.SingleOrDefault().ImageUrl;
-        }
-        else
-        {
-            ViewBag.image = "img42.png";
-        }
+        var footerImg = db2.tblfooterImages.AsNoTracking().FirstOrDefault(p => p.UserId == whitelabelid);
+        ViewBag.image = footerImg != null ? footerImg.ImageUrl : "img42.png";
 
-        ViewBag.Sate = db2.State_Desc.Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
+        ViewBag.Sate = db2.State_Desc.AsNoTracking().Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
     }
     <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
     <style>
@@ -154,19 +140,11 @@
         col = "";
     }
     var image1 = "";
-    var logo = db.tblOutsideLogoes.Where(p => p.UserId == whitelabelid).ToList();
-    if (logo.Count > 0)
-    {
-        image1 = logo.SingleOrDefault().LogoImage;
-    }
-    var vv = from tbl in db.tblMenus
-             where tbl.Status == "Y" && tbl.UserId == whitelabelid
-             select new
-             {
-                 tbl.MenuName
-             };
+    var logoRec = db.tblOutsideLogoes.AsNoTracking().FirstOrDefault(p => p.UserId == whitelabelid);
+    if (logoRec != null) { image1 = logoRec.LogoImage; }
+    var vv = db.tblMenus.AsNoTracking().Where(tbl => tbl.Status == "Y" && tbl.UserId == whitelabelid).Select(tbl => new { tbl.MenuName });
     ViewBag.menuname = vv;
-    var admindetail = db.Admin_details.ToList();
+    var admindetail = db.Admin_details.AsNoTracking().ToList();
     var mailid = admindetail.SingleOrDefault().email;
     var mobile = admindetail.SingleOrDefault().mobile;
 
@@ -174,7 +152,7 @@
     //string[] gg = RDate.Split('-');
     //var RYear = gg[2].Split(' ')[0].ToString();
 
-   var whitelabelDetails = db.WhiteLabel_userList.Where(p => p.WhiteLabelID == whitelabelid).ToList();
+   var whitelabelDetails = db.WhiteLabel_userList.AsNoTracking().Where(p => p.WhiteLabelID == whitelabelid).ToList();
     //List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData> whitelabelDetails = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>();
     //whitelabelDetails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>>(readWrite.Read("WhiteContactData.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
     //var companyname = whitelabelDetails.Where(p => p.UserId == whitelabelid).ToList();
@@ -192,20 +170,14 @@
 
 
     //********************** Start Whitelabel Badges Media **************************
-    var Appfutura = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Appfutura" && p.Userid == whitelabelid).ToList();
-    var Appfutur = Appfutura.Count == 0 ? "" : Appfutura.SingleOrDefault().Url_Link;
-    var Applancher = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Applancher" && p.Userid == whitelabelid).ToList();
-    var Applanche = Applancher.Count == 0 ? "" : Applancher.SingleOrDefault().Url_Link;
-    var Badush = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Badush" && p.Userid == whitelabelid).ToList();
-    var Badus = Badush.Count == 0 ? "" : Badush.SingleOrDefault().Url_Link;
-    var Extract = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Extract" && p.Userid == whitelabelid).ToList();
-    var Extrac = Extract.Count == 0 ? "" : Extract.SingleOrDefault().Url_Link;
-    var Goodfirms = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Good-firms" && p.Userid == whitelabelid).ToList();
-    var Goodfirm = Goodfirms.Count == 0 ? "" : Goodfirms.SingleOrDefault().Url_Link;
-    var Mobileapp = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Mobile-app" && p.Userid == whitelabelid).ToList();
-    var Mobileap = Mobileapp.Count == 0 ? "" : Mobileapp.SingleOrDefault().Url_Link;
-    var Trustpilot = db.WhiteLabel_Badges.Where(p => p.BadgeType == "Trustpilot" && p.Userid == whitelabelid).ToList();
-    var Trustpilo = Trustpilot.Count == 0 ? "" : Trustpilot.SingleOrDefault().Url_Link;
+    var allBadges = db.WhiteLabel_Badges.AsNoTracking().Where(p => p.Userid == whitelabelid).ToList();
+    var Appfutur = allBadges.FirstOrDefault(p => p.BadgeType == "Appfutura")?.Url_Link ?? "";
+    var Applanche = allBadges.FirstOrDefault(p => p.BadgeType == "Applancher")?.Url_Link ?? "";
+    var Badus = allBadges.FirstOrDefault(p => p.BadgeType == "Badush")?.Url_Link ?? "";
+    var Extrac = allBadges.FirstOrDefault(p => p.BadgeType == "Extract")?.Url_Link ?? "";
+    var Goodfirm = allBadges.FirstOrDefault(p => p.BadgeType == "Good-firms")?.Url_Link ?? "";
+    var Mobileap = allBadges.FirstOrDefault(p => p.BadgeType == "Mobile-app")?.Url_Link ?? "";
+    var Trustpilo = allBadges.FirstOrDefault(p => p.BadgeType == "Trustpilot")?.Url_Link ?? "";
     //********************** End Whitelabel Badges Media **************************
 
 }
@@ -516,7 +488,7 @@
 </script>
 <script>
     $("#digit-1, #digit-2, #digit-3, #digit-4, #digit-5, #digit-6").on("keyup", function () {
-        debugger
+
         var OtpDigit = $("#digit-1").val() + $("#digit-2").val() + $("#digit-3").val() + $("#digit-4").val() + $("#digit-5").val() + $("#digit-6").val();
 
 
@@ -530,7 +502,7 @@
 
 <script>
     $('.digit-group').find('input').each(function () {
-        debugger;
+
         $(this).attr('maxlength', 1);
         $(this).on('keyup', function (e) {
             var parent = $($(this).parent());
