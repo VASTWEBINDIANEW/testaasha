@@ -31,13 +31,13 @@ namespace Vastwebmulti.Models
                     var isExist = db.Users.Any(a => a.PhoneNumber == frmmobile);
                     if (isExist)
                     {
-                        userid = db.Users.Where(a => a.PhoneNumber == frmmobile).FirstOrDefault().UserId;
+                        userid = db.Users.AsNoTracking().Where(a => a.PhoneNumber == frmmobile).FirstOrDefault().UserId;
                     }
                 }
                 text = string.Format(text, "1230");
                 var apinamechange = apiurls.Replace("tttt", frmmobile).Replace("mmmm", text).Replace("iiii", Templateid);
                 // Use FirstOrDefault with null check to avoid NullReferenceException
-                var whatsts = db.Email_show_passcode.FirstOrDefault();
+                var whatsts = db.Email_show_passcode.AsNoTracking().FirstOrDefault();
                 if (whatsts != null && whatsts.whatsappapists == false)
                 {
                     sms_api_entry sms = new sms_api_entry();
@@ -251,7 +251,7 @@ namespace Vastwebmulti.Models
                     var isExist = db.Users.Any(a => a.PhoneNumber == frmmobile);
                     if (isExist)
                     {
-                        userid = db.Users.Where(a => a.PhoneNumber == frmmobile).FirstOrDefault().UserId;
+                        userid = db.Users.AsNoTracking().Where(a => a.PhoneNumber == frmmobile).FirstOrDefault().UserId;
                     }
                 }
                 text = string.Format(text, "1230");

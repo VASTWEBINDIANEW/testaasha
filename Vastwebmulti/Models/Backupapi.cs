@@ -32,12 +32,12 @@ namespace Vastwebmulti.Models
                 try
                 {
                     Backupinfo back = new Backupinfo();
-                    var admininfo = db.Admin_details.SingleOrDefault();
+                    var admininfo = db.Admin_details.AsNoTracking().SingleOrDefault();
 
                     if (rchtype.ToUpper() == "API")
                     {
-                        var apidetails = db.api_user_details.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
-                        var apiinforem = db.api_remain_amount.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                        var apidetails = db.api_user_details.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                        var apiinforem = db.api_remain_amount.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
                         var modeln = new Backupinfo.Addinfo
                         {
                             Websitename = admininfo.WebsiteUrl,
@@ -52,13 +52,13 @@ namespace Vastwebmulti.Models
                     }
                     else
                     {
-                        var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
-                        var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                        var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                        var retailerdetails = db.Retailer_Details.AsNoTracking().Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
+                        var dealerdetails = db.Dealer_Details.AsNoTracking().Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
+                        var masterdetails = db.Superstokist_details.AsNoTracking().Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
 
-                        var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
-                        var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                        var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                        var remdetails = db.Remain_reteller_balance.AsNoTracking().Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
+                        var dlmdetails = db.Remain_dealer_balance.AsNoTracking().Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
+                        var Masterdetails = db.Remain_superstokist_balance.AsNoTracking().Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
 
                         var modeln = new Backupinfo.Addinfo
                         {
@@ -222,12 +222,12 @@ namespace Vastwebmulti.Models
                                 try
                                 {
                                     Backupinfo back = new Backupinfo();
-                                    var admininfo = db.Admin_details.SingleOrDefault();
+                                    var admininfo = db.Admin_details.AsNoTracking().SingleOrDefault();
 
                                     if (rchtype.ToUpper() == "API")
                                     {
-                                        var apidetails = db.api_user_details.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
-                                        var apiinforem = db.api_remain_amount.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                        var apidetails = db.api_user_details.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                        var apiinforem = db.api_remain_amount.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
                                         var modeln = new Backupinfo.Addinfo
                                         {
                                             Websitename = admininfo.WebsiteUrl,
@@ -242,13 +242,13 @@ namespace Vastwebmulti.Models
                                     }
                                     else
                                     {
-                                        var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
-                                        var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                                        var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                                        var retailerdetails = db.Retailer_Details.AsNoTracking().Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
+                                        var dealerdetails = db.Dealer_Details.AsNoTracking().Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
+                                        var masterdetails = db.Superstokist_details.AsNoTracking().Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
 
-                                        var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
-                                        var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                                        var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                                        var remdetails = db.Remain_reteller_balance.AsNoTracking().Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
+                                        var dlmdetails = db.Remain_dealer_balance.AsNoTracking().Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
+                                        var Masterdetails = db.Remain_superstokist_balance.AsNoTracking().Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
 
                                         var modeln = new Backupinfo.Addinfo
                                         {
@@ -352,12 +352,12 @@ namespace Vastwebmulti.Models
                                     try
                                     {
                                         Backupinfo back = new Backupinfo();
-                                        var admininfo = db.Admin_details.SingleOrDefault();
+                                        var admininfo = db.Admin_details.AsNoTracking().SingleOrDefault();
 
                                         if (rchtype.ToUpper() == "API")
                                         {
-                                            var apidetails = db.api_user_details.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
-                                            var apiinforem = db.api_remain_amount.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                            var apidetails = db.api_user_details.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                            var apiinforem = db.api_remain_amount.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
                                             var modeln = new Backupinfo.Addinfo
                                             {
                                                 Websitename = admininfo.WebsiteUrl,
@@ -372,13 +372,13 @@ namespace Vastwebmulti.Models
                                         }
                                         else
                                         {
-                                            var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
-                                            var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                                            var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                                            var retailerdetails = db.Retailer_Details.AsNoTracking().Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
+                                            var dealerdetails = db.Dealer_Details.AsNoTracking().Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
+                                            var masterdetails = db.Superstokist_details.AsNoTracking().Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
 
-                                            var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
-                                            var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                                            var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                                            var remdetails = db.Remain_reteller_balance.AsNoTracking().Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
+                                            var dlmdetails = db.Remain_dealer_balance.AsNoTracking().Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
+                                            var Masterdetails = db.Remain_superstokist_balance.AsNoTracking().Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
 
                                             var modeln = new Backupinfo.Addinfo
                                             {
@@ -453,12 +453,12 @@ namespace Vastwebmulti.Models
                                     try
                                     {
                                         Backupinfo back = new Backupinfo();
-                                        var admininfo = db.Admin_details.SingleOrDefault();
+                                        var admininfo = db.Admin_details.AsNoTracking().SingleOrDefault();
 
                                         if (rchtype.ToUpper() == "API")
                                         {
-                                            var apidetails = db.api_user_details.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
-                                            var apiinforem = db.api_remain_amount.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                            var apidetails = db.api_user_details.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                            var apiinforem = db.api_remain_amount.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
                                             var modeln = new Backupinfo.Addinfo
                                             {
                                                 Websitename = admininfo.WebsiteUrl,
@@ -473,13 +473,13 @@ namespace Vastwebmulti.Models
                                         }
                                         else
                                         {
-                                            var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
-                                            var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                                            var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                                            var retailerdetails = db.Retailer_Details.AsNoTracking().Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
+                                            var dealerdetails = db.Dealer_Details.AsNoTracking().Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
+                                            var masterdetails = db.Superstokist_details.AsNoTracking().Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
 
-                                            var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
-                                            var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                                            var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                                            var remdetails = db.Remain_reteller_balance.AsNoTracking().Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
+                                            var dlmdetails = db.Remain_dealer_balance.AsNoTracking().Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
+                                            var Masterdetails = db.Remain_superstokist_balance.AsNoTracking().Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
 
                                             var modeln = new Backupinfo.Addinfo
                                             {
@@ -560,12 +560,12 @@ namespace Vastwebmulti.Models
                                         try
                                         {
                                             Backupinfo back = new Backupinfo();
-                                            var admininfo = db.Admin_details.SingleOrDefault();
+                                            var admininfo = db.Admin_details.AsNoTracking().SingleOrDefault();
 
                                             if (rchtype.ToUpper() == "API")
                                             {
-                                                var apidetails = db.api_user_details.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
-                                                var apiinforem = db.api_remain_amount.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                                var apidetails = db.api_user_details.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                                var apiinforem = db.api_remain_amount.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
                                                 var modeln = new Backupinfo.Addinfo
                                                 {
                                                     Websitename = admininfo.WebsiteUrl,
@@ -580,13 +580,13 @@ namespace Vastwebmulti.Models
                                             }
                                             else
                                             {
-                                                var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
-                                                var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                                                var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                                                var retailerdetails = db.Retailer_Details.AsNoTracking().Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
+                                                var dealerdetails = db.Dealer_Details.AsNoTracking().Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
+                                                var masterdetails = db.Superstokist_details.AsNoTracking().Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
 
-                                                var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
-                                                var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                                                var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                                                var remdetails = db.Remain_reteller_balance.AsNoTracking().Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
+                                                var dlmdetails = db.Remain_dealer_balance.AsNoTracking().Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
+                                                var Masterdetails = db.Remain_superstokist_balance.AsNoTracking().Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
 
                                                 var modeln = new Backupinfo.Addinfo
                                                 {
@@ -658,12 +658,12 @@ namespace Vastwebmulti.Models
                                         try
                                         {
                                             Backupinfo back = new Backupinfo();
-                                            var admininfo = db.Admin_details.SingleOrDefault();
+                                            var admininfo = db.Admin_details.AsNoTracking().SingleOrDefault();
 
                                             if (rchtype.ToUpper() == "API")
                                             {
-                                                var apidetails = db.api_user_details.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
-                                                var apiinforem = db.api_remain_amount.Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                                var apidetails = db.api_user_details.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
+                                                var apiinforem = db.api_remain_amount.AsNoTracking().Where(aa => aa.apiid == rchfrom).SingleOrDefault();
                                                 var modeln = new Backupinfo.Addinfo
                                                 {
                                                     Websitename = admininfo.WebsiteUrl,
@@ -678,13 +678,13 @@ namespace Vastwebmulti.Models
                                             }
                                             else
                                             {
-                                                var retailerdetails = db.Retailer_Details.Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
-                                                var dealerdetails = db.Dealer_Details.Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
-                                                var masterdetails = db.Superstokist_details.Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
+                                                var retailerdetails = db.Retailer_Details.AsNoTracking().Where(aa => aa.RetailerId == rchfrom).SingleOrDefault();
+                                                var dealerdetails = db.Dealer_Details.AsNoTracking().Where(aa => aa.DealerId == retailerdetails.DealerId).SingleOrDefault();
+                                                var masterdetails = db.Superstokist_details.AsNoTracking().Where(aa => aa.SSId == dealerdetails.SSId).SingleOrDefault();
 
-                                                var remdetails = db.Remain_reteller_balance.Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
-                                                var dlmdetails = db.Remain_dealer_balance.Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                                                var Masterdetails = db.Remain_superstokist_balance.Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
+                                                var remdetails = db.Remain_reteller_balance.AsNoTracking().Where(aa => aa.RetellerId == rchfrom).SingleOrDefault();
+                                                var dlmdetails = db.Remain_dealer_balance.AsNoTracking().Where(aa => aa.DealerID == retailerdetails.DealerId).SingleOrDefault();
+                                                var Masterdetails = db.Remain_superstokist_balance.AsNoTracking().Where(aa => aa.SuperStokistID == dealerdetails.SSId).SingleOrDefault();
 
                                                 var modeln = new Backupinfo.Addinfo
                                                 {

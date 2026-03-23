@@ -52,8 +52,9 @@ namespace Vastwebmulti
             var sts = "";
             var traid = "";
             var verifi = _strRequest(SessionNo, number, account, autecate, amount, "");
-            var url = (from gg in db.Cyber_plate_code where gg.Own_code == code select gg.Cyber_code_verify).FirstOrDefault() ?? "NULL";
-            var urlpayment = (from gg in db.Cyber_plate_code where gg.Own_code == code select gg.Cyber_code_Payment).FirstOrDefault() ?? "NULL";
+            var codeEntry1 = (from gg in db.Cyber_plate_code where gg.Own_code == code select new { gg.Cyber_code_verify, gg.Cyber_code_Payment }).FirstOrDefault();
+            var url = codeEntry1?.Cyber_code_verify ?? "NULL";
+            var urlpayment = codeEntry1?.Cyber_code_Payment ?? "NULL";
             if (url != "NULL" && urlpayment != "NULL")
             {
                 var checkverifiy = Verification(verifi, url);
@@ -131,8 +132,9 @@ namespace Vastwebmulti
                 sts = "FAILED";
 
                 traid = "Not Active";
-                var idno = (from rch in db.Recharge_info where rch.Mobile == number where rch.amount == Convert.ToDecimal(amount) where rch.Rstaus == "Request Send" || rch.Rstaus == "Request Sent" select rch.idno).SingleOrDefault().ToString();
-                var port = (from rch in db.Recharge_info where rch.Mobile == number where rch.amount == Convert.ToDecimal(amount) where rch.Rstaus == "Request Send" || rch.Rstaus == "Request Sent" select rch.portno).SingleOrDefault().ToString();
+                var rchEntryNum = (from rch in db.Recharge_info where rch.Mobile == number where rch.amount == Convert.ToDecimal(amount) where rch.Rstaus == "Request Send" || rch.Rstaus == "Request Sent" select new { rch.idno, rch.portno }).SingleOrDefault();
+                var idno = rchEntryNum?.idno.ToString() ?? "0";
+                var port = rchEntryNum?.portno?.ToString() ?? "";
                 db.update_success_fail(idno, number, Convert.ToDecimal(amount), code, traid, sts, port, "0");
             }
             return sts;
@@ -185,8 +187,9 @@ namespace Vastwebmulti
                 string SessionNo = "W" + DateTime.Parse(DateTime.Now.ToString()).ToString("yyMMddHHmmss") + RandomString(4);
                 var sess = ssl.SessionNo;
                 var verifi = _strRequest(SessionNo, mobile, billunit, processcycle, amount, "");
-                var url = (from gg in db.Cyber_plate_code where gg.Own_code == code select gg.Cyber_code_verify).FirstOrDefault() ?? "NULL";
-                var urlpayment = (from gg in db.Cyber_plate_code where gg.Own_code == code select gg.Cyber_code_Payment).FirstOrDefault() ?? "NULL";
+                var codeEntry = (from gg in db.Cyber_plate_code where gg.Own_code == code select new { gg.Cyber_code_verify, gg.Cyber_code_Payment }).FirstOrDefault();
+                var url = codeEntry?.Cyber_code_verify ?? "NULL";
+                var urlpayment = codeEntry?.Cyber_code_Payment ?? "NULL";
                 if (url != "NULL" && urlpayment != "NULL")
                 {
                     var checkverifiy = Verification(verifi, url);
@@ -263,8 +266,9 @@ namespace Vastwebmulti
                     sts = "FAILED";
                     var errordetails = "Not Active";
                     traid = errordetails;
-                    var idno = (from rch in db.Recharge_info where rch.Mobile == mobile where rch.amount == Convert.ToDecimal(amount) where rch.Rstaus == "Request Send" || rch.Rstaus == "Request Sent" select rch.idno).SingleOrDefault().ToString();
-                    var port = (from rch in db.Recharge_info where rch.Mobile == mobile where rch.amount == Convert.ToDecimal(amount) where rch.Rstaus == "Request Send" || rch.Rstaus == "Request Sent" select rch.portno).SingleOrDefault().ToString();
+                    var rchEntry = (from rch in db.Recharge_info where rch.Mobile == mobile where rch.amount == Convert.ToDecimal(amount) where rch.Rstaus == "Request Send" || rch.Rstaus == "Request Sent" select new { rch.idno, rch.portno }).SingleOrDefault();
+                    var idno = rchEntry?.idno.ToString() ?? "0";
+                    var port = rchEntry?.portno?.ToString() ?? "";
                     db.update_success_fail(idno, mobile, Convert.ToDecimal(amount), code, traid, sts, port, "0");
                 }
                 return sts;
@@ -286,8 +290,9 @@ namespace Vastwebmulti
             var traid = "";
            // var account = "";
 
-            var url = (from gg in db.Cyber_plate_code where gg.Own_code == code select gg.Cyber_code_verify).FirstOrDefault() ?? "NULL";
-            var urlpayment = (from gg in db.Cyber_plate_code where gg.Own_code == code select gg.Cyber_code_Payment).Single() ?? "NULL";
+            var codeEntry2 = (from gg in db.Cyber_plate_code where gg.Own_code == code select new { gg.Cyber_code_verify, gg.Cyber_code_Payment }).FirstOrDefault();
+            var url = codeEntry2?.Cyber_code_verify ?? "NULL";
+            var urlpayment = codeEntry2?.Cyber_code_Payment ?? "NULL";
             if (url != "NULL" && urlpayment != "NULL")
             {
                 var verifi = _strRequestJIO(SessionNo, mobile, JioId, amount);
@@ -381,8 +386,9 @@ namespace Vastwebmulti
             var traid = "";
             var account = "";
 
-            var url = (from gg in db.Cyber_plate_code where gg.Own_code == code select gg.Cyber_code_verify).FirstOrDefault() ?? "NULL";
-            var urlpayment = (from gg in db.Cyber_plate_code where gg.Own_code == code select gg.Cyber_code_Payment).FirstOrDefault() ?? "NULL";
+            var codeEntry3 = (from gg in db.Cyber_plate_code where gg.Own_code == code select new { gg.Cyber_code_verify, gg.Cyber_code_Payment }).FirstOrDefault();
+            var url = codeEntry3?.Cyber_code_verify ?? "NULL";
+            var urlpayment = codeEntry3?.Cyber_code_Payment ?? "NULL";
             if (url != "NULL" && urlpayment != "NULL")
             {
                 var verifi = _strRequest(SessionNo, mobile, account, "", amount, "");
