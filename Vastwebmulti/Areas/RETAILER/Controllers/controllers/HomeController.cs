@@ -15165,7 +15165,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Profile");
             }
         }
-        //[OutputCache(Duration = 2000, VaryByParam = "term")]
+        [OutputCache(Duration = 2000, VaryByParam = "term")]
         public JsonResult GetHotelName(string term)
         {
             try
@@ -15184,7 +15184,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(new List<string>(), JsonRequestBehavior.AllowGet);
             }
         }
-        //[OutputCache(Duration = 2000, VaryByParam = "term")]
+        [OutputCache(Duration = 2000, VaryByParam = "term")]
         public JsonResult GetHotelCountryCode(string term)
         {
             try
@@ -15210,7 +15210,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(new List<string>(), JsonRequestBehavior.AllowGet);
             }
         }
-        //[OutputCache(Duration = 2000, VaryByParam = "term")]
+        [OutputCache(Duration = 2000, VaryByParam = "term")]
         public JsonResult GetCityNameForBus(string term)
         {
             try
