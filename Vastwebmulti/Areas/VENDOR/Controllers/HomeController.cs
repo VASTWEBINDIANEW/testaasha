@@ -89,6 +89,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public PartialViewResult _productListPartial()
         {
             try
@@ -251,6 +254,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         //fill Sub category 
+        /// <summary>
+        /// Is action ka kaam 'SubcategoryList' se related operation handle karna hai.
+        /// </summary>
         public JsonResult SubcategoryList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -479,6 +485,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
 
         }
 
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public JsonResult RemoveAttribute(int Id)
         {
             try
@@ -823,6 +832,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Password ya settings change/reset karta hai.
+        /// </summary>
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -953,6 +965,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         //Bind District
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult DistrictList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1238,6 +1253,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
         
         //show all buyer details
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult Showallbuyerdetails(string buyerid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1296,6 +1314,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public JsonResult UpdateDeliveryStatus(int orderId,int otp)
         {
             try

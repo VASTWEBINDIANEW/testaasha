@@ -133,6 +133,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         #region Show all today and yesterday recharge
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Show_Today_All_Recharge(string yesterday)
         {
             var type = "";
@@ -304,6 +307,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(viewModell);
 
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult showrecentrecharge(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -320,6 +326,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
         #region Offer Plan
         //chehk best offer plan Mobile and DTH or Customer Info
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult RechargeBestofferplan(string optname, string mobileno)
         {
 
@@ -392,6 +401,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         //fill circle code and operator using api   1
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult Checkcircle(string mobileno)
         {
             string url = "";
@@ -428,6 +440,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
 
         //chehk View Plan offer Prepaid 2
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult RechargeViewPlanoffer(string optname, string circlename)
         {
             string url = "";
@@ -472,6 +487,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         //chehk DTH View Plan offer
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult RechargeViewPlanofferdth(string optname)
         {
             string url = "";
@@ -508,6 +526,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         //check View Plan dth details offer 
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult RechargeViewPlanofferDetailsdth(string optname, string planname)
         {
             string url = "";
@@ -539,6 +560,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         //chehk View Plan Pripaid offer 3
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult RechargeViewPlanofferDetails(string optname, string circlename, string planname)
         {
 
@@ -583,6 +607,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         //check view loan EMI details
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult ViewLoanEmiBill(string OperatorName, string Loanaccountno, string mobileno)
         {
             string url = "";
@@ -622,6 +649,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         #region showcommissonoperatorwise
         [HttpGet]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Show_commsion(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -766,6 +796,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult viewbill(string OperatorName, string OptCode, string mobileno, string Amount, string optional1, string optional2, string optional3, string optional4)
         {
             try
@@ -896,6 +929,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
         //Fund Trnasfer Retailer To Retailer
         [HttpGet]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult Retailer_to_retailer()
         {
             var msg = TempData["msg"];
@@ -924,6 +960,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult Retailer_to_retailer(string RetailerID, string txt_frm_date, string txt_to_date)
         {
             if (RetailerID == "")
@@ -954,6 +993,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             ViewBag.retailerid = new SelectList(retaileremail, "RetailerID", "RetailerName", null);
             return View(ch);
         }
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult rem_rem_fund_transfer(string txtbal, string RetailerId)
         {
             string userid = User.Identity.GetUserId();
@@ -1021,6 +1063,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult Funddealer(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -1075,6 +1120,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'ReferralBenefit' se related operation handle karna hai.
+        /// </summary>
         public ActionResult ReferralBenefit(DateTime txt_frm_date, DateTime txt_to_date)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1110,11 +1158,17 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
 
         //Invoice Pdf File
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GotoInvoicePDF(string Id, string ReciveFrom, string OldRemain, string Value, string Commission, string FinalValue, string NewRemain, string Date)
         {
 
             return new Rotativa.ActionAsPdf("InvoicePDF", new { Id = Id, ReciveFrom = ReciveFrom, OldRemain = OldRemain, Value = Value, Commission = Commission, FinalValue = FinalValue, NewRemain = NewRemain, Date = Date });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult InvoicePDF(string Id, string ReciveFrom, string OldRemain, string Value, string Commission, string FinalValue, string NewRemain, string Date)
         {
             var PDF_Content = new RetailerInvoiceModel()
@@ -1317,6 +1371,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public ActionResult Operator_info(string ddlcomm)
         {
             var userid = User.Identity.GetUserId();
@@ -1608,6 +1665,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
 
+        /// <summary>
+        /// Is action ka kaam 'Help' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Help()
         {
             var userid = User.Identity.GetUserId();
@@ -1642,6 +1702,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             ViewBag.chk = "post";
             return View();
         }
+        /// <summary>
+        /// Is class ka kaam JsonModel area ke operations handle karna hai.
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
@@ -1691,6 +1754,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll(int pageindex, DateTime txt_frm_date, DateTime txt_to_date, string ddl_status, string Operator, string txtmob)
         {
             string userid = User.Identity.GetUserId();
@@ -1769,6 +1835,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return new ViewAsPdf(respo);
         }
 
+        /// <summary>
+        /// Records ko search/filter karta hai.
+        /// </summary>
         public ActionResult FindTotal(DateTime txt_frm_date, DateTime txt_to_date, string ddl_status, string Operator, string txtmob)
         {
             txt_to_date = txt_to_date.AddDays(1);
@@ -1811,6 +1880,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         }
 
+        /// <summary>
+        /// Transaction dispute handle karta hai.
+        /// </summary>
         public ActionResult dispute(string id, string txtregion)
         {
             try
@@ -1827,11 +1899,17 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GotoInvoicePDF1(string Id, string RechargeTo, string OptName, string amt, string OptID, string Date)
         {
 
             return new Rotativa.ActionAsPdf("InvoicePDF1", new { Id = Id, RechargeTo = RechargeTo, OptName = OptName, amt = amt, OptID = OptID, Date = Date });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult InvoicePDF1(string Id, string RechargeTo, string OptName, string amt, string OptID, string Date)
         {
             string userid = User.Identity.GetUserId();
@@ -1917,6 +1995,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll_money(int pageindex, string txt_frm_date, string txt_to_date, string ddl_status, string ddl_Type)
         {
             string userid = User.Identity.GetUserId();
@@ -2028,6 +2109,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll_mposs(int pageindex, string txt_frm_date, string txt_to_date, string ddl_status)
         {
             string userid = User.Identity.GetUserId();
@@ -2053,10 +2137,16 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(jsonmodel);
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GeneratePDF(string Idno)
         {
             return new ViewAsPdf("IMPSPDF", new { Idno = Idno });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult IMPSPDF(string Idno)
         {
             Vastwebmulti.Areas.ADMIN.Models.Convertword cc = new Vastwebmulti.Areas.ADMIN.Models.Convertword();
@@ -2106,6 +2196,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult RechargePDF(string Idno)
         {
             Vastwebmulti.Areas.ADMIN.Models.Convertword cc = new Vastwebmulti.Areas.ADMIN.Models.Convertword();
@@ -2308,6 +2401,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         //Download GST declaration form
         [HttpGet]
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public FileResult Download_Declaration_form()
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/GST_Declaration"), "*.docx");
@@ -2316,6 +2412,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
         //GST Invocing 
         [HttpPost]
+        /// <summary>
+        /// GST report ya invoice generate karta hai.
+        /// </summary>
         public ActionResult GST_Invoicing(DateTime month)
         {
             string UserId = User.Identity.GetUserId();
@@ -2325,6 +2424,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return new Rotativa.ActionAsPdf("GST_INVOICE_PDF", new { userid = UserId, txt_frm_date = from, txt_to_date = to, month = month });
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GST_INVOICE_PDF(string userid, DateTime txt_frm_date, DateTime txt_to_date, DateTime month)
         {
             string CurrentMonth = String.Format("{0:MMMM-yyyy}", month);
@@ -2379,11 +2481,17 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(model);
         }
         //GST PDF Invoicing 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GenerateGST_PDF(DateTime frm_date, DateTime to_date)
         {
             return new Rotativa.ActionAsPdf("GST_PDF", new { txt_frm_date = frm_date, txt_to_date = to_date });
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GST_PDF(string txt_frm_date, string txt_to_date)
         {
             string userid = User.Identity.GetUserId();
@@ -2771,6 +2879,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// AEPS (Aadhaar Enabled Payment System) se related operation karta hai.
+        /// </summary>
         public ActionResult AEPS(string mobile, string uid, string bank, long iin, string cap, string type, string tabvalue, int? amount, string remark, string DeviceSrNo, decimal servicefee, string usernm, string devicenm, string userotp, string pidata)
         {
             try
@@ -3617,6 +3728,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
 
 
+        /// <summary>
+        /// AEPS (Aadhaar Enabled Payment System) se related operation karta hai.
+        /// </summary>
         public ActionResult AEPSNAMEFIND(string mobile)
         {
             var name = "";
@@ -3662,6 +3776,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(viewresponse1, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// OTP generate ya verify karta hai.
+        /// </summary>
         public ActionResult EnterOtp(string otp)
         {
             var userid = User.Identity.GetUserId();
@@ -3725,6 +3842,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(viewresponse1, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// AEPS (Aadhaar Enabled Payment System) se related operation karta hai.
+        /// </summary>
         public ActionResult AEPSCHK1(string mobile, string uid, string bank, long iin, string cap, string type, int? amount, string remark, string DeviceSrNo, decimal servicefee)
         {
             try
@@ -4245,6 +4365,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
         [HttpGet]
         [ValidateInput(false)]
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult Print_aeps_ministatement_Pdf(string txtbankstate, string txtfrmstate, string txtbankaadhar, string txtfrmdate, string txtfeeservice, string statementtbody)
         {
             var logo = "";
@@ -4268,6 +4391,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult Print_aeps_balance_Pdf(string rrnno, string firmname, string aadhar, string mobile, string remain)
         {
             var logo = "";
@@ -4288,6 +4414,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             // return View();
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult Print_aeps_transfer_Pdf(string rrnno, string firmname, string aadhar, string mobile, string remain, string amount, string servicefee, string tax, string paidamount)
         {
             var logo = "";
@@ -4336,6 +4465,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// AEPS (Aadhaar Enabled Payment System) se related operation karta hai.
+        /// </summary>
         public ActionResult regAeps(AEPSRegModel model)
         {
             if (ModelState.IsValid)
@@ -5021,6 +5153,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         #endregion
 
         #region MPOS
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult MPOS(string tabvalue)
         {
             var userid = User.Identity.GetUserId();
@@ -5030,6 +5165,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             ViewBag.tab = tabvalue;
             return View();
         }
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult MPOSservice()
         {
 
@@ -5072,6 +5210,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
 
         #region Gift Card
+        /// <summary>
+        /// Gift card se related operation handle karta hai.
+        /// </summary>
         public ActionResult Gift_Card(string tabvalue)
         {
             ViewBag.tab = tabvalue;
@@ -5132,6 +5273,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         }
 
+        /// <summary>
+        /// OTP generate ya verify karta hai.
+        /// </summary>
         public ActionResult GenrateOtp()
         {
             var userid = User.Identity.GetUserId();
@@ -5268,6 +5412,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(viewresponse1, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult VerifyotpEkyc(string otp, string primaryhide, string encodehide)
         {
             var userid = User.Identity.GetUserId();
@@ -5427,6 +5574,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(viewresponse1, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'ValidateDeviceinfo' se related operation handle karna hai.
+        /// </summary>
         public ActionResult ValidateDeviceinfo(string cap, string devicesrno, string devicenm)
         {
             var userid = User.Identity.GetUserId();
@@ -5588,12 +5738,18 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(viewresponse1, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult RetailerName()
         {
             var userid = User.Identity.GetUserId();
             var name = db.Whitelabel_Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault().RetailerName;
             return Json(name, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Updateremname(string name)
         {
             var userid = User.Identity.GetUserId();
@@ -5612,6 +5768,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json("Update", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public ActionResult Senderdetails(string senderno)
         {
             var check = "OK"; var errormsg = "";
@@ -5687,6 +5846,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 return Json(json, JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Bank details manage karta hai.
+        /// </summary>
         public JsonResult BindBankDdllist()
         {
             string userid = User.Identity.GetUserId();
@@ -5729,6 +5891,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult Verify_account(string NUMBER, string account, string benIFSC, string bankname)
         {
             try
@@ -5757,6 +5922,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult Verify_account_again(string NUMBER, string account, string benIFSC, string bankname)
         {
             try
@@ -5855,6 +6023,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// OTP generate ya verify karta hai.
+        /// </summary>
         public ActionResult Otp_verify_sender(string senderno, string otp, string benid)
         {
             try
@@ -5886,6 +6057,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult Delete_ben(string benid, string senderno)
         {
             try
@@ -5917,6 +6091,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult Imps_check_transfer(string dmtpin, string account, string amount)
         {
             string userid = User.Identity.GetUserId();
@@ -5996,6 +6173,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult imps_transfer(string NUMBER, string type, string account, string ifsc, string dmtpin, string amount, string bankname, string benCode, decimal servicefee, string idprooftype, string idproofnumber)
         {
             try
@@ -6066,6 +6246,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult Print_Imps_Pdf(string orderid)
         {
             string userid = User.Identity.GetUserId();
@@ -6108,6 +6291,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return new ViewAsPdf("Print_Imps_Pdf");
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'imps_email' se related operation handle karna hai.
+        /// </summary>
         public ActionResult imps_email(string orderid)
         {
             string userid = User.Identity.GetUserId();
@@ -6231,6 +6417,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public void UpdateAuthToken()
         {
             var response = tokencheck();
@@ -6278,6 +6467,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
 
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult InsertRem_MposID(string mposmarchantid)
         {
             var RetailerID = User.Identity.GetUserId();
@@ -6318,6 +6510,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         #region Start DMT 1
         //Start Instantpay and Limit 25000 pay Money Transfer 
         [HttpGet]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult Money_transfer1(string senderno)
         {
             ViewBag.senderno = senderno;
@@ -6492,6 +6687,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View();
         }
         //Fill Bank Name by account no
+        /// <summary>
+        /// Bank details manage karta hai.
+        /// </summary>
         public ActionResult BankListFill1(string accountno)
         {
             var userid = User.Identity.GetUserId();
@@ -6650,6 +6848,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         //search data by account number
+        /// <summary>
+        /// Records ko search/filter karta hai.
+        /// </summary>
         public ActionResult Searchbyaccountno1(string accountno)
         {
             var show = db.searchbyaccountno_imps(accountno).ToList();
@@ -6659,6 +6860,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         //show All Remitter Details
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'process_sender_cyber1' se related operation handle karna hai.
+        /// </summary>
         public ActionResult process_sender_cyber1(string sender_number)
         {
             var userid = User.Identity.GetUserId();
@@ -7033,6 +7237,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
         //Register Remitter  Validate 
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult addcustomer_cyber_Validate1(string sender_number, string remitterid, int Otp, string outletid)
         {
             try
@@ -7213,6 +7420,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
         //Register Remitter   
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult addcustomer_cyber1(string sender_number, string sender_name, string pincodeno, string surname)
         {
             try
@@ -7438,6 +7648,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         //delete beneficiary id  and send Otp your sender number
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'process_delete_recipient_cyber1' se related operation handle karna hai.
+        /// </summary>
         public ActionResult process_delete_recipient_cyber1(string mobile, string ifsc, string code, string remiterid)
         {
             try
@@ -7654,6 +7867,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         // delete beneficary id with verfiy otp
         [HttpPost]
+        /// <summary>
+        /// OTP generate ya verify karta hai.
+        /// </summary>
         public ActionResult otpverify_cyber1(string type, string sender_number, string otp, string benid, string remiterid, string deletecode)
         {
             try
@@ -7896,6 +8112,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
         //start add new beneficary details
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'process_recipientnew_cyber1' se related operation handle karna hai.
+        /// </summary>
         public ActionResult process_recipientnew_cyber1(string senderNumber, string remiterid, string AccountNo, string beneficiary_name, string Ifsccode)
         {
             try
@@ -8114,6 +8333,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         //start Resend Otp of delete beneficiary  and add new beneficiary
         [HttpPost]
+        /// <summary>
+        /// OTP generate ya verify karta hai.
+        /// </summary>
         public ActionResult BeneficiaryRegistrationResendOTP1(string RemitterId, string BenId, string senderno, string sendernm, string Type)
         {
             try
@@ -8336,6 +8558,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         //instantpay account number verify code 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'process_recipient_verify_cyber1' se related operation handle karna hai.
+        /// </summary>
         public ActionResult process_recipient_verify_cyber1(string NUMBER, string benIFSC, string benCode, string account, int kycstatus, string bankname)
         {
             try
@@ -8828,6 +9053,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         // IMPS Transfer
 
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult process_moneytransfer_cyber1(string SenderNumber, string benIFSC, string benCode, string transamount, string key, string bank_account, string transtype, string remiterid, int kycstatus, string bankname, string totalremaincheck)
         {
             var results = ""; var requestsend = ""; var kycsts = ""; string URL = ""; string jsonData = "";
@@ -10099,6 +10327,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         }
 
+        /// <summary>
+        /// Bank details manage karta hai.
+        /// </summary>
         public ActionResult Fillbankcheck1(string bankname, string accountno)
         {
             moneytransfer_cyberplate cb = new moneytransfer_cyberplate();
@@ -10237,6 +10468,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 return Json(dict1, JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Bank details manage karta hai.
+        /// </summary>
         public ActionResult Fillbankcheck_getname1(string bankname, string accountno)
         {
             moneytransfer_cyberplate cb = new moneytransfer_cyberplate();
@@ -10466,6 +10700,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Complaint submit ya list karta hai.
+        /// </summary>
         public ActionResult Complaint_insert(string message)
         {
             string userid = User.Identity.GetUserId();
@@ -10490,6 +10727,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         //End
         //Profile
         [HttpGet]
+        /// <summary>
+        /// User profile details dikhata ya update karta hai.
+        /// </summary>
         public new ActionResult Profile()
         {
             string userid = User.Identity.GetUserId();
@@ -10665,6 +10905,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
             return RedirectToAction("Profile");
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillDistict(int State)
         {
             var cities = db.District_Desc.Where(c => c.State_id == State);
@@ -10732,6 +10975,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// PAN card se related operation karta hai.
+        /// </summary>
         public ActionResult PAN_CARD(string txt_frm_date, string txt_to_date, string ddl_type, int ddlTop)
         {
             var loggeduser = User.Identity.GetUserId();
@@ -10976,6 +11222,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult ADD_PAN_CARD(RETAILER.Models.PANCARD_Model model)
         {
             try
@@ -11018,6 +11267,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return RedirectToAction("PAN_CARD");
         }
 
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult ADD_PAN_CARD_FINAL(int idno)
         {
             var a = db.PAN_CARD.Where(b => b.Idno == idno).Single();
@@ -11096,6 +11348,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult ADD_PAN_CARD_FINAL(RETAILER.Models.PANCARD_Model_FINAL model)
         {
 
@@ -11275,6 +11530,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return RedirectToAction("PAN_CARD");
         }
         [HttpPost]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult View_PANCARD(int idno)
         {
             var entry = db.PAN_CARD.Where(about => about.Idno == idno).SingleOrDefault();
@@ -11283,6 +11541,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'DocumentViewer' se related operation handle karna hai.
+        /// </summary>
         public ActionResult DocumentViewer(int Idno, string ak_number)
         {
             ViewBag.AckNo = ak_number;
@@ -11290,6 +11551,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// PAN card se related operation karta hai.
+        /// </summary>
         public ActionResult PAN_FirstPageDownLoad(string ackno)
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/PAN_FirstPage"), ackno + "*");
@@ -11299,6 +11563,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
             return File(filesInDirectory[0], "application/force-download", Path.GetFileName(filesInDirectory[0]));
         }
+        /// <summary>
+        /// PAN card se related operation karta hai.
+        /// </summary>
         public ActionResult PAN_DocDownLoad(string ackno)
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/PAN_DOC_PDF"), ackno + "*");
@@ -11311,6 +11578,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
 
+        /// <summary>
+        /// PAN card se related operation karta hai.
+        /// </summary>
         public ActionResult PAN_SlipDownload(string ackno)
         {
             if (!string.IsNullOrWhiteSpace(ackno))
@@ -11329,6 +11599,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
 
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_PAN_CARD(int idno)
         {
             var entry = db.PAN_CARD.Where(a => a.Idno == idno).SingleOrDefault();
@@ -11374,6 +11647,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_PAN_CARD(RETAILER.Models.PANCARD_Model model)
         {
             try
@@ -11448,6 +11724,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         }
 
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult CheckRetailerEmailMobile(string emailmobile)
         {
             WhitelabelRetailerFundtransfer vmodel = new WhitelabelRetailerFundtransfer();
@@ -11497,6 +11776,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json("Pls Enter Correct Mobile No", JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult MDTODealer(string tabtype, string txt_frm_date, string txt_to_date, string msg = "")
         {
             DateTime fromdate;
@@ -11588,6 +11870,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         }
 
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult Place_purchase_order(string Payto, string txtcode, string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
     string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
     string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -11738,6 +12023,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult Purchase_ORDER(string txt_frm_date, string txt_to_date)
         {
             try
@@ -11775,6 +12063,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult purchageorder(string payto, string Paymode, string type, string utrno, string Comment, decimal balance, string accountno, string txttoaccountno)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -11946,6 +12237,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         //}
 
 
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult R_Creditchk(string MID)
         {
             string tabtype = "";
@@ -12052,6 +12346,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Password ya settings change/reset karta hai.
+        /// </summary>
         public ActionResult Reset_IMPSPin(string txtemail)
         {
             var chk = db.Whitelabel_Retailer_Details.Any(a => a.Email == txtemail);
@@ -12087,6 +12384,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_IMPSPin([Bind(Prefix = "Item2")] ChangePinViewModel model)
         {
             var userid = User.Identity.GetUserId();
@@ -12117,6 +12417,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
 
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_IMPSPin()
         {
             // ViewData["succ"] = TempData["success"];
@@ -12146,16 +12449,25 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
             return View();
         }
+        /// <summary>
+        /// Is action ka kaam 'Service_Fee' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Service_Fee()
         {
 
             return View();
         }
+        /// <summary>
+        /// Is action ka kaam 'Markup_Setting' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Markup_Setting()
         {
 
             return View();
         }
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult My_Credit()
         {
             var userid = User.Identity.GetUserId();
@@ -12197,6 +12509,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
 
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult PlacePurchaseOrder(string payto, string txtcode, string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
       string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
       string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -12295,11 +12610,17 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         //    return View();
         //}
+        /// <summary>
+        /// Wallet se related operation handle karta hai.
+        /// </summary>
         public ActionResult wallethistory()
         {
 
             return View();
         }
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult Fund_Transfer_Retailer_To_Retailer()
         {
 
@@ -12403,6 +12724,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult UPITRANSFER(DateTime txt_frm_date, DateTime txt_to_date)
         {
             ViewBag.chk = "post";
@@ -12481,6 +12805,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult UPITRANSFER_add()
         {
 
@@ -12593,6 +12920,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(show);
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult Account_Verify_Gst_Pdf()
         {
             var userid = User.Identity.GetUserId();
@@ -12879,6 +13209,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(ch);
         }
         [HttpGet]
+        /// <summary>
+        /// Records ko search/filter karta hai.
+        /// </summary>
         public ActionResult searchstudetdetails(string rollno, string schoolid, string radioval)
         {
             var userid = User.Identity.GetUserId();
@@ -12887,6 +13220,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return PartialView("_showstudentdetails", ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Getstudentdetails(string rollno, string schoolname)
         {
             var userid = schoolname;
@@ -12942,6 +13278,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             //return Json();
         }
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult InsertFeeDeposit(string txtRollNo, decimal InsAmount, decimal InsBusAmount)
         {
             var userid = User.Identity.GetUserId();
@@ -12960,6 +13299,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return RedirectToAction("Index");
         }
         [HttpGet]
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult FeeDeposit()
         {
             var userid = User.Identity.GetUserId();
@@ -12972,6 +13314,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult FeeDeposit(string stdRollNO, string txt_frm_date, string txt_to_date)
         {
 
@@ -13061,6 +13406,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 return sb.ToString();
             }
         }
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public void insertGeoLocation(string userid, out string lat, out string longitude)
         {
             lat = string.Empty;
@@ -13097,6 +13445,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
 
+        /// <summary>
+        /// User login ya logout handle karta hai.
+        /// </summary>
         public void TryLogin()
         {
             var response = tokencheck();
@@ -13170,6 +13521,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(model);
         }
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddWalletToBankRequest(decimal Amount, string Type)
         {
             var userid = User.Identity.GetUserId();
@@ -13325,6 +13679,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
 
         #region DMT View Status
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult viewsearch(string idno)
         {
             var sts = "";
@@ -13377,6 +13734,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 return Json(stschk, JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult viewsearchold(string idno)
         {
             var sts = "";
@@ -13429,6 +13789,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 return Json(stschk, JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult viewsearchDMT1(string idno)
         {
             var sts = "";
@@ -13469,6 +13832,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(stschk, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult viewsearcholdDMT1(string idno)
         {
             var sts = "";
@@ -13508,6 +13874,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(stschk, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult Refund(string tid, string otp)
         {
             var tokn = Responsetoken.gettoken();
@@ -13524,6 +13893,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
             return Json(message, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult Refundold(string tid, string otp)
         {
             var tokn = Responsetoken.gettoken();
@@ -13541,6 +13913,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return Json(message, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Money transfer se related operation karta hai.
+        /// </summary>
         public ActionResult ResendDMT(string tid)
         {
             var tokn = Responsetoken.gettoken();

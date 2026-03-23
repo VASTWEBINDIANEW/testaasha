@@ -11,10 +11,16 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
+    /// <summary>
+    /// Retailer ke outlet aur KYC documents ko manage karta hai
+    /// </summary>
     public class OutletController : Controller
     {
         // GET: RETAILER/Outlet
         [HttpGet]
+        /// <summary>
+        /// Retailer ka KYC page dikhata hai aur state/district data load karta hai
+        /// </summary>
         public ActionResult RetailerKYC()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -29,6 +35,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Mobile number se outlet verify karta hai InstantPay API ke through
+        /// </summary>
         public JsonResult VerifyOutlet(string Mobile)
         {
             try
@@ -46,6 +55,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Retailer ka naya outlet register karta hai diye gaye details se
+        /// </summary>
         public ActionResult RegisterOutlet(string RetailerId, string Mobile, string OTP, string email, string store_type, string Frm_Name, string RetailerName, string pincode, string address)
         {
             try
@@ -62,6 +74,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Retailer ka KYC document file upload karta hai aur API ko bhejta hai
+        /// </summary>
         public ActionResult Upload_KYC_Doc(string RetailerId, string DocId, string PanCard, HttpPostedFileBase file)
         {
             try
@@ -99,6 +114,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Retailer ka PAN card number update karta hai
+        /// </summary>
         public ActionResult UpdatePancard(string RetailerID, string PanCard)
         {
             try
@@ -114,6 +132,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Retailer ke KYC documents aur unka status dekhat hai
+        /// </summary>
         public ActionResult ViewKYCDocsAndStatus(string RetailerID, string PanCard)
         {
             try
@@ -127,6 +148,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(ex.Message);
             }
         }
+        /// <summary>
+        /// Retailer ko logout karta hai aur login page par redirect karta hai
+        /// </summary>
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();

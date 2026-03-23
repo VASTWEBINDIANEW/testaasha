@@ -24,6 +24,9 @@ namespace Vastwebmulti.Controllers
 {
 
 
+    /// <summary>
+    /// Account controller - user registration, login, logout aur password reset manage karta hai
+    /// </summary>
     [Authorize]
     public class AccountController : Controller
     {
@@ -140,6 +143,9 @@ namespace Vastwebmulti.Controllers
         //
         // GET: /Account/Login
         //[AllowAnonymous]
+        /// <summary>
+        /// Login page dikhata hai aur already logged-in user ko uske role ke dashboard par redirect karta hai
+        /// </summary>
         public ActionResult Login(string returnUrl)
         {
 
@@ -330,6 +336,9 @@ namespace Vastwebmulti.Controllers
         }
 
         // POST: /Account/Login
+        /// <summary>
+        /// User ka login form submit hone par credentials verify karke dashboard par redirect karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -1087,6 +1096,9 @@ namespace Vastwebmulti.Controllers
         //    }
         //}
 
+        /// <summary>
+        /// Naye login form se user authenticate karke appropriate dashboard par redirect karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -1387,6 +1399,9 @@ namespace Vastwebmulti.Controllers
             return RedirectToAction("NewLogin", "Home");
         }
 
+        /// <summary>
+        /// Naya WhiteLabel user register karta hai aur uski details database mein save karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -1487,6 +1502,9 @@ namespace Vastwebmulti.Controllers
         
         
         //Insert Retailer
+        /// <summary>
+        /// Naye retailer ka registration karta hai, captcha verify karke user details save karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -1955,6 +1973,9 @@ namespace Vastwebmulti.Controllers
         static readonly string PasswordHash = "P@@Sw0rd";
         static readonly string SaltKey = "S@LT&KEY";
         static readonly string VIKey = "@1B2c3D4e5F6g7H8";
+        /// <summary>
+        /// Plain text string ko AES encryption se encrypt karke return karta hai
+        /// </summary>
         public static string Encrypt(string plainText)
         {
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
@@ -1979,6 +2000,9 @@ namespace Vastwebmulti.Controllers
             return Convert.ToBase64String(cipherTextBytes);
         }
         //
+        /// <summary>
+        /// Two-factor verification code ka page dikhata hai jahan user OTP enter karta hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
@@ -2008,6 +2032,9 @@ namespace Vastwebmulti.Controllers
         //
         // POST: /Account/VerifyCode
         [HttpPost]
+        /// <summary>
+        /// User dwara submit kiya gaya verification code validate karke login complete karta hai
+        /// </summary>
         [AllowAnonymous]
 
         public async Task<ActionResult> VerifyCode(string ReturnUrl, string Provider, string Code)
@@ -2043,6 +2070,9 @@ namespace Vastwebmulti.Controllers
         }
 
 
+        /// <summary>
+        /// Admin ke liye two-factor verification code page dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCodeAdmin(string provider, string returnUrl, string type, bool rememberMe)
         {
@@ -2199,6 +2229,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Account/Register
+        /// <summary>
+        /// User registration ka blank form dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult Register()
         {
@@ -2207,6 +2240,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/Register
+        /// <summary>
+        /// Naya user register karta hai aur confirmation email bhejta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -2237,6 +2273,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Account/ConfirmEmail
+        /// <summary>
+        /// User ka email confirm karta hai aur account activate karta hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
@@ -2264,6 +2303,9 @@ namespace Vastwebmulti.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
+        /// <summary>
+        /// Admin ka email confirm karta hai aur admin account activate karta hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmailAdmin(string userId, string code)
         {
@@ -2296,6 +2338,9 @@ namespace Vastwebmulti.Controllers
         }
         //
         // GET: /Account/ForgotPassword
+        /// <summary>
+        /// Password bhool gaye user ke liye forgot password form dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
@@ -2304,6 +2349,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/ForgotPassword
+        /// <summary>
+        /// Forgot password request process karta hai aur user ko reset link bhejta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -2509,6 +2557,9 @@ namespace Vastwebmulti.Controllers
         }
 
 
+        /// <summary>
+        /// Admin ke liye forgot password form dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ForgotPasswordAdmin()
         {
@@ -2519,6 +2570,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/ForgotPassword
+        /// <summary>
+        /// Admin ka forgot password OTP verify karke password reset link bhejta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -2749,6 +2803,9 @@ namespace Vastwebmulti.Controllers
 
      
 
+        /// <summary>
+        /// User ka email ya mobile number OTP verify karke update karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         //[Route("Change_email_mobile")]

@@ -13,6 +13,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
 
+    /// <summary>
+    /// Retailer ka e-commerce shopping, cart management, payment aur transaction report handle karta hai.
+    /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
     public class ECommerceController : Controller
@@ -55,6 +58,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
         // GET: RETAILER/ECommerce
         //[MenuAccessFilter]
+        /// <summary>
+        /// E-commerce home page dikhata hai; KYC status aur paid service check karke products list return karta hai.
+        /// </summary>
         public ActionResult Index(string txtSearch, string SortBy)
         {
 
@@ -336,6 +342,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             ProductVM model1 = new ProductVM();
             return View(model1);
         }
+        /// <summary>
+        /// E-commerce categories aur sub-categories ka partial menu list render karta hai.
+        /// </summary>
         public PartialViewResult _MenuList()
         {
             MenuVM model = new MenuVM();
@@ -351,6 +360,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
 
+        /// <summary>
+        /// Filter aur sort karke products ka partial list dikhata hai.
+        /// </summary>
         public PartialViewResult _productlist(string ProductName, int? SubCatId, decimal? Price, string SortBy)
         {
             var RetailerID = User.Identity.GetUserId();
@@ -373,6 +385,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
             return PartialView(model);
         }
+        /// <summary>
+        /// Product naam se search karke matching product names ka JSON list return karta hai.
+        /// </summary>
         [HttpGet]
         public JsonResult FindProductByName(string term)
         {
@@ -381,6 +396,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
             return Json(lstProducts, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Product ka detail page dikhata hai; "Addcartitem" type hone par product ko cart mein add karta hai.
+        /// </summary>
         public ActionResult ProductView(int id, string type)
         {
             try
@@ -429,6 +447,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Retailer ka shopping cart view karta hai aur cart mein rakhe sabhi products dikhata hai.
+        /// </summary>
         public ActionResult viewCart()
         {
             var userid = User.Identity.GetUserId();
@@ -472,6 +493,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Cart mein kisi product ki quantity update karta hai aur updated cart partial view return karta hai.
+        /// </summary>
         public PartialViewResult UpdateQTY(int productId, int QTY)
         {
             try
@@ -502,6 +526,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Cart se kisi product ko remove karta hai aur updated cart partial view return karta hai.
+        /// </summary>
         public PartialViewResult RemoveCartItem(int productId)
         {
             try
@@ -532,6 +559,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Cart payment process karta hai; success hone par confirmation message ke saath Index page par redirect karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult doPayment(int productID)
         {
@@ -563,6 +593,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Index");
             }
         }
+        /// <summary>
+        /// Aaj ki e-commerce transactions dikhata hai; success, pending aur rejected totals ViewData mein pass karta hai.
+        /// </summary>
         [HttpGet]
         public ActionResult Transaction()
         {

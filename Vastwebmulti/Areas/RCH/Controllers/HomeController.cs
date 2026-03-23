@@ -316,6 +316,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
             return Json(ViewBag.optypelist, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Is action ka kaam 'statesw' se related operation handle karna hai.
+        /// </summary>
         public void statesw()
         {
            
@@ -406,6 +409,9 @@ namespace Vastwebmulti.Areas.RCH.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Password ya settings change/reset karta hai.
+        /// </summary>
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)

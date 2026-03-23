@@ -9,7 +9,7 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.ADMIN.Controllers
 {
     /// <summary>
-    /// ADMIN Area - Manages DTH plan listings, creation, editing, and deletion
+    /// ADMIN area - DTH plans ka management karta hai: list, add, edit aur delete
     /// </summary>
     [Authorize(Roles = "Admin")]
     public class DthBookingController : Controller
@@ -42,7 +42,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// GET - Displays all active DTH plans.
+        /// GET - Sabhi active DTH plans ki list dikhata hai
         /// </summary>
         public ActionResult Index()
         {
@@ -67,7 +67,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// POST - Filters and displays DTH plans by operator ID.
+        /// POST - Operator ID ke basis par DTH plans filter karke dikhata hai
         /// </summary>
         [HttpPost]
         public ActionResult Index(int Opt)
@@ -92,7 +92,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// GET - Shows the form to add a new DTH plan.
+        /// GET - Naya DTH plan add karne ka form dikhata hai
         /// </summary>
         public ActionResult AddDtdPlan()
         {
@@ -113,7 +113,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// POST - Saves a new DTH plan with the provided details and specifications.
+        /// POST - Naya DTH plan diye gaye details aur specifications ke saath save karta hai
         /// </summary>
         [HttpPost]
         public ActionResult AddDtdPlan(string title, string PlanName, decimal OfferPrice, decimal PublishedPrice, int optId, int BoxTypeId, string[] specifications)
@@ -154,7 +154,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// POST - Updates an existing DTH plan's pricing and specification details.
+        /// POST - Existing DTH plan ki pricing aur specification update karta hai
         /// </summary>
         [HttpPost]
         public ActionResult EditDtdPlan(int Id, string title, string PlanName, decimal OfferPrice, decimal PublishedPrice, string specifications)
@@ -187,7 +187,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// GET - Soft-deletes a DTH plan by marking it as deleted and redirects to the list.
+        /// GET - DTH plan ko soft-delete karke list page par redirect karta hai
         /// </summary>
         [HttpGet]
         public ActionResult DeleteDthPlan(int Id)

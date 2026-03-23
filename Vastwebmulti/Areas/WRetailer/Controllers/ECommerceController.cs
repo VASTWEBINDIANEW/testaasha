@@ -14,6 +14,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 {
  
     [Authorize(Roles = "Whitelabelretailer")]
+    /// <summary>
+    /// Is class ka kaam ECommerceController area ke operations handle karna hai.
+    /// </summary>
     public class ECommerceController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -53,6 +56,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         // GET: RETAILER/ECommerce
+        /// <summary>
+        /// Main dashboard ya home page dikhata hai.
+        /// </summary>
         public ActionResult Index(string txtSearch, string SortBy)
         {
             ProductVM model = new ProductVM();
@@ -60,6 +66,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             model.SortBy = SortBy;
             return View(model);
         }
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public PartialViewResult _MenuList()
         {
             MenuVM model = new MenuVM();
@@ -72,6 +81,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }).ToList();
             return PartialView(model);
         }
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public PartialViewResult _productlist(string ProductName,int? SubCatId,decimal? Price,string SortBy)
         {
             var RetailerID = User.Identity.GetUserId();
@@ -95,6 +107,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return PartialView(model);
         }
         [HttpGet]
+        /// <summary>
+        /// Records ko search/filter karta hai.
+        /// </summary>
         public JsonResult FindProductByName(string term)
         {
             //Searching records from list using LINQ query
@@ -102,6 +117,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             
             return Json(lstProducts, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Is action ka kaam 'ProductView' se related operation handle karna hai.
+        /// </summary>
         public ActionResult ProductView(int id)
         {
             try
@@ -138,6 +156,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
            
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult viewCart()
         {
             var userid = User.Identity.GetUserId();
@@ -156,6 +177,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return View(lstProductincart);
         }
 
+        /// <summary>
+        /// Partial view render karta hai.
+        /// </summary>
         public PartialViewResult _viewCart()
         {
             try
@@ -179,6 +203,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public PartialViewResult UpdateQTY(int productId,int QTY)
         {
             try
@@ -208,6 +235,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public PartialViewResult RemoveCartItem(int productId)
         {
             try
@@ -238,6 +268,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'doPayment' se related operation handle karna hai.
+        /// </summary>
         public ActionResult doPayment(int productID)
         {
             try
@@ -269,6 +302,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// Is action ka kaam 'Transaction' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Transaction()
         {
             try
@@ -285,6 +321,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'Transaction' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Transaction(int? TransactionId,string BuyerRole,string BuyerId,DateTime fromdate,DateTime todate)
         {
             try
@@ -301,6 +340,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult EcommInvoicePdf(int OrderID)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())

@@ -21,7 +21,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
 {
 
     /// <summary>
-    /// ADMIN Area - Manages hotel booking operations - search, booking, cancellation and reports via TBO API
+    /// ADMIN area - Hotel booking ka management karta hai: report, cancellation aur TBO API ke through booking
     /// </summary>
     [Authorize(Roles = "Admin")]
     public class HotelController : Controller
@@ -66,7 +66,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// GET - Displays the hotel booking report for today's date with user filter dropdowns.
+        /// GET - Aaj ki date ka hotel booking report aur user filter dropdowns dikhata hai
         /// </summary>
         //[MenuAccessFilter] //used in paid and nonpaid services
         public ActionResult HotelReport()
@@ -119,7 +119,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Filters and displays the hotel booking report by date range, status, and user.
+        /// POST - Date range, status aur user ke basis par hotel booking report filter karke dikhata hai
         /// </summary>
         [HttpPost]
         public ActionResult HotelReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
@@ -192,7 +192,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
 
 
         /// <summary>
-        /// GET - Exports the hotel booking report as an Excel file for download.
+        /// GET - Hotel booking report ko Excel file mein export karke download karta hai
         /// </summary>
         public ActionResult ExcelHotelBookingReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
         {
@@ -307,7 +307,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// GET - Exports the hotel booking report as a PDF for download.
+        /// GET - Hotel booking report ko PDF format mein export karke download karta hai
         /// </summary>
         public ActionResult PDFHotelReport(string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string ddl_status_ticket)
         {
@@ -378,7 +378,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
 
 
         /// <summary>
-        /// GET - Displays today's hotel cancellation queue with user filter dropdowns.
+        /// GET - Aaj ki hotel cancellation queue user filter ke saath dikhata hai
         /// </summary>
         [HttpGet]
         public ActionResult CancellationQueue()
@@ -434,7 +434,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// POST - Filters the hotel cancellation queue by date range, status, and user.
+        /// POST - Hotel cancellation queue ko date range, status aur user se filter karta hai
         /// </summary>
         [HttpPost]
         public ActionResult CancellationQueue(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel, string BookingId)
@@ -552,7 +552,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// POST - Checks the hotel cancellation request status with the provider and processes the refund.
+        /// POST - Provider se hotel cancellation request ka status check karke refund process karta hai
         /// </summary>
         [HttpPost]
         public ActionResult CancellationStatus(string ChangeReqId, int idno)
@@ -640,7 +640,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// POST - Returns the hotel passenger guest list for a given transaction ID as a partial view.
+        /// POST - Diye gaye transaction ID ke liye hotel passenger ki guest list partial view mein return karta hai
         /// </summary>
         [HttpPost]
         public ActionResult GuestDetails(string TXNID)
@@ -659,7 +659,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Returns the hotel price breakdown for a given transaction ID as a partial view.
+        /// POST - Diye gaye transaction ID ke liye hotel price breakdown partial view mein dikhata hai
         /// </summary>
         [HttpPost]
         public ActionResult HotelPriceDetails(string TXNID)
@@ -678,7 +678,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Fetches live hotel booking status from the provider and updates the booking record.
+        /// POST - Provider se live hotel booking status fetch karke booking record update karta hai
         /// </summary>
         [HttpPost]
         public ActionResult HotelBookingStatus(string TXNID)
