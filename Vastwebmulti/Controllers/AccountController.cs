@@ -24,6 +24,9 @@ namespace Vastwebmulti.Controllers
 {
 
 
+    /// <summary>
+    /// Account controller - user registration, login, logout aur password reset manage karta hai
+    /// </summary>
     [Authorize]
     public class AccountController : Controller
     {
@@ -140,6 +143,9 @@ namespace Vastwebmulti.Controllers
         //
         // GET: /Account/Login
         //[AllowAnonymous]
+        /// <summary>
+        /// Login page dikhata hai aur already logged-in user ko uske role ke dashboard par redirect karta hai
+        /// </summary>
         public ActionResult Login(string returnUrl)
         {
 
@@ -330,6 +336,9 @@ namespace Vastwebmulti.Controllers
         }
 
         // POST: /Account/Login
+        /// <summary>
+        /// User ka login form submit hone par credentials verify karke dashboard par redirect karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -1087,6 +1096,9 @@ namespace Vastwebmulti.Controllers
         //    }
         //}
 
+        /// <summary>
+        /// Naye login form se user authenticate karke appropriate dashboard par redirect karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -1387,6 +1399,9 @@ namespace Vastwebmulti.Controllers
             return RedirectToAction("NewLogin", "Home");
         }
 
+        /// <summary>
+        /// Naya WhiteLabel user register karta hai aur uski details database mein save karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -1487,6 +1502,9 @@ namespace Vastwebmulti.Controllers
         
         
         //Insert Retailer
+        /// <summary>
+        /// Naye retailer ka registration karta hai, captcha verify karke user details save karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -1979,6 +1997,9 @@ namespace Vastwebmulti.Controllers
             return Convert.ToBase64String(cipherTextBytes);
         }
         //
+        /// <summary>
+        /// Two-factor verification code ka page dikhata hai jahan user OTP enter karta hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
@@ -2008,6 +2029,9 @@ namespace Vastwebmulti.Controllers
         //
         // POST: /Account/VerifyCode
         [HttpPost]
+        /// <summary>
+        /// User dwara submit kiya gaya verification code validate karke login complete karta hai
+        /// </summary>
         [AllowAnonymous]
 
         public async Task<ActionResult> VerifyCode(string ReturnUrl, string Provider, string Code)
@@ -2043,6 +2067,9 @@ namespace Vastwebmulti.Controllers
         }
 
 
+        /// <summary>
+        /// Admin ke liye two-factor verification code page dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCodeAdmin(string provider, string returnUrl, string type, bool rememberMe)
         {

@@ -23,12 +23,18 @@ using Quartz.Logging;
 
 namespace Vastwebmulti.API
 {
+    /// <summary>
+    /// Recharge API controller — GET aur POST dono tarike se recharge process karta hai, balance check, status, aur dispute handle karta hai.
+    /// </summary>
     public class RechargeController : ApiController
     {
         Backupapi backup = new Backupapi();
         [AllowAnonymous]
         [HttpGet]
         [Route("Recharge/Recharge_Get")]
+        /// <summary>
+        /// GET method se recharge request process karta hai — user, operator, aur token validate karke recharge execute karta hai.
+        /// </summary>
         public async Task<IHttpActionResult> test11(string UserID, string Customernumber, string Optcode, string Amount, string Yourrchid, string optional1, string optional2, string Tokenid)
         {
             var corrId = string.Format("{0}{1}", DateTime.Now.Ticks, Thread.CurrentThread.ManagedThreadId);
@@ -1649,6 +1655,9 @@ namespace Vastwebmulti.API
         [HttpPost]
         [Route("Recharge/Recharge")]
         [CacheFilter(TimeDuration = 100)]
+        /// <summary>
+        /// POST method se recharge request process karta hai — authentication, operator check, aur balance deduction ke saath recharge execute karta hai.
+        /// </summary>
         public async Task<IHttpActionResult> Recharge(ApiRecharge api)
         {
             var corrId = string.Format("{0}{1}", DateTime.Now.Ticks, Thread.CurrentThread.ManagedThreadId);
