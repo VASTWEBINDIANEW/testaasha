@@ -165,6 +165,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult Insert_retailer(WhitelabelRetailerModel rem)
         {
             try
@@ -294,6 +297,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             //    }
             //}
         }
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult RetailerEmailconfrimation(string id)
         {
             var sts = (from pp in db.Users where pp.UserId == id select pp).Single().EmailConfirmed;
@@ -310,6 +316,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             return RedirectToAction("Index");
         }
         //delete retailers
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public JsonResult Delete_Retailer(string retailerid)
         {
             if (retailerid != null && retailerid != "")
@@ -322,6 +331,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
                 return Json("Failed!", JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult DistrictList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -334,6 +346,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             }
         }
         //GET : Update Retailer Status
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Updateretailer_ststus(string id)
         {
 
@@ -364,6 +379,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             }
         }
         //GET : Update Retailer money Status
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Updateretailer_money_ststus(string id)
         {
 
@@ -395,6 +413,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         }
         // POST : Retailer Search
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult RetailerSearch(string userid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -432,6 +453,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
 
         //POST : Edit Retailer User
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_Retailer_user(WhitelabelRetailerModel rem)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -457,6 +481,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
 
         #region SlabSetting
         //GET : Show Slab Name 
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult generateSlab()
         {
             ADMIN.Models.ResultSetViewModel viewModel = new ADMIN.Models.ResultSetViewModel();
@@ -478,6 +505,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         }
         // Post : Add New Slab
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddSlabname(ADMIN.Models.ResultSetViewModel result)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -498,6 +528,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             }
         }
 
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult Delete_slabName(string slabname)
         {
             try
@@ -653,6 +686,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         #endregion
 
         #region MDTODealer
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult MDTODealer(string tabtype = "Reatiler", string txt_frm_date = "", string txt_to_date = "", string ddltype = "")
         {
 
@@ -937,6 +973,9 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
 
 
         //Purchase Order Send
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult Purchasertequest_WLDLM_To_Whitelabel(string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
 string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
 string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -1034,6 +1073,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
         //Fund Transfer To Retailer
 
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public ActionResult SendFund()
         {
 
@@ -1060,6 +1102,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
         }
         [HttpPost]
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public ActionResult SendFund(string txt_frm_date, string txt_to_date, string RetailerId1)
         {
 
@@ -1092,6 +1137,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult Dealer_retailer_bal(string RetailerId, string balance, string ddl_fund_type, string comment)
         {
             try
@@ -1150,6 +1198,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             }
         }
         //Credit Balance Check
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult R_Creditchk(string MID)
         {
             string userid = User.Identity.GetUserId();
@@ -1160,6 +1211,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
 
         //Fund Receive Transfer
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult ReceiveFund()
         {
             try
@@ -1182,6 +1236,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult ReceiveFund(string txt_frm_date, string txt_to_date)
         {
             try
@@ -1211,11 +1268,17 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
                 return RedirectToAction("Index");
             }
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GotoPDF(string From, string Value, string DistOldBal, string DistNewBal, string Date)
         {
             string userid = User.Identity.GetUserId();
             return new Rotativa.ActionAsPdf("InvoicePDF", new { dlmloginid = userid, From = From, Value = Value, DistOldBal = DistOldBal, DistNewBal = DistNewBal, Date = Date });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult InvoicePDF(string dlmloginid, string From, string Value, string DistOldBal, string DistNewBal, string Date)
         {
             var userdetaild = db.whitelabel_Dealer_Details.Where(a => a.DealerId == dlmloginid).SingleOrDefault();
@@ -1254,6 +1317,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         //        return RedirectToAction("Index");
         //    }
         //}
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult PurchaseOrder()
         {
             try
@@ -1287,6 +1353,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
 
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult PurchaseOrder(string txt_frm_date, string txt_to_date)
         {
             try
@@ -1323,6 +1392,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult purchageorder(string Paymode, string type, string utrno, string Comment, decimal balance, string accountno)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1388,6 +1460,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
 
         //Check Old Credit pay
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult D_Creditchk(string MID)
         {
             string userid = User.Identity.GetUserId();
@@ -1407,6 +1482,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
         }
         //purchase request order
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult purcharge_request()
         {
             ViewData["successorder"] = TempData["successorder"];
@@ -1421,6 +1499,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult purcharge_request(string txt_frm_date, string txt_to_date)
         {
             string userid = User.Identity.GetUserId();
@@ -1441,6 +1522,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult updatepurchage_rem(int id, string type, string txtcomment)
         {
             if (type == "APP")
@@ -1477,6 +1561,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             var show = db.select_Dealer_credit_report_by_Wadmin(userid).ToList();
             return View(show);
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Show_Retailer_credit()
         {
             var userid = User.Identity.GetUserId();
@@ -1529,6 +1616,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         //show today and yesterday business
 
         #region Show all today and yesterday recharge
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Show_All_Recharge(string yesterday)
         {
             var type = "";
@@ -1581,6 +1671,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         [HttpGet]
+        /// <summary>
+        /// User profile details dikhata ya update karta hai.
+        /// </summary>
         public new ActionResult Profile()
         {
             string userid = User.Identity.GetUserId();
@@ -1659,6 +1752,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return RedirectToAction("Profile");
         }
 
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillDistict(int State)
         {
             var cities = db.District_Desc.Where(c => c.State_id == State);
@@ -1703,6 +1799,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(model);
         }
 
+        /// <summary>
+        /// Password ya settings change/reset karta hai.
+        /// </summary>
         public ActionResult Reset_IMPSPin(string txtemail)
         {
             var chk = db.whitelabel_Dealer_Details.Any(a => a.Email == txtemail);
@@ -1737,6 +1836,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_IMPSPin([Bind(Prefix = "Item2")] ChangePinViewModel model)
         {
             var userid = User.Identity.GetUserId();
@@ -1857,6 +1959,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Bank
+        /// <summary>
+        /// Bank details manage karta hai.
+        /// </summary>
         public ActionResult Bank_Details()
         {
             var userid = User.Identity.GetUserId();
@@ -1869,6 +1974,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #region Operator
 
 
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public ActionResult All_Operator_Info()
         {
             var userid = User.Identity.GetUserId();
@@ -1977,6 +2085,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
 
         [HttpPost]
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public ActionResult All_Operator_Info(string ddlcomm)
         {
             var userid = User.Identity.GetUserId();
@@ -2085,6 +2196,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(sb);
         }
 
+        /// <summary>
+        /// User ya service block/unblock karta hai.
+        /// </summary>
         public ActionResult BlockOPT(string rem, string id, string opttype)
         {
             var userid = User.Identity.GetUserId();
@@ -2105,6 +2219,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(ch1);
         }
         [HttpPost]
+        /// <summary>
+        /// User ya service block/unblock karta hai.
+        /// </summary>
         public ActionResult BlockOPT(string rem, string opttype)
         {
             var userid = User.Identity.GetUserId();
@@ -2123,6 +2240,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
         #region Retailer_Slab
         [HttpGet]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Retailer_Slab()
         {
             string userid = User.Identity.GetUserId();
@@ -2132,6 +2252,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult Retailer_Slab(string slabnm)
         {
             string userid = User.Identity.GetUserId();
@@ -2145,6 +2268,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
         #region Dealer Ledger Report
         [HttpGet]
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult DealerLedger()
         {
             var userid = User.Identity.GetUserId();
@@ -2156,6 +2282,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         }
 
         [HttpPost]
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult DealerLedger(string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -2468,6 +2597,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #region Download GST declaration form
 
         [HttpGet]
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public FileResult Download_Declaration_form()
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/GST_Declaration"), "*.docx");
@@ -2479,6 +2611,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
 
         #region GST Invocing 
         [HttpPost]
+        /// <summary>
+        /// GST report ya invoice generate karta hai.
+        /// </summary>
         public ActionResult GST_Invoicing(DateTime month)
         {
 
@@ -2488,6 +2623,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             //string x = DateTime.Now.ToString("yyyy-MM-dd");
             return new Rotativa.ActionAsPdf("GST_INVOICE_PDF", new { userid = UserId, txt_frm_date = from, txt_to_date = to, month = month });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GST_INVOICE_PDF(string userid, DateTime txt_frm_date, DateTime txt_to_date, DateTime month)
         {
             string CurrentMonth = String.Format("{0:MMMM-yyyy}", month);
@@ -2543,10 +2681,16 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region GST PDF Invoicing 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GenerateGST_PDF(DateTime frm_date, DateTime to_date)
         {
             return new Rotativa.ActionAsPdf("GST_PDF", new { txt_frm_date = frm_date, txt_to_date = to_date });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GST_PDF(string txt_frm_date, string txt_to_date)
         {
 
@@ -2981,6 +3125,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Travels Reports
+        /// <summary>
+        /// Travel booking se related kaam karta hai.
+        /// </summary>
         public ActionResult Travels()
         {
             string userid = User.Identity.GetUserId();
@@ -2994,6 +3141,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Giftcards Reports
+        /// <summary>
+        /// Gift card se related operation handle karta hai.
+        /// </summary>
         public ActionResult Giftcard()
         {
             string userid = User.Identity.GetUserId();
@@ -3024,6 +3174,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
         #endregion
 
         #region Complaint
+        /// <summary>
+        /// Complaint submit ya list karta hai.
+        /// </summary>
         public ActionResult Complaint()
         {
             var userid = User.Identity.GetUserId();
@@ -3032,6 +3185,9 @@ string hdMDwalletno, string hdMDtransationno, string hdMDsettelment, string hdMD
             var ch = db.proc_whitelabel_complaint_request(userid, "", whitelabelemail).ToList();
             return View(ch);
         }
+        /// <summary>
+        /// Complaint submit ya list karta hai.
+        /// </summary>
         public ActionResult Complaint_insert(string message)
         {
             string userid = User.Identity.GetUserId();

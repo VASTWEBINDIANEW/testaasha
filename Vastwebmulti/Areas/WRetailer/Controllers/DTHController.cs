@@ -12,15 +12,24 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 {
  
     [Authorize(Roles = "Whitelabelretailer")]
+    /// <summary>
+    /// Is class ka kaam DTHController area ke operations handle karna hai.
+    /// </summary>
     public class DTHController : Controller
     {
 
         // GET: RETAILER/DTH
+        /// <summary>
+        /// DTH recharge/booking handle karta hai.
+        /// </summary>
         public ActionResult DTHBooking()
         {
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult GetPackageDetails(string Code)
         {
             string respo = new InstantPayComnUtil().getOperatorDetails(Code);
@@ -33,6 +42,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             return RedirectToAction("DTHBooking");
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'DoPayment' se related operation handle karna hai.
+        /// </summary>
         public ActionResult DoPayment(string STB, string ConOpt, string ddlPackage, string packageAmt, string txtName, string txtMobile, string customerAddress, string txtPIN)
         {
             try

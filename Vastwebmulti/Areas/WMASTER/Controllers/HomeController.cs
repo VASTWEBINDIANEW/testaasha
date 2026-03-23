@@ -85,12 +85,18 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
         #region SignalR
+        /// <summary>
+        /// Is action ka kaam 'TestSignlR' se related operation handle karna hai.
+        /// </summary>
         public ActionResult TestSignlR()
         {
             var userid = User.Identity.Name;
             SendPushNotification(userid, "https://www.google.com", "Testing", "SignalR");
             return View();
         }
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public void SendPushNotification(string ReceiverMailID, string RedirectUrl, string Message, string Title)
         {
             VastwebmultiEntities db = new VastwebmultiEntities();
@@ -145,6 +151,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         //check WMASTER balance
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public ActionResult Chkbalance()
         {
             var userid = User.Identity.GetUserId();
@@ -171,6 +180,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View(show);
         }
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult Totalbaltransfer()
         {
             var userid = User.Identity.GetUserId();
@@ -233,6 +245,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         //show today and yesterday business
         #region show today and yesterday business
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult Show_All_Recharge(string type)
         {
             var userid = User.Identity.GetUserId();
@@ -271,6 +286,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         #endregion
 
         #region Notification
+        /// <summary>
+        /// Notification bhejta ya dikhata hai.
+        /// </summary>
         public ActionResult Notification()
         {
             var userid = User.Identity.GetUserId();
@@ -281,6 +299,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public ActionResult Send_Notification(string dealerid, string txtMsgBody)
         {
             var userid = User.Identity.GetUserId();
@@ -308,6 +329,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
         #endregion End Notification
         #region  WMASTER Income
+        /// <summary>
+        /// Commission ya income report dikhata hai.
+        /// </summary>
         public ActionResult Master_income()
         {
             //var userid = User.Identity.GetUserId();
@@ -348,6 +372,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Commission ya income report dikhata hai.
+        /// </summary>
         public ActionResult Master_income(string txt_frm_date)
         {
             var Token = string.Empty;
@@ -396,6 +423,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
 
+        /// <summary>
+        /// Commission ya income report dikhata hai.
+        /// </summary>
         public ActionResult Actual_Master_income()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
@@ -410,6 +440,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Commission ya income report dikhata hai.
+        /// </summary>
         public ActionResult Actual_Master_income(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -431,6 +464,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         #endregion
         #region BankInfo
         [HttpPost]
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult Delete_bankinfo(int idno)
         {
             if (idno != 0)
@@ -450,6 +486,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult Insert_bankinfo(string txtbanknm, string txtbranchnm, string txtifsc, string txtacno, string txtacctype, string txtname, string txtaddress)
         {
             var userid = User.Identity.GetUserId();
@@ -1089,6 +1128,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         #endregion
         #region Profile
         [HttpGet]
+        /// <summary>
+        /// User profile details dikhata ya update karta hai.
+        /// </summary>
         public new ActionResult Profile()
         {
             string userid = User.Identity.GetUserId();
@@ -1107,6 +1149,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             TempData.Remove("success");
             return View(userDetails);
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult ShowMasterprofile(string SSID)
         {
             var ch = _db.Whitelabel_Superstokist_details.Where(m => m.SSId == SSID).ToList();
@@ -1136,12 +1181,18 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             TempData["success"] = "Update Successfully.";
             return RedirectToAction("Profile");
         }
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult Showmobileandpancardprofile(string SSID)
         {
             var ch = _db.Whitelabel_Superstokist_details.Where(a => a.SSId == SSID).ToList();
             return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdatePanccardandmobile(string txtid2, string txtname, string txtaadhaarcard, string txtpancard, string txtgst, string ddlPosition, string ddlBusinessType)
         {
             try
@@ -1165,6 +1216,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         //Upload Aadhaar Crad Doc
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadAadharcarddoc(string txtaadharid)
         {
             try
@@ -1224,6 +1278,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         //Upload Pancard Crad Doc
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadPancardcarddoc(string txtpancardid)
         {
             try
@@ -1259,6 +1316,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         //Upload Service Aggrement Card Doc
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadServiceAggrementdoc(string txtserviceid)
         {
             try
@@ -1294,6 +1354,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         //Upload Registraction Certificate Card Doc
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadRegistractionCertificatedoc(string txtRegistractionid)
         {
             try
@@ -1329,6 +1392,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         //Upload Registraction Certificate Card Doc
         [HttpPost]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult UploadAddressProofdoc(string txtAddressproofid)
         {
             try
@@ -1399,6 +1465,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View();
         }
         //delete Profile Doc 
+        /// <summary>
+        /// User profile details dikhata ya update karta hai.
+        /// </summary>
         public JsonResult DelereprofileDoc(string SSID, string Docname)
         {
             if (SSID != null && Docname == "Aadhaar")
@@ -1442,6 +1511,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
 
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult FillDistict(int State)
         {
             var cities = _db.District_Desc.Where(c => c.State_id == State);
@@ -1454,12 +1526,18 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         //    return View();
         //}
         #region BankInfo
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult ShowBankinfo(string SSID)
         {
             var ch = _db.Whitelabel_Superstokist_details.Where(a => a.SSId == SSID).ToList();
             return Json(ch.ToArray(), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdateBankinfromation(string txtid3, string txtaccholder, string txtbankaccountno, string txtifsc, string txtbankname, string txtbranchaddress)
         {
             try
@@ -1528,6 +1606,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult InsertDealer(WMASTER.Models.WDealerModel model)
         {
             try
@@ -1567,6 +1648,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult Edit_Distibutor_user(WMASTER.Models.WDealerModel dlm)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1590,6 +1674,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
         //POST : Delaer Search
         [HttpPost]
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult DealerSearch(string userid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1600,6 +1687,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         //fill District 
+        /// <summary>
+        /// Dropdown ke liye data fetch karta hai.
+        /// </summary>
         public JsonResult DistrictList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1614,6 +1704,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         //Start Slab Setting 
         #region SlabSetting
         //GET : Show Slab Name 
+        /// <summary>
+        /// Commission slab manage karta hai.
+        /// </summary>
         public ActionResult generateSlab()
         {
             ADMIN.Models.ResultSetViewModel viewModel = new ADMIN.Models.ResultSetViewModel();
@@ -1641,6 +1734,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
         // Post : Add New Slab
         [HttpPost]
+        /// <summary>
+        /// Naya record insert/add karta hai database mein.
+        /// </summary>
         public ActionResult AddSlabname(ADMIN.Models.ResultSetViewModel result)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1661,6 +1757,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
 
+        /// <summary>
+        /// Record ko delete karta hai.
+        /// </summary>
         public ActionResult Delete_slabName(int id, string slabfor, string slabname)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1688,6 +1787,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         #region Account
 
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public ActionResult SendFund()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1715,6 +1817,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public ActionResult SendFund(string txt_frm_date, string txt_to_date, string DealerId1)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1755,6 +1860,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public ActionResult master_to_Dealer_bal(string DealerId, string balance, string ddl_fund_type, string comment)
         {
             try
@@ -1908,6 +2016,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             vmodel.ddlFillAllwallet = walletitem;
             return View(vmodel);
         }
+        /// <summary>
+        /// Dealer se related data handle karta hai.
+        /// </summary>
         public PartialViewResult MDTODealer(string tabtype = "MDTODLM", string txt_frm_date = "", string txt_to_date = "", string usernm = "")
         {
 
@@ -2235,6 +2346,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
 
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult D_Creditchk(string dealerid)
         {
             string masterid = User.Identity.GetUserId();
@@ -2242,6 +2356,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             ch = ch ?? 0;
             return Json(ch, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult updatepurchage_dlmqwwwwwwww(int? hdidno, string hdtype, string txtcommentwrite)
         {
 
@@ -2280,6 +2397,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         }
 
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult PurchaseOrderSend(string txtcode, string hdSuperstokistID, string hdMDDLM, string hdPaymentMode,
             string hdPaymentAmount, string hdMDDepositeSlipNo, string hdMDTransferType, string hdMDcollection, string hdMDComments,
             string hdMDBank, string hdsupraccno, string hdMDaccountno, string hdMDutrno, string hdMDwallet,
@@ -2394,6 +2514,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Credit balance ya limit check karta hai.
+        /// </summary>
         public ActionResult MyOLDCreditChk()
         {
             string masterid = User.Identity.GetUserId();
@@ -2415,6 +2538,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return Json(new { diff = diff1, listbank = bankitem, walletinfo = walletitem }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult ReceiveFund()
         {
             try
@@ -2437,6 +2563,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult ReceiveFund(string txt_frm_date, string txt_to_date)
         {
             try
@@ -2469,11 +2598,17 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GotoInvoicePDF(string Value, string DistOldBal, string DistNewBal, string Date)
         {
             string userid = User.Identity.GetUserId();
             return new Rotativa.ActionAsPdf("InvoicePDF", new { masterid = userid, Value = Value, DistOldBal = DistOldBal, DistNewBal = DistNewBal, Date = Date });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult InvoicePDF(string masterid, string Value, string DistOldBal, string DistNewBal, string Date)
         {
             //string userid = User.Identity.GetUserId();
@@ -2494,6 +2629,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View(PDF_Content);
         }
         [HttpPost]
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult ReceiveFund_GST(int idno)
         {
             try
@@ -2513,6 +2651,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
 
         }
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult PurchaseOrder()
         {
             try
@@ -2560,6 +2701,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult PurchaseOrder(string txt_frm_date, string txt_to_date)
         {
             try
@@ -2607,6 +2751,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult purchageorder(string Paymode, string type, string utrno, string Comment, decimal balance, string accountno, string pancard, string branch, decimal? dipositCharge, string partyAcc, string AccHolderName)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -2699,6 +2846,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
                 }
             }
         }
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult purcharge_request()
         {
             ViewData["successorder"] = TempData["successorder"];
@@ -2713,6 +2863,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult purcharge_request(string txt_frm_date, string txt_to_date)
         {
             string userid = User.Identity.GetUserId();
@@ -2731,6 +2884,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             var ch = _db.select_dlm_pur_order("ALL", Email, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
             return View(ch);
         }
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult updatepurchage_dlm(int id, string type, string txtcomment)
         {
             if (type == "APP")
@@ -3213,6 +3369,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         //END DisputeReport
         // RechargeReport 
 
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public JsonResult Getopt(string ID)
         {
             var Operator1 = _db.Operator_Code.Distinct().Where(a => a.Operator_type == ID).ToList();
@@ -3362,6 +3521,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll(int pageindex, string ddlusers, string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string txtmob, string alldealer, string allretailer)
         {
             string loginuserid = User.Identity.GetUserId();
@@ -3444,6 +3606,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             jsonmodel.HTMLString = renderPartialViewtostring("_RechargeReport", tbrow);
             return Json(jsonmodel);
         }
+        /// <summary>
+        /// Recharge transaction handle karta hai.
+        /// </summary>
         public ActionResult TotalRecharge(string ddlusers, string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string txtmob, string alldealer, string allretailer)
         {
 
@@ -3771,6 +3936,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         #region Giftcards
+        /// <summary>
+        /// Gift card se related operation handle karta hai.
+        /// </summary>
         public ActionResult Giftcard()
         {
             string userid = User.Identity.GetUserId();
@@ -3794,6 +3962,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Gift card se related operation handle karta hai.
+        /// </summary>
         public ActionResult Giftcard(string txt_frm_date, string txt_to_date, string ddl_status, string Operator, string ddl_top, string allretailer, string alldealerid, string ddlusers)
         {
             var userid = "";
@@ -3975,6 +4146,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         #endregion
         // Retailer Ledger Report
         [HttpGet]
+        /// <summary>
+        /// Is action ka kaam 'MasterLedger' se related operation handle karna hai.
+        /// </summary>
         public ActionResult MasterLedger()
         {
             var userid = User.Identity.GetUserId();
@@ -3986,6 +4160,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'MasterLedger' se related operation handle karna hai.
+        /// </summary>
         public ActionResult MasterLedger(string txt_frm_date)
         {
             var userid = User.Identity.GetUserId();
@@ -4039,12 +4216,18 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         //Help and Support
+        /// <summary>
+        /// Is action ka kaam 'Help' se related operation handle karna hai.
+        /// </summary>
         public ActionResult Help()
         {
             var admininfo = _db.Admin_details.FirstOrDefault();
             ViewBag.admin = admininfo;
             return View();
         }
+        /// <summary>
+        /// Is class ka kaam JsonModel area ke operations handle karna hai.
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
@@ -4199,6 +4382,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
             return View(ch);
         }
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll1(int pageindex, string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string ddl_status, string allapiuser, string ddl_Type)
         {
             string userid1 = User.Identity.GetUserId();
@@ -4500,11 +4686,17 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
             return new ViewAsPdf(respo);
         }
+        /// <summary>
+        /// Money transfer se related operation karta hai.
+        /// </summary>
         public ActionResult Money_Tranfer_Details_View(int Idno)
         {
             var details = _db.Money_Tranfer_Details_View(Idno);
             return Json(details, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public ActionResult MoneyTransfer_Total(string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string allapiuser, string ddl_status, string ddl_Type)
         {
 
@@ -4700,6 +4892,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
 
         }
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll_Ticket(int pageindex, string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string alldealer, string allretailer)
         {
             if ((txt_frm_date == null || txt_frm_date == "") && (txt_to_date == null || txt_to_date == ""))
@@ -5204,6 +5399,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             var proc_Response = _db.proc_BusReport(1, 20, ddl_status, retailerid, DealerId, userid, null, TicketNo, null, null, null, frm_date, to_date).ToList();
             return View(proc_Response);
         }
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScrollBus(int pageindex, string ddl_status, string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string TicketNo)
         {
             var loginid = User.Identity.GetUserId();
@@ -5847,6 +6045,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Is action ka kaam 'CancellationQueue' se related operation handle karna hai.
+        /// </summary>
         public ActionResult CancellationQueue()
         {
             var userid = User.Identity.GetUserId();
@@ -5865,6 +6066,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View(proc_Response);
         }
         [HttpPost]
+        /// <summary>
+        /// Is action ka kaam 'CancellationQueue' se related operation handle karna hai.
+        /// </summary>
         public ActionResult CancellationQueue(string ddl_status, int? ddl_top, string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string BookingId)
         {
 
@@ -6023,6 +6227,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
             return View(ch);
         }
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScrollAeps(int pageindex, string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string ddl_status)
         {
             var loginid = User.Identity.GetUserId();
@@ -6486,6 +6693,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View(ch);
         }
 
+        /// <summary>
+        /// PAN card se related operation karta hai.
+        /// </summary>
         public ActionResult InfiniteScrollpan(int pageindex, string ddlusers, string ddl_status, string txt_frm_date, string txt_to_date, string allretailer, string alldealer)
         {
 
@@ -6812,6 +7022,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
 
+        /// <summary>
+        /// Is action ka kaam 'MasterImpsIncmoe' se related operation handle karna hai.
+        /// </summary>
         public ActionResult MasterImpsIncmoe(string Type, string txt_frm_date, string txt_to_date)
         {
             DateTime frm = Convert.ToDateTime(txt_frm_date);
@@ -6834,6 +7047,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return Json(new { Type = Type, Adminincome = Adminincome, Tds = Tds, Gst = Gst });
         }
 
+        /// <summary>
+        /// Is action ka kaam 'CountImpasandVerify' se related operation handle karna hai.
+        /// </summary>
         public ActionResult CountImpasandVerify(string Type, string ddlval, string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();
@@ -6963,6 +7179,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
 
         }
         [HttpPost]
+        /// <summary>
+        /// Infinite scroll ke liye paged data load karta hai.
+        /// </summary>
         public ActionResult InfiniteScroll_mpos(int pageindex, string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string ddl_top, string ddl_status)
         {
 
@@ -7028,6 +7247,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             jsonmodel.HTMLString = renderPartialViewtostring("_m_Possreport", tbrow);
             return Json(jsonmodel);
         }
+        /// <summary>
+        /// mPOS transaction handle karta hai.
+        /// </summary>
         public ActionResult mpos_Total(string txt_frm_date, string txt_to_date, string ddlusers, string alldealer, string allretailer, string ddl_status)
         {
 
@@ -7365,6 +7587,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             return View(Faild_Login_details);
 
         }
+        /// <summary>
+        /// Bank details manage karta hai.
+        /// </summary>
         public ActionResult Bank_info()
         {
             var ch = (from jj in _db.bank_info select jj).ToList();
@@ -7491,6 +7716,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
         //Download GST declaration form
         [HttpGet]
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public FileResult Download_Declaration_form()
         {
             string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/GST_Declaration"), "*.docx");
@@ -7499,6 +7727,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
         //GST Invocing 
         [HttpPost]
+        /// <summary>
+        /// GST report ya invoice generate karta hai.
+        /// </summary>
         public ActionResult GST_Invoicing(DateTime month)
         {
 
@@ -7508,6 +7739,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
             //string x = DateTime.Now.ToString("yyyy-MM-dd");
             return new Rotativa.ActionAsPdf("GST_INVOICE_PDF", new { userid = UserId, txt_frm_date = from, txt_to_date = to, month = month });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GST_INVOICE_PDF(string userid, DateTime txt_frm_date, DateTime txt_to_date, DateTime month)
         {
             string CurrentMonth = String.Format("{0:MMMM-yyyy}", month);
@@ -7561,10 +7795,16 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         //GST PDF Invoicing 
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GenerateGST_PDF(DateTime frm_date, DateTime to_date)
         {
             return new Rotativa.ActionAsPdf("GST_PDF", new { txt_frm_date = frm_date, txt_to_date = to_date });
         }
+        /// <summary>
+        /// File download ya export/PDF generate karta hai.
+        /// </summary>
         public ActionResult GST_PDF(string txt_frm_date, string txt_to_date)
         {
 
@@ -7656,6 +7896,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         #endregion
 
 
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public ActionResult All_Operator_Info()
         {
             var userid = User.Identity.GetUserId();
@@ -7794,6 +8037,9 @@ namespace Vastwebmulti.Areas.WMASTER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Operator configuration manage karta hai.
+        /// </summary>
         public ActionResult All_Operator_Info(string ddlcomm)
         {
             var userid = User.Identity.GetUserId();

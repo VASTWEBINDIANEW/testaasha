@@ -1973,6 +1973,9 @@ namespace Vastwebmulti.Controllers
         static readonly string PasswordHash = "P@@Sw0rd";
         static readonly string SaltKey = "S@LT&KEY";
         static readonly string VIKey = "@1B2c3D4e5F6g7H8";
+        /// <summary>
+        /// Plain text string ko AES encryption se encrypt karke return karta hai
+        /// </summary>
         public static string Encrypt(string plainText)
         {
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
@@ -2226,6 +2229,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Account/Register
+        /// <summary>
+        /// User registration ka blank form dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult Register()
         {
@@ -2234,6 +2240,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/Register
+        /// <summary>
+        /// Naya user register karta hai aur confirmation email bhejta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -2264,6 +2273,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Account/ConfirmEmail
+        /// <summary>
+        /// User ka email confirm karta hai aur account activate karta hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
@@ -2291,6 +2303,9 @@ namespace Vastwebmulti.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
+        /// <summary>
+        /// Admin ka email confirm karta hai aur admin account activate karta hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmailAdmin(string userId, string code)
         {
@@ -2323,6 +2338,9 @@ namespace Vastwebmulti.Controllers
         }
         //
         // GET: /Account/ForgotPassword
+        /// <summary>
+        /// Password bhool gaye user ke liye forgot password form dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
@@ -2331,6 +2349,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/ForgotPassword
+        /// <summary>
+        /// Forgot password request process karta hai aur user ko reset link bhejta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -2536,6 +2557,9 @@ namespace Vastwebmulti.Controllers
         }
 
 
+        /// <summary>
+        /// Admin ke liye forgot password form dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ForgotPasswordAdmin()
         {
@@ -2546,6 +2570,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/ForgotPassword
+        /// <summary>
+        /// Admin ka forgot password OTP verify karke password reset link bhejta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -2776,6 +2803,9 @@ namespace Vastwebmulti.Controllers
 
      
 
+        /// <summary>
+        /// User ka email ya mobile number OTP verify karke update karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         //[Route("Change_email_mobile")]

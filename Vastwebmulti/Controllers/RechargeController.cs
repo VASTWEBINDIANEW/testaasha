@@ -3235,6 +3235,9 @@ namespace Vastwebmulti.API
                 }
             }
         }
+        /// <summary>
+        /// POST method se recharge ka status check karta hai — client recharge ID se transaction ki current stithi batata hai.
+        /// </summary>
         [HttpPost]
         [Route("Recharge/Status")]
         public IHttpActionResult Status(RchSTS api)
@@ -3311,6 +3314,9 @@ namespace Vastwebmulti.API
                 }
             }
         }
+        /// <summary>
+        /// GET method se recharge ka status check karta hai — email aur token se authenticate karke client recharge ID ka status return karta hai.
+        /// </summary>
         [AllowAnonymous]
         [HttpGet]
         [Route("Recharge/StatusCheck")]
@@ -3397,6 +3403,9 @@ namespace Vastwebmulti.API
                 }
             }
         }
+        /// <summary>
+        /// POST method se user ka remaining balance return karta hai — token aur IP validate karke account balance dikhata hai.
+        /// </summary>
         [HttpPost]
         [Route("Recharge/Balance")]
         public IHttpActionResult Balance(RchSTS api)
@@ -3455,6 +3464,9 @@ namespace Vastwebmulti.API
                 }
             }
         }
+        /// <summary>
+        /// GET method se user ka balance check karta hai — email aur token se authenticate karke remaining balance return karta hai.
+        /// </summary>
         [AllowAnonymous]
         [HttpGet]
         [Route("Recharge/BalanceCheck")]
@@ -3521,6 +3533,9 @@ namespace Vastwebmulti.API
         }
 
 
+        /// <summary>
+        /// Kisi recharge transaction par dispute raise karta hai — recharge ID aur reason ke saath complaint insert karta hai.
+        /// </summary>
         [AllowAnonymous]
         [HttpGet]
         [Route("Recharge/Dispute")]
@@ -3603,6 +3618,9 @@ namespace Vastwebmulti.API
         {
             return string.Format("{0} - Request: {1}\r\n{2}", correlationId, requestInfo, Encoding.UTF8.GetString(message));
         }
+        /// <summary>
+        /// Test method — encryption ka result check karne ke liye use hota hai.
+        /// </summary>
         public string check()
         {
             var userid = "e62cad15-ff31-41ac-a37a-0be89d761623";
@@ -3612,6 +3630,9 @@ namespace Vastwebmulti.API
             //"45wKTemPn/jbN7TrGLeApmc/yKZZtY3s+UknAj6KNipSW5xKfTqc+CCgKj6mak78K6P54g8y93k="
             return "";
         }
+        /// <summary>
+        /// Client ka Internet IP address nikalta hai — HTTP headers se forwarded ya remote address return karta hai.
+        /// </summary>
         public string GetComputer_InternetIP()
         {
             string ipaddress;
@@ -3626,6 +3647,9 @@ namespace Vastwebmulti.API
             //}
             //return ipaddress;
         }
+        /// <summary>
+        /// TripleDES algorithm se string ko encrypt karta hai — IP address ko token mein convert karne ke liye use hota hai.
+        /// </summary>
         public string Encrypt(string input, string key)
         {
             byte[] inputArray = UTF8Encoding.UTF8.GetBytes(input);
@@ -3638,6 +3662,9 @@ namespace Vastwebmulti.API
             tripleDES.Clear();
             return Convert.ToBase64String(resultArray, 0, resultArray.Length);
         }
+        /// <summary>
+        /// TripleDES algorithm se encrypted string ko decrypt karta hai — token se original IP address recover karta hai.
+        /// </summary>
         public string Decrypt(string input, string key)
         {
             byte[] inputArray = Convert.FromBase64String(input);
@@ -3659,6 +3686,9 @@ namespace Vastwebmulti.API
         //    base.Dispose(disposing);
         //}
         private static System.Random random = new System.Random();
+        /// <summary>
+        /// Diye gaye length ka random numeric string generate karta hai — unique order ID banane ke liye use hota hai.
+        /// </summary>
         public string RandomString(int length)
         {
             //const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -3666,6 +3696,9 @@ namespace Vastwebmulti.API
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+        /// <summary>
+        /// VastBazaar API se auth token fetch karta hai — recharge API calls ke liye authorization token return karta hai.
+        /// </summary>
         public IRestResponse tokencheck()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -3683,6 +3716,9 @@ namespace Vastwebmulti.API
                 return response;
             }
         }
+        /// <summary>
+        /// Recharge response ka standard JSON object banata hai — status, transaction ID, error message, aur balance include karta hai.
+        /// </summary>
         public JObject outputchk(string sts, string trnid, string errormsg, decimal remain, string yourid, string rchid)
         {
             dynamic resp = new JObject();
@@ -3694,6 +3730,9 @@ namespace Vastwebmulti.API
             resp.RechargeID = rchid;
             return resp;
         }
+        /// <summary>
+        /// Log file mein message likhta hai — recharge request aur response ki details text file mein save karta hai.
+        /// </summary>
         public static void WriteLog(string strFileName, string strMessage)
         {
             try

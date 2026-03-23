@@ -22,6 +22,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
+    /// <summary>
+    /// Retailer ke liye flight search, booking, ticket, cancellation aur reports handle karta hai.
+    /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
     public class AirController : Controller
@@ -62,6 +65,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         #region Travel
+        /// <summary>
+        /// Airport ka naam, city ya code se search karke matching list return karta hai.
+        /// </summary>
         [HttpGet]
         [OutputCache(Duration = 2000, VaryByParam = "term")]
         public JsonResult GetSourceName(string term)
@@ -71,16 +77,25 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                                     select p.Airport_Name + "," + p.City_Name + "," + p.Country_name + "(" + p.Aiport_Code + ")").ToList<string>();
             return Json(planets, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Flight search result ke liye filter partial view render karta hai.
+        /// </summary>
         public PartialViewResult _AirFilter(AirSearchResultVM model)
         {
             var FirmName = db.Admin_details.AsNoTracking().FirstOrDefault().Companyname;
             ViewBag.FirmName = FirmName;
             return PartialView(model);
         }
+        /// <summary>
+        /// GET - Bina parameters ke Travel page par redirect karta hai.
+        /// </summary>
         public ActionResult Search()
         {
             return RedirectToAction("Travel", "Home");
         }
+        /// <summary>
+        /// GET - Flight search karta hai source, destination, date, passengers aur class ke basis par.
+        /// </summary>
         [HttpGet]
         public ActionResult Search(string[] txtSource, string[] txtDestination, DateTime[] txt_frm_date, DateTime? txt_to_date, int txtAdultCount, int txtChildCount, int txtInfantCount, int ddlclass, int JourneyType, bool? calanderFare, string ReturnType, string[] prefferedAirlines)
         {
@@ -321,6 +336,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// GET - Calendar fare partial view return karta hai diye gaye source, destination aur date ke liye.
+        /// </summary>
         [HttpGet]
         public PartialViewResult _CalanderFare(string txtSource, string txtDestination, DateTime txt_frm_date)
         {
@@ -379,6 +397,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return PartialView(new CalanderFareVM());
             }
         }
+        /// <summary>
+        /// POST - Source aur destination ke liye month-wise calendar fare data fetch karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult CalanderFare(string txtSource, string txtDestination, string month, string type)
         {
@@ -460,17 +481,26 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return PartialView("_CalanderFare", "notfound");
             }
         }
+        /// <summary>
+        /// GET - Return journey ke liye select kiye gaye flight ka top section partial view dikhata hai.
+        /// </summary>
         [HttpGet]
         public PartialViewResult _TypeReturnAirTopSection(AirTopSectionModel model)
         {
             return PartialView(model);
         }
+        /// <summary>
+        /// POST - Select kiye gaye flight itinerary ka top section partial view render karta hai.
+        /// </summary>
         [HttpPost]
         [AcceptVerbs(HttpVerbs.Post)]
         public PartialViewResult ShowSelectedFlightItinarary(AirTopSectionModel model)
         {
             return PartialView("_TypeReturnAirTopSection", model);
         }
+        /// <summary>
+        /// GET - TraceId aur ResultIndex ke basis par selected flight ka full detail fetch karta hai.
+        /// </summary>
         [HttpGet]
         public ActionResult FlightDetails(string TraceId, string[] ResultIndex, int JourneyType = 0)
         {
@@ -683,6 +713,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// Flight ke fare rules (cancellation/change policy) search result se fetch karta hai.
+        /// </summary>
         public ActionResult getfarerules_search(string TraceId, string ResultIndex)
         {
             try
@@ -854,11 +887,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return new SSRNonLcc();
             }
         }
+        /// <summary>
+        /// GET - Bina parameters ke Travel page par redirect karta hai.
+        /// </summary>
         [HttpGet]
         public ActionResult BookingReview()
         {
             return RedirectToAction("Travel", "Home");
         }
+        /// <summary>
+        /// POST - Passenger details leke flight booking review page process karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult BookingReview(FlightDetailsVM model)
         {

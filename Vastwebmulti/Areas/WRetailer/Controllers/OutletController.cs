@@ -15,10 +15,16 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 {
     
     [Authorize(Roles = "Whitelabelretailer")]
+    /// <summary>
+    /// Is class ka kaam OutletController area ke operations handle karna hai.
+    /// </summary>
     public class OutletController : Controller
     {
         // GET: RETAILER/Outlet
         [HttpGet]
+        /// <summary>
+        /// Retailer se related data handle karta hai.
+        /// </summary>
         public ActionResult RetailerKYC()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -33,6 +39,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Data ya status verify/check karta hai.
+        /// </summary>
         public JsonResult VerifyOutlet(string Mobile)
         {
             try
@@ -50,6 +59,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Outlet registration ya management karta hai.
+        /// </summary>
         public ActionResult RegisterOutlet(string RetailerId, string Mobile, string OTP, string email, string store_type, string Frm_Name, string RetailerName, string pincode, string address)
         {
             try
@@ -66,6 +78,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        /// <summary>
+        /// File ya document upload karta hai.
+        /// </summary>
         public ActionResult Upload_KYC_Doc(string RetailerId, string DocId, string PanCard, HttpPostedFileBase file)
         {
             try
@@ -103,6 +118,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Existing record ko update/edit karta hai.
+        /// </summary>
         public ActionResult UpdatePancard(string RetailerID, string PanCard)
         {
             try
@@ -118,6 +136,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Data fetch karke view mein dikhata hai.
+        /// </summary>
         public ActionResult ViewKYCDocsAndStatus(string RetailerID, string PanCard)
         {
             try
@@ -131,6 +152,9 @@ namespace Vastwebmulti.Areas.WRetailer.Controllers
                 return Json(ex.Message);
             }
         }
+        /// <summary>
+        /// User login ya logout handle karta hai.
+        /// </summary>
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();

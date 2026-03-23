@@ -82,6 +82,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             SendPushNotification(userid, "https://www.google.com", "Testing", "SignalR");
             return View();
         }
+        /// <summary>
+        /// Data/message/fund send karta hai.
+        /// </summary>
         public void SendPushNotification(string ReceiverMailID, string RedirectUrl, string Message, string Title)
         {
             VastwebmultiEntities db = new VastwebmultiEntities();
@@ -162,6 +165,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             return View(vmodel);
         }
 
+        /// <summary>
+        /// Fund transfer ya balance se related operation karta hai.
+        /// </summary>
         public void CallAutofundtransfer()
         {
             #region Auto credit transfer start
@@ -6237,6 +6243,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             ViewBag.admin = admininfo;
             return View();
         }
+        /// <summary>
+        /// Is class ka kaam JsonModel area ke operations handle karna hai.
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
@@ -11181,6 +11190,9 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             return txnid1;
         }
 
+        /// <summary>
+        /// Is class ka kaam RemotePost area ke operations handle karna hai.
+        /// </summary>
         public class RemotePost
         {
             private System.Collections.Specialized.NameValueCollection Inputs = new System.Collections.Specialized.NameValueCollection();
@@ -11188,11 +11200,17 @@ namespace Vastwebmulti.Areas.MASTER.Controllers
             public string Method = "post";
             public string FormName = "form1";
 
+            /// <summary>
+            /// Naya record insert/add karta hai database mein.
+            /// </summary>
             public void Add(string name, string value)
             {
                 Inputs.Add(name, value);
             }
 
+            /// <summary>
+            /// mPOS transaction handle karta hai.
+            /// </summary>
             public void Post()
             {
                 System.Web.HttpContext.Current.Response.Clear();
