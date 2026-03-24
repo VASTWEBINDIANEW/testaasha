@@ -23,6 +23,9 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Vastwebmulti.Controllers
 {
+    /// <summary>
+    /// UPI payout controller — sender details, beneficiary registration, fund transfer, aur UPI verification ke liye API actions provide karta hai.
+    /// </summary>
     public class UPIController : Controller
     {
         private VastwebmultiEntities db;
@@ -36,6 +39,9 @@ namespace Vastwebmulti.Controllers
                 upiapists = serviceinfo.Sts;
             }
         }
+        /// <summary>
+        /// UPI sender ki details fetch karta hai — user authenticate karke VastBazaar API se remitter information return karta hai.
+        /// </summary>
         [HttpPost]
         public string UPI_Senderdetails(Api_Details api)
         {
@@ -124,6 +130,9 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// UPI beneficiary register karta hai — sender ke account mein naya UPI ID add karta hai VastBazaar API ke zariye.
+        /// </summary>
         [HttpPost]
         public string UPI_Ben_Registration(Api_Details api)
         {
@@ -205,6 +214,9 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// UPI beneficiary delete karta hai — given ID se registered UPI beneficiary ko account se remove karta hai.
+        /// </summary>
         [HttpPost]
         public string UPI_Ben_Delete(Api_Details api)
         {
@@ -286,6 +298,9 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// UPI ID verify karta hai — VastBazaar API se beneficiary ka UPI ID validate karta hai aur result return karta hai.
+        /// </summary>
         [HttpPost]
         public string Beneficiary_UPI_Verification(Api_Details api)
         {
@@ -487,6 +502,9 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// UPI ke zariye fund transfer karta hai — balance check, duplicate prevention, aur VastBazaar API se actual payment process karta hai.
+        /// </summary>
         [HttpPost]
         public string Fund_transfer(Api_Details api)
         {
@@ -789,6 +807,9 @@ namespace Vastwebmulti.Controllers
                 return responsechk("Failed", api.Txnid, "", api.amount.ToString(), "", "Missing Parameter", "0");
             }
         }
+        /// <summary>
+        /// Fund transfer ka standard JSON response banata hai — status, order ID, amount, bank RRN aur remaining balance include karta hai.
+        /// </summary>
         public string responsechk(string status, string orderid, string apiorderid, string Amount, string bankrrn, string msg, string remain)
         {
             var resp = new
@@ -806,6 +827,9 @@ namespace Vastwebmulti.Controllers
             Response.ContentType = "application/json";
             return serializer.Serialize(resp);
         }
+        /// <summary>
+        /// Simple JSON response banata hai — status aur output message ke saath JSON string return karta hai.
+        /// </summary>
         public string outputchk(string status, string output)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -819,6 +843,9 @@ namespace Vastwebmulti.Controllers
             Response.ContentType = "application/json";
             return serializer.Serialize(dict);
         }
+        /// <summary>
+        /// User aur token ko authenticate karta hai — IP address validate karke True/False status return karta hai.
+        /// </summary>
         public string authentication(string tokenid, string userid)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -900,6 +927,9 @@ namespace Vastwebmulti.Controllers
                 ipaddress = Request.ServerVariables["REMOTE_ADDR"];
             return ipaddress;
         }
+        /// <summary>
+        /// Server ki MAC address return karta hai — network interface se physical address fetch karta hai.
+        /// </summary>
         public string GetMACAddress()
         {
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
@@ -914,6 +944,9 @@ namespace Vastwebmulti.Controllers
             }
             return sMacAddress;
         }
+        /// <summary>
+        /// TripleDES algorithm se encrypted token ko decrypt karta hai — IP address recover karne ke liye use hota hai.
+        /// </summary>
         public string Decrypt(string input, string key)
         {
             byte[] inputArray = Convert.FromBase64String(input);
@@ -927,12 +960,18 @@ namespace Vastwebmulti.Controllers
             return UTF8Encoding.UTF8.GetString(resultArray);
         }
         private static Random random = new Random();
+        /// <summary>
+        /// Random alphabetic string generate karta hai — unique transaction ID banane ke liye use hota hai.
+        /// </summary>
         public string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+        /// <summary>
+        /// VastBazaar API ka valid token check karta hai — token expired hone par naya generate karta hai aur return karta hai.
+        /// </summary>
         public string vastbazarcheck()
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -1051,6 +1090,9 @@ namespace Vastwebmulti.Controllers
                 }
             }
         }
+        /// <summary>
+        /// VastBazaar API se naya auth token generate karne ke liye authentication request bhejta hai.
+        /// </summary>
         public IRestResponse tokencheck()
         {
             var apidetails = db.Money_API_URLS.Where(aa => aa.API_Name == "VASTWEB").SingleOrDefault();
@@ -1065,6 +1107,9 @@ namespace Vastwebmulti.Controllers
             IRestResponse response = client.Execute(request);
             return response;
         }
+        /// <summary>
+        /// UPI beneficiary ki ek entry hold karne wala model — UPI ID, name, verification status aur sender number rakhta hai.
+        /// </summary>
         public class ResponseItem
         {
             public int idno { get; set; }
@@ -1080,6 +1125,9 @@ namespace Vastwebmulti.Controllers
             public object Retailerid { get; set; }
             public DateTime insertdate { get; set; }
         }
+        /// <summary>
+        /// API response ka root object — status aur ResponseItem ki list hold karta hai.
+        /// </summary>
         public class RootObject
         {
             public string Status { get; set; }

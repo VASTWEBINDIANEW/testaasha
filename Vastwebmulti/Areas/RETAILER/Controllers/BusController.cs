@@ -23,7 +23,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
 
     /// <summary>
-    /// RETAILER Area - Manages bus ticket search, seat selection, booking, payment, cancellation, and reporting for retailers.
+    /// Retailer ke liye bus ticket search, seat selection, booking, payment, cancellation aur report handle karta hai.
     /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
@@ -66,7 +66,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         /// <summary>
-        /// GET/POST Searches available buses for a given source, destination, and journey date.
+        /// Source, destination aur journey date ke basis par available buses search karta hai.
         /// </summary>
         public ActionResult Search(string txtSourceBus, string txtDestinationBus, DateTime txt_frm_dateBus)
         {
@@ -209,7 +209,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         /// <summary>
-        /// GET Renders the partial bus filter view with company name for the given search result model.
+        /// Bus search result ke liye filter partial view render karta hai.
         /// </summary>
         public PartialViewResult _BusFilter(BusSearchResultVM model)
         {
@@ -218,7 +218,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return PartialView(model);
         }
         /// <summary>
-        /// GET Fetches the seat layout for a selected bus trip and populates boarding/dropping points.
+        /// GET - Select kiye gaye bus ka seat layout aur boarding/dropping points fetch karta hai.
         /// </summary>
         [HttpGet]
         public ActionResult GetBusLayout(string ResultIndex, string TraceId)

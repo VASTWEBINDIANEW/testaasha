@@ -13,16 +13,25 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
+    /// <summary>
+    /// Retailer ke liye nayi DTH connection booking aur uske plans manage karta hai
+    /// </summary>
     public class DthConnectionController : Controller
     {
 
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         VastwebmultiEntities db = new VastwebmultiEntities();
+        /// <summary>
+        /// Default constructor - controller initialize karta hai
+        /// </summary>
         public DthConnectionController()
         {
 
         }
+        /// <summary>
+        /// UserManager aur SignInManager ke saath controller initialize karta hai
+        /// </summary>
         public DthConnectionController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
@@ -53,6 +62,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         // GET: RETAILER/DthConnection
+        /// <summary>
+        /// DTH connection ki listing dikhata hai, search aur sort bhi support karta hai
+        /// </summary>
         public ActionResult Index(string txtSearch, string SortBy)
         {
             var userid = User.Identity.GetUserId();
@@ -62,6 +74,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             model.itemsInCart = db.Carts.Count(a => a.BuyerId == userid);
             return View(model);
         }
+        /// <summary>
+        /// DTH operators aur set top box categories ka menu partial view return karta hai
+        /// </summary>
         public PartialViewResult _MenuList()
         {
             DthConMenuVM model = new DthConMenuVM();
@@ -73,6 +88,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }).ToList();
             return PartialView(model);
         }
+        /// <summary>
+        /// Filter ke hisaab se DTH plans ki list partial view mein dikhata hai
+        /// </summary>
         public PartialViewResult _productlist(int? PlanId, int? SetTopBoxID, decimal? Price, string SortBy)
         {
             var RetailerID = User.Identity.GetUserId();
@@ -95,6 +113,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return PartialView(model);
         }
 
+        /// <summary>
+        /// Ek specific DTH plan ka detail view dikhata hai
+        /// </summary>
         public ActionResult ProductView(int id, string type)
         {
             try
@@ -109,6 +130,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         }
         [HttpGet]
+        /// <summary>
+        /// Payment process shuru karta hai, selected DTH plan ka data load karta hai
+        /// </summary>
         public ActionResult ProcessToPay(int? Dthid)
         {
             try
@@ -132,6 +156,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// DTH booking ka final payment process karta hai aur balance deduct karta hai
+        /// </summary>
         public ActionResult ProcessToPayFinal(int idno, string txtname, string txtEmail, string txtmobile, string txtpincode, string State1, string District1, string txtAddress)
         {
             try
@@ -219,6 +246,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("ProcessToPay");
             }
         }
+        /// <summary>
+        /// State ID ke basis par district list JSON mein return karta hai
+        /// </summary>
         public JsonResult DistrictList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -231,6 +261,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// DTH connection bookings ki report aaj ki date ke liye dikhata hai
+        /// </summary>
         public ActionResult DthBookingReport()
         {
             var userid = User.Identity.GetUserId();
@@ -244,6 +277,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View(ch);
         }
         [HttpPost]
+        /// <summary>
+        /// Filter ke saath DTH booking report dikhata hai - date range aur status ke hisaab se
+        /// </summary>
         public ActionResult DthBookingReport(string ddl_top, string ddl_status, string txt_frm_date, string txt_to_date)
         {
             var userid = User.Identity.GetUserId();

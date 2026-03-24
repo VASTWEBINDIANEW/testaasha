@@ -10,6 +10,9 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Controllers
 {
 
+    /// <summary>
+    /// User account manage karne ke liye controller - password, phone number, two-factor authentication handle karta hai
+    /// </summary>
     [Authorize]
     public class ManageController : Controller
     {
@@ -52,6 +55,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Manage/Index
+        /// <summary>
+        /// Account management ka main page dikhata hai jisme password, phone aur two-factor info hoti hai
+        /// </summary>
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
@@ -77,6 +83,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/RemoveLogin
+        /// <summary>
+        /// User ke account se external login (jaise Google) remove karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
@@ -101,6 +110,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Manage/AddPhoneNumber
+        /// <summary>
+        /// Phone number add karne ka form dikhata hai
+        /// </summary>
         public ActionResult AddPhoneNumber()
         {
             return View();
@@ -108,6 +120,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/AddPhoneNumber
+        /// <summary>
+        /// Naya phone number add karke OTP verification ke liye bhejta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
@@ -140,6 +155,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/EnableTwoFactorAuthentication
+        /// <summary>
+        /// User ke account ke liye two-factor authentication enable karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EnableTwoFactorAuthentication()
@@ -227,6 +245,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/DisableTwoFactorAuthentication
+        /// <summary>
+        /// User ke account ka two-factor authentication band karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DisableTwoFactorAuthentication()
@@ -282,6 +303,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Manage/VerifyPhoneNumber
+        /// <summary>
+        /// Phone number verify karne ka OTP entry form dikhata hai
+        /// </summary>
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
@@ -291,6 +315,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/VerifyPhoneNumber
+        /// <summary>
+        /// Phone number verify karne ka OTP validate karke phone confirm karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
@@ -316,6 +343,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/RemovePhoneNumber
+        /// <summary>
+        /// User ke account se registered phone number remove karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemovePhoneNumber()
@@ -335,6 +365,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Manage/ChangePassword
+        /// <summary>
+        /// Password change karne ka form dikhata hai
+        /// </summary>
         public ActionResult ChangePassword()
         {
             return View();
@@ -342,6 +375,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/ChangePassword
+        /// <summary>
+        /// Purana password verify karke naya password set karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -366,6 +402,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Manage/SetPassword
+        /// <summary>
+        /// Naya password set karne ka form dikhata hai jab account mein password na ho
+        /// </summary>
         public ActionResult SetPassword()
         {
             return View();
@@ -373,6 +412,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/SetPassword
+        /// <summary>
+        /// Account ke liye pehli baar password set karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SetPassword(SetPasswordViewModel model)
@@ -398,6 +440,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Manage/ManageLogins
+        /// <summary>
+        /// User ke registered external logins aur linked accounts ka page dikhata hai
+        /// </summary>
         public async Task<ActionResult> ManageLogins(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
@@ -421,6 +466,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Manage/LinkLogin
+        /// <summary>
+        /// External login provider se account link karne ke liye redirect karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LinkLogin(string provider)
@@ -431,6 +479,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Manage/LinkLoginCallback
+        /// <summary>
+        /// External login link karne ke baad callback handle karta hai aur account se jodta hai
+        /// </summary>
         public async Task<ActionResult> LinkLoginCallback()
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());

@@ -27,6 +27,9 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Controllers
 {
+    /// <summary>
+    /// Application ka main controller - home page, login, registration aur sabhi public pages handle karta hai
+    /// </summary>
     public class HomeController : Controller
     {
 
@@ -59,6 +62,9 @@ namespace Vastwebmulti.Controllers
         ApplicationDbContext context = new ApplicationDbContext();
         VastwebmultiEntities DB = new VastwebmultiEntities();
         ALLSMSSend smssend = new ALLSMSSend();
+        /// <summary>
+        /// Admin registration ka form dikhata hai, agar admin already register hai to home page par redirect karta hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult Registration()
         {
@@ -81,6 +87,9 @@ namespace Vastwebmulti.Controllers
                 }
             }
         }
+        /// <summary>
+        /// User ka purana email change karke naya email set karta hai
+        /// </summary>
         public async Task<ActionResult> changeemail(string oldemail, string newmail)
         {
             var user = await UserManager.FindByEmailAsync(oldemail);
@@ -90,6 +99,9 @@ namespace Vastwebmulti.Controllers
             var result = await UserManager.UpdateAsync(user);
             return View();
         }
+        /// <summary>
+        /// Admin registration form submit hone par naya admin account create karta hai
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Registration(RegisterViewModel model)
@@ -203,6 +215,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// Home page dikhata hai aur logged-in user ko uske role ke hisaab se dashboard par redirect karta hai
+        /// </summary>
         public ActionResult Index1()
         {
 
@@ -755,6 +770,9 @@ namespace Vastwebmulti.Controllers
             return View();
         }
 
+        /// <summary>
+        /// User delete karne ka page dikhata hai
+        /// </summary>
         public ActionResult DeleteUser()
         {
             return View();

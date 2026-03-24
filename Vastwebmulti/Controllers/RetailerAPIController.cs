@@ -187,6 +187,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// Cancelled cheque ki image upload karta hai — base64 image ko server par save karke account record update karta hai.
+        /// </summary>
         [HttpPost]
         [Route("api/user/Uploadcancelledcheque")]
         public HttpResponseMessage Uploadcancelledcheque(Imagephoto model)
@@ -236,6 +239,9 @@ namespace Vastwebmulti.Controllers
         }
 
 
+        /// <summary>
+        /// IMPS money transfer transaction ki photo upload karta hai — transaction ID se record dhundh kar image attach karta hai.
+        /// </summary>
         [HttpPost]
         [Route("api/user/MoneyTransfer_Image_Upload")]
         public HttpResponseMessage IMPSTXN_Image_Upload(Imagephoto model)
@@ -293,6 +299,9 @@ namespace Vastwebmulti.Controllers
 
 
 
+        /// <summary>
+        /// Aadhar card front aur back ki images upload karta hai — KYC document verification ke liye server par save karta hai.
+        /// </summary>
         [HttpPost]
         [Route("api/user/UploadDocumentsImages")]
         public HttpResponseMessage UploadAadharcarddoc(Imagephoto model)
@@ -806,6 +815,9 @@ namespace Vastwebmulti.Controllers
             return Request.CreateResponse(HttpStatusCode.Created, message1);
         }
 
+        /// <summary>
+        /// Dealer dwara retailer ke documents upload karta hai — Aadhar aur PAN card images server par save karke record update karta hai.
+        /// </summary>
         [HttpPost]
         [Route("api/user/UploadRetailerDocumentsByDealer")]
         public HttpResponseMessage UploadRetailerDocumentsByDealer(Imagephoto model)
@@ -927,6 +939,9 @@ namespace Vastwebmulti.Controllers
             return Request.CreateResponse(HttpStatusCode.Created, message1);
 
         }
+        /// <summary>
+        /// Company ki Help, Terms & Conditions, aur Privacy Policy data return karta hai — JSON files se padh kar response mein bhejta hai.
+        /// </summary>
         [HttpGet]
         [Route("api/user/CompanyPolicyData")]
         public IHttpActionResult Helpterm()
@@ -997,6 +1012,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// Whitelabel company ki Help, Terms & Conditions, aur Privacy Policy data return karta hai.
+        /// </summary>
         [HttpGet]
         [Route("api/user/WhiteCompanyPolicyData")]
         public IHttpActionResult White_Helpterm()
@@ -1043,6 +1061,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// User ka KYC video upload karta hai — base64 video ko server par save karke retailer ke KYC record mein path update karta hai.
+        /// </summary>
         [HttpPost]
         [Route("api/user/UploadKYCVIDEO")]
         public async Task<IHttpActionResult> UploadUserKYCVideo(Kycvideoesclass model)
@@ -1094,6 +1115,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// AEPS agent ka video link save karta hai — agent ID se record find karke video URL update karta hai.
+        /// </summary>
         [HttpPost]
         [Route("api/user/Videolink")]
         public async Task<IHttpActionResult> Videolink(AepsVideoUpload model)
@@ -1170,6 +1194,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// API server ka base URL return karta hai — connection test ke liye request URL check karta hai.
+        /// </summary>
         [HttpPost]
         [Route("api/user/check")]
         public async Task<IHttpActionResult> check()
@@ -1183,6 +1210,9 @@ namespace Vastwebmulti.Controllers
             return Json(response1);
         }
 
+        /// <summary>
+        /// VastBazaar API ka auth token fetch ya refresh karta hai — expired hone par naya token generate karke database mein save karta hai.
+        /// </summary>
         public string getAuthToken()
         {
             try
@@ -1253,6 +1283,9 @@ namespace Vastwebmulti.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// VastBazaar API se naya token generate karne ke liye authentication request bhejta hai.
+        /// </summary>
         public IRestResponse tokencheck()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1272,6 +1305,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// Log file mein message likhta hai — upload aur API operations ki details text file mein save karta hai.
+        /// </summary>
         public static void WriteLog(string strMessage)
         {
             try
@@ -1306,6 +1342,9 @@ namespace Vastwebmulti.Controllers
         }
 
     }
+    /// <summary>
+    /// Image upload requests ke liye model — profile photo, documents, aur cancelled cheque ki base64 strings hold karta hai.
+    /// </summary>
     public class Imagephoto
     {
         public int cancellchecque_idno { get; set; }
@@ -1326,17 +1365,26 @@ namespace Vastwebmulti.Controllers
 
 
     }
+    /// <summary>
+    /// KYC video upload ke liye model — video data, user ID, aur role information rakhta hai.
+    /// </summary>
     public class Kycvideoesclass
     {
         public string kycvideo { get; set; }
         public string userids { get; set; }
         public string role { get; set; }
     }
+    /// <summary>
+    /// AEPS agent ka video link aur agent ID hold karne wala model.
+    /// </summary>
     public class AepsVideoUpload
     {
         public string Videolink { get; set; }
         public string Agentid { get; set; }
     }
+    /// <summary>
+    /// API response ka status aur message hold karne wala simple model.
+    /// </summary>
     public class Responsests
     {
         public string status { get; set; }

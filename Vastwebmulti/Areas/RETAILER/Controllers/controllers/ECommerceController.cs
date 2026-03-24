@@ -15,15 +15,24 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
+    /// <summary>
+    /// Retailer ke liye eCommerce product listing, cart aur order management handle karta hai
+    /// </summary>
     public class ECommerceController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         VastwebmultiEntities db = new VastwebmultiEntities();
+        /// <summary>
+        /// Default constructor - controller initialize karta hai
+        /// </summary>
         public ECommerceController()
         {
 
         }
+        /// <summary>
+        /// UserManager aur SignInManager ke saath controller initialize karta hai
+        /// </summary>
         public ECommerceController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
@@ -55,6 +64,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
         // GET: RETAILER/ECommerce
         //[MenuAccessFilter]
+        /// <summary>
+        /// ECommerce main page dikhata hai, KYC aur paid service status check karta hai
+        /// </summary>
         public ActionResult Index(string txtSearch, string SortBy)
         {
 
@@ -338,6 +350,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             ProductVM model1 = new ProductVM();
             return View(model1);
         }
+        /// <summary>
+        /// Product categories aur sub-categories ka menu partial view return karta hai
+        /// </summary>
         public PartialViewResult _MenuList()
         {
             MenuVM model = new MenuVM();
@@ -353,6 +368,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
 
+        /// <summary>
+        /// Filter ke hisaab se products ki list partial view mein dikhata hai
+        /// </summary>
         public PartialViewResult _productlist(string ProductName, int? SubCatId, decimal? Price, string SortBy)
         {
             var RetailerID = User.Identity.GetUserId();
@@ -376,6 +394,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return PartialView(model);
         }
         [HttpGet]
+        /// <summary>
+        /// Product name se search karke matching products ki list JSON mein return karta hai
+        /// </summary>
         public JsonResult FindProductByName(string term)
         {
             //Searching records from list using LINQ query
@@ -383,6 +404,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
             return Json(lstProducts, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Product ka detail page dikhata hai, cart mein add bhi kar sakta hai
+        /// </summary>
         public ActionResult ProductView(int id, string type)
         {
             try
@@ -431,6 +455,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Retailer ka shopping cart dikhata hai sabhi selected products ke saath
+        /// </summary>
         public ActionResult viewCart()
         {
             var userid = User.Identity.GetUserId();
@@ -450,6 +477,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View(lstProductincart);
         }
 
+        /// <summary>
+        /// Cart partial view return karta hai current cart items ke saath
+        /// </summary>
         public PartialViewResult _viewCart()
         {
             try
@@ -474,6 +504,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Cart mein product ki quantity update karta hai aur updated cart return karta hai
+        /// </summary>
         public PartialViewResult UpdateQTY(int productId, int QTY)
         {
             try
@@ -504,6 +537,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 throw;
             }
         }
+        /// <summary>
+        /// Cart se ek product remove karta hai aur updated cart partial view return karta hai
+        /// </summary>
         public PartialViewResult RemoveCartItem(int productId)
         {
             try
@@ -535,6 +571,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Cart mein rakhe product ka payment process karta hai aur order confirm karta hai
+        /// </summary>
         public ActionResult doPayment(int productID)
         {
             try
@@ -566,6 +605,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// ECommerce transactions ki report aaj ki date ke liye dikhata hai
+        /// </summary>
         public ActionResult Transaction()
         {
             try
@@ -596,6 +638,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Filter ke saath ECommerce transaction report dikhata hai - category, date aur status se
+        /// </summary>
         public ActionResult Transaction(string category, int ddl_top, string txt_frm_date, string txt_to_date, string ddl_status)
         {
             try
@@ -632,6 +677,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// Ecommerce order ka invoice PDF generate karke return karta hai
+        /// </summary>
         public ActionResult EcommInvoicePdf(int OrderID)
         {
 

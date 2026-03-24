@@ -2113,6 +2113,9 @@ namespace Vastwebmulti.Controllers
         }
         //
         // POST: /Account/VerifyCode
+        /// <summary>
+        /// Admin dwara submit kiya gaya verification code validate karke admin login complete karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
 
@@ -3691,11 +3694,17 @@ namespace Vastwebmulti.Controllers
         }
         //
         // GET: /Account/ForgotPasswordConfirmation
+        /// <summary>
+        /// Forgot password ke baad confirmation page dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
+        /// <summary>
+        /// Admin ke forgot password ke baad confirmation page dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmationAdmin()
         {
@@ -3703,6 +3712,9 @@ namespace Vastwebmulti.Controllers
         }
         //
         // GET: /Account/ResetPassword
+        /// <summary>
+        /// Password reset karne ka form dikhata hai jab valid reset code ho
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
@@ -3711,6 +3723,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/ResetPassword
+        /// <summary>
+        /// User ka naya password set karta hai aur password reset complete karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -3740,6 +3755,9 @@ namespace Vastwebmulti.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Admin ka password reset form dikhata hai jab valid reset code ho
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ResetPasswordAdmin(string code)
         {
@@ -3748,6 +3766,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/ResetPassword
+        /// <summary>
+        /// Admin ka naya password set karta hai aur reset complete karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -3781,11 +3802,17 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Account/ResetPasswordConfirmation
+        /// <summary>
+        /// Password reset hone ke baad success confirmation page dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
         }
+        /// <summary>
+        /// Admin ka password reset hone ke baad success confirmation page dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmationAdmin()
         {
@@ -3795,6 +3822,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/ExternalLogin
+        /// <summary>
+        /// External login provider (jaise Google) se login process shuru karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -3806,6 +3836,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Account/SendCode
+        /// <summary>
+        /// Two-factor code bhejne ka provider selection page dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
@@ -3821,6 +3854,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/SendCode
+        /// <summary>
+        /// Selected provider ke through two-factor OTP code bhejta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -3841,6 +3877,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Account/ExternalLoginCallback
+        /// <summary>
+        /// External login provider se wapas aane par user ko authenticate karke login complete karta hai
+        /// </summary>
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
@@ -3871,6 +3910,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/ExternalLoginConfirmation
+        /// <summary>
+        /// External login ke baad naye user ka email confirm karke account create karta hai
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -3909,6 +3951,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // POST: /Account/LogOff
+        /// <summary>
+        /// User ko logout karke login page par redirect karta hai
+        /// </summary>
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -3923,6 +3968,9 @@ namespace Vastwebmulti.Controllers
 
         //
         // GET: /Account/ExternalLoginFailure
+        /// <summary>
+        /// External login fail hone par error page dikhata hai
+        /// </summary>
         [AllowAnonymous]
         public ActionResult ExternalLoginFailure()
         {

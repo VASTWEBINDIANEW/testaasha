@@ -24,6 +24,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
+    /// <summary>
+    /// Retailer ke liye bus ticket search, booking aur report management handle karta hai
+    /// </summary>
     public class BusController : Controller
     {
         //string VastbazaarBaseUrl = "http://localhost:62147/";
@@ -31,10 +34,16 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         VastwebmultiEntities db = new VastwebmultiEntities();
+        /// <summary>
+        /// Default constructor - controller initialize karta hai
+        /// </summary>
         public BusController()
         {
 
         }
+        /// <summary>
+        /// UserManager aur SignInManager ke saath controller initialize karta hai
+        /// </summary>
         public BusController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
@@ -62,6 +71,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 _userManager = value;
             }
         }
+        /// <summary>
+        /// Bus search karta hai source, destination aur travel date ke basis par
+        /// </summary>
         public ActionResult Search(string txtSourceBus, string txtDestinationBus, DateTime txt_frm_dateBus)
         {
             try
@@ -202,6 +214,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// Bus search results ka filter partial view return karta hai
+        /// </summary>
         public PartialViewResult _BusFilter(BusSearchResultVM model)
         {
             var FirmName = db.Admin_details.FirstOrDefault().Companyname;
@@ -209,6 +224,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return PartialView(model);
         }
         [HttpGet]
+        /// <summary>
+        /// Bus ki seating layout fetch karta hai ResultIndex aur TraceId ke basis par
+        /// </summary>
         public ActionResult GetBusLayout(string ResultIndex, string TraceId)
         {
             try
@@ -381,6 +399,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return PartialView(new SeatsLayoutVM());
             }
         }
+        /// <summary>
+        /// Passenger info page ke liye GET request handle karta hai
+        /// </summary>
         public ActionResult PaxInfo()
         {
             try
@@ -400,6 +421,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Selected seats aur passenger details ke saath bus booking form process karta hai
+        /// </summary>
         public ActionResult PaxInfo(string txtSourceBus, string txtDestinationBus, string txt_frm_dateBus, string ResultIndex, string BoardingPoints, string DropingPoints, string selectedSeats, string selectedSeatsName)
         {
             try
@@ -488,6 +512,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Passenger details ke saath bus seat booking final karta hai aur ticket generate karta hai
+        /// </summary>
         public ActionResult SeatBooking(BusPaxInfoVM model)
         {
             try
@@ -874,22 +901,34 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// Bus booking report ka main page dikhata hai
+        /// </summary>
         public ActionResult BusBookingReport()
         {
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Filter ke saath bus booking report dikhata hai - date range aur status ke hisaab se
+        /// </summary>
         public ActionResult BusBookingReport(string txt_frm_date, string txt_to_date, string ddl_status)
         {
             ViewBag.chk = "post";
             return View();
         }
+        /// <summary>
+        /// Infinite scroll ke liye HTML string aur pagination data hold karta hai
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
             public bool NoMoredata { get; set; }
         }
         [ChildActionOnly]
+        /// <summary>
+        /// Bus ticket report partial view return karta hai date aur status filter ke saath
+        /// </summary>
         public ActionResult _ticketbusreport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -934,6 +973,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //var rowdata = db.Sp_Recharge_info_LazyLoad(1, pagesize, "Retailer", userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), Operator, txtmob, ddl_status).ToList();
             //return View(rowdata);
         }
+        /// <summary>
+        /// Bus ticket report ka PDF generate karke download ke liye return karta hai
+        /// </summary>
         public ActionResult PDF_TicketBusReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -969,6 +1011,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return new ViewAsPdf(proc_Response);
             }
         }
+        /// <summary>
+        /// Bus ticket report Excel file mein export karta hai download ke liye
+        /// </summary>
         public ActionResult Excel_Ticketbus_Report(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1053,6 +1098,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Bus report mein infinite scroll ke liye page-wise data return karta hai
+        /// </summary>
         public ActionResult InfiniteScroll_bus(int pageindex, string ddl_status, DateTime frm_date, DateTime to_date)
         {
             string userid = User.Identity.GetUserId();
@@ -1076,6 +1124,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// TraceId ke basis par bus booking ka current status aur details fetch karta hai
+        /// </summary>
         public ActionResult getBookingDetails(string TraceId)
         {
             try
