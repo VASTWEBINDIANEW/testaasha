@@ -774,7 +774,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// GET - Fetches and displays the full hotel booking details from the provider for a given transaction.
+        /// GET - Diye gaye transaction ke liye provider se puri hotel booking details fetch karke dikhata hai
         /// </summary>
         [HttpGet]
         public ActionResult HotelFullDetails(string TXNID)
@@ -844,7 +844,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
         }
 
         /// <summary>
-        /// POST - Initiates a hotel booking cancellation request with the provider and saves the change request.
+        /// POST - Provider ke saath hotel booking cancellation request start karke change request save karta hai
         /// </summary>
         [HttpPost]
         public ActionResult BookingCancallation(int id, string BookingId)
@@ -1072,6 +1072,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// Provider se naya auth token fetch karke database mein update karta hai
+        /// </summary>
         public void UpdateAuthToken()
         {
             var response = tokencheck();

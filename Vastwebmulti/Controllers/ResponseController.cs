@@ -31,15 +31,24 @@ using static Vastwebmulti.Areas.RETAILER.Controllers.HomeController;
 
 namespace Vastwebmulti.Controllers
 {
+    /// <summary>
+    /// Response controller — payment gateway callbacks, recharge API responses, UPI fund credits, aur AEPS updates process karta hai.
+    /// </summary>
     public class ResponseController : Controller
     {
         ALLSMSSend smssend = new ALLSMSSend();
         Backupapi backup = new Backupapi();
         // GET: Response
+        /// <summary>
+        /// Default index view return karta hai.
+        /// </summary>
         public ActionResult Index()
         {
             return View();
         }
+        /// <summary>
+        /// VastBazaar recharge API ka callback handle karta hai — recharge response process karke transaction status update karta hai.
+        /// </summary>
         public ActionResult vastweb()
         {
             using (VastwebmultiEntities dbsrs = new VastwebmultiEntities())
@@ -934,6 +943,9 @@ namespace Vastwebmulti.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// Query string se recharge ID aur status lekar API response update karta hai — transaction record ka status refresh karta hai.
+        /// </summary>
         public ActionResult updateAPIResp()
         {
             using (VastwebmultiEntities dbsrs = new VastwebmultiEntities())
@@ -1902,6 +1914,9 @@ namespace Vastwebmulti.Controllers
             }
 
         }
+        /// <summary>
+        /// VastBazaar money transfer API ka callback process karta hai — DMT transaction ka status update karke SMS/email notification bhejta hai.
+        /// </summary>
         public ActionResult VastBazaar()
         {
             using (VastwebmultiEntities dbsrs = new VastwebmultiEntities())
@@ -5443,6 +5458,9 @@ namespace Vastwebmulti.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// ICICI UPI ka GET callback receive karta hai — URL log karke success response return karta hai.
+        /// </summary>
         [HttpGet]
         public ActionResult ICICIUPI(string ss)
         {
@@ -5459,6 +5477,9 @@ namespace Vastwebmulti.Controllers
             };
             return Json(resp, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// ICICI UPI ka POST callback process karta hai — payment details log karke fund update karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult ICICIUPI()
         {

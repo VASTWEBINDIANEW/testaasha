@@ -19,7 +19,7 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.ADMIN.Controllers
 {
     /// <summary>
-    /// ADMIN Area - Manages flight ticket reports, cancellations, and ticket viewing/printing
+    /// ADMIN area - Flight ticket reports, cancellations aur ticket view/print ka management karta hai
     /// </summary>
     //Remote
     [Authorize(Roles = "Admin")]
@@ -63,7 +63,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// GET - Displays the flight ticket report page with user filter dropdowns.
+        /// GET - Flight ticket report page user filter dropdowns ke saath dikhata hai
         /// </summary>
         [HttpGet]
         public ActionResult TicketReport()
@@ -118,7 +118,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Filters and returns the flight ticket report by date range.
+        /// POST - Date range ke basis par flight ticket report filter karke return karta hai
         /// </summary>
         [HttpPost]
         public ActionResult TicketReport(string txt_frm_date, string txt_to_date)
@@ -177,7 +177,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// Child action - Renders the partial ticket report view filtered by the provided criteria.
+        /// Child action - Diye gaye criteria se filter hokar ticket report ka partial view render karta hai
         /// </summary>
         [ChildActionOnly]
         public ActionResult _ticketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
@@ -295,7 +295,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Returns a paginated chunk of ticket report data as JSON for infinite scroll.
+        /// POST - Infinite scroll ke liye ticket report data ka ek page JSON mein return karta hai
         /// </summary>
         [HttpPost]
         public ActionResult scroll_TicketReport(int pageindex, string txt_frm_date, string txt_to_date, string PNR, string ddl_status, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
@@ -430,13 +430,16 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return sw.GetStringBuilder().ToString();
             }
         }
+        /// <summary>
+        /// Infinite scroll ke liye HTML string aur NoMoredata flag hold karta hai
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
             public bool NoMoredata { get; set; }
         }
         /// <summary>
-        /// GET - Exports the flight ticket report to an Excel file for download.
+        /// GET - Flight ticket report ko Excel file mein export karke download karta hai
         /// </summary>
         public ActionResult ExcelTicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
@@ -617,7 +620,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// GET - Exports the flight ticket report as a PDF for download.
+        /// GET - Flight ticket report ko PDF format mein export karke download karta hai
         /// </summary>
         public ActionResult PDFTicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
@@ -737,7 +740,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// GET - Returns JSON totals (success, failed, pending) for the flight ticket report by date range.
+        /// GET - Date range ke liye flight report ke success, failed aur pending totals JSON mein return karta hai
         /// </summary>
         public ActionResult TotalticketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabel)
         {
@@ -863,7 +866,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Fetches live flight booking status from the provider API and returns JSON.
+        /// POST - Provider API se live flight booking status fetch karke JSON mein return karta hai
         /// </summary>
         [HttpPost]
         public ActionResult GetFlightStatus(TicketBookinDetailsModel model)
@@ -925,7 +928,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             //return View(respo);
         }
         /// <summary>
-        /// GET - Displays the flight cancellation report for today's date.
+        /// GET - Aaj ki date ka flight cancellation report dikhata hai
         /// </summary>
         public ActionResult CancellationReport()
         {
@@ -973,7 +976,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Filters and displays the flight cancellation report by date range and user.
+        /// POST - Date range aur user ke basis par flight cancellation report filter karke dikhata hai
         /// </summary>
         [HttpPost]
         public ActionResult CancellationReport(string txt_frm_date, string txt_to_date, int? ddl_top, string ddl_status, string PNR, string ddlusers, string allmaster, string alldealer, string allretailer, string allwhitelabe)
@@ -1089,7 +1092,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// POST - Checks the cancellation request status with the provider and updates the refund record.
+        /// POST - Provider se cancellation request ka status check karke refund record update karta hai
         /// </summary>
         [HttpPost]
         public ActionResult CancellationStatus(int ChangeReqId, int idno)
@@ -1164,7 +1167,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// GET - Displays the full flight ticket details view including fare and baggage information.
+        /// GET - Flight ticket ki puri details fare aur baggage information ke saath dikhata hai
         /// </summary>
         [HttpGet]
         public ActionResult ViewTicket(int idno, string firsName, string lastName)
@@ -1233,7 +1236,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// GET - Renders a PDF print version of the flight ticket with full fare details.
+        /// GET - Flight ticket ka pura fare ke saath PDF print version render karta hai
         /// </summary>
         public ActionResult PrintTicket(int idno, string firsName, string lastName)
         {
@@ -1300,7 +1303,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// GET - Displays the flight ticket details view with fare information hidden.
+        /// GET - Flight ticket ki details bina fare information ke dikhata hai
         /// </summary>
         [HttpGet]
         public ActionResult ViewTicketWithoutFare(int idno, string firsName, string lastName)
@@ -1369,7 +1372,7 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
             }
         }
         /// <summary>
-        /// GET - Renders a PDF print version of the flight ticket without fare details.
+        /// GET - Flight ticket ka bina fare details ke PDF print version render karta hai
         /// </summary>
         public ActionResult PrintWithoutFare(int idno, string firsName, string lastName)
         {
@@ -1517,6 +1520,9 @@ namespace Vastwebmulti.Areas.ADMIN.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// Provider se naya auth token fetch karke database mein update karta hai
+        /// </summary>
         public void UpdateAuthToken()
         {
             var response = tokencheck();

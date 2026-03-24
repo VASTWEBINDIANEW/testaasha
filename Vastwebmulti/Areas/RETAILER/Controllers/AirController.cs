@@ -3012,6 +3012,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //var rowdata = db.Sp_Recharge_info_LazyLoad(1, pagesize, "Retailer", userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), Operator, txtmob, ddl_status).ToList();
             //return View(rowdata);
         }
+        /// <summary>
+        /// Ticket report ko PDF format mein download/print karne ke liye generate karta hai.
+        /// </summary>
         public ActionResult PDF_TicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -3044,6 +3047,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Ticket report ko Excel file mein export karta hai.
+        /// </summary>
         public ActionResult Excel_Ticket_Report(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -3117,6 +3123,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return sw.GetStringBuilder().ToString();
             }
         }
+        /// <summary>
+        /// POST - Ticket report mein infinite scroll ke liye next page data load karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult InfiniteScroll_ticket(int pageindex, string PNR, string ddl_status, DateTime frm_date, DateTime to_date)
         {
@@ -3136,6 +3145,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(jsonmodel);
         }
 
+        /// <summary>
+        /// POST - Booked flight ka current booking status provider se fetch karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult GetFlightStatus(TicketBookinDetailsModel model)
         {
@@ -3195,6 +3207,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
             //return View(respo);
         }
+        /// <summary>
+        /// POST - Hold kiye gaye flight PNR ko release karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult ReleasePNR(RealsePNRModel model)
         {
@@ -3241,6 +3256,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //string responseJs = "{\"Version\":\"1.0\",\"StatusCode\":200,\"Content\":{\"ResponseCode\":1,\"ADDINFO\":{\"B2B2BStatus\":null,\"ResponseStatus\":2,\"TraceId\":\"c4a3dd8e-f2ac-4fde-bfc0-6653821286fa\",\"Error\":{\"ErrorCode\":0,\"ErrorMessage\":\"\"}}}}";
             return responseJs;
         }
+        /// <summary>
+        /// POST - Flight fare par surcharge calculate karke final amount return karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult getAirSurcharge(decimal OfferedFare, decimal publishedFare, bool isDomestic)
         {
@@ -3280,6 +3298,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return 0;
             }
         }
+        /// <summary>
+        /// POST - RBD (Reservation Booking Designator) ke basis par flight ka final price verify karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult PRICERBD(PriceRBDModel model)
         {
@@ -3333,6 +3354,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// POST - Booked flight ticket cancel karne ka request provider ko bhejta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult CancelTicket(int idno, long bookingid, string origin, string destination, string ticketIds)
         {
@@ -3416,10 +3440,16 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(JsonConvert.SerializeObject(jsrespo));
             }
         }
+        /// <summary>
+        /// GET - Flight cancellation report page dikhata hai.
+        /// </summary>
         public ActionResult CancellationReport()
         {
             return View();
         }
+        /// <summary>
+        /// POST - Date range, status aur PNR filter se cancellation report load karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult CancellationReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
@@ -3427,6 +3457,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Cancellation report partial view filter ke saath render karta hai.
+        /// </summary>
         [ChildActionOnly]
         public ActionResult _CancellationReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string bookingid, string cancelreqid, string tracid)
         {
@@ -3466,6 +3499,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //var rowdata = db.Sp_Recharge_info_LazyLoad(1, pagesize, "Retailer", userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), Operator, txtmob, ddl_status).ToList();
             //return View(rowdata);
         }
+        /// <summary>
+        /// Cancellation report ko PDF format mein download ke liye generate karta hai.
+        /// </summary>
         public ActionResult PDF_CancellationReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string bookingid, string cancelreqid, string tracid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -3501,6 +3537,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return new ViewAsPdf(proc_Response);
             }
         }
+        /// <summary>
+        /// Cancellation report ko Excel file mein export karta hai.
+        /// </summary>
         public ActionResult Excel_Cancellation_Report(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string bookingid, string cancelreqid, string tracid)
         {
             DateTime frm1 = Convert.ToDateTime(txt_frm_date);
@@ -3556,6 +3595,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             Response.End();
             return View();
         }
+        /// <summary>
+        /// POST - Cancellation report mein infinite scroll ke liye next page data load karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult InfiniteScroll_cancelticket(int pageindex, string PNR, string ddl_status, DateTime frm_date, DateTime to_date, string bookingid, string cancelreqid, string tracid)
         {
@@ -3572,6 +3614,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             jsonmodel.HTMLString = renderPartialViewtostring("_CancellationReport", tbrow);
             return Json(jsonmodel);
         }
+        /// <summary>
+        /// POST - Flight cancellation request ka current status provider se check karta hai.
+        /// </summary>
         [HttpPost]
         public ActionResult CancellationStatus(int ChangeReqId, int idno)
         {
@@ -3637,6 +3682,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(JsonConvert.SerializeObject(jsrespo), JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// GET - Booked flight ka ticket detail with fare view page dikhata hai.
+        /// </summary>
         [HttpGet]
         public ActionResult ViewTicket(int idno, string firsName, string lastName)
         {
@@ -3710,6 +3758,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// Flight ticket print karne ke liye fare sahit ticket view return karta hai.
+        /// </summary>
         public ActionResult PrintTicket(int idno, string firsName, string lastName)
         {
             try
@@ -3782,6 +3833,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// Flight ticket print karta hai, lekin fare amount chhupakar (without fare).
+        /// </summary>
         public ActionResult PrintWithoutFare(int idno, string firsName, string lastName)
         {
             try
@@ -3853,6 +3907,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// GET - Ticket detail dikhata hai lekin fare amount chhupakar (passenger ke liye without fare view).
+        /// </summary>
         [HttpGet]
         public ActionResult ViewTicketWithoutFare(int idno, string firsName, string lastName)
         {
@@ -3926,6 +3983,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// Flight booking ka final result view return karta hai.
+        /// </summary>
         public ActionResult FlightFinalresult()
         {
             return View();
