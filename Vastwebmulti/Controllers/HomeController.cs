@@ -70,21 +70,13 @@ namespace Vastwebmulti.Controllers
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
             {
-                var checkOne = db.Admin_details.ToList();
-                if (checkOne.Any())
-                {
+                if (db.Admin_details.Any())
                     return RedirectToAction("Index1", "Home");
-                }
-                else
-                {
-                    ViewData["state"] = DB.State_Desc.Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
-                    ViewBag.District = DB.District_Desc.Select(a => new SelectListItem { Text = a.Dist_Desc, Value = a.Dist_id.ToString() }).ToList();
 
-                    string currenturl = HttpContext.Request.Url.Authority;
-                    currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
-                    ViewBag.DomainName = currenturl;
-                    return View();
-                }
+                ViewData["state"]    = DB.State_Desc.Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
+                ViewBag.District     = DB.District_Desc.Select(a => new SelectListItem { Text = a.Dist_Desc, Value = a.Dist_id.ToString() }).ToList();
+                ViewBag.DomainName   = HttpContext.Request.Url.Authority.Replace("www.", "").Replace("https://", "").Replace("http://", "");
+                return View();
             }
         }
         /// <summary>
@@ -121,8 +113,7 @@ namespace Vastwebmulti.Controllers
                     }
                     else
                     {
-                        var check = db.Admin_details.Where(es => es.mobile == model.Mobile).Any();
-                        if (check == false)
+                        if (!db.Admin_details.Any(es => es.mobile == model.Mobile))
                         {
                             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.Mobile };
                             //Generate Random Password
@@ -216,558 +207,272 @@ namespace Vastwebmulti.Controllers
         }
 
         /// <summary>
-        /// Home page dikhata hai aur logged-in user ko uske role ke hisaab se dashboard par redirect karta hai
+        /// Home page dikhata hai - active license pe role-based redirect karta hai,
+        /// expired hone par blocked message ke saath home page show karta hai
         /// </summary>
         public ActionResult Index1()
         {
-
-
             var userid = User.Identity.GetUserId();
             var x = DB.Admin_details.SingleOrDefault().RenivalDate >= DateTime.Now;
+
             if (x)
             {
                 try
                 {
+                    // APK download URL determine karo
                     var currentwebsitess = DB.Admin_details.SingleOrDefault().WebsiteUrl;
                     var pthss = Path.Combine(Server.MapPath("~/AdminApk/" + currentwebsitess + "/Vastwebmulti.txt"));
-
                     try
                     {
-
                         if (!System.IO.File.Exists(pthss))
                         {
-                            // Create a file to write to.
                             ViewBag.urllink = "No App Url";
                         }
                         else
                         {
-                            var fs = new FileStream(pthss, FileMode.Open, FileAccess.Read);
-                            var sr = new StreamReader(fs, Encoding.UTF8);
-
-                            string contentaa = sr.ReadToEnd();
-                            ViewBag.urllink = contentaa;
+                            using (var fs = new FileStream(pthss, FileMode.Open, FileAccess.Read))
+                            using (var sr = new StreamReader(fs, Encoding.UTF8))
+                                ViewBag.urllink = sr.ReadToEnd();
                         }
 
-
-                        string[] filesInDirectory = Directory.GetFiles(Server.MapPath("~/AdminApk/" + currentwebsitess), "*.apk");
-                        if (filesInDirectory.Length == 0)
-                        {
-                            ViewBag.urllink = null;
-                        }
-                        else
-                        {
-
-                            ViewBag.urllink = Url.Action("DownloadAPK", "", new { }, protocol: Request.Url.Scheme);
-                        }
+                        string[] apkFiles = Directory.GetFiles(Server.MapPath("~/AdminApk/" + currentwebsitess), "*.apk");
+                        ViewBag.urllink = apkFiles.Length == 0
+                            ? null
+                            : Url.Action("DownloadAPK", "", new { }, protocol: Request.Url.Scheme);
                     }
-                    catch
-                    {
-                        ViewBag.urllink = null;
-                    }
+                    catch { ViewBag.urllink = null; }
 
-
-
+                    // Role ke hisaab se dashboard par redirect karo
                     using (VastwebmultiEntities db = new VastwebmultiEntities())
                     {
                         if (User.IsInRole("Admin"))
-                        {
                             return RedirectToAction("Dashboard", "Home", new { area = "ADMIN" });
-                        }
-                        else if (User.IsInRole("master"))
+
+                        if (User.IsInRole("master"))
                         {
-                            var stschk = db.Superstokist_details.Where(aa => aa.SSId == userid).SingleOrDefault().Status;
-                            if (stschk == "Y")
-                            {
+                            if (db.Superstokist_details.Where(aa => aa.SSId == userid).SingleOrDefault().Status == "Y")
                                 return RedirectToAction("Dashboard", "Home", new { area = "master" });
-                            }
-                            else
-                            {
-                                TempData.Remove("data");
-                                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                                TempData["userblocked"] = "YOUR MASTER ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
-                                return RedirectToAction("Login", "Home", null);
-                            }
+                            TempData.Remove("data");
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            TempData["userblocked"] = "YOUR MASTER ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
+                            return RedirectToAction("Login", "Home");
                         }
-                        else if (User.IsInRole("Dealer"))
+                        if (User.IsInRole("Dealer"))
                         {
-                            var stschk = db.Dealer_Details.Where(aa => aa.DealerId == userid).SingleOrDefault().Status;
-                            if (stschk == "Y")
-                            {
+                            if (db.Dealer_Details.Where(aa => aa.DealerId == userid).SingleOrDefault().Status == "Y")
                                 return RedirectToAction("Dashboard", "Home", new { area = "Dealer" });
-                            }
-                            else
-                            {
-                                TempData.Remove("data");
-                                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                                TempData["userblocked"] = "Your Account is Currently Blocked with Distributor, Contact to Administrator.";
-                                return RedirectToAction("Login", "Home", null);
-                            }
-
+                            TempData.Remove("data");
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            TempData["userblocked"] = "Your Account is Currently Blocked with Distributor, Contact to Administrator.";
+                            return RedirectToAction("Login", "Home");
                         }
-                        else if (User.IsInRole("Retailer"))
+                        if (User.IsInRole("Retailer"))
                         {
-                            var RetailerDetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
-
-                            var stschk = RetailerDetails.Status;
-                            if (stschk == "Y")
-                            {
+                            if (db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault().Status == "Y")
                                 return RedirectToAction("Dashboard", "Home", new { area = "Retailer" });
-                            }
-                            else
-                            {
-                                TempData.Remove("data");
-                                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                                TempData["userblocked"] = "Your account is currently blocked, contact Administrator";
-                                return RedirectToAction("Login", "Home", null);
-                            }
-
+                            TempData.Remove("data");
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            TempData["userblocked"] = "Your account is currently blocked, contact Administrator";
+                            return RedirectToAction("Login", "Home");
                         }
-                        else if (User.IsInRole("API"))
+                        if (User.IsInRole("API"))
                         {
-                            var stschk = db.api_user_details.Where(aa => aa.apiid == userid).SingleOrDefault().status;
-                            if (stschk == "Y")
-                            {
+                            if (db.api_user_details.Where(aa => aa.apiid == userid).SingleOrDefault().status == "Y")
                                 return RedirectToAction("Dashboard", "Home", new { area = "API" });
-                            }
-                            else
-                            {
-                                TempData.Remove("data");
-                                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                                TempData["userblocked"] = "YOUR API ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
-                                return RedirectToAction("Login", "Home", null);
-                            }
+                            TempData.Remove("data");
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            TempData["userblocked"] = "YOUR API ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
+                            return RedirectToAction("Login", "Home");
                         }
-                        else if (User.IsInRole("RCH"))
-                        {
+                        if (User.IsInRole("RCH"))
                             return RedirectToAction("Index", "Home", new { area = "RCH" });
-                        }
-                        else if (User.IsInRole("Vendor"))
+                        if (User.IsInRole("Vendor"))
                         {
-                            var stschk = db.Vendor_details.Where(aa => aa.userid == userid).SingleOrDefault().status;
-                            if (stschk == true)
-                            {
+                            if (db.Vendor_details.Where(aa => aa.userid == userid).SingleOrDefault().status == true)
                                 return RedirectToAction("Index", "Home", new { area = "VENDOR" });
-                            }
-                            else
-                            {
-                                TempData.Remove("data");
-                                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                                TempData["userblocked"] = "YOUR VENDOR ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
-                                return RedirectToAction("Login", "Home", null);
-                            }
-
+                            TempData.Remove("data");
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            TempData["userblocked"] = "YOUR VENDOR ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
+                            return RedirectToAction("Login", "Home");
                         }
-                        else if (User.IsInRole("FeeCollector"))
+                        if (User.IsInRole("FeeCollector"))
                         {
-                            var stschk = db.FeeCollector_details.Where(aa => aa.FCId == userid).SingleOrDefault().Status;
-                            if (stschk == "Y")
-                            {
+                            if (db.FeeCollector_details.Where(aa => aa.FCId == userid).SingleOrDefault().Status == "Y")
                                 return RedirectToAction("Index", "Home", new { area = "FeeCollector" });
-                            }
-                            else
-                            {
-                                TempData.Remove("data");
-                                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                                TempData["userblocked"] = "YOUR FEECOLLECTOR ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
-                                return RedirectToAction("Login", "Home", null);
-                            }
+                            TempData.Remove("data");
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            TempData["userblocked"] = "YOUR FEECOLLECTOR ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
+                            return RedirectToAction("Login", "Home");
                         }
-                        else if (User.IsInRole("Employee"))
-                        {
+                        if (User.IsInRole("Employee"))
                             return RedirectToAction("Dashboard", "Home", new { area = "Employee" });
-                        }
                     }
                 }
-                catch (Exception ex)
-                {
-
-                }
-
-                // Single query instead of ToList() + FirstOrDefault()
-                var showRec = DB.tblSilderIsStatus.FirstOrDefault();
-                ViewBag.silder1 = showRec != null ? showRec.Silder1Status : "";
-
-                ViewBag.showsilder1 = DB.tblSilders.Where(a => a.SilderType == "Silder1").ToList();
-                ViewBag.showsilder2 = DB.tblSilders.Where(a => a.SilderType == "Silder2").ToList();
-
-                // Load all ADMIN travel records once, then split in-memory
-                var allTravels = DB.tblTravels.Where(p => p.Role == "ADMIN").ToList();
-                ViewBag.bus = allTravels;
-                var bus = allTravels.FirstOrDefault(p => p.TravelType == "Bus");
-                ViewBag.buscontent = bus != null ? bus.Content : "";
-                ViewBag.image = bus != null ? bus.Image : "";
-                var hotel = allTravels.FirstOrDefault(p => p.TravelType == "Hotel");
-                ViewBag.hotelcontent = hotel != null ? hotel.Content : "";
-                ViewBag.hotelimg = hotel != null ? hotel.Image : "";
-                var flight = allTravels.FirstOrDefault(p => p.TravelType == "Flight");
-                ViewBag.flightcontent = flight != null ? flight.Content : "";
-                ViewBag.flightimg = flight != null ? flight.Image : "";
-
-                var travelcolorRec = DB.tblTravelColors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.travelcolor = travelcolorRec != null ? travelcolorRec.TravelColor : "#9c99b7";
-
-                var about = DB.tblAboutUsContents.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.aboutimage = about != null ? about.AboutImage : "";
-                ViewBag.abouthead = about != null ? about.AboutHeading : "";
-                ViewBag.aboutcon = about != null ? about.AboutContent : "";
-                var dthcolorRec = DB.tblDTHColors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.colordth = dthcolorRec != null ? dthcolorRec.DthBackColor : "Red";
-
-                ViewBag.dthplan = DB.tblDTHs.Where(p => p.Role == "ADMIN").ToList();
-                ViewBag.team = DB.tblteams.ToList();
-                var tcolorRec = DB.tblTeamBackColors.FirstOrDefault();
-                ViewBag.tcolor = tcolorRec != null ? tcolorRec.TeamColor : "Blue";
-
-                var contentRec = DB.tblWhyChooseContents.FirstOrDefault();
-                ViewBag.content = contentRec != null ? contentRec.AllContent : "";
-                ViewBag.allcontent = DB.tblWhyChooseUsAllContents.ToList();
-                var whychoosecolorRec = DB.tblWhyChooseBackColors.FirstOrDefault();
-                ViewBag.whychoosecolor = whychoosecolorRec != null ? whychoosecolorRec.WhyBackColor : "Green";
-
-                ViewBag.newupdate = DB.tblNewUpdates.Where(p => p.Role == "ADMIN").ToList();
-                var backnewcolorRec = DB.tblNewUpdateColors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.newcolor = backnewcolorRec != null ? backnewcolorRec.NewContentBackColor : "Red";
-
-                var colorRec = DB.changecolors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.headcolor = (colorRec != null && !string.IsNullOrEmpty(colorRec.adminandouterheadercolor))
-                                    ? colorRec.adminandouterheadercolor : "Gray";
-
-                var contectRec = DB.tblContectBackColors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.contect = contectRec != null ? contectRec.ContectColor : "";
-                var addressRec = DB.tblContects.FirstOrDefault();
-                ViewBag.Headadd = addressRec != null ? addressRec.HeadOfficeAddress : "";
-                ViewBag.branch = addressRec != null ? addressRec.BranceOfficeAddress : "";
-                ViewBag.compnay = addressRec != null ? addressRec.CompnayName : "";
-                ViewBag.landline = addressRec != null ? addressRec.LandlineNo : "";
-                ViewBag.phone = addressRec != null ? addressRec.phone : "";
-                ViewBag.emil = addressRec != null ? addressRec.Email : "";
-
-                var sertype1 = DB.tblFooterServices.ToList();
-                if (sertype1.Count > 0)
-                {
-                    var recharge = sertype1.FirstOrDefault(p => p.ServiceType == "Recharge & Bill");
-                    ViewBag.recharge = recharge;
-                    if (recharge != null)
-                    {
-                        ViewBag.rechar1 = recharge.ServiceName1;
-                        ViewBag.rechar2 = recharge.ServiceName2;
-                        ViewBag.rechar3 = recharge.ServiceName3;
-                        ViewBag.rechar4 = recharge.ServiceName4;
-                        ViewBag.rechar5 = recharge.ServiceName5;
-                        ViewBag.rechar6 = recharge.ServiceName6;
-                        ViewBag.rechar7 = recharge.ServiceName7;
-                        ViewBag.rechar8 = recharge.ServiceName8;
-                    }
-
-                    var travelfo = sertype1.FirstOrDefault(p => p.ServiceType == "Travel & Hotel");
-                    ViewBag.travelfo = travelfo;
-                    if (travelfo != null)
-                    {
-                        ViewBag.tra1 = travelfo.ServiceName1;
-                        ViewBag.tra2 = travelfo.ServiceName2;
-                        ViewBag.tra3 = travelfo.ServiceName3;
-                        ViewBag.tra4 = travelfo.ServiceName4;
-                        ViewBag.tra5 = travelfo.ServiceName5;
-                        ViewBag.tra6 = travelfo.ServiceName6;
-                        ViewBag.tra7 = travelfo.ServiceName7;
-                        ViewBag.tra8 = travelfo.ServiceName8;
-                    }
-                    var comm = sertype1.FirstOrDefault(p => p.ServiceType == "E-Commerce");
-                    ViewBag.comm = comm;
-                    if (comm != null)
-                    {
-                        ViewBag.comm1 = comm.ServiceName1;
-                        ViewBag.comm2 = comm.ServiceName2;
-                        ViewBag.comm3 = comm.ServiceName3;
-                        ViewBag.comm4 = comm.ServiceName4;
-                        ViewBag.comm5 = comm.ServiceName5;
-                        ViewBag.comm6 = comm.ServiceName6;
-                        ViewBag.comm7 = comm.ServiceName7;
-                        ViewBag.comm8 = comm.ServiceName8;
-                    }
-                    var gift = sertype1.FirstOrDefault(p => p.ServiceType == "Gift Cards");
-                    ViewBag.gift = gift;
-                    if (gift != null)
-                    {
-                        ViewBag.gift1 = gift.ServiceName1;
-                        ViewBag.gift2 = gift.ServiceName2;
-                        ViewBag.gift3 = gift.ServiceName3;
-                        ViewBag.gift4 = gift.ServiceName4;
-                        ViewBag.gift5 = gift.ServiceName5;
-                        ViewBag.gift6 = gift.ServiceName6;
-                        ViewBag.gift7 = gift.ServiceName7;
-                        ViewBag.gift8 = gift.ServiceName8;
-                    }
-                    var fina = sertype1.FirstOrDefault(p => p.ServiceType == "Financial Services");
-                    ViewBag.fina = fina;
-                    if (fina != null)
-                    {
-                        ViewBag.fina1 = fina.ServiceName1;
-                        ViewBag.fina2 = fina.ServiceName2;
-                        ViewBag.fina3 = fina.ServiceName3;
-                        ViewBag.fina4 = fina.ServiceName4;
-                        ViewBag.fina5 = fina.ServiceName5;
-                        ViewBag.fina6 = fina.ServiceName6;
-                        ViewBag.fina7 = fina.ServiceName7;
-                        ViewBag.fina8 = fina.ServiceName8;
-                    }
-                }
-
-                var footercolor = DB.tblfooterbackcolors.Where(p => p.Role == "ADMIN").ToList();
-                if (footercolor.Count > 0)
-                {
-                    ViewBag.footercolor = footercolor.SingleOrDefault().FooterBackColor;
-                }
-                else
-                {
-                    ViewBag.footercolor = "#da097d";
-                }
-
-                //********************** Start Admin Social Media ****************************
-                var Afacelink = DB.tblFooterlinks.Where(p => p.FooterType == "Facebook" && p.Role == "ADMIN").ToList();
-                ViewBag.Afac = Afacelink.Count == 0 ? "" : Afacelink.SingleOrDefault().FooterLink;
-                var Atwitter = DB.tblFooterlinks.Where(p => p.FooterType == "Twitter" && p.Role == "ADMIN").ToList();
-                ViewBag.Atwi = Atwitter.Count == 0 ? "" : Atwitter.SingleOrDefault().FooterLink;
-                var AInstagram = DB.tblFooterlinks.Where(p => p.FooterType == "Instagram" && p.Role == "ADMIN").ToList();
-                ViewBag.AInstagra = AInstagram.Count == 0 ? "" : AInstagram.SingleOrDefault().FooterLink;
-                var Alinked = DB.tblFooterlinks.Where(p => p.FooterType == "LinkedIn" && p.Role == "ADMIN").ToList();
-                ViewBag.Alinked = Alinked.Count == 0 ? "" : Alinked.SingleOrDefault().FooterLink;
-                var APinterest = DB.tblFooterlinks.Where(p => p.FooterType == "Pinterest" && p.Role == "ADMIN").ToList();
-                ViewBag.APinteres = APinterest.Count == 0 ? "" : APinterest.SingleOrDefault().FooterLink;
-                var AYoutube = DB.tblFooterlinks.Where(p => p.FooterType == "Youtube" && p.Role == "ADMIN").ToList();
-                ViewBag.AYoutub = AYoutube.Count == 0 ? "" : AYoutube.SingleOrDefault().FooterLink;
-                var ABlogger = DB.tblFooterlinks.Where(p => p.FooterType == "Blogger" && p.Role == "ADMIN").ToList();
-                ViewBag.ABlogge = ABlogger.Count == 0 ? "" : ABlogger.SingleOrDefault().FooterLink;
-                var ATumblr = DB.tblFooterlinks.Where(p => p.FooterType == "Tumblr" && p.Role == "ADMIN").ToList();
-                ViewBag.ATumbl = ATumblr.Count == 0 ? "" : ATumblr.SingleOrDefault().FooterLink;
-                //********************** End Admin Social Media ****************************
-
-
-                var chkk = DB.WhiteLabel_Badges.Where(p => p.UserRole == "ADMIN").ToList();
-                if (chkk.Any())
-                {
-                    ViewBag.checkBadge = DB.WhiteLabel_Badges.Where(p => p.UserRole == "ADMIN").ToList();
-
-                    //********************** Start Admin Badges Media **************************
-                    var AppfuturaA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Appfutura" && p.UserRole == "ADMIN").ToList();
-                    ViewBag.AppfuturA = AppfuturaA.Count == 0 ? "" : AppfuturaA.SingleOrDefault().Url_Link;
-                    var ApplancherA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Applancher" && p.UserRole == "ADMIN").ToList();
-                    ViewBag.ApplancheA = ApplancherA.Count == 0 ? "" : ApplancherA.SingleOrDefault().Url_Link;
-                    var BadushA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Badush" && p.UserRole == "ADMIN").ToList();
-                    ViewBag.BadusA = BadushA.Count == 0 ? "" : BadushA.SingleOrDefault().Url_Link;
-                    var ExtractA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Extract" && p.UserRole == "ADMIN").ToList();
-                    ViewBag.ExtracA = ExtractA.Count == 0 ? "" : ExtractA.SingleOrDefault().Url_Link;
-                    var GoodfirmsA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Good-firms" && p.UserRole == "ADMIN").ToList();
-                    ViewBag.GoodfirmA = GoodfirmsA.Count == 0 ? "" : GoodfirmsA.SingleOrDefault().Url_Link;
-                    var MobileappA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Mobile-app" && p.UserRole == "ADMIN").ToList();
-                    ViewBag.MobileapA = MobileappA.Count == 0 ? "" : MobileappA.SingleOrDefault().Url_Link;
-                    var TrustpilotA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Trustpilot" && p.UserRole == "ADMIN").ToList();
-                    ViewBag.TrustpiloA = TrustpilotA.Count == 0 ? "" : TrustpilotA.SingleOrDefault().Url_Link;
-                    var FreelancerA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Freelancer" && p.UserRole == "ADMIN").ToList();
-                    ViewBag.FreelancerA = FreelancerA.Count == 0 ? "" : FreelancerA.SingleOrDefault().Url_Link;
-                    //********************** End Admin Badges Media **************************
-                }
-                else
-                {
-                    ViewBag.checkBadge = null;
-                }
-
-            }
-            else
-            {
-                var show = DB.tblSilderIsStatus.ToList();
-                if (show.Count > 0)
-                {
-                    if (show.FirstOrDefault().Silder1Status == "Y")
-                    {
-                        ViewBag.silder1 = show.FirstOrDefault().Silder1Status;
-                    }
-                    else
-                    {
-                        ViewBag.silder1 = show.FirstOrDefault().Silder1Status;
-                    }
-                }
-                ViewBag.showsilder1 = DB.tblSilders.Where(a => a.SilderType == "Silder1").ToList();
-                ViewBag.showsilder2 = DB.tblSilders.Where(a => a.SilderType == "Silder2").ToList();
-                var bus = DB.tblTravels.Where(p => p.Role == "ADMIN" && p.TravelType == "Bus").ToList();
-                ViewBag.bus = DB.tblTravels.Where(p => p.Role == "ADMIN").ToList();
-                ViewBag.buscontent = bus.Count == 0 ? "" : bus.Where(p => p.TravelType == "Bus").FirstOrDefault().Content;
-                ViewBag.image = bus.Count == 0 ? "" : bus.Where(p => p.TravelType == "Bus").FirstOrDefault().Image;
-                var hotel = DB.tblTravels.Where(p => p.Role == "ADMIN" && p.TravelType == "Hotel").ToList();
-                ViewBag.hotelcontent = hotel.Count == 0 ? "" : hotel.Where(p => p.TravelType == "Hotel").FirstOrDefault().Content;
-                ViewBag.hotelimg = hotel.Count == 0 ? "" : hotel.Where(p => p.TravelType == "Hotel").FirstOrDefault().Image;
-                var flight = DB.tblTravels.Where(p => p.Role == "ADMIN" && p.TravelType == "Flight").ToList();
-                ViewBag.flightcontent = flight.Count == 0 ? "" : flight.Where(p => p.TravelType == "Flight").FirstOrDefault().Content;
-                ViewBag.flightimg = flight.Count == 0 ? "" : flight.Where(p => p.TravelType == "Flight").FirstOrDefault().Image;
-                var travelcolor = DB.tblTravelColors.Where(p => p.Role == "ADMIN").ToList();
-                if (travelcolor.Count > 0)
-                {
-                    ViewBag.travelcolor = travelcolor.SingleOrDefault().TravelColor;
-                }
-                else
-                {
-                    ViewBag.travelcolor = "#9c99b7";
-                }
-                var about2 = DB.tblAboutUsContents.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.aboutimage = about2 != null ? about2.AboutImage : "";
-                ViewBag.abouthead = about2 != null ? about2.AboutHeading : "";
-                ViewBag.aboutcon = about2 != null ? about2.AboutContent : "";
-
-                var dthcolorRec2 = DB.tblDTHColors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.colordth = dthcolorRec2 != null ? dthcolorRec2.DthBackColor : "Red";
-
-                ViewBag.dthplan = DB.tblDTHs.Where(p => p.Role == "ADMIN").ToList();
-                ViewBag.team = DB.tblteams.ToList();
-                var tcolorRec2 = DB.tblTeamBackColors.FirstOrDefault();
-                ViewBag.tcolor = tcolorRec2 != null ? tcolorRec2.TeamColor : "Blue";
-
-                var contentRec2 = DB.tblWhyChooseContents.FirstOrDefault();
-                ViewBag.content = contentRec2 != null ? contentRec2.AllContent : "";
-                ViewBag.allcontent = DB.tblWhyChooseUsAllContents.ToList();
-                var whychoosecolorRec2 = DB.tblWhyChooseBackColors.FirstOrDefault();
-                ViewBag.whychoosecolor = whychoosecolorRec2 != null ? whychoosecolorRec2.WhyBackColor : "Green";
-
-                ViewBag.newupdate = DB.tblNewUpdates.Where(p => p.Role == "ADMIN").ToList();
-                var backnewcolorRec2 = DB.tblNewUpdateColors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.newcolor = backnewcolorRec2 != null ? backnewcolorRec2.NewContentBackColor : "Red";
-
-                var colorRec2 = DB.changecolors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.headcolor = (colorRec2 != null && !string.IsNullOrEmpty(colorRec2.adminandouterheadercolor))
-                                    ? colorRec2.adminandouterheadercolor : "Gray";
-
-                var contectRec2 = DB.tblContectBackColors.FirstOrDefault(p => p.Role == "ADMIN");
-                ViewBag.contect = contectRec2 != null ? contectRec2.ContectColor : "";
-                var addressRec2 = DB.tblContects.FirstOrDefault();
-                ViewBag.Headadd = addressRec2 != null ? addressRec2.HeadOfficeAddress : "";
-                ViewBag.branch = addressRec2 != null ? addressRec2.BranceOfficeAddress : "";
-                ViewBag.compnay = addressRec2 != null ? addressRec2.CompnayName : "";
-                ViewBag.landline = addressRec2 != null ? addressRec2.LandlineNo : "";
-                ViewBag.phone = addressRec2 != null ? addressRec2.phone : "";
-                ViewBag.emil = addressRec2 != null ? addressRec2.Email : "";
-
-                var sertype1 = DB.tblFooterServices.ToList();
-                if (sertype1.Count > 0)
-                {
-                    var recharge = sertype1.FirstOrDefault(p => p.ServiceType == "Recharge & Bill");
-                    ViewBag.recharge = recharge;
-                    if (recharge != null)
-                    {
-                        ViewBag.rechar1 = recharge.ServiceName1;
-                        ViewBag.rechar2 = recharge.ServiceName2;
-                        ViewBag.rechar3 = recharge.ServiceName3;
-                        ViewBag.rechar4 = recharge.ServiceName4;
-                        ViewBag.rechar5 = recharge.ServiceName5;
-                        ViewBag.rechar6 = recharge.ServiceName6;
-                        ViewBag.rechar7 = recharge.ServiceName7;
-                        ViewBag.rechar8 = recharge.ServiceName8;
-                    }
-
-                    var travelfo = sertype1.FirstOrDefault(p => p.ServiceType == "Travel & Hotel");
-                    ViewBag.travelfo = travelfo;
-                    if (travelfo != null)
-                    {
-                        ViewBag.tra1 = travelfo.ServiceName1;
-                        ViewBag.tra2 = travelfo.ServiceName2;
-                        ViewBag.tra3 = travelfo.ServiceName3;
-                        ViewBag.tra4 = travelfo.ServiceName4;
-                        ViewBag.tra5 = travelfo.ServiceName5;
-                        ViewBag.tra6 = travelfo.ServiceName6;
-                        ViewBag.tra7 = travelfo.ServiceName7;
-                        ViewBag.tra8 = travelfo.ServiceName8;
-                    }
-                    var comm = sertype1.FirstOrDefault(p => p.ServiceType == "E-Commerce");
-                    ViewBag.comm = comm;
-                    if (comm != null)
-                    {
-                        ViewBag.comm1 = comm.ServiceName1;
-                        ViewBag.comm2 = comm.ServiceName2;
-                        ViewBag.comm3 = comm.ServiceName3;
-                        ViewBag.comm4 = comm.ServiceName4;
-                        ViewBag.comm5 = comm.ServiceName5;
-                        ViewBag.comm6 = comm.ServiceName6;
-                        ViewBag.comm7 = comm.ServiceName7;
-                        ViewBag.comm8 = comm.ServiceName8;
-                    }
-                    var gift = sertype1.FirstOrDefault(p => p.ServiceType == "Gift Cards");
-                    ViewBag.gift = gift;
-                    if (gift != null)
-                    {
-                        ViewBag.gift1 = gift.ServiceName1;
-                        ViewBag.gift2 = gift.ServiceName2;
-                        ViewBag.gift3 = gift.ServiceName3;
-                        ViewBag.gift4 = gift.ServiceName4;
-                        ViewBag.gift5 = gift.ServiceName5;
-                        ViewBag.gift6 = gift.ServiceName6;
-                        ViewBag.gift7 = gift.ServiceName7;
-                        ViewBag.gift8 = gift.ServiceName8;
-                    }
-                    var fina = sertype1.FirstOrDefault(p => p.ServiceType == "Financial Services");
-                    ViewBag.fina = fina;
-                    if (fina != null)
-                    {
-                        ViewBag.fina1 = fina.ServiceName1;
-                        ViewBag.fina2 = fina.ServiceName2;
-                        ViewBag.fina3 = fina.ServiceName3;
-                        ViewBag.fina4 = fina.ServiceName4;
-                        ViewBag.fina5 = fina.ServiceName5;
-                        ViewBag.fina6 = fina.ServiceName6;
-                        ViewBag.fina7 = fina.ServiceName7;
-                        ViewBag.fina8 = fina.ServiceName8;
-                    }
-                }
-
-                var footercolor = DB.tblfooterbackcolors.Where(p => p.Role == "ADMIN").ToList();
-                if (footercolor.Count > 0)
-                {
-                    ViewBag.footercolor = footercolor.SingleOrDefault().FooterBackColor;
-                }
-                else
-                {
-                    ViewBag.footercolor = "#da097d";
-                }
-
-                //********************** Start Admin Social Media ****************************
-                var Afacelink = DB.tblFooterlinks.Where(p => p.FooterType == "Facebook" && p.Role == "ADMIN").ToList();
-                ViewBag.Afac = Afacelink.Count == 0 ? "" : Afacelink.SingleOrDefault().FooterLink;
-                var Atwitter = DB.tblFooterlinks.Where(p => p.FooterType == "Twitter" && p.Role == "ADMIN").ToList();
-                ViewBag.Atwi = Atwitter.Count == 0 ? "" : Atwitter.SingleOrDefault().FooterLink;
-                var AInstagram = DB.tblFooterlinks.Where(p => p.FooterType == "Instagram" && p.Role == "ADMIN").ToList();
-                ViewBag.AInstagra = AInstagram.Count == 0 ? "" : AInstagram.SingleOrDefault().FooterLink;
-                var Alinked = DB.tblFooterlinks.Where(p => p.FooterType == "LinkedIn" && p.Role == "ADMIN").ToList();
-                ViewBag.Alinked = Alinked.Count == 0 ? "" : Alinked.SingleOrDefault().FooterLink;
-                var APinterest = DB.tblFooterlinks.Where(p => p.FooterType == "Pinterest" && p.Role == "ADMIN").ToList();
-                ViewBag.APinteres = APinterest.Count == 0 ? "" : APinterest.SingleOrDefault().FooterLink;
-                var AYoutube = DB.tblFooterlinks.Where(p => p.FooterType == "Youtube" && p.Role == "ADMIN").ToList();
-                ViewBag.AYoutub = AYoutube.Count == 0 ? "" : AYoutube.SingleOrDefault().FooterLink;
-                var ABlogger = DB.tblFooterlinks.Where(p => p.FooterType == "Blogger" && p.Role == "ADMIN").ToList();
-                ViewBag.ABlogge = Alinked.Count == 0 ? "" : Alinked.SingleOrDefault().FooterLink;
-                var ATumblr = DB.tblFooterlinks.Where(p => p.FooterType == "Tumblr" && p.Role == "ADMIN").ToList();
-                ViewBag.ATumbl = ATumblr.Count == 0 ? "" : ATumblr.SingleOrDefault().FooterLink;
-                //********************** End Admin Social Media ****************************
-
-                //********************** Start Admin Badges Media **************************
-                var AppfuturaA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Appfutura" && p.UserRole == "ADMIN").ToList();
-                ViewBag.AppfuturA = AppfuturaA.Count == 0 ? "" : AppfuturaA.SingleOrDefault().Url_Link;
-                var ApplancherA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Applancher" && p.UserRole == "ADMIN").ToList();
-                ViewBag.ApplancheA = ApplancherA.Count == 0 ? "" : ApplancherA.SingleOrDefault().Url_Link;
-                var BadushA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Badush" && p.UserRole == "ADMIN").ToList();
-                ViewBag.BadusA = BadushA.Count == 0 ? "" : BadushA.SingleOrDefault().Url_Link;
-                var ExtractA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Extract" && p.UserRole == "ADMIN").ToList();
-                ViewBag.ExtracA = ExtractA.Count == 0 ? "" : ExtractA.SingleOrDefault().Url_Link;
-                var GoodfirmsA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Good-firms" && p.UserRole == "ADMIN").ToList();
-                ViewBag.GoodfirmA = GoodfirmsA.Count == 0 ? "" : GoodfirmsA.SingleOrDefault().Url_Link;
-                var MobileappA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Mobile-app" && p.UserRole == "ADMIN").ToList();
-                ViewBag.MobileapA = MobileappA.Count == 0 ? "" : MobileappA.SingleOrDefault().Url_Link;
-                var TrustpilotA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Trustpilot" && p.UserRole == "ADMIN").ToList();
-                ViewBag.TrustpiloA = TrustpilotA.Count == 0 ? "" : TrustpilotA.SingleOrDefault().Url_Link;
-                var FreelancerA = DB.WhiteLabel_Badges.Where(p => p.BadgeType == "Freelancer" && p.UserRole == "ADMIN").ToList();
-                ViewBag.FreelancerA = FreelancerA.Count == 0 ? "" : FreelancerA.SingleOrDefault().Url_Link;
-                //********************** End Admin Badges Media **************************
-                ViewData["msg"] = "websiteblock";
+                catch { }
             }
 
+            // Home page ViewBag data - active aur blocked dono cases mein load hota hai
+            LoadHomePageViewBag();
+            if (!x) ViewData["msg"] = "websiteblock";
 
             return View();
+        }
+
+        /// <summary>
+        /// Home page ke saare ViewBag data ek jagah se load karta hai -
+        /// slider, travel, about, DTH, team, footer services, social links, badges
+        /// </summary>
+        private void LoadHomePageViewBag()
+        {
+            // --- Slider ---
+            var showRec = DB.tblSilderIsStatus.FirstOrDefault();
+            ViewBag.silder1    = showRec?.Silder1Status;
+            ViewBag.showsilder1 = DB.tblSilders.Where(a => a.SilderType == "Silder1").ToList();
+            ViewBag.showsilder2 = DB.tblSilders.Where(a => a.SilderType == "Silder2").ToList();
+
+            // --- Travel & Hotel ---
+            var allTravels = DB.tblTravels.Where(p => p.Role == "ADMIN").ToList();
+            ViewBag.bus = allTravels;
+            var bus    = allTravels.FirstOrDefault(p => p.TravelType == "Bus");
+            var hotel  = allTravels.FirstOrDefault(p => p.TravelType == "Hotel");
+            var flight = allTravels.FirstOrDefault(p => p.TravelType == "Flight");
+            ViewBag.buscontent    = bus?.Content    ?? "";
+            ViewBag.image         = bus?.Image      ?? "";
+            ViewBag.hotelcontent  = hotel?.Content  ?? "";
+            ViewBag.hotelimg      = hotel?.Image    ?? "";
+            ViewBag.flightcontent = flight?.Content ?? "";
+            ViewBag.flightimg     = flight?.Image   ?? "";
+            var travelcolorRec = DB.tblTravelColors.FirstOrDefault(p => p.Role == "ADMIN");
+            ViewBag.travelcolor = travelcolorRec?.TravelColor ?? "#9c99b7";
+
+            // --- About Us ---
+            var about = DB.tblAboutUsContents.FirstOrDefault(p => p.Role == "ADMIN");
+            ViewBag.aboutimage = about?.AboutImage   ?? "";
+            ViewBag.abouthead  = about?.AboutHeading ?? "";
+            ViewBag.aboutcon   = about?.AboutContent ?? "";
+
+            // --- DTH Plans ---
+            var dthcolorRec = DB.tblDTHColors.FirstOrDefault(p => p.Role == "ADMIN");
+            ViewBag.colordth = dthcolorRec?.DthBackColor ?? "Red";
+            ViewBag.dthplan  = DB.tblDTHs.Where(p => p.Role == "ADMIN").ToList();
+
+            // --- Team ---
+            ViewBag.team = DB.tblteams.ToList();
+            var tcolorRec = DB.tblTeamBackColors.FirstOrDefault();
+            ViewBag.tcolor = tcolorRec?.TeamColor ?? "Blue";
+
+            // --- Why Choose Us ---
+            var contentRec = DB.tblWhyChooseContents.FirstOrDefault();
+            ViewBag.content    = contentRec?.AllContent ?? "";
+            ViewBag.allcontent = DB.tblWhyChooseUsAllContents.ToList();
+            var whycolorRec = DB.tblWhyChooseBackColors.FirstOrDefault();
+            ViewBag.whychoosecolor = whycolorRec?.WhyBackColor ?? "Green";
+
+            // --- New Updates ---
+            ViewBag.newupdate = DB.tblNewUpdates.Where(p => p.Role == "ADMIN").ToList();
+            var backnewcolorRec = DB.tblNewUpdateColors.FirstOrDefault(p => p.Role == "ADMIN");
+            ViewBag.newcolor = backnewcolorRec?.NewContentBackColor ?? "Red";
+
+            // --- Header Color ---
+            var colorRec = DB.changecolors.FirstOrDefault(p => p.Role == "ADMIN");
+            ViewBag.headcolor = (colorRec != null && !string.IsNullOrEmpty(colorRec.adminandouterheadercolor))
+                                ? colorRec.adminandouterheadercolor : "Gray";
+
+            // --- Contact Info ---
+            var contectRec = DB.tblContectBackColors.FirstOrDefault(p => p.Role == "ADMIN");
+            ViewBag.contect = contectRec?.ContectColor ?? "";
+            var addressRec = DB.tblContects.FirstOrDefault();
+            ViewBag.Headadd  = addressRec?.HeadOfficeAddress   ?? "";
+            ViewBag.branch   = addressRec?.BranceOfficeAddress ?? "";
+            ViewBag.compnay  = addressRec?.CompnayName         ?? "";
+            ViewBag.landline = addressRec?.LandlineNo          ?? "";
+            ViewBag.phone    = addressRec?.phone               ?? "";
+            ViewBag.emil     = addressRec?.Email               ?? "";
+
+            // --- Footer Services ---
+            LoadFooterServicesViewBag();
+
+            // --- Footer Color ---
+            var footercolor = DB.tblfooterbackcolors.FirstOrDefault(p => p.Role == "ADMIN");
+            ViewBag.footercolor = footercolor?.FooterBackColor ?? "#da097d";
+
+            // --- Social Media Links ---
+            ViewBag.Afac      = GetFooterLink("Facebook");
+            ViewBag.Atwi      = GetFooterLink("Twitter");
+            ViewBag.AInstagra = GetFooterLink("Instagram");
+            ViewBag.Alinked   = GetFooterLink("LinkedIn");
+            ViewBag.APinteres = GetFooterLink("Pinterest");
+            ViewBag.AYoutub   = GetFooterLink("Youtube");
+            ViewBag.ABlogge   = GetFooterLink("Blogger");
+            ViewBag.ATumbl    = GetFooterLink("Tumblr");
+
+            // --- Badges ---
+            var badges = DB.WhiteLabel_Badges.Where(p => p.UserRole == "ADMIN").ToList();
+            ViewBag.checkBadge = badges.Any() ? (object)badges : null;
+            if (badges.Any())
+            {
+                ViewBag.AppfuturA   = GetBadgeLink(badges, "Appfutura");
+                ViewBag.ApplancheA  = GetBadgeLink(badges, "Applancher");
+                ViewBag.BadusA      = GetBadgeLink(badges, "Badush");
+                ViewBag.ExtracA     = GetBadgeLink(badges, "Extract");
+                ViewBag.GoodfirmA   = GetBadgeLink(badges, "Good-firms");
+                ViewBag.MobileapA   = GetBadgeLink(badges, "Mobile-app");
+                ViewBag.TrustpiloA  = GetBadgeLink(badges, "Trustpilot");
+                ViewBag.FreelancerA = GetBadgeLink(badges, "Freelancer");
+            }
+        }
+
+        /// <summary>
+        /// Admin role ke liye specified footer social media link return karta hai,
+        /// record na milne par empty string return karta hai
+        /// </summary>
+        private string GetFooterLink(string footerType)
+        {
+            return DB.tblFooterlinks
+                     .Where(p => p.FooterType == footerType && p.Role == "ADMIN")
+                     .Select(p => p.FooterLink)
+                     .FirstOrDefault() ?? "";
+        }
+
+        /// <summary>
+        /// In-memory badge list se specified badge type ki URL return karta hai,
+        /// na milne par empty string return karta hai
+        /// </summary>
+        private string GetBadgeLink(System.Collections.Generic.List<WhiteLabel_Badges> badges, string badgeType)
+        {
+            return badges.FirstOrDefault(p => p.BadgeType == badgeType)?.Url_Link ?? "";
+        }
+
+        /// <summary>
+        /// tblFooterServices se data load karke ViewBag mein 5 service types set karta hai
+        /// </summary>
+        private void LoadFooterServicesViewBag()
+        {
+            var sertype1 = DB.tblFooterServices.ToList();
+            if (!sertype1.Any()) return;
+            SetServiceViewBag(sertype1, "Recharge & Bill",    "recharge", "rechar");
+            SetServiceViewBag(sertype1, "Travel & Hotel",     "travelfo", "tra");
+            SetServiceViewBag(sertype1, "E-Commerce",         "comm",     "comm");
+            SetServiceViewBag(sertype1, "Gift Cards",         "gift",     "gift");
+            SetServiceViewBag(sertype1, "Financial Services", "fina",     "fina");
+        }
+
+        /// <summary>
+        /// Ek service type ki ViewBag entry aur uske 8 ServiceName fields set karta hai
+        /// </summary>
+        private void SetServiceViewBag(System.Collections.Generic.List<tblFooterService> list, string serviceType, string bagKey, string prefix)
+        {
+            var item = list.FirstOrDefault(p => p.ServiceType == serviceType);
+            ViewBag[bagKey] = item;
+            if (item == null) return;
+            ViewBag[prefix + "1"] = item.ServiceName1;
+            ViewBag[prefix + "2"] = item.ServiceName2;
+            ViewBag[prefix + "3"] = item.ServiceName3;
+            ViewBag[prefix + "4"] = item.ServiceName4;
+            ViewBag[prefix + "5"] = item.ServiceName5;
+            ViewBag[prefix + "6"] = item.ServiceName6;
+            ViewBag[prefix + "7"] = item.ServiceName7;
+            ViewBag[prefix + "8"] = item.ServiceName8;
         }
 
         /// <summary>
@@ -850,14 +555,9 @@ namespace Vastwebmulti.Controllers
                 {
                     var ekycstschk = await DB.ekycChecks.Where(x => x.userid == retailer.RetailerId).SingleOrDefaultAsync();
                     string msg = "OK";
-                    if (ekycstschk != null)
-                    {
-                        if (ekycstschk.isvalid == true)
-                        {
-                            msg = "NOTOK";
-                        }
-                    }
-                    if(msg == "OK")
+                    if (ekycstschk?.isvalid == true)
+                        msg = "NOTOK";
+                    if (msg == "OK")
                     {
                         System.Data.Entity.Core.Objects.ObjectParameter output = new System.Data.Entity.Core.Objects.ObjectParameter("Output", typeof(string));
 
@@ -938,8 +638,6 @@ namespace Vastwebmulti.Controllers
             {
                 whitelabelid = DB.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").Replace("/", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
             }
-            //var whitelabelid = DB.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
-
             var cont = DB.tblFooterPageContents.Where(p => p.FooterPagetype == type && p.UserId == whitelabelid).SingleOrDefault();
             var value = cont == null ? "" : cont.FooterPageContent;
             return Json(value, JsonRequestBehavior.AllowGet);
@@ -955,8 +653,9 @@ namespace Vastwebmulti.Controllers
         public ActionResult Index(string returnUrl)
         {
 
-            var xx = DB.Admin_details == null ? DB.Admin_details.SingleOrDefault().RenivalDate : System.DateTime.Now;
-            var x = xx >= DateTime.Now;
+            // Admin record exist karta hai aur license valid hai to x = true
+            var adminRec = DB.Admin_details.SingleOrDefault();
+            var x = adminRec != null && adminRec.RenivalDate >= DateTime.Now;
             if (x)
             {
 
@@ -964,30 +663,10 @@ namespace Vastwebmulti.Controllers
                 string currenturl = HttpContext.Request.Url.Authority;
                 currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
                 currenturl = currenturl.ToUpper();
-                if (currenturl.Contains("LOCALHOST"))
-                {
-                    var URL1 = DB.Admin_details.ToList();
-                    if (URL1.Count() == 0)
-                    {
-                        return RedirectToAction("First", "Home");
-                    }
-                    else
-                    {
-                        URL = URL1.SingleOrDefault().localhost;
-                    }
-                }
-                else
-                {
-                    var URL1 = DB.Admin_details.ToList();
-                    if (URL1.Count() == 0)
-                    {
-                        return RedirectToAction("First", "Home");
-                    }
-                    else
-                    {
-                        URL = URL1.SingleOrDefault().WebsiteUrl;
-                    }
-                }
+                var adminInfoRec = DB.Admin_details.SingleOrDefault();
+                if (adminInfoRec == null)
+                    return RedirectToAction("First", "Home");
+                URL = currenturl.Contains("LOCALHOST") ? adminInfoRec.localhost : adminInfoRec.WebsiteUrl;
 
                 if (URL.ToLower() != currenturl.ToLower())
                 {
@@ -1065,26 +744,16 @@ namespace Vastwebmulti.Controllers
                         ViewBag.newupdatasts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "NEWUPDATE").SingleOrDefault().Status;
                         //Services Content
                         ViewBag.service = DB.tblServices.Where(p => p.UserId == whitelabelid).ToList();
-                        var colorservice = DB.tblServiceOuterColors.Where(p => p.UserId == whitelabelid).ToList();
-                        if (colorservice.Count > 0)
-                        {
-                            ViewBag.servicecolor = colorservice.SingleOrDefault().ServiceBackGroundcolor;
-                        }
-                        else
-                        {
-                            ViewBag.servicecolor = "Green";
-                        }
+                        var colorservice = DB.tblServiceOuterColors.FirstOrDefault(p => p.UserId == whitelabelid);
+                        ViewBag.servicecolor = colorservice?.ServiceBackGroundcolor ?? "Green";
 
-                        //Services Content
-                        //About Us Content
-                        //var aboutimage = DB.tblAboutUsContents.Where(p => p.UserId == whitelabelid).ToList();
+                        // About Us Content
 
                         List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs> aboutimage = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs>();
                         JSONReadWrite readWrite = new JSONReadWrite();
                         aboutimage = JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs>>(readWrite.Read("AboutUs.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
                         aboutimage = aboutimage.Where(p => p.UserId == whitelabelid).ToList();
 
-                        //ViewBag.aboutimage = aboutimage.Count == 0 ? "" : aboutimage.SingleOrDefault().AboutImage;
                         ViewBag.aboutheading = aboutimage.Count == 0 ? "" : aboutimage.SingleOrDefault().AboutHeading;
                         ViewBag.aboutcontent = aboutimage.Count == 0 ? "" : aboutimage.SingleOrDefault().AboutContent;
 
@@ -1120,11 +789,9 @@ namespace Vastwebmulti.Controllers
 
                         NEWS = JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.NewsUpdate>>(readWrite.Read("NewsUpdate.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
                         ViewBag.newupdate = NEWS.Where(p => p.UserId == whitelabelid).ToList();
-                        //ViewBag.newupdate = DB.tblWhiteLabelNewUpdates.Where(p => p.UserId == whitelabelid).ToList();
-
-                        //New Update Content
+                        // New Update Content done
                         //Contact Data
-                        //var companyname = DB.tblWhiteContactDatas.Where(p => p.UserId == whitelabelid).ToList();
+
                         List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData> ContactData = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>();
                         ContactData = JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>>(readWrite.Read("WhiteContactData.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
                         var companyname = ContactData.Where(p => p.UserId == whitelabelid).ToList();
@@ -1214,34 +881,12 @@ namespace Vastwebmulti.Controllers
                 string currenturl = HttpContext.Request.Url.Authority;
                 currenturl = currenturl.Replace("www.", "").Replace("https://", "").Replace("http://", "");
                 currenturl = currenturl.ToUpper();
-                if (currenturl.Contains("LOCALHOST"))
-                {
-                    var URL1 = DB.Admin_details.ToList();
-                    if (URL1.Count() == 0)
-                    {
-                        return RedirectToAction("First", "Home");
-                    }
-                    else
-                    {
-                        URL = URL1.SingleOrDefault().localhost;
-                    }
-                }
-                else
-                {
-                    var URL1 = DB.Admin_details.ToList();
-                    if (URL1.Count() == 0)
-                    {
-                        return RedirectToAction("First", "Home");
-                    }
-                    else
-                    {
-                        URL = URL1.SingleOrDefault().WebsiteUrl;
-                    }
-                }
+                var adminInfoRec2 = DB.Admin_details.SingleOrDefault();
+                if (adminInfoRec2 == null)
+                    return RedirectToAction("First", "Home");
+                URL = currenturl.Contains("LOCALHOST") ? adminInfoRec2.localhost : adminInfoRec2.WebsiteUrl;
                 if (URL.ToLower() != currenturl.ToLower())
                 {
-                    //try
-                    //{
 
                     using (VastwebmultiEntities db = new VastwebmultiEntities())
                     {
@@ -1255,10 +900,6 @@ namespace Vastwebmulti.Controllers
                             whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
                         }
 
-                        //  if (User.IsInRole("Admin"))
-                        //{
-                        //    return RedirectToAction("Dashboard", "Home", new { area = "ADMIN" });
-                        //}
                         if (User.IsInRole("Whitelabel"))
                         {
                             return RedirectToAction("Dashboard", "Home", new { area = "WHITELABEL" });
@@ -1339,25 +980,15 @@ namespace Vastwebmulti.Controllers
                         ViewBag.newupdatasts = st.Count == 0 ? "" : st.Where(aa => aa.MenuName == "NEWUPDATE").SingleOrDefault().Status;
                         //Services Content
                         ViewBag.service = DB.tblServices.Where(p => p.UserId == whitelabelid).ToList();
-                        var colorservice = DB.tblServiceOuterColors.Where(p => p.UserId == whitelabelid).ToList();
-                        if (colorservice.Count > 0)
-                        {
-                            ViewBag.servicecolor = colorservice.SingleOrDefault().ServiceBackGroundcolor;
-                        }
-                        else
-                        {
-                            ViewBag.servicecolor = "Green";
-                        }
+                        var colorservice = DB.tblServiceOuterColors.FirstOrDefault(p => p.UserId == whitelabelid);
+                        ViewBag.servicecolor = colorservice?.ServiceBackGroundcolor ?? "Green";
 
-                        //Services Content
-                        //About Us Content
-                        //var aboutimage = DB.tblAboutUsContents.Where(p => p.UserId == whitelabelid).ToList();
+                        // About Us Content
                         List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs> aboutimage = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs>();
                         JSONReadWrite readWrite = new JSONReadWrite();
                         aboutimage = JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.AboutUs>>(readWrite.Read("AboutUs.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
                         aboutimage = aboutimage.Where(p => p.UserId == whitelabelid).ToList();
 
-                        //ViewBag.aboutimage = aboutimage.Count == 0 ? "" : aboutimage.SingleOrDefault().AboutImage;
                         ViewBag.aboutheading = aboutimage.Count == 0 ? "" : aboutimage.SingleOrDefault().AboutHeading;
                         ViewBag.aboutcontent = aboutimage.Count == 0 ? "" : aboutimage.SingleOrDefault().AboutContent;
 
@@ -1394,7 +1025,7 @@ namespace Vastwebmulti.Controllers
                         ViewBag.newupdate = NEWS.Where(p => p.UserId == whitelabelid).ToList();
                         //New Update Content
                         //Contact Data
-                        //var companyname = DB.tblWhiteContactDatas.Where(p => p.UserId == whitelabelid).ToList();
+
                         List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData> ContactData = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>();
                         ContactData = JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>>(readWrite.Read("WhiteContactData.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
                         var companyname = ContactData.Where(p => p.UserId == whitelabelid).ToList();
