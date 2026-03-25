@@ -32,8 +32,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         //string VastbazaarBaseUrl = "http://localhost:65209/";
 
         /// <summary>
-        /// GET - Main listing/management page
+        /// GET Checks the retailer's PAN card service eligibility and PSA registration status, returning the result as a JSON object.
+        /// Verifies dealer/retailer PAN status, paid service subscription, and KYC completion before allowing access.
         /// </summary>
+        /// <returns>A JSON string indicating the service status, PSA registration state, and any applicable messages.</returns>
         public ActionResult Index()
         {
             var status = ""; var message = "";
@@ -567,8 +569,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         /// <summary>
-        /// POST - Update or check status
+        /// Checks the current PSA (Point of Service Agent) registration status with the provider and updates the outlet record accordingly.
         /// </summary>
+        /// <returns>A JSON string with Status "Success", "Failed", or "Warning" and a descriptive message.</returns>
         public ActionResult CheckStatus()
         {
             var userid = User.Identity.GetUserId();
@@ -629,10 +632,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
-        [HttpGet]
         /// <summary>
-        /// GET - View transaction or activity report
+        /// GET Displays today's PAN card token purchase report with totals for successful, pending and failed transactions.
         /// </summary>
+        /// <returns>The token purchase report view with transaction records and aggregated totals in ViewData.</returns>
+        [HttpGet]
         public ActionResult TokenPurchaseReport()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -651,10 +655,15 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
-        [HttpPost]
         /// <summary>
-        /// GET - View transaction or activity report
+        /// POST Displays the PAN card token purchase report filtered by status, date range and record count.
         /// </summary>
+        /// <param name="ddl_status">Status filter (e.g. SUCCESS, PENDING, FAILED, ALL).</param>
+        /// <param name="ddl_top">Maximum number of records to display; "All" returns up to 1,000,000.</param>
+        /// <param name="txt_frm_date">Start date of the report range.</param>
+        /// <param name="txt_to_date">End date of the report range.</param>
+        /// <returns>The token purchase report view with filtered records and aggregated totals.</returns>
+        [HttpPost]
         public ActionResult TokenPurchaseReport(string ddl_status, string ddl_top, string txt_frm_date, string txt_to_date)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())

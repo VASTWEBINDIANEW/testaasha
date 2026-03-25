@@ -10,8 +10,21 @@ using Vastwebmulti.Areas.RETAILER.Models;
 
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
+    /// <summary>
+    /// Utility class for making HTTP requests to the TBO (Travel Boutique Online) flight search API.
+    /// Provides static helper methods for sending POST requests and retrieving responses.
+    /// </summary>
     public class TBO_Utils
     {
+        /// <summary>
+        /// Sends a POST request to the TBO flight search API endpoint and returns the raw JSON response content.
+        /// </summary>
+        /// <param name="requestData">The serialized request payload to send in the request body.</param>
+        /// <param name="url">The target API URL to send the request to.</param>
+        /// <returns>
+        /// A string containing the raw JSON response from the API,
+        /// or <c>null</c> if an exception occurs during the request.
+        /// </returns>
         public static string GetResponse(string requestData, string url)
         {
             try

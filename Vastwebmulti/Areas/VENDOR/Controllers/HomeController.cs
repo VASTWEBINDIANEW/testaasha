@@ -20,10 +20,12 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Areas.VENDOR.Controllers
 {
  
-    [Authorize(Roles = "Vendor")]
     /// <summary>
-    /// VENDOR Area - Manages Vendor dashboard - product/service listings, billing and vendor account management
+    /// MVC controller for the VENDOR area. Manages vendor dashboard operations including
+    /// product and attribute management, order tracking, e-commerce reporting, profile editing,
+    /// and wallet-to-bank transfer requests.
     /// </summary>
+    [Authorize(Roles = "Vendor")]
     public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -55,8 +57,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         VastBazaartoken Responsetoken = new VastBazaartoken();
         // GET: VENDOR/Home
         /// <summary>
-        /// [GET] - Displays the main dashboard/home page
+        /// Displays the main vendor dashboard home page. Loads the vendor's email and profile photo into ViewBag.
         /// </summary>
+        /// <returns>The Index view for the vendor dashboard.</returns>
         public ActionResult Index()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -71,8 +74,10 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         /// <summary>
-        /// [GET] - Lists all products for the vendor
+        /// Displays the paginated list of all products belonging to the currently authenticated vendor.
+        /// Passes success and existence feedback messages from TempData to the view.
         /// </summary>
+        /// <returns>The ProductList view.</returns>
         public ActionResult ProductList()
         {
             try
@@ -90,8 +95,10 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         /// <summary>
-        /// Partial view render karta hai.
+        /// Renders the product list as a partial view for the currently authenticated vendor.
+        /// Retrieves all products via the stored procedure <c>proc_ProductList</c>.
         /// </summary>
+        /// <returns>A <see cref="PartialViewResult"/> containing the vendor's product list.</returns>
         public PartialViewResult _productListPartial()
         {
             try
@@ -109,8 +116,9 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         /// <summary>
-        /// [GET] - Displays the add product form
+        /// Displays the form for adding a new product. Populates the category dropdown from the database.
         /// </summary>
+        /// <returns>The AddProduct view pre-populated with category data.</returns>
         public ActionResult AddProduct()
         {
             try
@@ -128,10 +136,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 throw;
             }
         }
-        [HttpPost]
         /// <summary>
-        /// [POST] - Processes adding a new product
+        /// Processes the form submission to add a new product. Validates that the standard price
+        /// does not exceed the list price, then calls the <c>proc_InsertProduct</c> stored procedure.
         /// </summary>
+        /// <param name="model">The product details submitted from the add-product form.</param>
+        /// <returns>Redirects to <see cref="ProductList"/> after processing.</returns>
+        [HttpPost]
         public ActionResult AddProduct(ProductModel model)
         {
             try
@@ -171,8 +182,11 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         /// <summary>
-        /// [GET] - Displays the edit product form
+        /// Displays the form for editing an existing product. Populates subcategory dropdown
+        /// and loads the current product data by the given product ID.
         /// </summary>
+        /// <param name="id">The unique identifier of the product to edit.</param>
+        /// <returns>The EditProduct view pre-populated with the product's current data.</returns>
         public ActionResult EditProduct(int id)
         {
             try
@@ -217,10 +231,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
 
         }
-        [HttpPost]
         /// <summary>
-        /// [POST] - Saves updated product details
+        /// Processes the form submission to update an existing product's details.
+        /// Calls the <c>proc_EditProduct</c> stored procedure with the updated model data.
         /// </summary>
+        /// <param name="model">The updated product details submitted from the edit-product form.</param>
+        /// <returns>Redirects to <see cref="ProductList"/> after processing.</returns>
+        [HttpPost]
         public ActionResult EditProduct(ProductModel model)
         {
             try
@@ -253,10 +270,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return RedirectToAction("ProductList");
         }
 
-        //fill Sub category 
+        //fill Sub category
         /// <summary>
-        /// Is action ka kaam 'SubcategoryList' se related operation handle karna hai.
+        /// Returns a JSON list of subcategories that belong to the specified parent category.
+        /// Used to dynamically populate the subcategory dropdown on the product form.
         /// </summary>
+        /// <param name="Id">The parent category ID used to filter subcategories.</param>
+        /// <returns>A JSON array of subcategory name/value pairs for use in a dropdown.</returns>
         public JsonResult SubcategoryList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -269,10 +289,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
 
-        [HttpPost]
         /// <summary>
-        /// [POST] - Handles product image upload
+        /// Handles the upload of a product image. Saves the uploaded image to the
+        /// <c>ProductImages</c> directory and records the file path in the database.
         /// </summary>
+        /// <param name="ProductID">The ID of the product to associate the uploaded image with.</param>
+        /// <returns>Redirects to <see cref="ProductList"/> after processing.</returns>
+        [HttpPost]
         public ActionResult ImgUpload(int ProductID)
         {
             if (ProductID > 0)
@@ -305,10 +328,12 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return RedirectToAction("ProductList");
         }
 
-        [HttpGet]
         /// <summary>
-        /// [GET] - Displays list of products marked for deletion
+        /// Displays the list of products that have been soft-deleted (marked for deletion)
+        /// by the currently authenticated vendor.
         /// </summary>
+        /// <returns>The DeleteproductList view with soft-deleted products, or redirects to Index on error.</returns>
+        [HttpGet]
         public ActionResult DeleteproductList()
         {
             try
@@ -326,10 +351,12 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
 
-        [HttpPost]
         /// <summary>
-        /// [POST] - Updates the delete/active status of a product
+        /// Restores a previously soft-deleted product by setting its <c>IsDeleted</c> flag to <c>false</c>.
         /// </summary>
+        /// <param name="idno">The unique identifier of the product to restore.</param>
+        /// <returns>Redirects to <see cref="ProductList"/> after updating the status.</returns>
+        [HttpPost]
         public ActionResult UpdateDeleteStatus(int idno)
         {
             try
@@ -350,10 +377,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
             return RedirectToAction("ProductList");
         }
-        [HttpGet]
         /// <summary>
-        /// [GET] - Permanently removes a product by ID
+        /// Soft-deletes a product by setting its <c>IsDeleted</c> flag to <c>true</c>.
+        /// The product record is retained in the database but treated as removed.
         /// </summary>
+        /// <param name="id">The unique identifier of the product to remove.</param>
+        /// <returns>Redirects to <see cref="ProductList"/> after marking the product as deleted.</returns>
+        [HttpGet]
         public ActionResult RemoveProduct(int id)
         {
             try
@@ -375,10 +405,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return RedirectToAction("ProductList");
         }
 
-        [HttpPost]
         /// <summary>
-        /// [POST] - Creates a duplicate copy of an existing product
+        /// Creates a copy of an existing product for the currently authenticated vendor.
+        /// The replicated product is named with a "copy of" prefix and is set as inactive by default.
         /// </summary>
+        /// <param name="id">The unique identifier of the product to replicate.</param>
+        /// <returns>A JSON result with "Success" or "Failed" status.</returns>
+        [HttpPost]
         public ActionResult ReplicateProduct(int id)
         {
             try
@@ -412,8 +445,10 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         /// <summary>
-        /// [GET] - Displays product attributes management page
+        /// Displays the product attributes management page. Lists all attributes assigned to
+        /// the vendor's products and populates the products dropdown.
         /// </summary>
+        /// <returns>The Attributes view with the list of product-assigned attributes.</returns>
         public ActionResult Attributes()
         {
             try
@@ -440,10 +475,17 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
 
         }
 
-        [HttpPost]
         /// <summary>
-        /// [POST] - Assigns an attribute value to a product
+        /// Assigns a named attribute with a value and quantity to the specified product.
+        /// Calls the <c>proc_AssigneProductAttribute</c> stored procedure and handles
+        /// duplicate and limit-exceeded responses.
         /// </summary>
+        /// <param name="ProductId">The ID of the product to assign the attribute to.</param>
+        /// <param name="AttName">The name of the attribute (e.g., "Color", "Size").</param>
+        /// <param name="AttValue">The value for the attribute (e.g., "Red", "XL").</param>
+        /// <param name="QTY">The quantity available for this attribute variant.</param>
+        /// <returns>Redirects to <see cref="Attributes"/> after processing.</returns>
+        [HttpPost]
         public ActionResult AssignAttribute(int ProductId, string AttName, string AttValue, int QTY)
         {
             try
@@ -486,8 +528,10 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         /// <summary>
-        /// Record ko delete karta hai.
+        /// Permanently deletes a product attribute record from the database by its ID.
         /// </summary>
+        /// <param name="Id">The unique identifier of the product attribute to remove.</param>
+        /// <returns>A JSON result with "Success" if deleted, or "Failed" if the ID is invalid.</returns>
         public JsonResult RemoveAttribute(int Id)
         {
             try
@@ -516,8 +560,10 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
 
         #region E-commerce Report
         /// <summary>
-        /// [GET] - Displays e-commerce transaction report
+        /// Displays the e-commerce transaction report for today, showing success, pending,
+        /// and rejected order totals for the currently authenticated vendor.
         /// </summary>
+        /// <returns>The Ecommerce_Report view with today's transaction data.</returns>
         public ActionResult Ecommerce_Report()
         {
 
@@ -540,10 +586,16 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return View(vv);
 
         }
-        [HttpPost]
         /// <summary>
-        /// [POST] - Filters and displays e-commerce report by date range and status
+        /// Filters and displays the e-commerce transaction report based on the supplied criteria.
         /// </summary>
+        /// <param name="category">The category filter for the report.</param>
+        /// <param name="ddl_top">The maximum number of records to return.</param>
+        /// <param name="ddl_status">The order status filter (e.g., "ALL", "Pending", "Success").</param>
+        /// <param name="txt_frm_date">The start date of the report date range.</param>
+        /// <param name="txt_to_date">The end date of the report date range.</param>
+        /// <returns>The Ecommerce_Report view filtered by the specified parameters.</returns>
+        [HttpPost]
         public ActionResult Ecommerce_Report(string category, int ddl_top, string ddl_status, string txt_frm_date, string txt_to_date)
         {
             VastwebmultiEntities db = new VastwebmultiEntities();
@@ -573,8 +625,12 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
 
         /// <summary>
-        /// [GET] - Generates a bill invoice PDF for an order
+        /// Generates and returns a PDF bill invoice for the specified order.
+        /// Calculates GST (IGST for inter-state or CGST/SGST for intra-state) and
+        /// converts the total amount to words.
         /// </summary>
+        /// <param name="id">The order ID for which to generate the invoice PDF.</param>
+        /// <returns>A PDF view of the product bill invoice, or an empty view on error.</returns>
         public ActionResult ProductBillInvoice(int id)
                {
             try
@@ -655,6 +711,17 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
            
         }
+        /// <summary>
+        /// Converts a numeric double value to its equivalent English words representation
+        /// using the Indian numbering system (thousands, lakhs, crores).
+        /// Optionally includes paisa (sub-rupee) conversion.
+        /// </summary>
+        /// <param name="numbers">The numeric amount to convert to words.</param>
+        /// <param name="paisaconversion">
+        /// When <c>true</c>, only converts the number without appending "rupees only".
+        /// When <c>false</c>, appends "rupees only" or "rupees X paise only" to the result.
+        /// </param>
+        /// <returns>A string representing the amount in English words.</returns>
         public string words(double numbers, Boolean paisaconversion = false)
         {
             var pointindex = numbers.ToString().IndexOf(".");
@@ -730,8 +797,10 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         #endregion
 
         /// <summary>
-        /// [GET] - Shows product detail statistics
+        /// Displays the product detail statistics report for the current vendor for today.
+        /// Populates the category dropdown and loads today's product detail data.
         /// </summary>
+        /// <returns>The Product_details view with today's product statistics.</returns>
         public ActionResult Product_details()
         {
             try
@@ -760,10 +829,16 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 return View();
             }
         }
-        [HttpPost]
         /// <summary>
-        /// [POST] - Filters product detail report by category and date
+        /// Filters the product detail statistics report by category, status, top count, and date range.
         /// </summary>
+        /// <param name="Cateid">The category ID to filter by, or empty for all categories.</param>
+        /// <param name="ddl_status">The status filter (e.g., "Active", "Inactive"), or empty for all.</param>
+        /// <param name="ddl_top">The maximum number of records to display.</param>
+        /// <param name="txt_frm_date">The start date of the filter date range.</param>
+        /// <param name="txt_to_date">The end date of the filter date range.</param>
+        /// <returns>The Product_details view filtered by the specified parameters.</returns>
+        [HttpPost]
         public ActionResult Product_details(string Cateid, string ddl_status, int ddl_top, string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -818,11 +893,12 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 return View();
             }
         }
-        //Change Password 
-        [HttpGet]
+        //Change Password
         /// <summary>
-        /// [GET] - Displays the change password form
+        /// Displays the change password form for the currently authenticated vendor.
         /// </summary>
+        /// <returns>The ChangePassword view.</returns>
+        [HttpGet]
         public ActionResult ChangePassword()
         {
 
@@ -830,11 +906,17 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
         //
         // POST: /Manage/ChangePassword
+        /// <summary>
+        /// Processes the vendor's password change request. Validates the model, changes the password
+        /// via the Identity framework, and re-signs in the user on success.
+        /// </summary>
+        /// <param name="model">The view model containing the old password and the new password.</param>
+        /// <returns>
+        /// Redirects to <see cref="ChangePassword"/> on success, or returns the view with
+        /// validation errors on failure.
+        /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        /// <summary>
-        /// Password ya settings change/reset karta hai.
-        /// </summary>
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -857,6 +939,11 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Adds Identity errors from the given result to the ModelState dictionary,
+        /// so they can be displayed as validation messages in the view.
+        /// </summary>
+        /// <param name="result">The <see cref="IdentityResult"/> containing any error messages to add.</param>
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -865,10 +952,12 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         //Profile
-        [HttpGet]
         /// <summary>
-        /// [GET] - Displays the user profile details
+        /// Displays the vendor's profile page, including personal details, state/district names,
+        /// and the associated admin contact information.
         /// </summary>
+        /// <returns>The Profile view populated with the vendor's user and detail records.</returns>
+        [HttpGet]
         public new ActionResult Profile()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -893,10 +982,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
 
-        //Edit Profile 
+        //Edit Profile
         /// <summary>
-        /// [GET] - Displays the profile edit form
+        /// Displays the vendor profile edit form, pre-populated with the current vendor details
+        /// and the state and district dropdown lists.
         /// </summary>
+        /// <param name="idno">The primary key of the vendor detail record to edit.</param>
+        /// <returns>The Edit_Profile view with the vendor's current details.</returns>
         public ActionResult Edit_Profile(int idno)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -908,10 +1000,14 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
                 return View(show);
             }
         }
-        [HttpPost]
         /// <summary>
-        /// [POST] - Saves updated profile information
+        /// Processes the submission of the vendor profile edit form. Updates all profile fields
+        /// including personal info, bank details, and optionally a new profile photo.
         /// </summary>
+        /// <param name="idno">The primary key of the vendor detail record to update.</param>
+        /// <param name="vendor">The updated vendor detail values submitted from the form.</param>
+        /// <returns>Redirects to <see cref="Profile"/> after saving the changes.</returns>
+        [HttpPost]
         public ActionResult Edit_Profile(int idno, Vendor_details vendor)
         {
             try
@@ -966,8 +1062,11 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
 
         //Bind District
         /// <summary>
-        /// Dropdown ke liye data fetch karta hai.
+        /// Returns a JSON list of districts belonging to the specified state.
+        /// Used to dynamically populate the district dropdown when a state is selected.
         /// </summary>
+        /// <param name="Id">The state ID used to filter districts.</param>
+        /// <returns>A JSON array of district name/value pairs for use in a dropdown.</returns>
         public JsonResult DistrictList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -980,8 +1079,10 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         /// <summary>
-        /// [GET] - Lists all vendor orders
+        /// Displays today's order list for the currently authenticated vendor.
+        /// Joins transaction histories with product and retailer details to build the order view model.
         /// </summary>
+        /// <returns>The OrderList view with today's orders, or an empty view on error.</returns>
         public ActionResult OrderList()
         {
             try
@@ -1039,10 +1140,17 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
 
-        [HttpPost]
         /// <summary>
-        /// [POST] - Filters orders by category, status and date range
+        /// Filters the vendor's order list by category, order status, record count, and date range.
+        /// Supports all four combinations of category/status filters.
         /// </summary>
+        /// <param name="Cateid">The category ID filter, or empty string for all categories.</param>
+        /// <param name="ddl_status">The order status filter (e.g., "1" for pending, "2" for success).</param>
+        /// <param name="ddl_top">The maximum number of records to retrieve.</param>
+        /// <param name="txt_frm_date">The start date of the filter range.</param>
+        /// <param name="txt_to_date">The end date of the filter range.</param>
+        /// <returns>The OrderList view filtered by the specified parameters, or an empty view on error.</returns>
+        [HttpPost]
         public ActionResult OrderList(string Cateid, string ddl_status, int ddl_top, string txt_frm_date, string txt_to_date)
         {
             try
@@ -1202,8 +1310,12 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         /// <summary>
-        /// [GET] - Displays order list filtered by type or message
+        /// Returns all orders for the vendor as a partial view, optionally setting a success or
+        /// failed message in TempData based on the <paramref name="type"/> parameter.
         /// </summary>
+        /// <param name="type">The message type: "Success" or "Failed".</param>
+        /// <param name="Message">The message text to store in TempData.</param>
+        /// <returns>A partial view <c>_orderListPartail</c> with the vendor's full order list.</returns>
         public ActionResult OrderList1(string type, string Message)
         {
             try
@@ -1254,8 +1366,11 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         
         //show all buyer details
         /// <summary>
-        /// Data fetch karke view mein dikhata hai.
+        /// Returns all detail records for the specified buyer (retailer) as a JSON array.
+        /// Used to display buyer information in the order management view.
         /// </summary>
+        /// <param name="buyerid">The unique user ID of the buyer (retailer) to look up.</param>
+        /// <returns>A JSON array containing all detail records for the specified buyer.</returns>
         public JsonResult Showallbuyerdetails(string buyerid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1265,8 +1380,16 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
         /// <summary>
-        /// [GET] - Updates the fulfillment status of an order
+        /// Updates the fulfillment/approval status of a specific order item.
+        /// Calls <c>proc_ApproveRejectShopingOrder</c> and returns a JSON result indicating
+        /// whether the approval was successful or failed.
         /// </summary>
+        /// <param name="idno">The transaction history record ID.</param>
+        /// <param name="OrderId">The order ID to update.</param>
+        /// <param name="status">The new status to apply (e.g., "Approved", "Rejected").</param>
+        /// <param name="retailerid">The retailer/buyer user ID for the order.</param>
+        /// <param name="role">The role of the buyer associated with the order.</param>
+        /// <returns>A JSON object with <c>Status</c>, <c>Message</c>, and <c>Type</c> fields.</returns>
         public ActionResult UpdateOrderStatus(int idno, int OrderId, string status, string retailerid, string role)
         {
             try
@@ -1298,10 +1421,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
             //return Json("Failed"); 
         }
-        [HttpGet]
         /// <summary>
-        /// [GET] - Generates and downloads an e-commerce order invoice PDF
+        /// Generates and returns a PDF of the e-commerce transaction invoice for the specified order.
+        /// Retrieves the user's role and fetches the transaction history before rendering the PDF.
         /// </summary>
+        /// <param name="OrderID">The order ID for which to generate the invoice PDF.</param>
+        /// <returns>A PDF view rendered from the e-commerce transaction history.</returns>
+        [HttpGet]
         public ActionResult EcommInvoicePdf(int OrderID)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1313,10 +1439,14 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             }
         }
 
-        [HttpPost]
         /// <summary>
-        /// Existing record ko update/edit karta hai.
+        /// Updates the delivery status of an order after verifying the provided OTP.
+        /// Calls <c>proc_UpdateDeliveryStatusByVendorID</c> and returns a JSON result.
         /// </summary>
+        /// <param name="orderId">The order ID whose delivery status is to be updated.</param>
+        /// <param name="otp">The one-time password provided to confirm delivery.</param>
+        /// <returns>A JSON object with <c>Status</c> ("Success" or "Failed") and a <c>Message</c>.</returns>
+        [HttpPost]
         public JsonResult UpdateDeliveryStatus(int orderId,int otp)
         {
             try
@@ -1344,17 +1474,20 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
         }
         #region WalletToBankAmountTransfer
         /// <summary>
-        /// [GET] - Displays wallet to bank transfer form
+        /// Displays the wallet-to-bank transfer page, showing the available transfer charge
+        /// slabs configured for the "Seller" role.
         /// </summary>
+        /// <returns>The WalletToBankAmountTransfer view with the applicable charge slabs.</returns>
         public ActionResult WalletToBankAmountTransfer()
         {
             var entries = db.WalletToBankAmountTransferCharges.Where(a => a.UserRole == "Seller").ToList();
             return View(entries);
         }
-        [HttpGet]
         /// <summary>
-        /// [GET] - Displays wallet unload/withdrawal report
+        /// Displays today's wallet unload (withdrawal) request report for the currently authenticated vendor.
         /// </summary>
+        /// <returns>The WalletUnloadReport view with today's transfer request records.</returns>
+        [HttpGet]
         public ActionResult WalletUnloadReport()
         {
             var userid = User.Identity.GetUserId();
@@ -1363,10 +1496,13 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             var entries = db.VendorWalletToBankAmountTransferRequests.Where(a => a.VendorId == userid && a.RequestDate >= todayStart).ToList();
             return View(entries);
         }
-        [HttpPost]
         /// <summary>
-        /// [POST] - Filters wallet unload report by date range
+        /// Filters the wallet unload (withdrawal) request report by the specified date range.
         /// </summary>
+        /// <param name="txt_frm_date">The start date for filtering wallet unload requests.</param>
+        /// <param name="txt_to_date">The end date for filtering wallet unload requests.</param>
+        /// <returns>The WalletUnloadReport view filtered by the specified date range.</returns>
+        [HttpPost]
         public ActionResult WalletUnloadReport(string txt_frm_date, string txt_to_date)
         {
             ViewBag.chk = "post";
@@ -1384,10 +1520,16 @@ namespace Vastwebmulti.Areas.VENDOR.Controllers
             var entries = db.VendorWalletToBankAmountTransferRequests.Where(a => a.VendorId == userid && a.RequestDate >= frm_date && a.RequestDate <= to_date).ToList();
             return View(entries);
         }
-        [HttpPost]
         /// <summary>
-        /// [POST] - Submits a wallet to bank transfer request
+        /// Submits a wallet-to-bank transfer request for the currently authenticated vendor.
+        /// Validates that all required bank details are present on the vendor profile.
+        /// Depending on the system configuration, either processes the request via admin approval
+        /// or directly via the payment API.
         /// </summary>
+        /// <param name="Amount">The amount to transfer from the wallet to the bank account.</param>
+        /// <param name="Type">The transfer type (e.g., "IMPS", "NEFT", "RTGS").</param>
+        /// <returns>A serialized JSON string with <c>status</c> ("Success" or "Failed") and a <c>Message</c>.</returns>
+        [HttpPost]
         public ActionResult AddWalletToBankRequest(decimal Amount, string Type)
         {
             var userid = User.Identity.GetUserId();

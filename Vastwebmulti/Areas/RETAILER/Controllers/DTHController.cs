@@ -338,6 +338,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
             return View();
         }
+        /// <summary>
+        /// Retrieves a valid authentication token from the database, requesting a new one from the API if the current token is expired or missing.
+        /// </summary>
+        /// <returns>A valid bearer token string, or null if the token could not be retrieved.</returns>
         public string getAuthToken()
         {
             try
@@ -406,6 +410,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// Forces a refresh of the stored authentication token by calling the token API and updating the database record.
+        /// </summary>
         public void UpdateAuthToken()
         {
             var response = tokencheck();
@@ -427,6 +434,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         }
+        /// <summary>
+        /// Sends a password grant request to the Vastbazaar token endpoint and returns the raw REST response containing the access token.
+        /// </summary>
+        /// <returns>The <see cref="IRestResponse"/> from the token endpoint.</returns>
         public IRestResponse tokencheck()
         {
             var apidetails = db.Money_API_URLS.FirstOrDefault(aa => aa.API_Name == "VASTWEB");

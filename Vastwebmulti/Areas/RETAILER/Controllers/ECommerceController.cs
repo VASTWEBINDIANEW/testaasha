@@ -14,7 +14,7 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
 
     /// <summary>
-    /// Retailer ka e-commerce shopping, cart management, payment aur transaction report handle karta hai.
+    /// RETAILER Area - Handles retailer e-commerce shopping, cart management, payment processing and transaction reporting.
     /// </summary>
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
@@ -23,16 +23,27 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         VastwebmultiEntities db = new VastwebmultiEntities();
+        /// <summary>
+        /// Initializes a new instance of <see cref="ECommerceController"/> using the default dependency resolution.
+        /// </summary>
         public ECommerceController()
         {
 
         }
+        /// <summary>
+        /// Initializes a new instance of <see cref="ECommerceController"/> with explicit user and sign-in managers.
+        /// </summary>
+        /// <param name="userManager">The application user manager instance.</param>
+        /// <param name="signInManager">The application sign-in manager instance.</param>
         public ECommerceController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
         }
 
+        /// <summary>
+        /// Gets the application sign-in manager, resolving it from the OWIN context if not explicitly set.
+        /// </summary>
         public ApplicationSignInManager SignInManager
         {
             get
@@ -45,6 +56,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the application user manager, resolving it from the OWIN context if not explicitly set.
+        /// </summary>
         public ApplicationUserManager UserManager
         {
             get
@@ -59,8 +73,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         // GET: RETAILER/ECommerce
         //[MenuAccessFilter]
         /// <summary>
-        /// E-commerce home page dikhata hai; KYC status aur paid service check karke products list return karta hai.
+        /// GET Displays the e-commerce home page; validates KYC and paid service status before returning the product listing.
         /// </summary>
+        /// <param name="txtSearch">Optional product name search filter.</param>
+        /// <param name="SortBy">Optional sort order (Date, PriceLow, PriceHigh).</param>
+        /// <returns>The e-commerce index view with the product view model, or a redirect to Profile if KYC is incomplete.</returns>
         public ActionResult Index(string txtSearch, string SortBy)
         {
 
@@ -343,8 +360,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View(model1);
         }
         /// <summary>
-        /// E-commerce categories aur sub-categories ka partial menu list render karta hai.
+        /// GET Renders the partial menu list of e-commerce categories and sub-categories.
         /// </summary>
+        /// <returns>A partial view containing category and sub-category navigation data.</returns>
         public PartialViewResult _MenuList()
         {
             MenuVM model = new MenuVM();
@@ -361,8 +379,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         /// <summary>
-        /// Filter aur sort karke products ka partial list dikhata hai.
+        /// GET Renders a filtered and sorted partial product list based on name, sub-category, price and sort order.
         /// </summary>
+        /// <param name="ProductName">Optional product name filter.</param>
+        /// <param name="SubCatId">Optional sub-category ID filter.</param>
+        /// <param name="Price">Optional price filter (reserved for future use).</param>
+        /// <param name="SortBy">Optional sort order (Date, PriceLow, PriceHigh).</param>
+        /// <returns>A partial view containing the filtered product list and cart item count.</returns>
         public PartialViewResult _productlist(string ProductName, int? SubCatId, decimal? Price, string SortBy)
         {
             var RetailerID = User.Identity.GetUserId();
@@ -386,8 +409,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return PartialView(model);
         }
         /// <summary>
-        /// Product naam se search karke matching product names ka JSON list return karta hai.
+        /// GET Searches products by name and returns a JSON list of matching product names for autocomplete.
         /// </summary>
+        /// <param name="term">The search term to match against product names.</param>
+        /// <returns>A JSON array of matching product name strings.</returns>
         [HttpGet]
         public JsonResult FindProductByName(string term)
         {
@@ -397,8 +422,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(lstProducts, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
-        /// Product ka detail page dikhata hai; "Addcartitem" type hone par product ko cart mein add karta hai.
+        /// GET Displays the product detail page; adds the product to the retailer's cart when the type is "Addcartitem".
         /// </summary>
+        /// <param name="id">The product ID to display.</param>
+        /// <param name="type">Action type; pass "Addcartitem" to add the product to the cart.</param>
+        /// <returns>The product detail view, or an empty view on error.</returns>
         public ActionResult ProductView(int id, string type)
         {
             try
@@ -448,8 +476,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         }
         /// <summary>
-        /// Retailer ka shopping cart view karta hai aur cart mein rakhe sabhi products dikhata hai.
+        /// GET Displays the retailer's shopping cart with all current cart items.
         /// </summary>
+        /// <returns>The cart view populated with current cart items.</returns>
         public ActionResult viewCart()
         {
             var userid = User.Identity.GetUserId();
@@ -469,6 +498,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View(lstProductincart);
         }
 
+        /// <summary>
+        /// GET Renders the partial cart view showing all items currently in the retailer's cart.
+        /// </summary>
+        /// <returns>A partial view with the list of cart items.</returns>
         public PartialViewResult _viewCart()
         {
             try
@@ -494,8 +527,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         /// <summary>
-        /// Cart mein kisi product ki quantity update karta hai aur updated cart partial view return karta hai.
+        /// Updates the quantity of a specific product in the retailer's cart and returns the refreshed cart partial view.
         /// </summary>
+        /// <param name="productId">The ID of the product whose quantity should be updated.</param>
+        /// <param name="QTY">The new quantity to set; values less than 1 are ignored.</param>
+        /// <returns>The updated _viewCart partial view.</returns>
         public PartialViewResult UpdateQTY(int productId, int QTY)
         {
             try
@@ -527,8 +563,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         /// <summary>
-        /// Cart se kisi product ko remove karta hai aur updated cart partial view return karta hai.
+        /// Removes a specific product from the retailer's cart and returns the refreshed cart partial view.
         /// </summary>
+        /// <param name="productId">The ID of the product to remove from the cart.</param>
+        /// <returns>The updated _viewCart partial view after removal.</returns>
         public PartialViewResult RemoveCartItem(int productId)
         {
             try
@@ -560,8 +598,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         /// <summary>
-        /// Cart payment process karta hai; success hone par confirmation message ke saath Index page par redirect karta hai.
+        /// POST Processes the cart payment for the specified product; redirects to Index with a success or failure message.
         /// </summary>
+        /// <param name="productID">The ID of the product being purchased from the cart.</param>
+        /// <returns>A redirect to the Index action with status in TempData.</returns>
         [HttpPost]
         public ActionResult doPayment(int productID)
         {
@@ -594,8 +634,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         /// <summary>
-        /// Aaj ki e-commerce transactions dikhata hai; success, pending aur rejected totals ViewData mein pass karta hai.
+        /// GET Displays today's e-commerce transactions with totals for successful, pending and rejected orders.
         /// </summary>
+        /// <returns>The transaction report view with order records and aggregated totals in ViewData.</returns>
         [HttpGet]
         public ActionResult Transaction()
         {
@@ -626,6 +667,15 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// POST Displays the e-commerce transaction report filtered by category, date range, record count and order status.
+        /// </summary>
+        /// <param name="category">Category ID filter.</param>
+        /// <param name="ddl_top">Maximum number of records to return.</param>
+        /// <param name="txt_frm_date">Start date of the report range.</param>
+        /// <param name="txt_to_date">End date of the report range.</param>
+        /// <param name="ddl_status">Order status filter (e.g. Success, Failed, ALL).</param>
+        /// <returns>The transaction report view with filtered results and aggregated totals.</returns>
         [HttpPost]
         public ActionResult Transaction(string category, int ddl_top, string txt_frm_date, string txt_to_date, string ddl_status)
         {
@@ -662,6 +712,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// GET Generates and returns a PDF invoice for the specified e-commerce order.
+        /// </summary>
+        /// <param name="OrderID">The unique identifier of the e-commerce order to invoice.</param>
+        /// <returns>A PDF representation of the order invoice.</returns>
         [HttpGet]
         public ActionResult EcommInvoicePdf(int OrderID)
         {

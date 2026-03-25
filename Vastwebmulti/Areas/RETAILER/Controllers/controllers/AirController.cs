@@ -24,6 +24,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
     [Authorize(Roles = "Retailer")]
     [Low_Bal_CustomFilter()]
+    /// <summary>
+    /// Handles flight search, booking, and related travel operations for retailers.
+    /// </summary>
     public class AirController : Controller
     {
         //string VastbazaarBaseUrl = "http://localhost:62146/";
@@ -31,9 +34,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         VastwebmultiEntities db = new VastwebmultiEntities();
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AirController"/> class.
+        /// </summary>
         public AirController()
         {
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AirController"/> class.
+        /// </summary>
+        /// <param name="userManager">The application user manager instance.</param>
+        /// <param name="signInManager">The application sign-in manager instance.</param>
         public AirController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
@@ -64,6 +75,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         #region Travel
         [HttpGet]
         [OutputCache(Duration = 2000, VaryByParam = "term")]
+        /// <summary>
+        /// Returns airport name suggestions matching the provided search term for autocomplete.
+        /// </summary>
+        /// <param name="term">The search term used to filter results.</param>
+        /// <returns>A <see cref="JsonResult"/> containing the response data.</returns>
         public JsonResult GetSourceName(string term)
         {
             List<string> planets = (from p in db.Airport_info
@@ -72,17 +88,42 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //select p.AirportName).ToList<string>() ;
             return Json(planets, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Renders the flight search filter partial view.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>A <see cref="PartialViewResult"/> rendering the partial view.</returns>
         public PartialViewResult _AirFilter(AirSearchResultVM model)
         {
             var FirmName = db.Admin_details.FirstOrDefault().Companyname;
             ViewBag.FirmName = FirmName;
             return PartialView(model);
         }
+        /// <summary>
+        /// Processes flight search requests and returns available flight results.
+        /// </summary>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult Search()
         {
             return RedirectToAction("Travel", "Home");
         }
         [HttpGet]
+        /// <summary>
+        /// Processes flight search requests and returns available flight results.
+        /// </summary>
+        /// <param name="stringtxtSource">The stringtxt source value.</param>
+        /// <param name="stringtxtDestination">The stringtxt destination value.</param>
+        /// <param name="DateTimetxt_frm_date">The date timetxt_frm_date value.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="txtAdultCount">The number of adult passengers.</param>
+        /// <param name="txtChildCount">The number of child passengers.</param>
+        /// <param name="txtInfantCount">The number of infant passengers.</param>
+        /// <param name="ddlclass">The selected flight cabin class identifier.</param>
+        /// <param name="JourneyType">The type of journey (1=one-way, 2=round-trip, etc.).</param>
+        /// <param name="calanderFare">Indicates whether the calendar fare view should be displayed.</param>
+        /// <param name="ReturnType">The return flight source type (e.g., GDS).</param>
+        /// <param name="stringprefferedAirlines">The stringpreffered airlines value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult Search(string[] txtSource, string[] txtDestination, DateTime[] txt_frm_date, DateTime? txt_to_date, int txtAdultCount, int txtChildCount, int txtInfantCount, int ddlclass, int JourneyType, bool? calanderFare, string ReturnType, string[] prefferedAirlines)
         {
             try
@@ -323,6 +364,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// Renders the calendar fare partial view for the given route and date.
+        /// </summary>
+        /// <param name="txtSource">The source airport or city for the flight search.</param>
+        /// <param name="txtDestination">The destination airport or city for the flight search.</param>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <returns>A <see cref="PartialViewResult"/> rendering the partial view.</returns>
         public PartialViewResult _CalanderFare(string txtSource, string txtDestination, DateTime txt_frm_date)
         {
             try
@@ -381,6 +429,14 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Returns fare data for a calendar view, navigating forward or backward by month.
+        /// </summary>
+        /// <param name="txtSource">The source airport or city for the flight search.</param>
+        /// <param name="txtDestination">The destination airport or city for the flight search.</param>
+        /// <param name="month">The month string for which calendar fare data is requested.</param>
+        /// <param name="type">The navigation direction for calendar fare (pre=previous, next=next).</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult CalanderFare(string txtSource, string txtDestination, string month, string type)
         {
             try
@@ -462,17 +518,34 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// Renders the top section partial view for type-return air searches.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>A <see cref="PartialViewResult"/> rendering the partial view.</returns>
         public PartialViewResult _TypeReturnAirTopSection(AirTopSectionModel model)
         {
             return PartialView(model);
         }
         [HttpPost]
         [AcceptVerbs(HttpVerbs.Post)]
+        /// <summary>
+        /// Renders the selected flight itinerary in the top section partial view.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>A <see cref="PartialViewResult"/> rendering the partial view.</returns>
         public PartialViewResult ShowSelectedFlightItinarary(AirTopSectionModel model)
         {
             return PartialView("_TypeReturnAirTopSection", model);
         }
         [HttpGet]
+        /// <summary>
+        /// Displays detailed fare and itinerary information for the selected flight(s).
+        /// </summary>
+        /// <param name="TraceId">The trace identifier for the flight search session.</param>
+        /// <param name="stringResultIndex">The string result index value.</param>
+        /// <param name="JourneyType">The type of journey (1=one-way, 2=round-trip, etc.).</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult FlightDetails(string TraceId, string[] ResultIndex, int JourneyType = 0)
         {
             try
@@ -634,6 +707,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// Handles the get fare rule operation.
+        /// </summary>
+        /// <param name="TraceId">The trace identifier for the flight search session.</param>
+        /// <param name="ResultIndex">The result index identifiers of the selected flights.</param>
+        /// <returns>A <see cref="FareRuleVM"/> result.</returns>
         public FareRuleVM getFareRule(string TraceId, string ResultIndex)
         {
             try
@@ -684,6 +763,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// Handles the getfarerules_search operation.
+        /// </summary>
+        /// <param name="TraceId">The trace identifier for the flight search session.</param>
+        /// <param name="ResultIndex">The result index identifiers of the selected flights.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult getfarerules_search(string TraceId, string ResultIndex)
         {
             try
@@ -735,6 +820,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// Handles the get fare quote operation.
+        /// </summary>
+        /// <param name="TraceId">The trace identifier for the flight search session.</param>
+        /// <param name="ResultIndex">The result index identifiers of the selected flights.</param>
+        /// <returns>A <see cref="FareQuoteVM"/> result.</returns>
         public FareQuoteVM getFareQuote(string TraceId, string ResultIndex)
         {
 
@@ -776,6 +867,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Handles the get s s r l c c operation.
+        /// </summary>
+        /// <param name="TraceId">The trace identifier for the flight search session.</param>
+        /// <param name="ResultIndex">The result index identifiers of the selected flights.</param>
+        /// <returns>A <see cref="SSRLcc"/> result.</returns>
         public SSRLcc getSSRLCC(string TraceId, string ResultIndex)
         {
             var token = string.Empty;
@@ -816,6 +913,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return new SSRLcc();
             }
         }
+        /// <summary>
+        /// Handles the get s s r non l c c operation.
+        /// </summary>
+        /// <param name="TraceId">The trace identifier for the flight search session.</param>
+        /// <param name="ResultIndex">The result index identifiers of the selected flights.</param>
+        /// <returns>A <see cref="SSRNonLcc"/> result.</returns>
         public SSRNonLcc getSSRNonLCC(string TraceId, string ResultIndex)
         {
             var token = string.Empty;
@@ -856,11 +959,20 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// Handles the booking review operation.
+        /// </summary>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult BookingReview()
         {
             return RedirectToAction("Travel", "Home");
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the booking review operation.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult BookingReview(FlightDetailsVM model)
         {
             try
@@ -992,6 +1104,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
+        /// <summary>
+        /// Handles the get country name by code operation.
+        /// </summary>
+        /// <param name="Code">The operator or service code.</param>
+        /// <returns>A string containing the result.</returns>
         public string getCountryNameByCode(string Code)
         {
             var name = string.Empty;
@@ -999,6 +1116,14 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                            where p.Country_Code == Code
                            select p.Country_Code).FirstOrDefault();
         }
+        /// <summary>
+        /// Handles the book operation.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <param name="lstPax">The lst pax value.</param>
+        /// <param name="isForOnward">The is for onward value.</param>
+        /// <param name="ResponseString">The response string value.</param>
+        /// <returns>A string containing the result.</returns>
         public string Book(FlightDetailsVM model, List<PassengerNonLcc> lstPax, bool isForOnward, out string ResponseString)
         {
             string BookingResponses = string.Empty;
@@ -1213,6 +1338,19 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             var lstQueue = db.TBO_AirBookingForNonLccDetail.ToList();
             return View(lstQueue);
         }
+        /// <summary>
+        /// Handles the ticket non l c c operation.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <param name="opnlCharge">The opnl charge value.</param>
+        /// <param name="LeadPaxFName">The lead pax f name value.</param>
+        /// <param name="LeadPaxLName">The lead pax l name value.</param>
+        /// <param name="PaxNames">The pax names value.</param>
+        /// <param name="AirlineName">The airline name value.</param>
+        /// <param name="EnduserIp">The enduser ip value.</param>
+        /// <param name="TokenId">The token id value.</param>
+        /// <param name="isDomestic">The is domestic value.</param>
+        /// <returns>A string containing the result.</returns>
         public string TicketNonLCC(TicketNonLcc model, decimal opnlCharge, string LeadPaxFName, string LeadPaxLName, string PaxNames, string AirlineName, string EnduserIp, string TokenId, bool isDomestic)
         {
             var userid = User.Identity.GetUserId();
@@ -1389,6 +1527,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the ticket operation.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult Ticket(FlightDetailsVM model)
         {
 
@@ -2905,23 +3048,46 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         }
         [HttpGet]
+        /// <summary>
+        /// Handles the ticket report operation.
+        /// </summary>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult TicketReport()
         {
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the ticket report operation.
+        /// </summary>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult TicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             ViewBag.chk = "post";
             return View();
         }
 
+        /// <summary>
+        /// Provides functionality for JsonModel operations.
+        /// </summary>
         public class JsonModel
         {
             public string HTMLString { get; set; }
             public bool NoMoredata { get; set; }
         }
         [ChildActionOnly]
+        /// <summary>
+        /// Renders the ticketreport partial view.
+        /// </summary>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult _ticketreport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -2962,6 +3128,14 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //var rowdata = db.Sp_Recharge_info_LazyLoad(1, pagesize, "Retailer", userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), Operator, txtmob, ddl_status).ToList();
             //return View(rowdata);
         }
+        /// <summary>
+        /// Generates or prints d f_ ticket report output.
+        /// </summary>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult PDF_TicketReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -2994,6 +3168,14 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Handles the excel_ ticket_ report operation.
+        /// </summary>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult Excel_Ticket_Report(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -3053,6 +3235,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// Handles the render partial viewtostring operation.
+        /// </summary>
+        /// <param name="Viewname">The viewname value.</param>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>A string containing the result.</returns>
         protected string renderPartialViewtostring(string Viewname, object model)
         {
             if (string.IsNullOrEmpty(Viewname))
@@ -3068,6 +3256,15 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the infinite scroll_ticket operation.
+        /// </summary>
+        /// <param name="pageindex">The pageindex value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="frm_date">The frm_date value.</param>
+        /// <param name="to_date">The to_date value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult InfiniteScroll_ticket(int pageindex, string PNR, string ddl_status, DateTime frm_date, DateTime to_date)
         {
             string userid = User.Identity.GetUserId();
@@ -3087,6 +3284,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Retrieves flight status.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult GetFlightStatus(TicketBookinDetailsModel model)
         {
             try
@@ -3146,6 +3348,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //return View(respo);
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the release p n r operation.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult ReleasePNR(RealsePNRModel model)
         {
             var userid = User.Identity.GetUserId();
@@ -3167,6 +3374,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //return respo;
             return Json(JsonConvert.SerializeObject(respo), JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Handles the release p n r no operation.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>A string containing the result.</returns>
         public string ReleasePNRNo(RealsePNRModel model)
         {
             var token = string.Empty;
@@ -3192,6 +3404,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return responseJs;
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the get air surcharge operation.
+        /// </summary>
+        /// <param name="OfferedFare">The offered fare value.</param>
+        /// <param name="publishedFare">The published fare value.</param>
+        /// <param name="isDomestic">The is domestic value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult getAirSurcharge(decimal OfferedFare, decimal publishedFare, bool isDomestic)
         {
             try
@@ -3206,6 +3425,14 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json("0", JsonRequestBehavior.AllowGet);
             }
         }
+        /// <summary>
+        /// Handles the get air ticket surcarge operation.
+        /// </summary>
+        /// <param name="OfferedFare">The offered fare value.</param>
+        /// <param name="publishedFare">The published fare value.</param>
+        /// <param name="isDomestic">The is domestic value.</param>
+        /// <param name="userid">The unique identifier of the current user.</param>
+        /// <returns>A <see cref="decimal"/> result.</returns>
         public decimal getAirTicketSurcarge(decimal OfferedFare, decimal publishedFare, bool isDomestic, string userid)
         {
             try
@@ -3231,6 +3458,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the p r i c e r b d operation.
+        /// </summary>
+        /// <param name="model">The view model containing data to render in the view.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult PRICERBD(PriceRBDModel model)
         {
             try
@@ -3284,6 +3516,15 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Handles the cancel ticket operation.
+        /// </summary>
+        /// <param name="idno">The idno value.</param>
+        /// <param name="bookingid">The bookingid value.</param>
+        /// <param name="origin">The origin value.</param>
+        /// <param name="destination">The destination value.</param>
+        /// <param name="ticketIds">The ticket ids value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult CancelTicket(int idno, long bookingid, string origin, string destination, string ticketIds)
         {
             try
@@ -3366,11 +3607,23 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return Json(JsonConvert.SerializeObject(jsrespo));
             }
         }
+        /// <summary>
+        /// Handles the cancellation report operation.
+        /// </summary>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult CancellationReport()
         {
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the cancellation report operation.
+        /// </summary>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult CancellationReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR)
         {
             ViewBag.chk = "post";
@@ -3378,6 +3631,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         [ChildActionOnly]
+        /// <summary>
+        /// Renders the cancellation report partial view.
+        /// </summary>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <param name="bookingid">The bookingid value.</param>
+        /// <param name="cancelreqid">The cancelreqid value.</param>
+        /// <param name="tracid">The tracid value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult _CancellationReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string bookingid, string cancelreqid, string tracid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -3416,6 +3680,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             //var rowdata = db.Sp_Recharge_info_LazyLoad(1, pagesize, "Retailer", userid, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), Operator, txtmob, ddl_status).ToList();
             //return View(rowdata);
         }
+        /// <summary>
+        /// Generates or prints d f_ cancellation report output.
+        /// </summary>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <param name="bookingid">The bookingid value.</param>
+        /// <param name="cancelreqid">The cancelreqid value.</param>
+        /// <param name="tracid">The tracid value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult PDF_CancellationReport(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string bookingid, string cancelreqid, string tracid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -3451,6 +3726,17 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return new ViewAsPdf(proc_Response);
             }
         }
+        /// <summary>
+        /// Handles the excel_ cancellation_ report operation.
+        /// </summary>
+        /// <param name="txt_frm_date">The departure date for the flight.</param>
+        /// <param name="txt_to_date">The return date for round-trip flights.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <param name="bookingid">The bookingid value.</param>
+        /// <param name="cancelreqid">The cancelreqid value.</param>
+        /// <param name="tracid">The tracid value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult Excel_Cancellation_Report(string txt_frm_date, string txt_to_date, string ddl_status, string PNR, string bookingid, string cancelreqid, string tracid)
         {
             DateTime frm1 = Convert.ToDateTime(txt_frm_date);
@@ -3507,6 +3793,18 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return View();
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the infinite scroll_cancelticket operation.
+        /// </summary>
+        /// <param name="pageindex">The pageindex value.</param>
+        /// <param name="PNR">The p n r value.</param>
+        /// <param name="ddl_status">The ddl_status value.</param>
+        /// <param name="frm_date">The frm_date value.</param>
+        /// <param name="to_date">The to_date value.</param>
+        /// <param name="bookingid">The bookingid value.</param>
+        /// <param name="cancelreqid">The cancelreqid value.</param>
+        /// <param name="tracid">The tracid value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult InfiniteScroll_cancelticket(int pageindex, string PNR, string ddl_status, DateTime frm_date, DateTime to_date, string bookingid, string cancelreqid, string tracid)
         {
             string userid = User.Identity.GetUserId();
@@ -3523,6 +3821,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             return Json(jsonmodel);
         }
         [HttpPost]
+        /// <summary>
+        /// Handles the cancellation status operation.
+        /// </summary>
+        /// <param name="ChangeReqId">The change req id value.</param>
+        /// <param name="idno">The idno value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult CancellationStatus(int ChangeReqId, int idno)
         {
             try
@@ -3588,6 +3892,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// Displays the ticket.
+        /// </summary>
+        /// <param name="idno">The idno value.</param>
+        /// <param name="firsName">The firs name value.</param>
+        /// <param name="lastName">The last name value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult ViewTicket(int idno, string firsName, string lastName)
         {
             try
@@ -3660,6 +3971,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// Generates or prints ticket output.
+        /// </summary>
+        /// <param name="idno">The idno value.</param>
+        /// <param name="firsName">The firs name value.</param>
+        /// <param name="lastName">The last name value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult PrintTicket(int idno, string firsName, string lastName)
         {
             try
@@ -3732,6 +4050,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return RedirectToAction("TicketReport", "Air");
             }
         }
+        /// <summary>
+        /// Generates or prints without fare output.
+        /// </summary>
+        /// <param name="idno">The idno value.</param>
+        /// <param name="firsName">The firs name value.</param>
+        /// <param name="lastName">The last name value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult PrintWithoutFare(int idno, string firsName, string lastName)
         {
             try
@@ -3804,6 +4129,13 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         [HttpGet]
+        /// <summary>
+        /// Displays the ticket without fare.
+        /// </summary>
+        /// <param name="idno">The idno value.</param>
+        /// <param name="firsName">The firs name value.</param>
+        /// <param name="lastName">The last name value.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult ViewTicketWithoutFare(int idno, string firsName, string lastName)
         {
             try
@@ -3876,12 +4208,20 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// Handles the flight finalresult operation.
+        /// </summary>
+        /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult FlightFinalresult()
         {
             return View();
         }
 
         #endregion
+        /// <summary>
+        /// Makes an HTTP POST request to obtain a new OAuth token from the Vastbazaar API.
+        /// </summary>
+        /// <returns>The REST API response object.</returns>
         public IRestResponse tokencheck()
         {
             var apidetails = db.Money_API_URLS.Where(aa => aa.API_Name == "VASTWEB").SingleOrDefault();
@@ -3896,6 +4236,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             IRestResponse response = client.Execute(request);
             return response;
         }
+        /// <summary>
+        /// Retrieves a valid Vastbazaar API authentication token, fetching a new one if the stored token is expired.
+        /// </summary>
+        /// <returns>A string containing the result.</returns>
         public string getAuthToken()
         {
             try
@@ -3964,6 +4308,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return null;
             }
         }
+        /// <summary>
+        /// Forces a refresh of the stored Vastbazaar API authentication token in the database.
+        /// </summary>
         public void UpdateAuthToken()
         {
             var response = tokencheck();

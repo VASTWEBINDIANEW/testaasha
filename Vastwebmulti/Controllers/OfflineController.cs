@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,14 +10,36 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Controllers
 {
+    /// <summary>
+    /// Handles offline (SMS-triggered) recharge and balance operations. Processes incoming
+    /// SMS commands from dealers and retailers to check balances, transfer funds, and
+    /// initiate mobile recharges without a web interface.
+    /// </summary>
     public class OfflineController : Controller
     {
         private VastwebmultiEntities db = new VastwebmultiEntities();
+
+        /// <summary>
+        /// Renders the default Index view for the Offline module.
+        /// </summary>
+        /// <returns>The default Index view.</returns>
         // GET: Offline
         public ActionResult Index()
         {
             return View();
         }
+
+        /// <summary>
+        /// Processes an offline SMS command sent from a mobile number. Supports "DynamicService"
+        /// type commands including balance check (CB), balance transfer (BT for dealers), and
+        /// mobile recharge requests (for retailers). Sends SMS confirmations via the priority SMS API.
+        /// </summary>
+        /// <param name="frmmobile">The mobile number from which the SMS was received.</param>
+        /// <param name="first">The first keyword of the command (e.g., "CB" for check balance, "BT" for balance transfer, or operator code for recharge).</param>
+        /// <param name="second">The second field of the command (e.g., target retailer ID for BT, or mobile number to recharge).</param>
+        /// <param name="third">The third field of the command (e.g., amount for BT or recharge).</param>
+        /// <param name="type">The type of service being requested (e.g., "DynamicService").</param>
+        /// <returns>The default view after processing the command.</returns>
         public ActionResult Message(string frmmobile, string first, string second, string third, string type)
         {
             if (type == "DynamicService")
@@ -157,7 +179,7 @@ namespace Vastwebmulti.Controllers
 
                             }
                         }
-                        //Recharge 
+                        //Recharge
                         else
                         {
                             var result = "";
@@ -556,6 +578,12 @@ namespace Vastwebmulti.Controllers
         }
 
         private static Random random = new Random();
+
+        /// <summary>
+        /// Generates a random numeric string of the specified length, used for creating unique order IDs.
+        /// </summary>
+        /// <param name="length">The number of characters in the generated string.</param>
+        /// <returns>A random numeric string of the given length.</returns>
         public string RandomString(int length)
         {
             const string chars = "1234567890";
