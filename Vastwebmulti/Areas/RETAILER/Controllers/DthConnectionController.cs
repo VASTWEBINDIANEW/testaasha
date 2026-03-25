@@ -22,16 +22,27 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         VastwebmultiEntities db = new VastwebmultiEntities();
+        /// <summary>
+        /// Initializes a new instance of <see cref="DthConnectionController"/> using the default dependency resolution.
+        /// </summary>
         public DthConnectionController()
         {
 
         }
+        /// <summary>
+        /// Initializes a new instance of <see cref="DthConnectionController"/> with explicit user and sign-in managers.
+        /// </summary>
+        /// <param name="userManager">The application user manager instance.</param>
+        /// <param name="signInManager">The application sign-in manager instance.</param>
         public DthConnectionController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
         }
 
+        /// <summary>
+        /// Gets the application sign-in manager, resolving it from the OWIN context if not explicitly set.
+        /// </summary>
         public ApplicationSignInManager SignInManager
         {
             get
@@ -44,6 +55,9 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the application user manager, resolving it from the OWIN context if not explicitly set.
+        /// </summary>
         public ApplicationUserManager UserManager
         {
             get

@@ -12,12 +12,19 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
+    /// <summary>
+    /// Utility class that wraps the InstantPay API, providing methods for Indo-Nepal money transfer,
+    /// outlet registration, KYC document upload, PAN card token purchase, gift card lookup, and DTH booking.
+    /// </summary>
     public class InstantPayComnUtil
     {
         string VastbazaarBaseUrl = "http://api.vastbazaar.com/";
         // string VastbazaarBaseUrl = "http://localhost:65209/";
         HttpClient client = new HttpClient();
         string token = string.Empty;
+        /// <summary>
+        /// Initializes a new instance of <see cref="InstantPayComnUtil"/>, loading the InstantPay API token from the database.
+        /// </summary>
         public InstantPayComnUtil()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -41,6 +48,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
 
         #region Indo_NEPAL
+        /// <summary>
+        /// Retrieves the list of bank branches available for Indo-Nepal money transfers from the InstantPay API.
+        /// </summary>
+        /// <returns>A <see cref="JObject"/> containing the branch list or an error status.</returns>
         public JObject GetBankBranchList()
         {
             try
@@ -141,6 +152,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Validates a bank account number against the InstantPay API for Indo-Nepal transfers.
+        /// </summary>
+        /// <param name="accountnumber">The bank account number to validate.</param>
+        /// <returns>A <see cref="JObject"/> with the validation result or an error status.</returns>
         public JObject ValidateBankAccount(string accountnumber)
         {
             try
@@ -183,6 +199,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Validates a remittance card number against the InstantPay API.
+        /// </summary>
+        /// <param name="cardnumber">The card number to validate.</param>
+        /// <returns>A <see cref="JObject"/> with the validation result or an error status.</returns>
         public JObject ValidateCardAccount(string cardnumber)
         {
             try
@@ -225,6 +246,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Retrieves the list of cash payout branches from the InstantPay API for Indo-Nepal transfers.
+        /// </summary>
+        /// <returns>A <see cref="JObject"/> containing cash branch data or an error status.</returns>
         public JObject CashBranchList()
         {
             try
@@ -267,6 +292,14 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Searches for Indo-Nepal money transfer transactions within a date range using sender and partner PINs.
+        /// </summary>
+        /// <param name="pin">The sender's PIN.</param>
+        /// <param name="partnerpin">The partner agent PIN.</param>
+        /// <param name="fromdate">The start date for the transaction search.</param>
+        /// <param name="todate">The end date for the transaction search.</param>
+        /// <returns>A <see cref="JObject"/> containing matching transaction records or an error status.</returns>
         public JObject SearchTxn(string pin, string partnerpin, string fromdate, string todate)
         {
             try
@@ -311,6 +344,24 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
 
         }
+        /// <summary>
+        /// Initiates an Indo-Nepal money transfer transaction by submitting sender and receiver details to the InstantPay API.
+        /// </summary>
+        /// <param name="senderidtype">The type of identity document provided by the sender.</param>
+        /// <param name="sendername">The full name of the sender.</param>
+        /// <param name="sendergender">The gender of the sender.</param>
+        /// <param name="employer">The sender's employer name.</param>
+        /// <param name="senderaddress">The sender's residential address.</param>
+        /// <param name="sendermobile">The sender's mobile phone number.</param>
+        /// <param name="mode">The transfer mode (1=Cash, 2=Account, 3=Card).</param>
+        /// <param name="senderidnumber">The sender's identity document number.</param>
+        /// <param name="receivername">The full name of the receiver.</param>
+        /// <param name="receivergender">The gender of the receiver.</param>
+        /// <param name="receiveraddress">The receiver's address.</param>
+        /// <param name="doctype">The document type for verification.</param>
+        /// <param name="filename">The name of the uploaded document file.</param>
+        /// <param name="image_url">The URL of the sender's identity image.</param>
+        /// <returns>A <see cref="JObject"/> containing the transaction result or an error status.</returns>
         public JObject Send_txn(string senderidtype, string sendername, string sendergender, string employer, string senderaddress, string sendermobile, string mode, string senderidnumber, string receivername, string receivergender, string receiveraddress, string doctype, string filename, string image_url)
         {
             try
@@ -368,6 +419,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         #endregion
 
         #region OutLetAPI
+        /// <summary>
+        /// Sends an OTP to the specified mobile number to initiate outlet verification with InstantPay.
+        /// </summary>
+        /// <param name="Mobile">The retailer's mobile number to send the OTP to.</param>
+        /// <returns>A <see cref="JObject"/> with RESULT "0" on success or "1" on failure, plus an ADDINFO message.</returns>
         public JObject VerifyOutletMobile(string Mobile)
         {
             JObject jj = new JObject();
@@ -417,6 +473,19 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return jj;
             }
         }
+        /// <summary>
+        /// Registers a retailer outlet on the InstantPay platform using the provided OTP and store details, saving the outlet ID on success.
+        /// </summary>
+        /// <param name="RetailerId">The unique retailer identifier.</param>
+        /// <param name="Mobile">The retailer's mobile number.</param>
+        /// <param name="OTP">The one-time password received during mobile verification.</param>
+        /// <param name="email">The retailer's email address.</param>
+        /// <param name="store_type">The category/type of the store.</param>
+        /// <param name="company">The firm/company name.</param>
+        /// <param name="name">The owner's name.</param>
+        /// <param name="pincode">The store's postal/PIN code.</param>
+        /// <param name="address">The store's address.</param>
+        /// <returns>A <see cref="JObject"/> with RESULT "0" and outlet ID on success, or "1" on failure.</returns>
         public JObject RegisterOutlet(string RetailerId, string Mobile, string OTP, string email, string store_type, string company, string name, string pincode, string address)
         {
             JObject jj = new JObject();
@@ -507,6 +576,15 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return jj;
             }
         }
+        /// <summary>
+        /// Uploads a KYC document in base64 format to the InstantPay outlet API for the specified retailer outlet.
+        /// </summary>
+        /// <param name="RetailerID">The unique retailer identifier.</param>
+        /// <param name="docId">The document type identifier required by InstantPay.</param>
+        /// <param name="pan_no">The retailer's PAN card number for verification.</param>
+        /// <param name="base64Content">The document file content encoded as a base64 string.</param>
+        /// <param name="filename">The original filename of the uploaded document.</param>
+        /// <returns>A <see cref="JObject"/> with RESULT "0" on success or "1" on failure with an ADDINFO message.</returns>
         public JObject Upload_KYC_Doc(string RetailerID, string docId, string pan_no, string base64Content, string filename)
         {
             JObject jj = new JObject();
@@ -595,6 +673,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return jj;
             }
         }
+        /// <summary>
+        /// Updates the PAN card number for the retailer's registered outlet and marks the PAN as confirmed on success.
+        /// </summary>
+        /// <param name="RetailerId">The unique retailer identifier whose outlet PAN should be updated.</param>
+        /// <param name="pan_no">The new PAN card number to associate with the outlet.</param>
+        /// <returns>A <see cref="JObject"/> with RESULT "0" on success or "1" on failure with an ADDINFO message.</returns>
         public JObject UpdatePAN(string RetailerId, string pan_no)
         {
             JObject jj = new JObject();
@@ -677,6 +761,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return jj;
             }
         }
+        /// <summary>
+        /// Retrieves the list of required KYC documents and their current approval status from the InstantPay outlet API.
+        /// </summary>
+        /// <param name="RetailerId">The unique retailer identifier.</param>
+        /// <param name="pan_no">The retailer's PAN card number for verification.</param>
+        /// <returns>A <see cref="JObject"/> with document data on success or an error message on failure.</returns>
         public JObject GetKycDoc(string RetailerId, string pan_no)
         {
             JObject jj = new JObject();
@@ -764,6 +854,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         #endregion
 
         #region PANCARD_API
+        /// <summary>
+        /// Registers the retailer outlet for UTI PAN card services and retrieves the UTI PSA login credentials.
+        /// </summary>
+        /// <param name="RetailerId">The unique retailer identifier whose outlet should be registered for UTI PAN services.</param>
+        /// <returns>A <see cref="JObject"/> with the UTI login ID on success or an error message on failure.</returns>
         public JObject GetUTILoginCredentials(string RetailerId)
         {
             JObject jj = new JObject();
@@ -852,6 +947,21 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return jj;
             }
         }
+        /// <summary>
+        /// Purchases UTI PAN card tokens (digital and/or physical) for the specified retailer outlet, charging the retailer balance and recording the transaction.
+        /// </summary>
+        /// <param name="RetailerId">The unique retailer identifier purchasing the tokens.</param>
+        /// <param name="token">The Vastbazaar bearer token for API authentication.</param>
+        /// <param name="digitalCount">The number of digital PAN tokens to purchase.</param>
+        /// <param name="physicalCount">The number of physical PAN tokens to purchase.</param>
+        /// <param name="merchantTxnId">The unique merchant transaction identifier for this purchase.</param>
+        /// <param name="websitename">The website URL for backup records.</param>
+        /// <param name="ip">The client IP address for audit logging.</param>
+        /// <param name="latss">The client latitude for geo-logging.</param>
+        /// <param name="longloc">The client longitude for geo-logging.</param>
+        /// <param name="city">The client city for geo-logging.</param>
+        /// <param name="address">The client address for geo-logging.</param>
+        /// <returns>A <see cref="JObject"/> with RESULT "0" and token info on success or an error message on failure.</returns>
         public JObject GetUTIToken(string RetailerId, string token, string digitalCount, string physicalCount, string merchantTxnId, string websitename, string ip, string latss, string longloc, string city, string address)
         {
             JObject jj = new JObject();
@@ -1134,6 +1244,12 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return jj;
             }
         }
+        /// <summary>
+        /// Checks the status of a UTI PAN token purchase request and updates the database record accordingly, issuing a refund if the request failed.
+        /// </summary>
+        /// <param name="id">The internal database ID of the PAN card request record.</param>
+        /// <param name="token">The Vastbazaar bearer token for API authentication.</param>
+        /// <returns>A <see cref="JObject"/> with RESULT "0" on success, "1" on failure, or "2" for a pending status.</returns>
         public JObject getUtiTokenStatus(string id, string token)
         {
 
@@ -1275,6 +1391,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
                 return jj;
             }
         }
+        /// <summary>
+        /// Manually marks a PAN card token request as failed, triggers a refund, and records balance backup info for retailer, dealer and master.
+        /// </summary>
+        /// <param name="id">The internal database ID of the PAN card request to fail.</param>
+        /// <param name="remark">The reason or remark for the manual failure.</param>
         public void PanManualFailed(string id, string remark)
         {
             try
@@ -1344,6 +1465,10 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
         }
         #endregion
+        /// <summary>
+        /// Refreshes the stored Vastbazaar API bearer token by requesting a new one and updating the database record.
+        /// </summary>
+        /// <returns>The new bearer token string, or null if the request failed.</returns>
         public string UpdateToken()
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1385,6 +1510,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
             }
         }
         #region MoneyTransfer
+        /// <summary>
+        /// Retrieves bank details for the given account number from the InstantPay DMI API.
+        /// </summary>
+        /// <param name="AccNo">The bank account number to look up.</param>
+        /// <returns>A JSON string with bank details on success, or "ERROR" on failure.</returns>
         public string getBankList(string AccNo)
         {
 
@@ -1446,6 +1576,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
         #endregion
         #region GIFT_CARD
+        /// <summary>
+        /// Retrieves the list of available gift card / brand voucher products from the InstantPay API.
+        /// </summary>
+        /// <param name="flag">The product type filter; pass "ALL" to retrieve all available gift cards.</param>
+        /// <returns>A JSON string with the gift card list on success, or "ERROR" on failure.</returns>
         public string getGiftCardList(string flag)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1503,6 +1638,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         }
+        /// <summary>
+        /// Retrieves the detail of a specific gift card product using its service provider key from the InstantPay API.
+        /// </summary>
+        /// <param name="spKey">The service provider key identifying the specific gift card product.</param>
+        /// <returns>A JSON string with the product detail on success, or "ERROR" on failure.</returns>
         public string getProductByKey(string spKey)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1562,6 +1702,11 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
         }
         #endregion
         #region DTH Booking
+        /// <summary>
+        /// Retrieves the available DTH operator package details from the InstantPay API using the operator service provider code.
+        /// </summary>
+        /// <param name="flag">The operator service provider code (spkey) identifying the DTH operator.</param>
+        /// <returns>A JSON string with operator package details on success, or "ERROR" on failure.</returns>
         public string getOperatorDetails(string flag)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -1620,6 +1765,19 @@ namespace Vastwebmulti.Areas.RETAILER.Controllers
 
 
         }
+        /// <summary>
+        /// Processes a DTH new connection booking payment via the InstantPay API, charging the retailer balance and recording backup info.
+        /// </summary>
+        /// <param name="userid">The unique identifier of the retailer performing the booking.</param>
+        /// <param name="STB">The set-top box serial number for the new DTH connection.</param>
+        /// <param name="ConOpt">The DTH operator code (e.g., ATK for Airtel, DTK for Dish TV, TTK for Tata Sky).</param>
+        /// <param name="ddlPackage">The selected DTH package identifier.</param>
+        /// <param name="packageAmt">The amount for the selected package.</param>
+        /// <param name="txtName">The customer's name.</param>
+        /// <param name="txtMobile">The customer's mobile number.</param>
+        /// <param name="customerAddress">The customer's installation address.</param>
+        /// <param name="txtPIN">The customer's PIN code.</param>
+        /// <returns>A JSON string with the booking confirmation on success, or "ERROR" on failure.</returns>
         public string doPayment(string userid, string STB, string ConOpt, string ddlPackage, string packageAmt, string txtName, string txtMobile, string customerAddress, string txtPIN)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())

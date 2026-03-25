@@ -20,10 +20,20 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Controllers
 {
+    /// <summary>
+    /// Handles Domestic Money Transfer (DMT) operations. Provides API endpoints for remitter
+    /// management, Aadhaar verification, beneficiary registration, account verification,
+    /// fund transfers, and transaction status checks via the configured payout API provider.
+    /// </summary>
     public class DMTController : Controller
     {
         private VastwebmultiEntities db;
         bool? apists = false;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="DMTController"/>, creates the database context,
+        /// and reads the current enable/disable status of the PAYOUT API service.
+        /// </summary>
         public DMTController()
         {
             db = new VastwebmultiEntities();
@@ -33,6 +43,13 @@ namespace Vastwebmulti.Controllers
                 apists = serviceinfo.Sts;
             }
         }
+        /// <summary>
+        /// Retrieves the details of a remitter (sender) identified by their mobile number.
+        /// Authenticates the caller, determines the active payout API provider, and delegates
+        /// the lookup to either InstantPay or VastBazaar depending on configuration.
+        /// </summary>
+        /// <param name="api">DMT request model containing the sender mobile number, user ID, and authentication token.</param>
+        /// <returns>A JSON string with status and the remitter detail response from the payout provider.</returns>
         // GET: DMT
         [HttpPost]
         public string Remitter_details(DmtDetails api)
@@ -224,6 +241,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Initiates Aadhaar verification by sending an OTP to the mobile number linked to the
+        /// provided Aadhaar number. Validates the Aadhaar number format before calling the
+        /// VastBazaar Aadhaar validation API and persists the verification attempt to the database.
+        /// </summary>
+        /// <param name="api">DMT request model containing the sender mobile number, Aadhaar number, user ID, and authentication token.</param>
+        /// <returns>A JSON string with status, a message, the client ID issued by the provider, and a transaction ID.</returns>
         [HttpPost]
         public string AadharVerification_Send_OTP(DmtDetails api)
         {
@@ -321,6 +345,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk_DMT("Failed", "Missing Parameter", "", "");
             }
         }
+        /// <summary>
+        /// Completes Aadhaar verification by validating the OTP submitted by the user against the
+        /// provider's response. On success, stores the verified name, photo, and address details
+        /// and returns full Aadhaar profile information.
+        /// </summary>
+        /// <param name="api">DMT request model containing the Aadhaar number, OTP, client ID, transaction ID, sender mobile, user ID, and authentication token.</param>
+        /// <returns>A JSON string with verification status and the verified Aadhaar holder's personal and address details.</returns>
         [HttpPost]
         public string AadharVerification_Verify_OTP(DmtDetails api)
         {
@@ -456,6 +487,13 @@ namespace Vastwebmulti.Controllers
 
             }
         }
+        /// <summary>
+        /// Registers a new remitter (money sender) with the configured payout API provider using
+        /// the provided mobile number and name. Authenticates the caller before delegating to
+        /// either InstantPay or VastBazaar.
+        /// </summary>
+        /// <param name="api">DMT request model containing the sender mobile number, sender name, user ID, and authentication token.</param>
+        /// <returns>A JSON string with status and the provider's registration response.</returns>
         [HttpPost]
         public string Remitter_Registration(DmtDetails api)
         {
@@ -601,6 +639,12 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Verifies the OTP submitted during remitter registration or beneficiary validation flow.
+        /// Delegates the OTP check to the active payout API provider after authenticating the caller.
+        /// </summary>
+        /// <param name="api">DMT request model containing the sender mobile number, OTP, beneficiary ID, user ID, and authentication token.</param>
+        /// <returns>A JSON string with status and the provider's OTP verification response.</returns>
         [HttpPost]
         public string Remitter_Otp_Verify(DmtDetails api)
         {
@@ -745,6 +789,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Registers a new bank account beneficiary for a remitter with the payout API provider.
+        /// Requires beneficiary name, IFSC code, account number, and the original IFSC code.
+        /// Authentication is validated before the provider call is made.
+        /// </summary>
+        /// <param name="api">DMT request model containing the remitter ID, beneficiary name, account number, IFSC code, original IFSC code, sender mobile, user ID, and authentication token.</param>
+        /// <returns>A JSON string with status and the provider's beneficiary registration response.</returns>
         [HttpPost]
         public string Beneficiary_Registration(DmtDetails api)
         {
@@ -892,6 +943,12 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Resends the OTP for a pending beneficiary registration by delegating to the
+        /// configured payout API provider. Authenticates the caller before the provider call.
+        /// </summary>
+        /// <param name="api">DMT request model containing the remitter ID, beneficiary ID, user ID, and authentication token.</param>
+        /// <returns>A JSON string with status and the provider's resend OTP response.</returns>
         [HttpPost]
         public string Beneficiary_Resend_otp(DmtDetails api)
         {
@@ -1036,6 +1093,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Validates a beneficiary registration by verifying the OTP provided for the given
+        /// beneficiary and remitter combination. Delegates to the active payout API after
+        /// successful caller authentication.
+        /// </summary>
+        /// <param name="api">DMT request model containing the beneficiary ID, remitter ID, OTP, sender mobile, user ID, and authentication token.</param>
+        /// <returns>A JSON string with status and the provider's beneficiary validation response.</returns>
         [HttpPost]
         public string Beneficiary_Registration_validate(DmtDetails api)
         {
@@ -1181,6 +1245,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Verifies a beneficiary's bank account by performing a penny-drop or account validation
+        /// call through the configured payout API. Deducts a verification charge and records the
+        /// transaction. Supports both InstantPay and VastBazaar providers.
+        /// </summary>
+        /// <param name="api">DMT request model containing the sender mobile, account number, IFSC code, bank name, transaction ID, user ID, and authentication token.</param>
+        /// <returns>A JSON string with the verification status including bank reference number and beneficiary name.</returns>
         [HttpPost]
         public string Beneficiary_AccountVerification(DmtDetails api)
         {
@@ -1501,6 +1572,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Initiates a money transfer (IMPS/DMT) from a remitter to a registered beneficiary.
+        /// Validates the caller's authentication and remaining balance, records the transaction,
+        /// and delegates the actual transfer to the active payout API provider.
+        /// </summary>
+        /// <param name="api">DMT request model containing the sender mobile, beneficiary ID, transfer amount, transaction ID, bank details, user ID, and authentication token.</param>
+        /// <returns>A JSON string with transfer status, order ID, bank reference number, amount, and remaining balance.</returns>
         [HttpPost]
         public string Fund_transfer(DmtDetails api)
         {
@@ -1802,6 +1880,13 @@ namespace Vastwebmulti.Controllers
                 return responsechk("Failed", api.Transid, "", api.amount.ToString(), "", "Missing Parameter", "0");
             }
         }
+        /// <summary>
+        /// Checks the current status of a previously initiated money transfer transaction.
+        /// Authenticates the caller and queries the payout API provider using the internal
+        /// transaction ID to retrieve an updated transfer status.
+        /// </summary>
+        /// <param name="api">DMT request model containing the transaction ID, user ID, and authentication token.</param>
+        /// <returns>A JSON string with the current transfer status, bank reference number, amount, and remaining balance.</returns>
         [HttpPost]
         public string statuscheck(DmtDetails api)
         {
@@ -1889,6 +1974,13 @@ namespace Vastwebmulti.Controllers
             }
 
         }
+        /// <summary>
+        /// Initiates deletion of a registered beneficiary from the remitter's account.
+        /// Authenticates the caller and sends a delete request to the payout API provider.
+        /// The deletion may require subsequent OTP validation via <see cref="Beneficiary_delete_validate"/>.
+        /// </summary>
+        /// <param name="api">DMT request model containing the beneficiary ID, sender mobile number, user ID, and authentication token.</param>
+        /// <returns>A JSON string with the deletion request status and provider response.</returns>
         [HttpPost]
         public string Beneficiary_delete(DmtDetails api)
         {
@@ -2034,6 +2126,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Validates the OTP to confirm deletion of a registered beneficiary.
+        /// Completes the two-step beneficiary removal process by verifying the OTP
+        /// issued during <see cref="Beneficiary_delete"/> with the payout API provider.
+        /// </summary>
+        /// <param name="api">DMT request model containing the beneficiary ID, OTP, sender mobile number, user ID, and authentication token.</param>
+        /// <returns>A JSON string with the deletion validation status and provider response.</returns>
         [HttpPost]
         public string Beneficiary_delete_validate(DmtDetails api)
         {
@@ -2180,6 +2279,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Retrieves the list of supported bank names from the payout API provider.
+        /// Authenticates the caller before requesting the bank list, which is used to
+        /// populate bank selection options during beneficiary registration.
+        /// </summary>
+        /// <param name="api">DMT request model containing the user ID and authentication token.</param>
+        /// <returns>A JSON string with status and the provider's list of supported bank names.</returns>
         [HttpPost]
         public string Bank_name(DmtDetails api)
         {
@@ -2325,6 +2431,13 @@ namespace Vastwebmulti.Controllers
                 return outputchk("Failed", "Missing Parameter");
             }
         }
+        /// <summary>
+        /// Retrieves a valid VastBazaar API bearer token, fetching a new one if no token is
+        /// stored or refreshing it if the existing token has expired. Persists the token to
+        /// the database for reuse across subsequent requests.
+        /// </summary>
+        /// <returns>A JSON string with a "Status" of "True" and the bearer token in "response" on success,
+        /// or "Status" of "False" with an error description on failure.</returns>
         public string vastbazarcheck()
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -2443,6 +2556,15 @@ namespace Vastwebmulti.Controllers
                 }
             }
         }
+        /// <summary>
+        /// Authenticates a caller by verifying their user name, token ID, and IP address.
+        /// Looks up the user in the database, validates the token, and confirms the current
+        /// request IP matches the IP that was registered with the token.
+        /// </summary>
+        /// <param name="tokenid">The authentication token to validate.</param>
+        /// <param name="userid">The user name (login ID) of the caller.</param>
+        /// <returns>A JSON string with "Status" of "True" and message "Ok." on success,
+        /// or "Status" of "False" and an error message on failure.</returns>
         public string authentication(string tokenid, string userid)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -2516,6 +2638,18 @@ namespace Vastwebmulti.Controllers
                 return serializer.Serialize(dict);
             }
         }
+        /// <summary>
+        /// Builds a standardized JSON response object for money transfer operations, including
+        /// status, order IDs, amount, bank reference number, message, and remaining balance.
+        /// </summary>
+        /// <param name="status">The overall status of the operation (e.g., "Success", "Failed", "Pending").</param>
+        /// <param name="orderid">The internal order ID for the transaction.</param>
+        /// <param name="apiorderid">The order ID returned by the external payout API.</param>
+        /// <param name="Amount">The transaction amount as a string.</param>
+        /// <param name="bankrrn">The bank reference number (RRN) for the transfer.</param>
+        /// <param name="msg">A descriptive message explaining the result.</param>
+        /// <param name="remain">The caller's remaining wallet balance after the transaction.</param>
+        /// <returns>A JSON-serialized string containing all provided transaction details.</returns>
         public string responsechk(string status, string orderid, string apiorderid, string Amount, string bankrrn, string msg, string remain)
         {
             var resp = new
@@ -2533,6 +2667,13 @@ namespace Vastwebmulti.Controllers
             Response.ContentType = "application/json";
             return serializer.Serialize(resp);
         }
+        /// <summary>
+        /// Builds a simple two-field JSON response containing a status and a response message.
+        /// Used as a uniform error or result wrapper for DMT API endpoints.
+        /// </summary>
+        /// <param name="status">The result status (e.g., "Success" or "Failed").</param>
+        /// <param name="output">The response message or detail to return to the caller.</param>
+        /// <returns>A JSON-serialized string with "Status" and "response" fields.</returns>
         public string outputchk(string status, string output)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -2546,6 +2687,15 @@ namespace Vastwebmulti.Controllers
             Response.ContentType = "application/json";
             return serializer.Serialize(dict);
         }
+        /// <summary>
+        /// Builds a JSON response for Aadhaar OTP send operations, including status, message,
+        /// the provider-issued client ID, and the internal transaction ID.
+        /// </summary>
+        /// <param name="status">The result status (e.g., "Success" or "Failed").</param>
+        /// <param name="output">The response message or description.</param>
+        /// <param name="clientId">The client ID returned by the Aadhaar verification provider.</param>
+        /// <param name="txnid">The internal transaction ID for this verification attempt.</param>
+        /// <returns>A JSON-serialized string containing status, response, clientId, and txnid fields.</returns>
         public string outputchk_DMT(string status, string output, string clientId, string txnid)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -2560,6 +2710,26 @@ namespace Vastwebmulti.Controllers
             Response.ContentType = "application/json";
             return serializer.Serialize(dict);
         }
+        /// <summary>
+        /// Builds a comprehensive JSON response for a completed Aadhaar verification, including
+        /// the verified holder's full name, profile photo, complete address, Aadhaar number,
+        /// verification flag, and date of birth.
+        /// </summary>
+        /// <param name="status">The result status (e.g., "Success" or "Failed").</param>
+        /// <param name="output">A response message or error description.</param>
+        /// <param name="full_name">The full name of the Aadhaar card holder.</param>
+        /// <param name="profile_image">Base64-encoded profile image from the Aadhaar record.</param>
+        /// <param name="house">House or flat number from the Aadhaar address.</param>
+        /// <param name="street">Street name from the Aadhaar address.</param>
+        /// <param name="landmark">Landmark from the Aadhaar address.</param>
+        /// <param name="loc">Locality from the Aadhaar address.</param>
+        /// <param name="subdist">Sub-district from the Aadhaar address.</param>
+        /// <param name="dist">District from the Aadhaar address.</param>
+        /// <param name="state">State from the Aadhaar address.</param>
+        /// <param name="AadharCard">The Aadhaar card number.</param>
+        /// <param name="aadhar_verification">String flag ("true"/"false") indicating verification success.</param>
+        /// <param name="aadhar_dob">Date of birth as recorded on the Aadhaar card.</param>
+        /// <returns>A JSON-serialized string containing all Aadhaar profile and address fields.</returns>
         public string outputchk_DMT_ALL(string status, string output, string full_name, string profile_image, string house, string street, string landmark, string loc, string subdist, string dist, string state, string AadharCard, string aadhar_verification, string aadhar_dob)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -2578,6 +2748,11 @@ namespace Vastwebmulti.Controllers
             Response.ContentType = "application/json";
             return serializer.Serialize(dict);
         }
+        /// <summary>
+        /// Retrieves the public Internet IP address of the current HTTP request by inspecting
+        /// the <c>HTTP_X_FORWARDED_FOR</c> server variable first, then falling back to <c>REMOTE_ADDR</c>.
+        /// </summary>
+        /// <returns>The client's IP address as a string.</returns>
         //get your current Ip Address
         private string GetComputer_InternetIP()
         {

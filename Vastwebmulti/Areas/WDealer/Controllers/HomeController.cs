@@ -23,10 +23,13 @@ using Vastwebmulti.Models;
 
 namespace Vastwebmulti.Areas.WDealer.Controllers
 {
-    [Authorize(Roles = "Whitelabeldealer")]
     /// <summary>
-    /// WDealer Area - Manages WhiteLabel Dealer dashboard, fund management and retailer oversight
+    /// MVC controller for the WDealer (WhiteLabel Dealer) area. Manages dealer dashboard operations
+    /// including retailer management, fund transfer, slab settings, operator configuration, various
+    /// financial reports (recharge, AEPS, PAN, money transfer, GST), profile editing, login history,
+    /// and complaint submission.
     /// </summary>
+    [Authorize(Roles = "Whitelabeldealer")]
     public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -59,10 +62,12 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
 
         #region Retailer List
         //GET : Retailer List
-        [HttpGet]
         /// <summary>
-        /// [GET] Default landing action for this area
+        /// Displays the retailer list for the currently authenticated dealer by calling the external
+        /// WhiteLabel API. Handles unauthorized responses by signing the user out.
         /// </summary>
+        /// <returns>The Index view populated with the list of retailers under this dealer.</returns>
+        [HttpGet]
         public ActionResult Index()
         {
             WhitelabelRetailerModel viewModel = new WhitelabelRetailerModel();
@@ -162,12 +167,15 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             //}
         }
         // POST : Insert New Retailer
+        /// <summary>
+        /// Creates a new retailer under the currently authenticated dealer by submitting the
+        /// retailer details to the external WhiteLabel API. Handles unauthorized responses by signing out.
+        /// </summary>
+        /// <param name="rem">The retailer registration model containing the new retailer's details.</param>
+        /// <returns>Redirects to <see cref="Index"/> after processing.</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        /// <summary>
-        /// Naya record insert/add karta hai database mein.
-        /// </summary>
         public ActionResult Insert_retailer(WhitelabelRetailerModel rem)
         {
             try
@@ -298,8 +306,11 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             //}
         }
         /// <summary>
-        /// Retailer se related data handle karta hai.
+        /// Toggles the email confirmation status of the retailer with the specified user ID to confirmed.
+        /// Sets <c>EmailConfirmed</c> to <c>true</c> if it was previously <c>false</c>, then saves the change.
         /// </summary>
+        /// <param name="id">The user ID of the retailer whose email confirmation is to be updated.</param>
+        /// <returns>Redirects to <see cref="Index"/> after updating the confirmation status.</returns>
         public ActionResult RetailerEmailconfrimation(string id)
         {
             var sts = (from pp in db.Users where pp.UserId == id select pp).Single().EmailConfirmed;
@@ -317,8 +328,11 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         }
         //delete retailers
         /// <summary>
-        /// Record ko delete karta hai.
+        /// Soft-deletes a retailer record from the database using the stored procedure
+        /// <c>delete_whitelabel_retailer</c>.
         /// </summary>
+        /// <param name="retailerid">The unique ID of the retailer to delete.</param>
+        /// <returns>A JSON result of "Success" if deleted, or "Failed!" if the retailer ID is null or empty.</returns>
         public JsonResult Delete_Retailer(string retailerid)
         {
             if (retailerid != null && retailerid != "")
@@ -332,8 +346,11 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             }
         }
         /// <summary>
-        /// Dropdown ke liye data fetch karta hai.
+        /// Returns a JSON list of districts belonging to the specified state.
+        /// Used to dynamically populate the district dropdown when a state is selected.
         /// </summary>
+        /// <param name="Id">The state ID used to filter the district list.</param>
+        /// <returns>A JSON array of district name/value pairs for use in a dropdown.</returns>
         public JsonResult DistrictList(int Id)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -347,8 +364,11 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         }
         //GET : Update Retailer Status
         /// <summary>
-        /// Existing record ko update/edit karta hai.
+        /// Toggles the active/inactive status of the specified retailer.
+        /// Changes "Y" to "N" and vice versa and saves the update.
         /// </summary>
+        /// <param name="id">The retailer user ID whose status is to be toggled.</param>
+        /// <returns>Redirects to <see cref="Index"/> after updating the status.</returns>
         public ActionResult Updateretailer_ststus(string id)
         {
 
@@ -380,8 +400,11 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         }
         //GET : Update Retailer money Status
         /// <summary>
-        /// Existing record ko update/edit karta hai.
+        /// Toggles the money (transaction) status of the specified retailer.
+        /// Changes "Y" to "N" and vice versa and saves the update.
         /// </summary>
+        /// <param name="id">The retailer user ID whose money status is to be toggled.</param>
+        /// <returns>Redirects to <see cref="Index"/> after updating the money status.</returns>
         public ActionResult Updateretailer_money_ststus(string id)
         {
 
@@ -412,10 +435,13 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             }
         }
         // POST : Retailer Search
-        [HttpPost]
         /// <summary>
-        /// Retailer se related data handle karta hai.
+        /// Retrieves and returns the full detail record for the specified retailer as a JSON string.
+        /// Used to populate the retailer edit form fields via AJAX.
         /// </summary>
+        /// <param name="userid">The retailer user ID to search for.</param>
+        /// <returns>A JSON-serialized string containing the retailer's detail record.</returns>
+        [HttpPost]
         public ActionResult RetailerSearch(string userid)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -452,10 +478,13 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         }
 
         //POST : Edit Retailer User
-        [HttpPost]
         /// <summary>
-        /// Existing record ko update/edit karta hai.
+        /// Updates the profile details of an existing retailer user with the values
+        /// submitted in the edit form.
         /// </summary>
+        /// <param name="rem">The model containing the updated retailer profile fields.</param>
+        /// <returns>Redirects to <see cref="Index"/> after saving the changes.</returns>
+        [HttpPost]
         public ActionResult Edit_Retailer_user(WhitelabelRetailerModel rem)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -480,10 +509,12 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         #endregion
 
         #region SlabSetting
-        //GET : Show Slab Name 
+        //GET : Show Slab Name
         /// <summary>
-        /// Commission slab manage karta hai.
+        /// Displays the commission slab management page, listing all slabs created by the
+        /// currently authenticated dealer.
         /// </summary>
+        /// <returns>The generateSlab view with the dealer's commission slab list.</returns>
         public ActionResult generateSlab()
         {
             ADMIN.Models.ResultSetViewModel viewModel = new ADMIN.Models.ResultSetViewModel();
@@ -504,10 +535,13 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
             }
         }
         // Post : Add New Slab
-        [HttpPost]
         /// <summary>
-        /// Naya record insert/add karta hai database mein.
+        /// Inserts a new commission slab name for the "Retailer" slab type under the
+        /// currently authenticated dealer.
         /// </summary>
+        /// <param name="result">The view model containing the new slab name to insert.</param>
+        /// <returns>Redirects to <see cref="generateSlab"/> after saving the new slab.</returns>
+        [HttpPost]
         public ActionResult AddSlabname(ADMIN.Models.ResultSetViewModel result)
         {
             using (VastwebmultiEntities db = new VastwebmultiEntities())
@@ -529,8 +563,11 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
         }
 
         /// <summary>
-        /// Record ko delete karta hai.
+        /// Deletes a commission slab by name for the currently authenticated dealer.
+        /// Prevents deletion if the slab is already assigned to a retailer.
         /// </summary>
+        /// <param name="slabname">The name of the commission slab to delete.</param>
+        /// <returns>Redirects to <see cref="generateSlab"/> after processing.</returns>
         public ActionResult Delete_slabName(string slabname)
         {
             try
@@ -581,8 +618,11 @@ namespace Vastwebmulti.Areas.WDealer.Controllers
 
         #region Fundtransfer To Retailer
         /// <summary>
-        /// [GET] Displays the dealer-level fund transfer page
+        /// Displays the fund transfer page for the dealer. Populates the retailer,
+        /// bank account, and wallet dropdowns from the WhiteLabel configuration.
         /// </summary>
+        /// <param name="tabname">An optional tab name to keep the active tab selected on return.</param>
+        /// <returns>The FundTransferDealer view with all dropdown data populated.</returns>
         public ActionResult FundTransferDealer(string tabname = "")
         {
             WhitelabelDealerfundtransfer vmodel = new WhitelabelDealerfundtransfer();

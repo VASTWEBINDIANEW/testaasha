@@ -35,87 +35,59 @@ namespace Vastwebmulti.Controllers
 
         VastwebmultiEntities DB = new VastwebmultiEntities();
 
+        /// <summary>
+        /// Default constructor - footer service data load karta hai aur ViewBag mein set karta hai
+        /// </summary>
         public AccountController()
         {
-            var sertype1 = DB.tblFooterServices.ToList();
-            if (sertype1.Count > 0)
-            {
-                var recharge = sertype1.FirstOrDefault(p => p.ServiceType == "Recharge & Bill");
-                ViewBag.recharge = recharge;
-                if (recharge != null)
-                {
-                    ViewBag.rechar1 = recharge.ServiceName1;
-                    ViewBag.rechar2 = recharge.ServiceName2;
-                    ViewBag.rechar3 = recharge.ServiceName3;
-                    ViewBag.rechar4 = recharge.ServiceName4;
-                    ViewBag.rechar5 = recharge.ServiceName5;
-                    ViewBag.rechar6 = recharge.ServiceName6;
-                    ViewBag.rechar7 = recharge.ServiceName7;
-                    ViewBag.rechar8 = recharge.ServiceName8;
-                }
-
-                var travelfo = sertype1.FirstOrDefault(p => p.ServiceType == "Travel & Hotel");
-                ViewBag.travelfo = travelfo;
-                if (travelfo != null)
-                {
-                    ViewBag.tra1 = travelfo.ServiceName1;
-                    ViewBag.tra2 = travelfo.ServiceName2;
-                    ViewBag.tra3 = travelfo.ServiceName3;
-                    ViewBag.tra4 = travelfo.ServiceName4;
-                    ViewBag.tra5 = travelfo.ServiceName5;
-                    ViewBag.tra6 = travelfo.ServiceName6;
-                    ViewBag.tra7 = travelfo.ServiceName7;
-                    ViewBag.tra8 = travelfo.ServiceName8;
-                }
-                var comm = sertype1.FirstOrDefault(p => p.ServiceType == "E-Commerce");
-                ViewBag.comm = comm;
-                if (comm != null)
-                {
-                    ViewBag.comm1 = comm.ServiceName1;
-                    ViewBag.comm2 = comm.ServiceName2;
-                    ViewBag.comm3 = comm.ServiceName3;
-                    ViewBag.comm4 = comm.ServiceName4;
-                    ViewBag.comm5 = comm.ServiceName5;
-                    ViewBag.comm6 = comm.ServiceName6;
-                    ViewBag.comm7 = comm.ServiceName7;
-                    ViewBag.comm8 = comm.ServiceName8;
-                }
-                var gift = sertype1.FirstOrDefault(p => p.ServiceType == "Gift Cards");
-                ViewBag.gift = gift;
-                if (gift != null)
-                {
-                    ViewBag.gift1 = gift.ServiceName1;
-                    ViewBag.gift2 = gift.ServiceName2;
-                    ViewBag.gift3 = gift.ServiceName3;
-                    ViewBag.gift4 = gift.ServiceName4;
-                    ViewBag.gift5 = gift.ServiceName5;
-                    ViewBag.gift6 = gift.ServiceName6;
-                    ViewBag.gift7 = gift.ServiceName7;
-                    ViewBag.gift8 = gift.ServiceName8;
-                }
-                var fina = sertype1.FirstOrDefault(p => p.ServiceType == "Financial Services");
-                ViewBag.fina = fina;
-                if (fina != null)
-                {
-                    ViewBag.fina1 = fina.ServiceName1;
-                    ViewBag.fina2 = fina.ServiceName2;
-                    ViewBag.fina3 = fina.ServiceName3;
-                    ViewBag.fina4 = fina.ServiceName4;
-                    ViewBag.fina5 = fina.ServiceName5;
-                    ViewBag.fina6 = fina.ServiceName6;
-                    ViewBag.fina7 = fina.ServiceName7;
-                    ViewBag.fina8 = fina.ServiceName8;
-                }
-            }
-            //adminfooterdata
+            LoadFooterServicesViewBag();
         }
 
+        /// <summary>
+        /// Footer services DB se load karke ViewBag properties set karta hai
+        /// </summary>
+        private void LoadFooterServicesViewBag()
+        {
+            var sertype1 = DB.tblFooterServices.ToList();
+            if (!sertype1.Any()) return;
+
+            SetServiceViewBag(sertype1, "Recharge & Bill",      "recharge", "rechar");
+            SetServiceViewBag(sertype1, "Travel & Hotel",       "travelfo", "tra");
+            SetServiceViewBag(sertype1, "E-Commerce",           "comm",     "comm");
+            SetServiceViewBag(sertype1, "Gift Cards",           "gift",     "gift");
+            SetServiceViewBag(sertype1, "Financial Services",   "fina",     "fina");
+        }
+
+        /// <summary>
+        /// Ek service type ki ViewBag entry aur uske 8 ServiceName fields set karta hai
+        /// </summary>
+        private void SetServiceViewBag(System.Collections.Generic.List<tblFooterService> list, string serviceType, string bagKey, string prefix)
+        {
+            var item = list.FirstOrDefault(p => p.ServiceType == serviceType);
+            ViewBag[bagKey] = item;
+            if (item == null) return;
+            ViewBag[prefix + "1"] = item.ServiceName1;
+            ViewBag[prefix + "2"] = item.ServiceName2;
+            ViewBag[prefix + "3"] = item.ServiceName3;
+            ViewBag[prefix + "4"] = item.ServiceName4;
+            ViewBag[prefix + "5"] = item.ServiceName5;
+            ViewBag[prefix + "6"] = item.ServiceName6;
+            ViewBag[prefix + "7"] = item.ServiceName7;
+            ViewBag[prefix + "8"] = item.ServiceName8;
+        }
+
+        /// <summary>
+        /// UserManager aur SignInManager inject karke controller initialize karta hai (dependency injection)
+        /// </summary>
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
         }
 
+        /// <summary>
+        /// ApplicationSignInManager instance return karta hai - OWIN context se lazy load hota hai
+        /// </summary>
         public ApplicationSignInManager SignInManager
         {
             get
@@ -128,6 +100,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// ApplicationUserManager instance return karta hai - OWIN context se lazy load hota hai
+        /// </summary>
         public ApplicationUserManager UserManager
         {
             get
@@ -140,9 +115,6 @@ namespace Vastwebmulti.Controllers
             }
         }
 
-        //
-        // GET: /Account/Login
-        //[AllowAnonymous]
         /// <summary>
         /// Login page dikhata hai aur already logged-in user ko uske role ke dashboard par redirect karta hai
         /// </summary>
@@ -164,61 +136,20 @@ namespace Vastwebmulti.Controllers
                     {
                         var stschk = db.Superstokist_details.Where(aa => aa.SSId == userid).SingleOrDefault().Status;
                         if (stschk == "Y")
-                        {
                             return RedirectToAction("Dashboard", "Home", new { area = "master" });
-                        }
-                        //else
-                        //{
-                        //    TempData.Remove("data");
-                        //    AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                        //    TempData["userblocked"] = "YOUR MASTER ID IS BLOCKED. PLEASE CONTACT TO ADMIN";
-                        //    return RedirectToAction("Login", "Home", null);
-                        //}
                     }
                     else if (User.IsInRole("Dealer"))
                     {
                         var stschk = db.Dealer_Details.Where(aa => aa.DealerId == userid).SingleOrDefault().Status;
                         if (stschk == "Y")
-                        {
                             return RedirectToAction("Dashboard", "Home", new { area = "Dealer" });
-                        }
-                        //else
-                        //{
-                        //    TempData.Remove("data");
-                        //    AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                        //    TempData["userblocked"] = "Your Account is Currently Blocked with Distributor, Contact to Administrator.";
-                        //    return RedirectToAction("Login", "Home", null);
-                        //}
-
                     }
                     else if (User.IsInRole("Retailer"))
                     {
                         var RetailerDetails = db.Retailer_Details.Where(aa => aa.RetailerId == userid).SingleOrDefault();
                         var DlmStsChk = db.Dealer_Details.Where(aa => aa.DealerId == RetailerDetails.DealerId).SingleOrDefault().Status;
-
-                        if (DlmStsChk == "Y")
-                        {
-                            var stschk = RetailerDetails.Status;
-                            if (stschk == "Y")
-                            {
-                                return RedirectToAction("Dashboard", "Home", new { area = "Retailer" });
-                            }
-                            //else
-                            //{
-                            //    TempData.Remove("data");
-                            //    AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                            //    TempData["userblocked"] = "Your account is currently blocked, contact Administrator";
-                            //    return RedirectToAction("Login", "Home", null);
-                            //}
-                        }
-                        //else
-                        //{
-                        //    TempData.Remove("data");
-                        //    AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                        //    TempData["userblocked"] = "Your Account is Currently Blocked with Distributor, Contact to Administrator.";
-                        //    return RedirectToAction("Login", "Home", null);
-                        //}
-
+                        if (DlmStsChk == "Y" && RetailerDetails.Status == "Y")
+                            return RedirectToAction("Dashboard", "Home", new { area = "Retailer" });
                     }
                     else if (User.IsInRole("API"))
                     {
@@ -283,37 +214,29 @@ namespace Vastwebmulti.Controllers
 
             ViewBag.messagechkk = TempData["newmessage"];
             TempData.Remove("newmessage");
+            ViewBag.Sate = DB.State_Desc.Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
             if (x)
             {
-                // show all state 
-                ViewBag.Sate = DB.State_Desc.Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
-                ViewData["email"] = TempData["emailconfrim"];
-                ViewData["mobilecon"] = TempData["mobileno"];
-                ViewData["wrongpass"] = TempData["msg"];
-                ViewData["confrim"] = TempData["Confrim"];
-                ViewData["success"] = TempData["success"];
-                ViewData["slaberror"] = TempData["slaberror"];
-                ViewData["existuser"] = TempData["errorretailer"];
-                ViewData["userblock"] = TempData["userblocked"];
+                ViewData["email"]      = TempData["emailconfrim"];
+                ViewData["mobilecon"]  = TempData["mobileno"];
+                ViewData["wrongpass"]  = TempData["msg"];
+                ViewData["confrim"]    = TempData["Confrim"];
+                ViewData["success"]    = TempData["success"];
+                ViewData["slaberror"]  = TempData["slaberror"];
+                ViewData["existuser"]  = TempData["errorretailer"];
+                ViewData["userblock"]  = TempData["userblocked"];
             }
             else
             {
-                // show all state 
-                ViewBag.Sate = DB.State_Desc.Select(a => new SelectListItem { Text = a.State_name, Value = a.State_id.ToString() }).ToList();
                 ViewData["msg"] = "websiteblock";
             }
 
 
 
-            var lg = DB.tblWhiteLabelLoginBackImages.Where(a => a.Role == "ADMIN" && a.StatusCheck == "Y").ToList();
-            if (lg.Count > 0)
-            {
-                ViewBag.showimg = lg.FirstOrDefault().otherimage;
-            }
-            else
-            {
-                //ViewBag.showimg = lg.FirstOrDefault().otherimage;
-            }
+            var lg = DB.tblWhiteLabelLoginBackImages.Where(a => a.Role == "ADMIN" && a.StatusCheck == "Y").FirstOrDefault();
+            if (lg != null)
+                ViewBag.showimg = lg.otherimage;
+
             var loginSlider = DB.LoginSilders.Where(a => a.Status == "Y").ToList();
             if (loginSlider.Count > 0)
             {
@@ -335,7 +258,6 @@ namespace Vastwebmulti.Controllers
 
         }
 
-        // POST: /Account/Login
         /// <summary>
         /// User ka login form submit hone par credentials verify karke dashboard par redirect karta hai
         /// </summary>
@@ -360,72 +282,38 @@ namespace Vastwebmulti.Controllers
                 catch { }
             }
             var emailid = DB.Users.Where(p => p.PhoneNumber == model.Email).ToList();
-            if (emailid.Count > 0)
+            if (emailid.Any())
             {
-                if (mobilelogin == true)
-                {
-                    isallowlogin = true;
-                }
+                if (mobilelogin) isallowlogin = true;
                 model.Email = emailid.Single().Email;
             }
             else
             {
-                if (emaillogin == true)
-                {
-                    isallowlogin = true;
-                }
+                if (emaillogin) isallowlogin = true;
             }
-            if (isallowlogin == true)
+            if (isallowlogin)
             {
                 string getinform = "LAT";
                 string postalcode = null;
-                string city = ""; string address = "";
+                string city = null; string address = "";
                 try
                 {
                     dynamic desres = JsonConvert.DeserializeObject(hdaddress[0]);
-                    try
-                    {
-                        city = desres.town;
-                        if (string.IsNullOrEmpty(city))
-                        {
-                            city = desres.village;
-                        }
-                        else if (string.IsNullOrEmpty(city))
-                        {
-                            city = desres.city;
-                        }
-                        else if (string.IsNullOrEmpty(city))
-                        {
-                            city = desres.suburb;
-                        }
-                        else if (string.IsNullOrEmpty(city))
-                        {
-                            city = city = desres.state_district;
-                        }
+                    // City fallback chain - pehle town, phir village, city, suburb, state_district
+                    city = desres.town?.ToString();
+                    if (string.IsNullOrEmpty(city)) city = desres.village?.ToString();
+                    if (string.IsNullOrEmpty(city)) city = desres.city?.ToString();
+                    if (string.IsNullOrEmpty(city)) city = desres.suburb?.ToString();
+                    if (string.IsNullOrEmpty(city)) city = desres.state_district?.ToString();
 
+                    address = desres.county + " " + desres.state + " " + desres.road + " " + desres.type + " "
+                            + desres.state_district + " " + desres.city_district + " " + desres.municipality + " "
+                            + desres.village + " " + desres.city + " " + desres.suburb + " " + desres.town + " " + desres.postalcode;
 
-                    }
-                    catch
-                    {
-                        city = null;
-                    }
-                    address = desres.county + " " + desres.state + " " + desres.road + " " + desres.type + " " + desres.state_district + " " + " " + desres.city_district + " " + desres.municipality + " " + desres.village + " " + desres.city + " " + desres.suburb + " " + desres.town + " " + desres.postalcode;
-
+                    postalcode = desres.postcode?.ToString();
+                    if (string.IsNullOrEmpty(postalcode)) postalcode = null;
                 }
-                catch
-                {
-                    city = null;
-                }
-                try
-                {
-                    dynamic desres = JsonConvert.DeserializeObject(hdaddress[0]);
-                    postalcode = desres.postcode;
-                    if (string.IsNullOrEmpty(postalcode))
-                    {
-                        postalcode = null;
-                    }
-                }
-                catch { postalcode = null; }
+                catch { city = null; }
 
 
                 var locationinformation = DB.latlongstores.Where(aa => aa.latitude == latloc && aa.longitude == longloc).FirstOrDefault();
@@ -574,35 +462,6 @@ namespace Vastwebmulti.Controllers
                     }
                 }
 
-                //if (usr1 != null)
-                //  {
-                //      string rolename = UserManager.GetRoles(usr1.Id).FirstOrDefault();
-                //      if (rolename == "master")
-                //      {
-                //          var chksts = DB.Superstokist_details.Where(sss => sss.SSId == usr1.Id).SingleOrDefault();
-                //          if (chksts.Status == "N")
-                //          {
-                //              TempData["newmessage"] = "Your Account Is Not Active.";
-                //              return RedirectToAction("Login", "Home");
-                //          }
-                //      }
-                //  }
-
-                //if (usr1 != null)
-                //{
-                //    string rolename = UserManager.GetRoles(usr1.Id).FirstOrDefault();
-                //    if (rolename == "Employee")
-                //    {
-                //        TempData["newmessage"] = "Login Id Or Password Wrong";
-                //        return RedirectToAction("Login", "Home");
-                //    }
-                //}
-
-                //var emailid = DB.Users.Where(p => p.PhoneNumber == model.Email).ToList();
-                //if (emailid.Count > 0)
-                //{
-                //    model.Email = emailid.Single().Email;
-                //}
                 var x = DB.Admin_details.SingleOrDefault().RenivalDate >= DateTime.Now;
 
 
@@ -684,7 +543,7 @@ namespace Vastwebmulti.Controllers
                                         return client.Execute(request).Content;
                                     });
                                     bool isCompletedSuccessfully = task.Wait(TimeSpan.FromMilliseconds(10000));
-                                    if (isCompletedSuccessfully == true)
+                                    if (isCompletedSuccessfully)
                                     {
                                         var resp = task.Result;
                                         dynamic respo = JsonConvert.DeserializeObject(resp);
@@ -1413,15 +1272,13 @@ namespace Vastwebmulti.Controllers
                 {
                     using (VastwebmultiEntities db = new VastwebmultiEntities())
                     {
-                        var chkmobile = db.Users.Where(a => a.PhoneNumber == rem.Mobile).Any();
-                        if (chkmobile == true)
+                        if (db.Users.Any(a => a.PhoneNumber == rem.Mobile))
                         {
                             TempData["error"] = "This Mobile Number Already Exists";
                             return RedirectToAction("NewLogin", "Home");
                         }
                         var userid = User.Identity.GetUserId();
-                        var check = db.Whitelabel_Retailer_Details.Where(es => es.Mobile == rem.Mobile).Any();
-                        if (check == false)
+                        if (!db.Whitelabel_Retailer_Details.Any(es => es.Mobile == rem.Mobile))
                         {
                             var user = new ApplicationUser { UserName = rem.Email, Email = rem.Email, PhoneNumber = rem.Mobile };
                             //Generate Random Password
@@ -1498,10 +1355,6 @@ namespace Vastwebmulti.Controllers
             }
         }
 
-        // ✅ GET: Signup
-        
-        
-        //Insert Retailer
         /// <summary>
         /// Naye retailer ka registration karta hai, captcha verify karke user details save karta hai
         /// </summary>
@@ -1577,8 +1430,7 @@ namespace Vastwebmulti.Controllers
                         distributorid = status.SingleOrDefault().DealerId;
                     }
 
-                    var chkmobile = DB.Users.Where(a => a.PhoneNumber == rem.Mobile).Any();
-                    if (chkmobile == true)
+                    if (DB.Users.Any(a => a.PhoneNumber == rem.Mobile))
                     {
                         TempData["mobileno"] = "This Mobile Number already exists.";
                         return RedirectToAction("Login", "Home");
@@ -1609,9 +1461,7 @@ namespace Vastwebmulti.Controllers
                                     new System.Data.Entity.Core.Objects.ObjectParameter("Output", typeof(string));
 
                                 string Firmname = !string.IsNullOrWhiteSpace(rem.Companyname) ? rem.Companyname : rem.Name;
-                                var frmname = DB.Retailer_Details.Any(x => x.Frm_Name.ToUpper() == Firmname.ToUpper());
-
-                                if (frmname)
+                                if (DB.Retailer_Details.Any(x => x.Frm_Name.ToUpper() == Firmname.ToUpper()))
                                 {
                                     var frmnamecontain = DB.Retailer_Details
                                         .Where(x => x.Frm_Name.ToUpper() == Firmname.ToUpper())
@@ -1725,242 +1575,9 @@ namespace Vastwebmulti.Controllers
         }
 
 
-        
-        /*public async Task<ActionResult> Insert_retailer(RegisterViewModel rem)
-        {
-            var appDbContext = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
-            using (var transaction = appDbContext.Database.BeginTransaction())
-            {
-                try
-                {
-                    rem.Mobile = DB.MobileOtps.Where(s => s.idno == rem.Mobile_Id).Single().mobileno;
-                    var email_verify = DB.Email_Mobile_Verify.Single().emailmobile_verified;
-                    if (email_verify != "OFF")
-                    {
-                        rem.Email = DB.MobileOtps.Where(s => s.idno == rem.Email_Id).Single().mobileno;
-                    }
-                    //var Password = "";
-                    //   var ConfirmPassword = "";
-                    // var slab = "";
-                    var distributorid = "";
-                    var referelcode = "";
-                    var chkreffralcode = DB.Retailer_Details.Where(x => x.SelfReferalCode == rem.referralcode && x.CretedBy != "Signup").SingleOrDefault();
-                    var refferalsetting = DB.token_limit.SingleOrDefault();
-                    if (refferalsetting == null)
-                    {
-                        if (chkreffralcode != null)
-                        {
-                            var chknoofrefral = DB.Retailer_Details.Where(x => x.referralcode == rem.referralcode).Count();
-                            if (chknoofrefral > 3)
-                            {
-                                TempData["defaultstatus"] = "Referal Code is Already Used";
-                                return RedirectToAction("Login", "Home");
-                            }
-                            referelcode = rem.referralcode;
-
-
-                        }
-                        else if (chkreffralcode == null)
-                        {
-                            TempData["defaultstatus"] = "Please Enter Valid Referal Code";
-                            return RedirectToAction("Login", "Home");
-                        }
-                    }
-                    else
-                    {
-                        var referelstatus = refferalsetting.status;
-                        if (referelstatus == "Y")
-                        {
-                            var chknoofrefral = DB.Retailer_Details.Where(x => x.referralcode == rem.referralcode).Count();
-                            if (chkreffralcode == null)
-                            {
-                                TempData["defaultstatus"] = "Referal Code Does Not Exist";
-                                return RedirectToAction("Login", "Home");
-                            }
-                            else if (chknoofrefral >= refferalsetting.limit)
-                            {
-                                TempData["defaultstatus"] = "Referal Code is Already Used";
-                                return RedirectToAction("Login", "Home");
-                            }
-                            referelcode = rem.referralcode;
-                        }
-                    }
-
-                    var status = DB.Dealer_Details.Where(pp => pp.DefaultStatus == "Y").ToList();
-                    if (status.Count == 0)
-                    {
-                        TempData["defaultstatus"] = "You Don't Authoritrized to Create. Please Contact Custmor Care";
-                        return RedirectToAction("Login", "Home");
-                    }
-                    else
-                    {
-                        distributorid = status.SingleOrDefault().DealerId;
-                    }
-
-                    var chkmobile = DB.Users.Where(a => a.PhoneNumber == rem.Mobile).Any();
-                    if (chkmobile == true)
-                    {
-                        TempData["mobileno"] = "This Mobile Number Already Exists";
-                        return RedirectToAction("Login", "Home");
-                    }
-                    if (DB.Dealer_Details.Any(a => a.Mobile == rem.Mobile))
-                    {
-                        TempData["mobileno"] = "This Mobile Number Already Exists";
-                        return RedirectToAction("Login", "Home");
-                    }
-                    else if (DB.Dealer_Details.Any(a => a.Email == rem.Email))
-                    {
-                        TempData["emailconfirm"] = "This Email Id Already Exists";
-                        return RedirectToAction("Login", "Home");
-                    }
-
-                    else
-                    {
-
-                        var check = DB.Retailer_Details.Where(es => es.Mobile == rem.Mobile).Any();
-
-                        if (check == false)
-                        {
-                            var user = new ApplicationUser { UserName = rem.Email, Email = rem.Email, PhoneNumber = rem.Mobile };
-
-                            var enpin = Encrypt(rem.Pin.ToString());
-                            var result = await UserManager.CreateAsync(user, rem.Password);
-                            if (result.Succeeded)
-                            {
-                                System.Data.Entity.Core.Objects.ObjectParameter output = new
-                                 System.Data.Entity.Core.Objects.ObjectParameter("Output", typeof(string));
-                                string Firmname = "";
-                                if (!string.IsNullOrWhiteSpace(rem.Companyname))
-                                {
-                                    Firmname = rem.Companyname;
-                                }
-                                else
-                                {
-                                    Firmname = rem.Name;
-                                }
-                                var frmname = DB.Retailer_Details.Where(x => x.Frm_Name.ToUpper() == Firmname.ToUpper()).Any();
-
-                                if (frmname == true)
-                                {
-                                    var frmnamecontain = DB.Retailer_Details.Where(x => x.Frm_Name.ToUpper() == Firmname.ToUpper()).FirstOrDefault().Frm_Name;
-                                    var fname = Firmname.First();
-                                    var lchar = Firmname.Last();
-                                    int i = 0;
-                                    while (Firmname.ToUpper() == frmnamecontain.ToUpper())
-                                    {
-                                        Firmname = Firmname + "_" + fname + lchar + "+" + i;
-                                        i++;
-                                    }
-
-                                    // Firmname = Firmname + "_" + fname + lchar;
-                                }
-
-                                var ch = DB.Insert_Retailer(distributorid, user.Id, rem.Name, Convert.ToInt32(rem.state), Convert.ToInt32(rem.distict), rem.Mobile, "", 0, rem.Email, "", "", Firmname, "", "", 0, "", enpin.ToString(), referelcode, "Signup", output).SingleOrDefault().msg;
-
-                                if (ch == "Register SuccessFully.")
-                                {
-
-                                    if (transaction.UnderlyingTransaction.Connection != null)
-                                    {
-                                        transaction.Commit();
-                                    }
-                                    var users = DB.Users.Where(a => a.Email == rem.Email && a.PhoneNumber == rem.Mobile).SingleOrDefault();
-                                    if (email_verify != "OFF")
-                                    {
-                                        users.EmailConfirmed = true;
-                                    }
-
-                                    users.PhoneNumberConfirmed = true;
-                                    DB.SaveChanges();
-                                }
-                                else
-                                {
-                                    if (transaction.UnderlyingTransaction.Connection != null)
-                                    {
-                                        transaction.Rollback();
-                                    }
-                                    else
-                                    {
-                                        transaction.UnderlyingTransaction.Connection.Open();
-                                        transaction.Rollback();
-                                    }
-                                    TempData["mobileno"] = ch;
-                                    return RedirectToAction("Login", "Home");
-                                }
-                                // Send an email with this link
-                                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                                var callbackUrl = Url.Action("ConfirmEmailAdmin", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                                callbackUrl = callbackUrl.Replace("/ADMIN", "");
-                                string body = new CommonUtil().PopulateBody(rem.Email, "Confirm your account", "", "" + callbackUrl + "", rem.Email, rem.Password, rem.Pin.ToString(), rem.referralcode);
-                                string Welcomebody = new CommonUtil().PopulateBodyWelcome(rem.Email, "Confirm your account", "", "SignUp" + callbackUrl + "", rem.Email, rem.Password, rem.Pin.ToString(), rem.referralcode);
-                                new CommonUtil().Insertsendmail(rem.Email, "Confirm your account", body, callbackUrl);
-                                new CommonUtil().InsertsendmailWelcome(rem.Email, "Confirm your account", Welcomebody, callbackUrl);
-                                var adminemail = DB.Admin_details.SingleOrDefault().email;
-                                new CommonUtil().Rsendmailadmin(adminemail, "Confirm your account", body, callbackUrl);
-                                ResendConfirmMail resend = new ResendConfirmMail();
-                                resend.CallBackUrl = callbackUrl;
-                                resend.Email = rem.Email;
-                                resend.Password = rem.Password;
-                                resend.Pin = rem.Pin.ToString();
-                                DB.ResendConfirmMails.Add(resend);
-                                DB.SaveChanges();
-
-                                if (ch.ToString() == "Register SuccessFully.")
-                                {
-
-                                    var resultssss = await SignInManager.PasswordSignInAsync(rem.Email, rem.Password, isPersistent: false, shouldLockout: false);
-                                    TempData["success"] = "Welcome to our family. Dear Business Partner Your account has been successfully created, first verify your email";
-
-                                    return RedirectToAction("Dashboard", "Home", new { area = "Retailer" });
-                                    //  await SignInManager.SignInAsync(user, true, false);
-                                    //  TempData["success"] = "Welcome to our family. Dear Business Partner Your account has been successfully created, first verify your email";
-                                    //   return RedirectToAction("VeryFY_Profiles_users", "Home");
-                                    //   return RedirectToAction("Login", "Home");
-                                    //   return RedirectToAction("Dashboard", "Home", new { area = "Retailer" });
-                                }
-                                else
-                                {
-                                    transaction.Rollback();
-                                    TempData["mobileno"] = ch;
-                                    return RedirectToAction("Login", "Home");
-                                }
-
-                            }
-
-                            else
-                            {
-                                var ss = "";
-                                foreach (var error in result.Errors)
-                                {
-                                    ss = error;
-                                }
-                                TempData["emailconfrim"] = ss;
-                                return RedirectToAction("Login", "Home");
-                            }
-
-                        }
-
-                        else
-                        {
-                            TempData["mobileno"] = "This Mobile Number Already Exists";
-                            return RedirectToAction("Login", "Home");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    TempData["errorretailer"] = "User Not Created. Please Create After Some Time";
-                    return RedirectToAction("Login", "Home");
-                }
-            }
-        }
-
-*/
-
-
-
-
+        /// <summary>
+        /// Identity result ke errors ko TempData mein set karta hai taaki view mein show ho sake
+        /// </summary>
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -1999,7 +1616,6 @@ namespace Vastwebmulti.Controllers
             }
             return Convert.ToBase64String(cipherTextBytes);
         }
-        //
         /// <summary>
         /// Two-factor verification code ka page dikhata hai jahan user OTP enter karta hai
         /// </summary>
@@ -2008,10 +1624,8 @@ namespace Vastwebmulti.Controllers
         {
             TempData["provider"] = provider;
             ViewBag.returnUrl = returnUrl;
-
             ViewBag.rememberMe = true;
 
-            var chk = await SignInManager.HasBeenVerifiedAsync();
             // Generate the token and send it
             if (!await SignInManager.SendTwoFactorCodeAsync("Email Code"))
             {
@@ -2029,8 +1643,6 @@ namespace Vastwebmulti.Controllers
             TempData["resend"] = "Send Verification Code Successfully.Please Check Your Email";
             return View();
         }
-        //
-        // POST: /Account/VerifyCode
         [HttpPost]
         /// <summary>
         /// User dwara submit kiya gaya verification code validate karke login complete karta hai
@@ -2111,8 +1723,6 @@ namespace Vastwebmulti.Controllers
 
             return View();
         }
-        //
-        // POST: /Account/VerifyCode
         /// <summary>
         /// Admin dwara submit kiya gaya verification code validate karke admin login complete karta hai
         /// </summary>
@@ -2230,8 +1840,6 @@ namespace Vastwebmulti.Controllers
         }
 
 
-        //
-        // GET: /Account/Register
         /// <summary>
         /// User registration ka blank form dikhata hai
         /// </summary>
@@ -2241,8 +1849,6 @@ namespace Vastwebmulti.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Register
         /// <summary>
         /// Naya user register karta hai aur confirmation email bhejta hai
         /// </summary>
@@ -2274,8 +1880,6 @@ namespace Vastwebmulti.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ConfirmEmail
         /// <summary>
         /// User ka email confirm karta hai aur account activate karta hai
         /// </summary>
@@ -2339,8 +1943,6 @@ namespace Vastwebmulti.Controllers
             }
             return View(result.Succeeded ? "ConfirmEmailAdmin" : "Error_Admin");
         }
-        //
-        // GET: /Account/ForgotPassword
         /// <summary>
         /// Password bhool gaye user ke liye forgot password form dikhata hai
         /// </summary>
@@ -2350,8 +1952,6 @@ namespace Vastwebmulti.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
         /// <summary>
         /// Forgot password request process karta hai aur user ko reset link bhejta hai
         /// </summary>
@@ -2571,8 +2171,6 @@ namespace Vastwebmulti.Controllers
 
         ALLSMSSend smssend = new ALLSMSSend();
 
-        //
-        // POST: /Account/ForgotPassword
         /// <summary>
         /// Admin ka forgot password OTP verify karke password reset link bhejta hai
         /// </summary>
@@ -3580,12 +3178,18 @@ namespace Vastwebmulti.Controllers
             }
             return RedirectToAction("WebLogin", "Home", new { Areas = "Admin" });
         }
+        /// <summary>
+        /// Admin ke email par forgot password email bhejta hai
+        /// </summary>
         private void SendForgotpasswordEmailadmin(string recepientEmail, string subject, string body)
         {
             var ToCC = DB.Admin_details.FirstOrDefault().email;
             CommUtilEmail emailsend = new CommUtilEmail();
             emailsend.EmailLimitChk(recepientEmail, ToCC, subject, body, "No CallBackUrl");
         }
+        /// <summary>
+        /// Forgot password email ka HTML body generate karta hai template se user ki details fill karke
+        /// </summary>
         private string ForgotBody(string userName, string title, string url, string description)
         {
             string body = string.Empty;
@@ -3680,20 +3284,24 @@ namespace Vastwebmulti.Controllers
 
             return body;
         }
+        /// <summary>
+        /// User ko forgot password reset link ke saath email bhejta hai
+        /// </summary>
         private void SendForgotpasswordEmail(string recepientEmail, string subject, string body, string callbackUrl)
         {
             var ToCC = DB.Admin_details.FirstOrDefault().email;
             CommUtilEmail emailsend = new CommUtilEmail();
             emailsend.EmailLimitChk(recepientEmail, ToCC, subject, body, callbackUrl);
         }
+        /// <summary>
+        /// WhiteLabel user ko forgot password email bhejta hai whitelabel email settings use karke
+        /// </summary>
         private void SendForgotpasswordEmail_whitelabel(string whitelabelid, string recepientEmail, string subject, string body)
         {
             var ToCC = DB.Admin_details.FirstOrDefault().email;
             CommUtilEmail emailsend = new CommUtilEmail();
             emailsend.WhiteLabelEmailLimitChk(recepientEmail, ToCC, subject, body, "", whitelabelid);
         }
-        //
-        // GET: /Account/ForgotPasswordConfirmation
         /// <summary>
         /// Forgot password ke baad confirmation page dikhata hai
         /// </summary>
@@ -3710,8 +3318,6 @@ namespace Vastwebmulti.Controllers
         {
             return View();
         }
-        //
-        // GET: /Account/ResetPassword
         /// <summary>
         /// Password reset karne ka form dikhata hai jab valid reset code ho
         /// </summary>
@@ -3721,8 +3327,6 @@ namespace Vastwebmulti.Controllers
             return code == null ? View("Error") : View();
         }
 
-        //
-        // POST: /Account/ResetPassword
         /// <summary>
         /// User ka naya password set karta hai aur password reset complete karta hai
         /// </summary>
@@ -3764,8 +3368,6 @@ namespace Vastwebmulti.Controllers
             return code == null ? View("Error") : View();
         }
 
-        //
-        // POST: /Account/ResetPassword
         /// <summary>
         /// Admin ka naya password set karta hai aur reset complete karta hai
         /// </summary>
@@ -3800,8 +3402,6 @@ namespace Vastwebmulti.Controllers
         }
 
 
-        //
-        // GET: /Account/ResetPasswordConfirmation
         /// <summary>
         /// Password reset hone ke baad success confirmation page dikhata hai
         /// </summary>
@@ -3820,8 +3420,6 @@ namespace Vastwebmulti.Controllers
         }
 
 
-        //
-        // POST: /Account/ExternalLogin
         /// <summary>
         /// External login provider (jaise Google) se login process shuru karta hai
         /// </summary>
@@ -3834,8 +3432,6 @@ namespace Vastwebmulti.Controllers
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
-        //
-        // GET: /Account/SendCode
         /// <summary>
         /// Two-factor code bhejne ka provider selection page dikhata hai
         /// </summary>
@@ -3852,8 +3448,6 @@ namespace Vastwebmulti.Controllers
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/SendCode
         /// <summary>
         /// Selected provider ke through two-factor OTP code bhejta hai
         /// </summary>
@@ -3875,8 +3469,6 @@ namespace Vastwebmulti.Controllers
             return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
-        //
-        // GET: /Account/ExternalLoginCallback
         /// <summary>
         /// External login provider se wapas aane par user ko authenticate karke login complete karta hai
         /// </summary>
@@ -3908,8 +3500,6 @@ namespace Vastwebmulti.Controllers
             }
         }
 
-        //
-        // POST: /Account/ExternalLoginConfirmation
         /// <summary>
         /// External login ke baad naye user ka email confirm karke account create karta hai
         /// </summary>
@@ -3949,8 +3539,6 @@ namespace Vastwebmulti.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Account/LogOff
         /// <summary>
         /// User ko logout karke login page par redirect karta hai
         /// </summary>
@@ -3966,8 +3554,6 @@ namespace Vastwebmulti.Controllers
             return RedirectToAction("Index", "Home", null);
         }
 
-        //
-        // GET: /Account/ExternalLoginFailure
         /// <summary>
         /// External login fail hone par error page dikhata hai
         /// </summary>
@@ -3980,6 +3566,9 @@ namespace Vastwebmulti.Controllers
 
 
 
+        /// <summary>
+        /// Controller ke managed resources (UserManager, SignInManager, DB) ko dispose karta hai
+        /// </summary>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -4009,6 +3598,9 @@ namespace Vastwebmulti.Controllers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
+        /// <summary>
+        /// OWIN context se IAuthenticationManager instance return karta hai
+        /// </summary>
         private IAuthenticationManager AuthenticationManager
         {
             get
@@ -4019,6 +3611,9 @@ namespace Vastwebmulti.Controllers
 
 
 
+        /// <summary>
+        /// Local URL par redirect karta hai, external URLs ke liye home page par bhejta hai (CSRF/open redirect se bachao)
+        /// </summary>
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))

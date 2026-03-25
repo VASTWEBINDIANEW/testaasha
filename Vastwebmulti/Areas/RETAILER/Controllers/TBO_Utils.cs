@@ -2,8 +2,17 @@
 
 namespace Vastwebmulti.Areas.RETAILER.Controllers
 {
+    /// <summary>
+    /// Utility class for making REST API calls to TBO (travel booking) endpoints.
+    /// </summary>
     public class TBO_Utils
     {
+        /// <summary>
+        /// Sends a POST request to the specified URL with the given request data and returns the raw response content.
+        /// </summary>
+        /// <param name="requestData">The JSON-serialized request payload to send.</param>
+        /// <param name="url">The target endpoint URL.</param>
+        /// <returns>The raw response content string, or null if the request fails.</returns>
         public static string GetResponse(string requestData, string url)
         {
             try

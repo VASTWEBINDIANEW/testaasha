@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Linq;
@@ -11,19 +11,31 @@ using Vastwebmulti.Models;
 namespace Vastwebmulti.Controllers
 {
     /// <summary>
-    /// WhatsApp SMS bhejne ke liye controller — user authentication karke message send karta hai.
+    /// Handles WhatsApp message delivery. Validates the caller's user ID, authentication token,
+    /// and IP address before forwarding the message to the VastBazaar WhatsApp messaging API.
     /// </summary>
     public class WhatsappController : Controller
     {
         // GET: Whatsapp
         private VastwebmultiEntities db;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="WhatsappController"/> and creates the database context.
+        /// </summary>
         public WhatsappController()
         {
             db = new VastwebmultiEntities();
         }
+
         /// <summary>
-        /// Given mobile number par WhatsApp message bhejta hai, pehle user aur token validate karta hai.
+        /// Sends a WhatsApp message to the specified mobile number after validating the user ID,
+        /// authentication token, IP address, and an active subscription plan.
         /// </summary>
+        /// <param name="userid">The email ID of the API user requesting the message send.</param>
+        /// <param name="tokenid">The authentication token associated with the user's registered IP address.</param>
+        /// <param name="message">The text content of the WhatsApp message to be sent.</param>
+        /// <param name="mobile">The destination mobile number to receive the WhatsApp message.</param>
+        /// <returns>A JSON-serialized string containing the message delivery status and a descriptive message.</returns>
         [HttpGet]
         public string whatsappSendSMS(string userid, string tokenid, string message, string mobile)
         {
@@ -167,9 +179,14 @@ namespace Vastwebmulti.Controllers
         //public string whatsappstatus()
         //{
         //}
+
         /// <summary>
-        /// TripleDES algorithm se encrypted string ko decrypt karta hai.
+        /// Decrypts a Base64-encoded string that was encrypted with the TripleDES algorithm using ECB mode.
+        /// Used to recover the original IP address stored inside an authentication token.
         /// </summary>
+        /// <param name="input">The Base64-encoded ciphertext to decrypt.</param>
+        /// <param name="key">The 16-character UTF-8 key used for decryption.</param>
+        /// <returns>The decrypted plaintext string.</returns>
         public string Decrypt(string input, string key)
         {
             byte[] inputArray = Convert.FromBase64String(input);
@@ -182,9 +199,12 @@ namespace Vastwebmulti.Controllers
             tripleDES.Clear();
             return UTF8Encoding.UTF8.GetString(resultArray);
         }
+
         /// <summary>
-        /// Request se client ka Internet IP address nikalta hai.
+        /// Retrieves the public Internet IP address of the current HTTP request by inspecting
+        /// the <c>HTTP_X_FORWARDED_FOR</c> header first, then falling back to <c>REMOTE_ADDR</c>.
         /// </summary>
+        /// <returns>The client's IP address as a string.</returns>
         public string GetComputer_InternetIP()
         {
             string ipaddress;
