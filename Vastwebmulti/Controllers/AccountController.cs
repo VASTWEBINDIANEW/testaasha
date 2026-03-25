@@ -35,6 +35,9 @@ namespace Vastwebmulti.Controllers
 
         VastwebmultiEntities DB = new VastwebmultiEntities();
 
+        /// <summary>
+        /// Default constructor - footer service data load karta hai aur ViewBag mein set karta hai
+        /// </summary>
         public AccountController()
         {
             var sertype1 = DB.tblFooterServices.ToList();
@@ -110,12 +113,18 @@ namespace Vastwebmulti.Controllers
             //adminfooterdata
         }
 
+        /// <summary>
+        /// UserManager aur SignInManager inject karke controller initialize karta hai (dependency injection)
+        /// </summary>
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
         }
 
+        /// <summary>
+        /// ApplicationSignInManager instance return karta hai - OWIN context se lazy load hota hai
+        /// </summary>
         public ApplicationSignInManager SignInManager
         {
             get
@@ -128,6 +137,9 @@ namespace Vastwebmulti.Controllers
             }
         }
 
+        /// <summary>
+        /// ApplicationUserManager instance return karta hai - OWIN context se lazy load hota hai
+        /// </summary>
         public ApplicationUserManager UserManager
         {
             get
@@ -1961,6 +1973,9 @@ namespace Vastwebmulti.Controllers
 
 
 
+        /// <summary>
+        /// Identity result ke errors ko TempData mein set karta hai taaki view mein show ho sake
+        /// </summary>
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -3580,12 +3595,18 @@ namespace Vastwebmulti.Controllers
             }
             return RedirectToAction("WebLogin", "Home", new { Areas = "Admin" });
         }
+        /// <summary>
+        /// Admin ke email par forgot password email bhejta hai
+        /// </summary>
         private void SendForgotpasswordEmailadmin(string recepientEmail, string subject, string body)
         {
             var ToCC = DB.Admin_details.FirstOrDefault().email;
             CommUtilEmail emailsend = new CommUtilEmail();
             emailsend.EmailLimitChk(recepientEmail, ToCC, subject, body, "No CallBackUrl");
         }
+        /// <summary>
+        /// Forgot password email ka HTML body generate karta hai template se user ki details fill karke
+        /// </summary>
         private string ForgotBody(string userName, string title, string url, string description)
         {
             string body = string.Empty;
@@ -3680,12 +3701,18 @@ namespace Vastwebmulti.Controllers
 
             return body;
         }
+        /// <summary>
+        /// User ko forgot password reset link ke saath email bhejta hai
+        /// </summary>
         private void SendForgotpasswordEmail(string recepientEmail, string subject, string body, string callbackUrl)
         {
             var ToCC = DB.Admin_details.FirstOrDefault().email;
             CommUtilEmail emailsend = new CommUtilEmail();
             emailsend.EmailLimitChk(recepientEmail, ToCC, subject, body, callbackUrl);
         }
+        /// <summary>
+        /// WhiteLabel user ko forgot password email bhejta hai whitelabel email settings use karke
+        /// </summary>
         private void SendForgotpasswordEmail_whitelabel(string whitelabelid, string recepientEmail, string subject, string body)
         {
             var ToCC = DB.Admin_details.FirstOrDefault().email;
@@ -3980,6 +4007,9 @@ namespace Vastwebmulti.Controllers
 
 
 
+        /// <summary>
+        /// Controller ke managed resources (UserManager, SignInManager, DB) ko dispose karta hai
+        /// </summary>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -4009,6 +4039,9 @@ namespace Vastwebmulti.Controllers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
+        /// <summary>
+        /// OWIN context se IAuthenticationManager instance return karta hai
+        /// </summary>
         private IAuthenticationManager AuthenticationManager
         {
             get
@@ -4019,6 +4052,9 @@ namespace Vastwebmulti.Controllers
 
 
 
+        /// <summary>
+        /// Local URL par redirect karta hai, external URLs ke liye home page par bhejta hai (CSRF/open redirect se bachao)
+        /// </summary>
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
