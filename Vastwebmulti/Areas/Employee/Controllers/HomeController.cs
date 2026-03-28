@@ -80,9 +80,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         string VastbazaarBaseUrl = "http://api.vastbazaar.com/";
         string Websitename = "";
         /// <summary>
-        /// Data/message/fund send karta hai.
-        /// </summary>
-        /// <summary>
         /// Saves a push notification record and triggers a real-time SignalR delivery to the recipient.
         /// </summary>
         /// <param name="ReceiverMailID">The ReceiverMailID value.</param>
@@ -91,7 +88,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         /// <param name="Title">The Title value.</param>
         public void SendPushNotification(string ReceiverMailID, string RedirectUrl, string Message, string Title)
         {
-            VastwebmultiEntities db = new VastwebmultiEntities();
             NotificationHub objNotifHub = new NotificationHub();
             Notification objNotif = new Notification();
             objNotif.SentTo = ReceiverMailID ?? "";
@@ -118,9 +114,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region Profile
         [HttpGet]
         /// <summary>
-        /// [GET] - Displays the user profile details
-        /// </summary>
-        /// <summary>
         /// Displays the user profile details.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -139,9 +132,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(userDetails);
         }
         /// <summary>
-        /// Dropdown ke liye data fetch karta hai.
-        /// </summary>
-        /// <summary>
         /// Populates a dropdown or list with data.
         /// </summary>
         /// <param name="State">The State value.</param>
@@ -153,9 +143,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         #endregion
 
-        /// <summary>
-        /// [GET] - Renders the dashboard with summary statistics and key metrics
-        /// </summary>
         /// <summary>
         /// Renders the dashboard with summary statistics and key metrics.
         /// </summary>
@@ -183,9 +170,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         //Live Recharge
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays live recharge operator report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -260,9 +244,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
-        /// <summary>
-        /// [POST] - Filters recharge report by operator, date and user criteria
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -344,9 +325,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [ChildActionOnly]
         //[HttpPost]
-        /// <summary>
-        /// [GET] - Returns filtered recharge report partial view
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -499,9 +477,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         /// <summary>
-        /// [POST] - Fetches paginated recharge data for AJAX requests
-        /// </summary>
-        /// <summary>
         /// Handles recharge transaction operations.
         /// </summary>
         /// <param name="btntype">The btntype value.</param>
@@ -595,12 +570,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 //ViewBag.type = "live";
                 //var ch = db.Recharge_operator_report(Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), ddl_status, optname, mobile, ddltop, portname).ToList();
                 var ch = db.proc_Recharge_operator_report_withPaging(Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), ddl_status, optname, mobile, portname, pageNumer, pageSize).ToList();
-                //ViewData["totals"] = ch.Where(s => s.Rstaus.ToUpper().Contains("SUCCESS")).Sum(s => Convert.ToInt32(s.amount));
-                //ViewData["totalf"] = ch.Where(s => s.Rstaus.ToUpper().Contains("FAILED")).Sum(s => Convert.ToInt32(s.amount));
-                //ViewData["totalp"] = ch.Where(s => s.Rstaus.ToUpper().Contains("REQ")).Sum(s => Convert.ToInt32(s.amount));
-                //viewModel.Recharge_operator_live = ch;
-                //viewModel.srspending = db.SRS_pending_count_ALL();
-                //viewModel.srspending1 = db.SRS_pending_count_ALL();
                 return this.Json(new
                 {
                     draw = Convert.ToInt32(draw),
@@ -613,13 +582,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             {
                 //ViewBag.type = "old";
                 var ch1 = db.proc_Recharge_operator_report_old_withPaging(Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), ddl_status, optname, mobile, portname, pageNumer, pageSize).ToList();
-                // var ch1 = db.proc_Recharge_operator_report_old_withPaging(Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), ddl_status, optname, mobile, ddltop, portname,pageNumer,pageSize).ToList();
-                //ViewData["totals"] = ch1.Where(s => s.Rstaus.ToUpper().Contains("SUCCESS")).Sum(s => Convert.ToInt32(s.amount));
-                //ViewData["totalf"] = ch1.Where(s => s.Rstaus.ToUpper().Contains("FAILED")).Sum(s => Convert.ToInt32(s.amount));
-                //ViewData["totalp"] = ch1.Where(s => s.Rstaus.ToUpper().Contains("REQ")).Sum(s => Convert.ToInt32(s.amount));
-                //viewModel.Recharge_operator_old = ch1;
-                //viewModel.srspending = db.SRS_pending_count_ALL();
-                //viewModel.srspending1 = db.SRS_pending_count_ALL();
                 return this.Json(new
                 {
                     draw = Convert.ToInt32(draw),
@@ -632,9 +594,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
-        /// <summary>
-        /// [POST] - Loads next page of recharge report for infinite scroll
-        /// </summary>
         /// <summary>
         /// Returns the next page of results for infinite scrolling.
         /// </summary>
@@ -791,9 +750,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         /// <summary>
-        /// [POST] - Shows detailed view of a single recharge transaction
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="Idno">The Idno value.</param>
@@ -807,9 +763,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
-        /// <summary>
-        /// [POST] - Updates operator details for a recharge transaction
-        /// </summary>
         /// <summary>
         /// Displays or processes the edit form for a record.
         /// </summary>
@@ -837,9 +790,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
-        /// <summary>
-        /// [GET] - Calculates and returns total amounts for recharge report filters
-        /// </summary>
         /// <summary>
         /// Searches for and returns matching records.
         /// </summary>
@@ -945,11 +895,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
-            //if (ddl_status.ToUpper() == "PENDING")
-            //{
-            //    ddl_status = "REQ";
-            //}
-            // var chk = db.Recharge_info.Where(aa => aa.Rch_time >= frm_date && aa.Rch_time <= to_date && aa.Rstaus.Contains(ddl_status) && (Operator == "" ? aa.optcode.Contains(Operator) : aa.optcode == Operator) && aa.Mobile.Contains(txtmob)).ToList();
             var chk = db.Total_Recharge(frm_date, to_date, ddlst, portname, optname, ddlusers, ddluserid).ToList();
             //var chk = db.proc_Recharge_operator_report_newPaging(1, 25000000, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), "Admin", "All", ddlst, optname, txtmob, portname).ToList();
             // whitelabel_Recharge_Total_Succ_Failed '2020-02-21','2020-03-22','WAdmin','e20bd2df-b9a0-4741-b5f6-d94bfb83763c','ALL','ALL','ALL'
@@ -970,9 +915,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
-        /// <summary>
-        /// [GET] - Marks multiple recharge transactions as SUCCESS
-        /// </summary>
         /// <summary>
         /// Marks a transaction as successful.
         /// </summary>
@@ -1025,9 +967,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
         /// <summary>
-        /// [GET] - Marks multiple recharge transactions as FAILED
-        /// </summary>
-        /// <summary>
         /// Marks a transaction as failed or rejected.
         /// </summary>
         /// <param name="idnval">The idnval value.</param>
@@ -1078,9 +1017,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(dict, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
-        /// <summary>
-        /// [GET] - Resends a pending recharge request
-        /// </summary>
         /// <summary>
         /// Resends a pending request.
         /// </summary>
@@ -1562,9 +1498,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
         /// <summary>
-        /// [GET] - Raises a dispute for a recharge transaction
-        /// </summary>
-        /// <summary>
         /// Handles transaction dispute processing.
         /// </summary>
         /// <param name="id">The id value.</param>
@@ -1579,15 +1512,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                 var ch = db.distute_insert(id, txtregion, output).SingleOrDefault().msg.ToString();
                 return Json(ch, JsonRequestBehavior.AllowGet);
-                //if (ch == "Success")
-                //{
-                //    TempData["success"] = "Disputed Successfully.";
-                //}
-                //else
-                //{
-                //    TempData["failed"] = "Already Disputed!";
-                //}
-                //return RedirectToAction("DisputeReport");
             }
             catch (Exception ex)
             {
@@ -1599,9 +1523,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
-        /// <summary>
-        /// [POST] - Marks a recharge as SUCCESS by port number
-        /// </summary>
         /// <summary>
         /// Handles the sucess operation.
         /// </summary>
@@ -1802,9 +1723,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Read")]
         /// <summary>
-        /// [GET] - Displays operator-specific recharge summary report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="prtname">The prtname value.</param>
@@ -1854,9 +1772,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays operator report filtered by date range
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -1923,9 +1838,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
-        /// <summary>
-        /// [POST] - Marks a recharge transaction as FAILED with refund option
-        /// </summary>
         /// <summary>
         /// Marks a transaction as failed or rejected.
         /// </summary>
@@ -2708,9 +2620,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
         /// <summary>
-        /// [GET] - Checks the live status of a recharge transaction from the operator
-        /// </summary>
-        /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
         /// <param name="idno">The idno value.</param>
@@ -2852,9 +2761,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Displays service details for a given service ID
-        /// </summary>
-        /// <summary>
         /// Handles the service operation.
         /// </summary>
         /// <param name="Id">The Id value.</param>
@@ -2883,9 +2789,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// Is action ka kaam 'codelist' se related operation handle karna hai.
-        /// </summary>
-        /// <summary>
         /// Displays a list of records.
         /// </summary>
         /// <param name="port">The port value.</param>
@@ -2903,9 +2806,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
-        /// <summary>
-        /// Is action ka kaam 'chhkbopt' se related operation handle karna hai.
-        /// </summary>
         /// <summary>
         /// Handles the chhkbopt operation.
         /// </summary>
@@ -2936,9 +2836,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(hhh, JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
-        /// [GET] - Generates and downloads an Excel export of the recharge report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -3142,9 +3039,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Generates and downloads a PDF export of the recharge report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="txt_frm_date">The txt frm date value.</param>
@@ -3297,9 +3191,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "PREPAIDUTILITY", permision = "Write")]
         /// <summary>
-        /// Is action ka kaam 'ApiUserResponse' se related operation handle karna hai.
-        /// </summary>
-        /// <summary>
         /// Handles the Api User Response operation.
         /// </summary>
         /// <param name="Idno">The Idno value.</param>
@@ -3362,9 +3253,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         /// <summary>
-        /// [GET] - Displays all details for a dispute by transaction ID
-        /// </summary>
-        /// <summary>
         /// Displays or returns the specified data.
         /// </summary>
         /// <param name="idno">The idno value.</param>
@@ -3376,9 +3264,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             ViewBag.dis = disput == null ? "Not Region Found" : disput;
             return View(ch);
         }
-        /// <summary>
-        /// [GET] - Lists all disputes
-        /// </summary>
         /// <summary>
         /// Displays a list of records.
         /// </summary>
@@ -3395,9 +3280,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         /// <summary>
-        /// [POST] - Filters dispute list by status and date range
-        /// </summary>
-        /// <summary>
         /// Displays a list of records.
         /// </summary>
         /// <param name="ddl_status">The ddl status value.</param>
@@ -3411,9 +3293,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [ChildActionOnly]
-        /// <summary>
-        /// [GET] - Returns filtered dispute list as partial view
-        /// </summary>
         /// <summary>
         /// Displays a list of records.
         /// </summary>
@@ -3443,9 +3322,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 return View(ch);
             }
         }
-        /// <summary>
-        /// [GET] - Loads next page of dispute list for infinite scroll
-        /// </summary>
         /// <summary>
         /// Handles transaction dispute processing.
         /// </summary>
@@ -3531,9 +3407,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         /// <summary>
-        /// [GET] - Rejects a dispute with a reason
-        /// </summary>
-        /// <summary>
         /// Rejects the specified item or request.
         /// </summary>
         /// <param name="idno">The idno value.</param>
@@ -3585,9 +3458,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpGet]
         /// <summary>
-        /// [GET] - Displays activation status summary for all retailers
-        /// </summary>
-        /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -3600,9 +3470,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(viewModel);
         }
 
-        /// <summary>
-        /// [GET] - Exports retailer status report to Excel
-        /// </summary>
         /// <summary>
         /// Exports data to an Excel file.
         /// </summary>
@@ -3650,31 +3517,18 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #region Retailer Bank List
         /// <summary>
-        /// [GET] - Lists pending retailer bank account approval requests
-        /// </summary>
-        /// <summary>
         /// Manages retailer-related operations.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
         public ActionResult RetailerBnk()
         {
             TempData.Keep("msgbox");
-            //var ad = db.Retailer_Details.Single(a => a.RetailerId == txtid3);
-            //ad.accountholder = string.IsNullOrWhiteSpace(txtaccholder) ? ad.accountholder : txtaccholder;
-            //ad.Bankaccountno = string.IsNullOrWhiteSpace(txtbankaccountno) ? ad.Bankaccountno : txtbankaccountno;
-            //ad.Ifsccode = string.IsNullOrWhiteSpace(txtifsc) ? ad.Ifsccode : txtifsc;
-            //ad.bankname = string.IsNullOrWhiteSpace(txtbankname) ? ad.bankname : txtbankname;
-            //ad.bankAddress = string.IsNullOrWhiteSpace(txtbranchaddress) ? ad.bankAddress : txtbranchaddress;
-            //db.SaveChanges();
 
             var RemPendingAc = db.ShowBankRequest().ToList();// db.UpdateREMAccounts.ToList();
             //db.UpdateREMAccounts.Where(a => a.UserId == userid && a.Status.ToUpper() == "PENDING").OrderByDescending(a => a.Date).Take(1);
             return View(RemPendingAc);
         }
 
-        /// <summary>
-        /// [GET] - Sends OTP for bank account approval process
-        /// </summary>
         /// <summary>
         /// Approves the specified item or request.
         /// </summary>
@@ -3722,16 +3576,8 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             emailsend.EmailLimitChk(admininfo.email, "OK", "Admin Bank Approved", "Admin Bank Approved OTP is " + otpadmin, "");
 
             return Json("DONE", JsonRequestBehavior.AllowGet);
-            //}
-            //else
-            //{
-            //    return Json("NOTDONE", JsonRequestBehavior.AllowGet);
-            //}
         }
         [HttpPost]
-        /// <summary>
-        /// [POST] - Approves a retailer bank account after OTP verification
-        /// </summary>
         /// <summary>
         /// Approves the specified item or request.
         /// </summary>
@@ -3786,9 +3632,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
         /// <summary>
-        /// [GET] - Rejects a retailer bank account request
-        /// </summary>
-        /// <summary>
         /// Rejects the specified item or request.
         /// </summary>
         /// <param name="Idno">The Idno value.</param>
@@ -3815,9 +3658,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
-        /// <summary>
-        /// [GET] - Deletes a retailer bank account entry
-        /// </summary>
         /// <summary>
         /// Deletes the specified record.
         /// </summary>
@@ -3898,9 +3738,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Lists deleted/approved bank accounts
-        /// </summary>
-        /// <summary>
         /// Deletes the specified record.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -3915,9 +3752,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         //IMPS 
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays money transfer (DMT) report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -3954,9 +3788,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         [HttpPost]
-        /// <summary>
-        /// [POST] - Filters money transfer report by date, user and status
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -4008,9 +3839,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [ChildActionOnly]
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Returns filtered money transfer report as partial view
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -4146,9 +3974,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(rowdata);
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Loads next page of money transfer report for infinite scroll
-        /// </summary>
         /// <summary>
         /// Returns the next page of results for infinite scrolling.
         /// </summary>
@@ -4497,9 +4322,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
         /// <summary>
-        /// [GET] - Generates and downloads a PDF of the money transfer report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="txt_frm_date">The txt frm date value.</param>
@@ -4617,9 +4439,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Write")]
         /// <summary>
-        /// [GET] - Updates DMT operator details for a transaction
-        /// </summary>
-        /// <summary>
         /// Displays or processes the edit form for a record.
         /// </summary>
         /// <param name="txtidno">The txtidno value.</param>
@@ -4646,9 +4465,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Calculates totals for money transfer report filters
-        /// </summary>
         /// <summary>
         /// Searches for and returns matching records.
         /// </summary>
@@ -4757,9 +4573,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
         /// <summary>
-        /// [POST] - Shows detailed view of a single money transfer transaction
-        /// </summary>
-        /// <summary>
         /// Displays detailed information.
         /// </summary>
         /// <param name="Idno">The Idno value.</param>
@@ -4770,9 +4583,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(details, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays admin IMPS income summary by type and date
-        /// </summary>
         /// <summary>
         /// Handles the Admin Imps Incmoe operation.
         /// </summary>
@@ -4802,9 +4612,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(new { Type = Type, Adminincome = Adminincome, Gst = Gst });
         }
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Counts and verifies IMPS transactions by type and date
-        /// </summary>
         /// <summary>
         /// Handles the Count Impasand Verify operation.
         /// </summary>
@@ -4837,9 +4644,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         //Manual success money transfer
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Write")]
-        /// <summary>
-        /// [GET] - Marks a money transfer as SUCCESS
-        /// </summary>
         /// <summary>
         /// Manages money transfer transactions.
         /// </summary>
@@ -4895,23 +4699,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                         {
                             SendPushNotification(RetailerEmail, Url.Action("Money_Transfer_Report", "Home"), "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bank_trans_id + " and Amount " + transamount + " is transfer Successfully.", "Money Transfer Failed To Success ..");
                         }
-                        //if (StatusSendSmsMoneyTransferFailedToSuccess == "Y")
-                        //{
-                        //    string msgssss = "";
-                        //    string tempid = "";
-                        //    string urlss = "";
 
-                        //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                        //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "MONEYTRANSFERMANUALMONEYSUCCESS" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                        //    if (smsstypes != null)
-                        //    {
-                        //        msgssss = string.Format(smsstypes.Templates, bankname, bank_account, bank_trans_id, transamount);
-                        //        tempid = smsstypes.Templateid;
-                        //        urlss = smsapionsts.smsapi;
-                        //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
-                        //    }
-                        //    //  smssend.sendsmsall(RetailerMobile, "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bank_trans_id + " and Amount : " + transamount + " is transfer Successfully.", "Money Transfer");
-                        //}
 
                         smssend.sms_init(StatusSendSmsMoneyTransferFailedToSuccess.Status, StatusSendSmsMoneyTransferFailedToSuccess.Whatsapp_Status, "MONEYTRANSFERMANUALMONEYSUCCESS", RetailerMobile, bankname, bank_account + " ", bank_trans_id, transamount);
 
@@ -4933,19 +4721,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                         {
                             SendPushNotification(RetailerEmail, Url.Action("Money_Transfer_Report", "Home"), "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bank_trans_id + " and Amount " + transamount + " is transfer Successfully.", "Money Transfer Manual Success ..");
                         }
-                        //if (StatusSendSmsMoneyTransferFailedToSuccess == "Y")
-                        //{
-                        //    string msgssss = "";
-                        //    string tempid = "";
-                        //    string urlss = "";
 
-                        //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                        //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "MONEYTRANSFERMANUALMONEYSUCCESS" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                        //    if (smsstypes != null)
-                        //    {
-                        //        msgssss = string.Format(smsstypes.Templates, bankname, bank_account, bank_trans_id, transamount);
-                        //        tempid = smsstypes.Templateid;
-                        //        urlss = smsapionsts.smsapi;
 
                         //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
                         //    }
@@ -5010,17 +4786,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                         //    string tempid = "";
                         //    string urlss = "";
 
-                        //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                        //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "MONEYTRANSFERMANUALMONEYSUCCESS" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                        //    if (smsstypes != null)
-                        //    {
-                        //        msgssss = string.Format(smsstypes.Templates, bankname, bank_account, bank_trans_id, transamount);
-                        //        tempid = smsstypes.Templateid;
-                        //        urlss = smsapionsts.smsapi;
-                        //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
-                        //    }
-                        //    //  smssend.sendsmsall(RetailerMobile, "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bank_trans_id + " and Amount : " + transamount + " is transfer Successfully.", "Money Transfer");
-                        //}
 
                         smssend.sms_init(StatusSendSmsMoneyTransferFailedToSuccess.Status, StatusSendSmsMoneyTransferFailedToSuccess.Whatsapp_Status, "MONEYTRANSFERMANUALMONEYSUCCESS", RetailerMobile, bankname, bank_account + " ", bank_trans_id, transamount);
 
@@ -5049,17 +4814,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                         //    string tempid = "";
                         //    string urlss = "";
 
-                        //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                        //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "MONEYTRANSFERMANUALMONEYSUCCESS" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                        //    if (smsstypes != null)
-                        //    {
-                        //        msgssss = string.Format(smsstypes.Templates, bankname, bank_account, bank_trans_id, transamount);
-                        //        tempid = smsstypes.Templateid;
-                        //        urlss = smsapionsts.smsapi;
-                        //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
-                        //    }
-                        //    // smssend.sendsmsall(RetailerMobile, "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bank_trans_id + " and Amount : " + transamount + " is transfer Successfully.", "Money Transfer");
-                        //}
 
                         smssend.sms_init(StatusSendSmsMoneyTransferFailedToSuccess.Status, StatusSendSmsMoneyTransferFailedToSuccess.Whatsapp_Status, "MONEYTRANSFERMANUALMONEYSUCCESS", RetailerMobile, bankname, bank_account + " ", bank_trans_id, transamount);
 
@@ -5079,9 +4833,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         //Manual Failed Money Transfer
         [PermissioncheckingAttribute(servicename = "DMT", permision = "Write")]
-        /// <summary>
-        /// [GET] - Marks a money transfer as FAILED with refund option
-        /// </summary>
         /// <summary>
         /// Marks a transaction as failed or rejected.
         /// </summary>
@@ -5150,19 +4901,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             {
                                 SendPushNotification(RetailerEmail, Url.Action("Money_Transfer_Report", "Home"), "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bankid + " and Amount " + transamount + " is Failed .", "Money Transfer Success To Failed ..");
                             }
-                            //if (StatusSendSmsMoneyTransferSuccesstoFailed == "Y")
-                            //{
-                            //    string msgssss = "";
-                            //    string tempid = "";
-                            //    string urlss = "";
 
-                            //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                            //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "MONEYTRANSFERMANUALMONEYFAILED" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                            //    if (smsstypes != null)
-                            //    {
-                            //        msgssss = string.Format(smsstypes.Templates, bankname, bank_account, transamount);
-                            //        tempid = smsstypes.Templateid;
-                            //        urlss = smsapionsts.smsapi;
 
                             //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
                             //    }
@@ -5196,19 +4935,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             {
                                 SendPushNotification(RetailerEmail, Url.Action("Money_Transfer_Report", "Home"), "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bankid + " and Amount " + transamount + " is Failed Due To " + ddl_refund + ".", "Money Transfer Failed ..");
                             }
-                            //if (StatusSendSmsMoneyTransferSuccesstoFailed == "Y")
-                            //{
-                            //    string msgssss = "";
-                            //    string tempid = "";
-                            //    string urlss = "";
 
-                            //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                            //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "MONEYTRANSFERMANUALMONEYFAILEDDUETO" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                            //    if (smsstypes != null)
-                            //    {
-                            //        msgssss = string.Format(smsstypes.Templates, bankname, bank_account, transamount, ddl_refund);
-                            //        tempid = smsstypes.Templateid;
-                            //        urlss = smsapionsts.smsapi;
 
                             //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
                             //    }
@@ -5286,19 +5013,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             {
                                 SendPushNotification(RetailerEmail, Url.Action("Money_Transfer_Report", "Home"), "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bankid + " and Amount " + transamount + " is Failed .", "Money Transfer Success To Failed ..");
                             }
-                            //if (StatusSendSmsMoneyTransferSuccesstoFailed == "Y")
-                            //{
-                            //    string msgssss = "";
-                            //    string tempid = "";
-                            //    string urlss = "";
 
-                            //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                            //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "MONEYTRANSFERMANUALMONEYFAILED" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                            //    if (smsstypes != null)
-                            //    {
-                            //        msgssss = string.Format(smsstypes.Templates, bankname, bank_account, transamount);
-                            //        tempid = smsstypes.Templateid;
-                            //        urlss = smsapionsts.smsapi;
 
                             //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
                             //    }
@@ -5334,19 +5049,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             {
                                 SendPushNotification(RetailerEmail, Url.Action("Money_Transfer_Report", "Home"), "Money Transfer in Bank " + bankname + " and Account Number " + bank_account + "and Bank Refernce Id " + bankid + " and Amount " + transamount + " is Failed Due To " + ddl_refund + ".", "Money Transfer Failed ..");
                             }
-                            //if (StatusSendSmsMoneyTransferSuccesstoFailed == "Y")
-                            //{
-                            //    string msgssss = "";
-                            //    string tempid = "";
-                            //    string urlss = "";
 
-                            //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                            //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "MONEYTRANSFERMANUALMONEYFAILEDDUETO" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                            //    if (smsstypes != null)
-                            //    {
-                            //        msgssss = string.Format(smsstypes.Templates, bankname, bank_account, transamount, ddl_refund);
-                            //        tempid = smsstypes.Templateid;
-                            //        urlss = smsapionsts.smsapi;
 
                             //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
                             //    }
@@ -5381,9 +5084,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region MPOSSTART
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Read")]
         /// <summary>
-        /// [GET] - Displays mPOS transaction report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -5415,9 +5115,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters mPOS report by date range and user criteria
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -5460,9 +5157,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [ChildActionOnly]
-        /// <summary>
-        /// [GET] - Returns filtered mPOS report as partial view
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -5563,9 +5257,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         /// <summary>
-        /// [POST] - Loads next page of mPOS report for infinite scroll
-        /// </summary>
-        /// <summary>
         /// Manages MPOS (Mobile Point of Sale) transactions.
         /// </summary>
         /// <param name="pageindex">The pageindex value.</param>
@@ -5657,9 +5348,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(jsonmodel);
         }
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Read")]
-        /// <summary>
-        /// [GET] - Calculates totals for mPOS report filters
-        /// </summary>
         /// <summary>
         /// Manages MPOS (Mobile Point of Sale) transactions.
         /// </summary>
@@ -5918,9 +5606,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Generates and downloads a PDF of the mPOS report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="txt_frm_date">The txt frm date value.</param>
@@ -6015,9 +5700,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Read")]
         /// <summary>
-        /// [POST] - Shows detailed view of a single mPOS transaction
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="Idno">The Idno value.</param>
@@ -6028,9 +5710,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(detail, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "MPOS", permision = "Write")]
-        /// <summary>
-        /// [GET] - Updates the status of an mPOS transaction
-        /// </summary>
         /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
@@ -6052,9 +5731,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region AEPS_Report
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays AEPS (Aadhaar Enabled Payment System) report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -6101,9 +5777,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
         [HttpPost]
-        /// <summary>
-        /// [POST] - Filters AEPS report by date, user and settlement type
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -6165,9 +5838,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [ChildActionOnly]
-        /// <summary>
-        /// [GET] - Returns filtered AEPS report as partial view
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -6283,9 +5953,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         }
-        /// <summary>
-        /// [GET] - Loads next page of AEPS report for infinite scroll
-        /// </summary>
         /// <summary>
         /// Manages AEPS (Aadhaar Enabled Payment System) transactions.
         /// </summary>
@@ -6585,9 +6252,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
         /// <summary>
-        /// [GET] - Generates and downloads a PDF of the AEPS report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="txt_frm_date">The txt frm date value.</param>
@@ -6712,9 +6376,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
         /// <summary>
-        /// [GET] - Calculates totals for AEPS report filters
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="txt_frm_date">The txt frm date value.</param>
@@ -6769,14 +6430,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             {
                 ddl_settletype = "ALL";
             }
-            //if (api_name == "Select Api Name" || api_name.Contains("Select Api Name") || api_name==null)
-            //{
-            //    APIname = "ALL";
-            //}
-            //else
-            //{
-            //    APIname = api_name.ToUpper();
-            //}
 
             if (ddlusers == "Master")
             {
@@ -6847,9 +6500,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Read")]
         /// <summary>
-        /// [POST] - Shows detailed view of a single AEPS transaction
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="Idno">The Idno value.</param>
@@ -6860,9 +6510,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(detail, JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Write")]
-        /// <summary>
-        /// [GET] - Marks an AEPS transaction as SUCCESS
-        /// </summary>
         /// <summary>
         /// Handles the A E P Ssucess operation.
         /// </summary>
@@ -6929,11 +6576,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                         if (Convert.ToString(procStatus.Value) == "Success")
                         {
-                            //if (StatusSendSmsAEPSSuccess == "Y")
-                            //{
-                            //    string msgssss = "";
-                            //    string tempid = "";
-                            //    string urlss = "";
 
                             //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                             //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "ADMINAEPSTRANSACTIONSUCCESS" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -6985,9 +6627,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Write")]
-        /// <summary>
-        /// AEPS (Aadhaar Enabled Payment System) se related operation karta hai.
-        /// </summary>
         /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
@@ -7078,19 +6717,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                     db.proc_whitelabel_AEPS_PostProcess("WADMIN", txnid, rrn, "", "Manual Success", response.Content, "web", respchk, 0, procStatus, procMessage);
                                 }
 
-                                //if (StatusSendSmsAEPSSuccessSatus == "Y")
-                                //{
-                                //    string msgssss = "";
-                                //    string tempid = "";
-                                //    string urlss = "";
 
-                                //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "ADMINAEPSTRANSACTIONSUCCESS" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                //    if (smsstypes != null)
-                                //    {
-                                //        msgssss = string.Format(smsstypes.Templates, bankname, txnid, Amount);
-                                //        tempid = smsstypes.Templateid;
-                                //        urlss = smsapionsts.smsapi;
 
                                 //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
                                 //    }
@@ -7131,9 +6758,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "AEPS", permision = "Write")]
-        /// <summary>
-        /// [GET] - Marks an AEPS transaction as FAILED with refund option
-        /// </summary>
         /// <summary>
         /// Marks a transaction as failed or rejected.
         /// </summary>
@@ -7202,19 +6826,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             db.proc_whitelabel_AEPS_PostProcess("WADMIN", txtrefidno, null, null, "Failed", "", "web", ddl_refund, 0, procStatus, procMessage);
                         }
                     }
-                    //if (StatusSendSmsAEPSfailed == "Y")
-                    //{
-                    //    string msgssss = "";
-                    //    string tempid = "";
-                    //    string urlss = "";
 
-                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "ADMINAEPSTRANSACTIONFAILED" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                    //    if (smsstypes != null)
-                    //    {
-                    //        msgssss = string.Format(smsstypes.Templates, bankname, txtrefidno, Amount);
-                    //        tempid = smsstypes.Templateid;
-                    //        urlss = smsapionsts.smsapi;
 
                     //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
                     //    }
@@ -7247,9 +6859,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region CashDepositReport
 
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays cash deposit report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -7284,9 +6893,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters cash deposit report by status and date range
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -7347,9 +6953,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
         /// <summary>
-        /// [GET] - Shows detailed view of a single cash deposit transaction
-        /// </summary>
-        /// <summary>
         /// Displays the detail view for the specified record.
         /// </summary>
         /// <param name="Idno">The Idno value.</param>
@@ -7361,9 +6964,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Write")]
-        /// <summary>
-        /// [POST] - Marks a cash deposit as SUCCESS with bank RRN
-        /// </summary>
         /// <summary>
         /// Marks a transaction as successful.
         /// </summary>
@@ -7388,9 +6988,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Write")]
-        /// <summary>
-        /// [GET] - Marks a cash deposit as FAILED with refund option
-        /// </summary>
         /// <summary>
         /// Marks a transaction as failed or rejected.
         /// </summary>
@@ -7431,9 +7028,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Generates and downloads an Excel export of the cash deposit report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -7522,9 +7116,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "CASHDEPOSIT", permision = "Read")]
         /// <summary>
-        /// [GET] - Calculates totals for cash deposit report filters
-        /// </summary>
-        /// <summary>
         /// Searches for and returns matching records.
         /// </summary>
         /// <param name="ddl_status">The ddl status value.</param>
@@ -7596,9 +7187,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #endregion
 
         /// <summary>
-        /// [GET] - Displays manual PAN card verification report
-        /// </summary>
-        /// <summary>
         /// Manages PAN card related operations.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -7637,9 +7225,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
         [HttpPost]
-        /// <summary>
-        /// [POST] - Filters PAN card report by retailer, status and date
-        /// </summary>
         /// <summary>
         /// Manages PAN card related operations.
         /// </summary>
@@ -7710,9 +7295,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region UITPANCARD
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays token purchase report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -7785,9 +7367,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters token purchase report by status and date
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -7863,9 +7442,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [ChildActionOnly]
-        /// <summary>
-        /// [GET] - Returns filtered token purchase report as partial view
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -7985,9 +7561,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Loads next page of token purchase report for infinite scroll
-        /// </summary>
-        /// <summary>
         /// Returns the next page of results for infinite scrolling.
         /// </summary>
         /// <param name="pageindex">The pageindex value.</param>
@@ -8094,9 +7667,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
-        /// <summary>
-        /// [POST] - Shows detailed view of a single token purchase transaction
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -8278,9 +7848,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
         /// <summary>
-        /// [GET] - Generates and downloads a PDF of the token purchase report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="txt_frm_date">The txt frm date value.</param>
@@ -8388,9 +7955,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return new ViewAsPdf(respo);
         }
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Read")]
-        /// <summary>
-        /// [GET] - Calculates totals for token purchase report filters
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -8522,9 +8086,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Write")]
         /// <summary>
-        /// [POST] - Checks live status of a token purchase from the provider
-        /// </summary>
-        /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
         /// <param name="id">The id value.</param>
@@ -8545,9 +8106,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "PANCARD", permision = "Write")]
-        /// <summary>
-        /// [POST] - Marks a PAN verification request as failed with a remark
-        /// </summary>
         /// <summary>
         /// Marks a transaction as failed or rejected.
         /// </summary>
@@ -8575,9 +8133,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #region MicroATM
         [PermissioncheckingAttribute(servicename = "MICROATM", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays Micro ATM transaction report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -8613,9 +8168,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "MICROATM", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters Micro ATM report by date range and user criteria
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -8674,9 +8226,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(chk);
         }
 
-        /// <summary>
-        /// [GET] - Generates and downloads an Excel export of the Micro ATM report
-        /// </summary>
         /// <summary>
         /// Handles the M I C R O A T M E X C E L L G E N E R A T E operation.
         /// </summary>
@@ -8784,9 +8333,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         //Manual Failed Money Transfer
         [PermissioncheckingAttribute(servicename = "MICROATM", permision = "Write")]
         /// <summary>
-        /// [GET] - Changes a Micro ATM transaction from SUCCESS to FAILED
-        /// </summary>
-        /// <summary>
         /// Marks a transaction as successful.
         /// </summary>
         /// <param name="txtrefidno">The txtrefidno value.</param>
@@ -8829,9 +8375,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "MICROATM", permision = "Read")]
         /// <summary>
-        /// [POST] - Shows detailed view of a single Micro ATM transaction
-        /// </summary>
-        /// <summary>
         /// Displays the detail view for the specified record.
         /// </summary>
         /// <param name="Idno">The Idno value.</param>
@@ -8851,9 +8394,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region WalletToBankAmountTransfer
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "WALLETUNLOAD", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays wallet unload/withdrawal report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -8876,9 +8416,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "WALLETUNLOAD", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters wallet unload report by date range
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -8912,9 +8449,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(entries);
         }
         /// <summary>
-        /// [GET] - Handles pdf Wallet Unload Report operation
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="ddlusers">The ddlusers value.</param>
@@ -8947,9 +8481,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return new ViewAsPdf(entries);
         }
 
-        /// <summary>
-        /// [GET] - Handles Excel Wallet Unload Report operation
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -9023,9 +8554,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "WALLETUNLOAD", permision = "Write")]
         /// <summary>
-        /// [GET] - Marks a gift card order as FAILED with refund option
-        /// </summary>
-        /// <summary>
         /// Marks a transaction as failed or rejected.
         /// </summary>
         /// <param name="orderid">The orderid value.</param>
@@ -9054,9 +8582,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "WALLETUNLOAD", permision = "Write")]
-        /// <summary>
-        /// [GET] - Marks a gift card order as SUCCESS
-        /// </summary>
         /// <summary>
         /// Marks a transaction as successful.
         /// </summary>
@@ -9103,9 +8628,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "SECURITYSERVICE", permision = "Read")]
         /// <summary>
-        /// [GET] - Displays security deposit transaction report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -9119,9 +8641,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "SECURITYSERVICE", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters security report by date range and user
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -9139,9 +8658,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             var ch = db.history_norton(ddlusers, allretailer, txt_frm_date, to, ddl_status).ToList();
             return View(ch);
         }
-        /// <summary>
-        /// [GET] - Generates and downloads an Excel export of the security report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -9202,9 +8718,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View();
         }
         /// <summary>
-        /// [GET] - Generates and downloads a PDF of the security report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="ddlusers">The ddlusers value.</param>
@@ -9223,26 +8736,8 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
-        //[HttpPost]
-        //[ValidateInput(false)]
-        //public FileResult Exportdata(string ExportData)
-        //{
-        //    using (MemoryStream stream = new System.IO.MemoryStream())
-        //    {
-        //        try
-        //        {
-        //            StringReader sr = new StringReader(ExportData);
-        //            Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
 
 
-        //            PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
-        //            pdfDoc.Open();
-        //            XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
-        //            pdfDoc.Close();
-        //            return File(stream.ToArray(), "application/pdf", "Grid.pdf");
-        //        }
-        //        catch (Exception ex)
-        //        {
 
         //            return File(stream.ToArray(), "application/pdf", "Grid.pdf");
 
@@ -9254,9 +8749,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [PermissioncheckingAttribute(servicename = "SECURITYSERVICE", permision = "Write")]
-        /// <summary>
-        /// [GET] - Manually updates the status of a security deposit
-        /// </summary>
         /// <summary>
         /// Handles the Security Manually operation.
         /// </summary>
@@ -9275,9 +8767,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region FundTransfer
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays the fund transfer management dashboard
-        /// </summary>
         /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
@@ -9320,9 +8809,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
         /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
-        /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
         /// <returns>A <see cref="JsonResult"/> containing the serialized response data.</returns>
@@ -9338,9 +8824,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
-        /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
         /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
@@ -9359,9 +8842,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
-        /// <summary>
-        /// [GET] - Validates security password and processes fund transfer from master to downstream
-        /// </summary>
         /// <summary>
         /// Validates or checks the specified condition.
         /// </summary>
@@ -9443,12 +8923,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             diff1 = diff1 ?? 0;
 
                             decimal diff = Convert.ToDecimal(diff1);
-                            //if (amount1 > 0)
-                            //{
-                            //if (type == "Credit" || type == "Cash")
-                            //{
-                            //    ch = "";//db.Insert_Admin_To_SuperStokist(DealerId, Convert.ToDecimal(amount1), 0, type, comment,collectionby,bankname,adminacco, output).Single().msg;
-                            //}if
 
                             ch = db.Insert_Admin_To_SuperStokist(DealerId, Convert.ToDecimal(amount1), type, comment, collectionby, bankname, adminacco, "Direct", transferid, output).Single().msg;
                             TempData["transferatom"] = null;
@@ -9469,11 +8943,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 var RemainAdmin = db.Remain_Admin_balance.Where(p => p.admin == userid).Single().RemainAmount;
                                 if (type == "Credit")
                                 {
-                                    //if (statusSendSmsMasterFundTransfer == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
                                     //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                     //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -9514,19 +8983,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 }
                                 else
                                 {
-                                    //if (statusSendSmsMasterFundTransfer == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, amount1, Adminname, remainmaster, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(MasterDetails.Mobile, msgssss, urlss, tempid);
                                     //    }
@@ -9552,12 +9009,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                     tp = "success";
                                 }
                             }
-                            //}
-                            //else
-                            //{
-                            //    ch = "Amount should be not zero";
-                            //    tp = "error";
-                            //}
 
                             TempData["BalanceTransferMsg"] = ch;
                             TempData["BalanceTransfertype"] = tp;
@@ -9596,12 +9047,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                         {
 
                             decimal amount = Convert.ToDecimal(balance);
-                            //if (amount > 0)
-                            //{
-                            //if (type == "Credit" || type == "Cash")
-                            //{
-                            //    ch = db.admin_to_dealer_balance(DealerId, amount, Convert.ToDecimal(0), type, comment, output).Single().msg;
-                            //}
                             ch = db.admin_to_dealer_balance(DealerId, amount, type, comment, "Admin", collectionby, bankname, adminacco, "Direct", transferid, output).Single().msg;
 
                             if (ch == "ok")
@@ -9620,19 +9065,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 var RemainAdmin = db.Remain_Admin_balance.Where(p => p.admin == userid).Single().RemainAmount;
                                 if (type == "Credit")
                                 {
-                                    //if (statusSendSmsDealerFundTransfer == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, amount1, remaindealer, diff2);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(DealerDetails.Mobile, msgssss, urlss, tempid);
                                     //    }
@@ -9660,20 +9093,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 else
                                 {
                                     var dealername = db.Dealer_Details.Where(p => p.DealerId == DealerId).Single().DealerName;
-                                    //var Adminname = db.Admin_details.Single().Name;
-                                    //if (statusSendSmsDealerFundTransfer == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, amount1, AdminDetails.Name, remaindealer, diff2);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(DealerDetails.Mobile, msgssss, urlss, tempid);
                                     //    }
@@ -9699,12 +9119,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                     tp = "success";
                                 }
                             }
-                            //}
-                            //else
-                            //{
-                            //    ch = "Amount is not Zero";
-                            //    tp = "error";
-                            //}
                             TempData["BalanceTransferMsg"] = ch;
                             TempData["BalanceTransfertype"] = tp;
                             TempData.Keep("BalanceTransferMsg");
@@ -9743,9 +9157,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
-        /// <summary>
-        /// [GET] - Validates security password and processes retailer fund transfer
-        /// </summary>
         /// <summary>
         /// Validates or checks the specified condition.
         /// </summary>
@@ -9847,19 +9258,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 var AdminRemain = db.Remain_Admin_balance.Single().RemainAmount;
                                 if (type == "Credit")
                                 {
-                                    //if (statusSendSmsRetailerfundtransfer == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, amount1, TotalAmount, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(RetailerDetails.Mobile, msgssss, urlss, tempid);
                                     //    }
@@ -9886,19 +9285,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 }
                                 else
                                 {
-                                    //if (statusSendSmsRetailerfundtransfer == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, amount1, Adminname, TotalAmount, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(RetailerDetails.Mobile, msgssss, urlss, tempid);
                                     //    }
@@ -9960,9 +9347,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
-        /// <summary>
-        /// [GET] - Validates security password and processes API user fund transfer
-        /// </summary>
         /// <summary>
         /// Validates or checks the specified condition.
         /// </summary>
@@ -10055,19 +9439,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                             if (type == "Credit")
                             {
-                                //if (statusSendSmsAPIfundtransfer == "Y")
-                                //{
-                                //    string msgssss = "";
-                                //    string tempid = "";
-                                //    string urlss = "";
 
-                                //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERCREDITRECIVEDBYADMIN" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                //    if (smsstypes != null)
-                                //    {
-                                //        msgssss = string.Format(smsstypes.Templates, balance, remainapi, diff1);
-                                //        tempid = smsstypes.Templateid;
-                                //        urlss = smsapionsts.smsapi;
 
                                 //        smssend.sendsmsallnew(ApiDetails.mobile, msgssss, urlss, tempid);
                                 //    }
@@ -10093,19 +9465,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             }
                             else
                             {
-                                //if (statusSendSmsAPIfundtransfer == "Y")
-                                //{
-                                //    string msgssss = "";
-                                //    string tempid = "";
-                                //    string urlss = "";
 
-                                //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                //    if (smsstypes != null)
-                                //    {
-                                //        msgssss = string.Format(smsstypes.Templates, balance, AdminName, remainapi, diff1);
-                                //        tempid = smsstypes.Templateid;
-                                //        urlss = smsapionsts.smsapi;
 
                                 //        smssend.sendsmsallnew(ApiDetails.mobile, msgssss, urlss, tempid);
                                 //    }
@@ -10161,9 +9521,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
-        /// <summary>
-        /// [GET] - Validates security password and processes white label user fund transfer
-        /// </summary>
         /// <summary>
         /// Validates or checks the specified condition.
         /// </summary>
@@ -10249,19 +9606,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             var AdminToCC = db.Admin_details.SingleOrDefault().email;
                             if (type == "Credit")
                             {
-                                //if (statusSendSmswhitelabelfundtransfer == "Y")
-                                //{
-                                //    string msgssss = "";
-                                //    string tempid = "";
-                                //    string urlss = "";
 
-                                //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                //    if (smsstypes != null)
-                                //    {
-                                //        msgssss = string.Format(smsstypes.Templates, amount1, remainwhitelabel, diff1);
-                                //        tempid = smsstypes.Templateid;
-                                //        urlss = smsapionsts.smsapi;
 
                                 //        smssend.sendsmsallnew(whitelabelDtls.Mobile, msgssss, urlss, tempid);
                                 //    }
@@ -10286,11 +9631,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             {
                                 var whitelabelname = db.WhiteLabel_userList.Where(p => p.WhiteLabelID == api).Single().Name;
                                 var Adminname = db.Admin_details.Single().Name;
-                                //if (statusSendSmswhitelabelfundtransfer == "Y")
-                                //{
-                                //    string msgssss = "";
-                                //    string tempid = "";
-                                //    string urlss = "";
 
                                 //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                 //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -10323,12 +9663,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 tp = "success";
                             }
                         }
-                        //}
-                        //else
-                        //{
-                        //    ch = "Amount should be not zero";
-                        //    tp = "error";
-                        //}
                         TempData["BalanceTransferMsg"] = ch.ToString();
                         TempData["BalanceTransfertype"] = tp;
                         TempData.Remove("api");
@@ -10360,9 +9694,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
-        /// <summary>
-        /// [GET] - Generates Excel report for fund transfer history
-        /// </summary>
         /// <summary>
         /// Exports data to an Excel file.
         /// </summary>
@@ -10556,9 +9887,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Generates PDF report for fund transfer history
-        /// </summary>
-        /// <summary>
         /// Generates and returns a PDF document.
         /// </summary>
         /// <param name="tabID">The tabID value.</param>
@@ -10622,9 +9950,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Read")]
-        /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
         /// <summary>
         /// Handles the T A B C H A N G E F O R F U N D T R A N S F E R operation.
         /// </summary>
@@ -10750,9 +10075,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Displays account balance details for all retailers
-        /// </summary>
-        /// <summary>
         /// Displays detailed information.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -10762,9 +10084,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(ch);
         }
 
-        /// <summary>
-        /// Dropdown ke liye data fetch karta hai.
-        /// </summary>
         /// <summary>
         /// Populates a dropdown or list with data.
         /// </summary>
@@ -10820,9 +10139,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(vmodel.ddldistributorInfo);
         }
         /// <summary>
-        /// [GET] - Returns credit/balance info for a master/superstokist user
-        /// </summary>
-        /// <summary>
         /// Handles credit-related operations.
         /// </summary>
         /// <param name="MID">The MID value.</param>
@@ -10846,9 +10162,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         /// <summary>
-        /// [GET] - Returns credit/balance info for a dealer
-        /// </summary>
-        /// <summary>
         /// Handles credit-related operations.
         /// </summary>
         /// <param name="Dealerid">The Dealerid value.</param>
@@ -10871,9 +10184,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
-        /// <summary>
-        /// [GET] - Returns credit/balance info for a retailer
-        /// </summary>
         /// <summary>
         /// Handles credit-related operations.
         /// </summary>
@@ -10905,9 +10215,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Returns credit/balance info for a white label user
-        /// </summary>
-        /// <summary>
         /// Handles credit-related operations.
         /// </summary>
         /// <param name="whitelabelid">The whitelabelid value.</param>
@@ -10919,9 +10226,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             ch = ch ?? 0;
             return Json(ch, JsonRequestBehavior.AllowGet);
         }
-        /// <summary>
-        /// [GET] - Returns credit/balance info for an API user
-        /// </summary>
         /// <summary>
         /// Handles credit-related operations.
         /// </summary>
@@ -10950,9 +10254,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
         /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
-        /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
         /// <returns>A <see cref="JsonResult"/> containing the serialized response data.</returns>
@@ -10974,9 +10275,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [PermissioncheckingAttribute(servicename = "FUNDTRANSFER", permision = "Write")]
 
         /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
-        /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
         /// <returns>A <see cref="JsonResult"/> containing the serialized response data.</returns>
@@ -10994,9 +10292,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
-        /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
         /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
@@ -11037,9 +10332,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region FundUserTOUser
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Read")]
         /// <summary>
-        /// [GET] - Displays fund transfer user selection page
-        /// </summary>
-        /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -11063,9 +10355,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         #region MasterUserList
 
         /// <summary>
-        /// [GET] - Generates Excel report for master/superstokist user transactions
-        /// </summary>
-        /// <summary>
         /// Exports data to an Excel file.
         /// </summary>
         /// <param name="usernm">The usernm value.</param>
@@ -11081,11 +10370,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                             new DataColumn("M/D Bal"),
                                             new DataColumn("KYC"),
                                             new DataColumn("Email V/F") });
-            // var retaiulerlist = db.Select_Retailer_Details_all("ADMIN", "ADMIN", "ADMIN").ToList();
-            //if (!string.IsNullOrEmpty(usernm))
-            //{
-            //   var retaiulerlist1 = retaiulerlist.Where(x=>x.Frm_Name.ToUpper().Contains(usernm) || x.RetailerName.ToUpper().Contains(usernm) || x.Mobile.ToUpper().Contains(usernm) ||x.PanCard.ToUpper().Contains(usernm));
-            //}
 
             MasterDistributerModel viewModel = new MasterDistributerModel();
             var Details = db.Select_super_total().ToList();
@@ -11139,9 +10423,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Generates PDF report for master/superstokist user transactions
-        /// </summary>
-        /// <summary>
         /// Generates and returns a PDF document.
         /// </summary>
         /// <param name="usernm">The usernm value.</param>
@@ -11188,9 +10469,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "USERS", permision = "Read")]
         /// <summary>
-        /// [GET] - Lists all master/superstokist accounts
-        /// </summary>
-        /// <summary>
         /// Displays a list of records.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -11219,9 +10497,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [PermissioncheckingAttribute(servicename = "USERS", permision = "Read")]
 
         /// <summary>
-        /// [POST] - Filters master list by master ID
-        /// </summary>
-        /// <summary>
         /// Displays a list of records.
         /// </summary>
         /// <param name="MID">The MID value.</param>
@@ -11242,9 +10517,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(viewModel);
         }
 
-        /// <summary>
-        /// Is action ka kaam 'MasterlistPart' se related operation handle karna hai.
-        /// </summary>
         /// <summary>
         /// Displays a list of records.
         /// </summary>
@@ -11272,9 +10544,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         /// <summary>
-        /// Partial view render karta hai.
-        /// </summary>
-        /// <summary>
         /// Handles the Select Dlm I D operation.
         /// </summary>
         /// <param name="MdId">The MdId value.</param>
@@ -11287,9 +10556,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return PartialView("_SelectDlmID", dlmViewModel);
         }
         [HttpPost]
-        /// <summary>
-        /// Naya record insert/add karta hai database mein.
-        /// </summary>
         /// <summary>
         /// Inserts a new record into the database.
         /// </summary>
@@ -11377,11 +10643,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 db.ResendConfirmMails.Add(resend);
                                 db.SaveChanges();
 
-                                //if (statusSendSmsMaster == "Y")
-                                //{
-                                //    string msgssss = "";
-                                //    string tempid = "";
-                                //    string urlss = "";
 
                                 //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                 //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "ADMIN_CREATE_NEW_USERS" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -11458,9 +10719,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         /// <summary>
-        /// [POST] - Saves updated master/dealer account details
-        /// </summary>
-        /// <summary>
         /// Displays or processes the edit form for a record.
         /// </summary>
         /// <param name="ssid">The ssid value.</param>
@@ -11516,9 +10774,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Sends email verification OTP for master account deletion
-        /// </summary>
-        /// <summary>
         /// Handles the emailverify operation.
         /// </summary>
         /// <param name="ssid">The ssid value.</param>
@@ -11541,9 +10796,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
-        /// <summary>
-        /// [GET] - Confirms and deletes a master account after OTP verification
-        /// </summary>
         /// <summary>
         /// Handles the Confirm Delete O T P operation.
         /// </summary>
@@ -11638,9 +10890,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(viewModel);
         }
         /// <summary>
-        /// [GET] - Lists distributors for seller assignment
-        /// </summary>
-        /// <summary>
         /// Displays a list of records.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -11651,9 +10900,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(set);
         }
         [HttpPost]
-        /// <summary>
-        /// [POST] - Filters distributor seller list by dealer
-        /// </summary>
         /// <summary>
         /// Displays a list of records.
         /// </summary>
@@ -11667,9 +10913,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
-        /// <summary>
-        /// [GET] - Generates Excel report for distributor transactions
-        /// </summary>
         /// <summary>
         /// Exports data to an Excel file.
         /// </summary>
@@ -11740,9 +10983,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Changes active/inactive status for a distributor
-        /// </summary>
-        /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
         /// <param name="userid">The userid value.</param>
@@ -11764,9 +11004,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
             return Json(status, JsonRequestBehavior.AllowGet);
         }
-        /// <summary>
-        /// [GET] - Generates PDF report for distributor transactions
-        /// </summary>
         /// <summary>
         /// Generates and returns a PDF document.
         /// </summary>
@@ -11810,9 +11047,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         /// <summary>
-        /// Retailer se related data handle karta hai.
-        /// </summary>
-        /// <summary>
         /// Returns selected or filtered data.
         /// </summary>
         /// <param name="MdId">The MdId value.</param>
@@ -11826,9 +11060,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
-        /// <summary>
-        /// Dealer se related data handle karta hai.
-        /// </summary>
         /// <summary>
         /// Manages dealer-related operations.
         /// </summary>
@@ -11854,9 +11085,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Toggles chargeback OTP requirement for a dealer
-        /// </summary>
-        /// <summary>
         /// Handles the Charge Back  O T P  O N  O F F operation.
         /// </summary>
         /// <param name="DealerId">The DealerId value.</param>
@@ -11874,9 +11102,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         /// <summary>
-        /// [GET] - Toggles self UPI status for a dealer
-        /// </summary>
-        /// <summary>
         /// Handles the Self  Upi  S T S  O N  O F F operation.
         /// </summary>
         /// <param name="DealerId">The DealerId value.</param>
@@ -11891,9 +11116,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(new { status = "Success", Message = updateUPIsts }, JsonRequestBehavior.AllowGet);
 
         }
-        /// <summary>
-        /// [GET] - Confirms and deletes a dealer account after OTP verification
-        /// </summary>
         /// <summary>
         /// Manages dealer-related operations.
         /// </summary>
@@ -11935,9 +11157,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// Dealer se related data handle karta hai.
-        /// </summary>
-        /// <summary>
         /// Displays a list of records.
         /// </summary>
         /// <returns>A <see cref="PartialViewResult"/> for the requested partial view.</returns>
@@ -11961,9 +11180,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [HttpPost]
-        /// <summary>
-        /// [POST] - Saves updated distributor/dealer account details
-        /// </summary>
         /// <summary>
         /// Displays or processes the edit form for a record.
         /// </summary>
@@ -12029,9 +11245,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         /// <summary>
-        /// [GET] - Sends email verification OTP for dealer account operations
-        /// </summary>
-        /// <summary>
         /// Manages dealer-related operations.
         /// </summary>
         /// <param name="dealerid">The dealerid value.</param>
@@ -12060,9 +11273,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         /// <summary>
-        /// [GET] - Generates Excel report for retailer transactions
-        /// </summary>
-        /// <summary>
         /// Exports data to an Excel file.
         /// </summary>
         /// <param name="usernm">The usernm value.</param>
@@ -12082,11 +11292,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                             new DataColumn("PANNo"),
                                             new DataColumn("KYC"),
                                             new DataColumn("Email V/F") });
-            // var retaiulerlist = db.Select_Retailer_Details_all("ADMIN", "ADMIN", "ADMIN").ToList();
-            //if (!string.IsNullOrEmpty(usernm))
-            //{
-            //   var retaiulerlist1 = retaiulerlist.Where(x=>x.Frm_Name.ToUpper().Contains(usernm) || x.RetailerName.ToUpper().Contains(usernm) || x.Mobile.ToUpper().Contains(usernm) ||x.PanCard.ToUpper().Contains(usernm));
-            //}
 
             var Details = db.Select_Retailer_Details_all_paging(1, 50000, "ADMIN").ToList();
             var listall = new List<Select_Retailer_Details_all_paging_Result>();
@@ -12096,23 +11301,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 var filterbyfrm = Details.Where(x => x.DealerId == usernm).ToList();
                 listall = filterbyfrm;
                 usernminput = null;
-                //var dealerlist = Details.Where(x => !string.IsNullOrEmpty(x.DealerFarmName) && x.DealerFarmName.ToUpper().Contains(usernm.ToUpper())).ToList();
-                //listall = dealerlist;
-                //if (!listall.Any())
-                //{
-                //    var filterbyfrm = Details.Where(x => x.Frm_Name.ToUpper().Contains(usernm.ToUpper())).ToList();
-                //    listall = filterbyfrm;
-                //}
-                //if (!listall.Any())
-                //{
-                //    var filterbyremname = Details.Where(x => x.RetailerName.ToUpper().Contains(usernm.ToUpper())).ToList();
-                //    listall = filterbyremname;
-                //}
-                //if (!listall.Any())
-                //{
-                //    var filterbymob = Details.Where(x => x.Mobile.ToUpper().Contains(usernm.ToUpper())).ToList();
-                //    listall = filterbymob;
-                //}
 
 
             }
@@ -12174,9 +11362,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Generates PDF report for retailer transactions
-        /// </summary>
-        /// <summary>
         /// Generates and returns a PDF document.
         /// </summary>
         /// <param name="usernm">The usernm value.</param>
@@ -12191,21 +11376,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             {
                 var dealerlist = Details.Where(x => x.DealerId == usernm).ToList();
                 listall = dealerlist;
-                //if (!listall.Any())
-                //{
-                //    var filterbyfrm = Details.Where(x => x.Frm_Name.ToUpper().Contains(usernm.ToUpper())).ToList();
-                //    listall = filterbyfrm;
-                //}
-                //if (!listall.Any())
-                //{
-                //    var filterbyremname = Details.Where(x => x.RetailerName.ToUpper().Contains(usernm.ToUpper())).ToList();
-                //    listall = filterbyremname;
-                //}
-                //if (!listall.Any())
-                //{
-                //    var filterbymob = Details.Where(x => x.Mobile.ToUpper().Contains(usernm.ToUpper())).ToList();
-                //    listall = filterbymob;
-                //}
                 usernminput = null;
 
             }
@@ -12248,9 +11418,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Displays retailer e-KYC verification status list
-        /// </summary>
-        /// <summary>
         /// Handles KYC (Know Your Customer) document processing.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -12260,9 +11427,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View("retailerekyccheck", results);
         }
 
-        /// <summary>
-        /// [GET] - Exports retailer e-KYC status list to Excel
-        /// </summary>
         /// <summary>
         /// Exports data to an Excel file.
         /// </summary>
@@ -12329,9 +11493,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Exports retailer e-KYC status list to PDF
-        /// </summary>
-        /// <summary>
         /// Generates and returns a PDF document.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -12346,9 +11507,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [ValidateInput(false)]
 
 
-        /// <summary>
-        /// Retailer se related data handle karta hai.
-        /// </summary>
         /// <summary>
         /// Manages retailer-related operations.
         /// </summary>
@@ -12377,9 +11535,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return Json(new { list = ch, state = ViewBag.state1, poscapp = poscp }, JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
-        /// [GET] - Sends email verification for retailer account operations
-        /// </summary>
         /// <summary>
         /// Manages retailer-related operations.
         /// </summary>
@@ -12440,9 +11595,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "USERS", permision = "Read")]
         /// <summary>
-        /// [GET] - Lists all registered retailer accounts with pagination
-        /// </summary>
-        /// <summary>
         /// Displays a list of records.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -12455,11 +11607,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             ViewData["msg"] = TempData["msgshow"];
             var Details = db.Select_Retailer_Details_all_paging(1, 50, "ADMIN").ToList();
             var results = (from p in db.Slab_name where p.SlabFor == "Retailer" group p.SlabName by p.SlabName into g select new { SlabName = g.Key });
-            //ViewBag.slab = new SelectList(results, "SlabName", "SlabName");
-            // ViewBag.slabedit = new SelectList(results, "SlabName", "SlabName");
-            //var slab = (from p in db.retailer_slab where p.retailer_id != "Default" group p.retailer_id by p.retailer_id into g select new { retailer_id = g.Key });
-            //ViewBag.slab = new SelectList(slab, "retailer_id", "retailer_id");
-            //ViewBag.slabedit = new SelectList(slab, "retailer_id", "retailer_id");
             var state = db.Select_State_Details().ToList();
             TempData.Remove("Message");
             ViewData["ResendMail"] = TempData["ResendMAil"];
@@ -12493,9 +11640,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return View(viewmodel);
 
         }
-        /// <summary>
-        /// [GET] - Loads next page of retailer list for infinite scroll
-        /// </summary>
         /// <summary>
         /// Manages retailer-related operations.
         /// </summary>
@@ -12536,9 +11680,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
 
 
-        /// <summary>
-        /// [POST] - Approves or activates a retailer account
-        /// </summary>
         /// <summary>
         /// Approves the specified item or request.
         /// </summary>
@@ -12584,13 +11725,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 return Json(val, JsonRequestBehavior.AllowGet);
             }
             return Json("sdfdsgdf", JsonRequestBehavior.AllowGet);
-            //RetailerDetalsModel viewmodel = new RetailerDetalsModel();
-            //ViewBag.state = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-            //ViewBag.state1 = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-            //var district = from s in db.District_Desc
-            //               where s.State_id == 0
-            //               select s;
-            //ViewBag.district = new SelectList(district, "Dist_id", "Dist_Desc").ToList();
 
             //viewmodel.select_retailer_details = db.Select_Retailer_Details_all("ADMIN", "ADMIN", "ADMIN").ToList();
 
@@ -12599,9 +11733,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
-        /// <summary>
-        /// [GET] - Deletes PAN/Aadhaar document for a retailer after OTP
-        /// </summary>
         /// <summary>
         /// Manages PAN card related operations.
         /// </summary>
@@ -12671,9 +11802,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
 
-        /// <summary>
-        /// [GET] - Rejects a retailer PAN/Aadhaar document after OTP
-        /// </summary>
         /// <summary>
         /// Rejects the specified item or request.
         /// </summary>
@@ -12750,9 +11878,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
         /// <summary>
-        /// [GET] - Rejects or deactivates a retailer account
-        /// </summary>
-        /// <summary>
         /// Rejects the specified item or request.
         /// </summary>
         /// <param name="val">The val value.</param>
@@ -12809,13 +11934,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
 
             return Json("drgdhfjgh", JsonRequestBehavior.AllowGet);
-            //RetailerDetalsModel viewmodel = new RetailerDetalsModel();
-            //ViewBag.state = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-            //ViewBag.state1 = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-            //var district = from s in db.District_Desc
-            //               where s.State_id == 0
-            //               select s;
-            //ViewBag.district = new SelectList(district, "Dist_id", "Dist_Desc").ToList();
 
             //viewmodel.select_retailer_details = db.Select_Retailer_Details_all("ADMIN", "ADMIN", "ADMIN").ToList();
 
@@ -12824,9 +11942,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
-        /// <summary>
-        /// Retailer se related data handle karta hai.
-        /// </summary>
         /// <summary>
         /// Displays a list of records.
         /// </summary>
@@ -12874,9 +11989,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
-        /// <summary>
-        /// Retailer se related data handle karta hai.
-        /// </summary>
         /// <summary>
         /// Manages retailer-related operations.
         /// </summary>
@@ -12962,9 +12074,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "USERS", permision = "Read")]
         /// <summary>
-        /// [GET] - Lists all API user accounts
-        /// </summary>
-        /// <summary>
         /// Handles the Api user operation.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -12984,9 +12093,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Exports API user list to PDF
-        /// </summary>
-        /// <summary>
         /// Generates and returns a PDF document.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -13004,9 +12110,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return new ViewAsPdf(vmodel);
         }
 
-        /// <summary>
-        /// [GET] - Exports API user list to Excel
-        /// </summary>
         /// <summary>
         /// Exports data to an Excel file.
         /// </summary>
@@ -13053,9 +12156,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Sends email verification for API user account operations
-        /// </summary>
-        /// <summary>
         /// Handles the emailverifyforapi operation.
         /// </summary>
         /// <param name="apiid">The apiid value.</param>
@@ -13073,9 +12173,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [HttpPost]
-        /// <summary>
-        /// [POST] - Approves or activates a dealer account
-        /// </summary>
         /// <summary>
         /// Approves the specified item or request.
         /// </summary>
@@ -13109,12 +12206,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 return Json(val, JsonRequestBehavior.AllowGet);
             }
             return Json("dfcdfdf", JsonRequestBehavior.AllowGet);
-            //ViewBag.state = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-            //ViewBag.state1 = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-            //var district = from s in db.District_Desc
-            //               where s.State_id == 0
-            //               select s;
-            //ViewBag.district = new SelectList(district, "Dist_id", "Dist_Desc").ToList();
             //// var Details = db.Select_Dealer_total("ADMIN").ToList();
             //DealerModel viewModel = new DealerModel();
             //viewModel.Select_dealer_list = db.Select_Dealer_total("ADMIN").ToList(); ;
@@ -13124,9 +12215,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
-        /// <summary>
-        /// [GET] - Rejects or deactivates a dealer account
-        /// </summary>
         /// <summary>
         /// Rejects the specified item or request.
         /// </summary>
@@ -13164,12 +12252,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 return Json(val, JsonRequestBehavior.AllowGet);
             }
             return Json("dfcdfdf", JsonRequestBehavior.AllowGet);
-            //ViewBag.state = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-            //ViewBag.state1 = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-            //var district = from s in db.District_Desc
-            //               where s.State_id == 0
-            //               select s;
-            //ViewBag.district = new SelectList(district, "Dist_id", "Dist_Desc").ToList();
             //// var Details = db.Select_Dealer_total("ADMIN").ToList();
             //DealerModel viewModel = new DealerModel();
             //viewModel.Select_dealer_list = db.Select_Dealer_total("ADMIN").ToList(); ;
@@ -13183,9 +12265,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [HttpPost]
-        /// <summary>
-        /// [POST] - Saves updated master/dealer account details
-        /// </summary>
         /// <summary>
         /// Displays or processes the edit form for a record.
         /// </summary>
@@ -13238,38 +12317,9 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [HttpGet]
-        //public ActionResult DistibutorList()
-        //{
-        //    var results = (from p in db.Slab_name where p.SlabFor == "Distributor" group p.SlabName by p.SlabName into g select new { SlabName = g.Key });
-        //    ViewBag.slabname = new SelectList(results, "SlabName", "SlabName");
-        //    ViewBag.state = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-        //    ViewBag.state1 = new SelectList(db.Select_State_Details(), "State_Id", "State_Name").ToList();
-        //    var district = from s in db.District_Desc
-        //                   where s.State_id == 0
-        //                   select s;
-        //    ViewBag.district = new SelectList(district, "Dist_id", "Dist_Desc").ToList();
-        //    var adminuserid = User.Identity.GetUserId();
-        //    var Details = db.Select_Permissionwise_Dealer_total(adminuserid).ToList();
-        //    DealerModel viewModel = new DealerModel();
-        //    viewModel.Select_Permissionwise_Dealer_total = Details;
-        //    var stands = db.Superstokist_details.ToList();
-        //    IEnumerable<SelectListItem> selectList = from s in stands
-        //                                             select new SelectListItem
-        //                                             {
-        //                                                 Value = s.SSId,
-        //                                                 Text = s.Email + " -- " + s.FarmName.ToString()
-        //                                             };
-        //    ViewBag.masterid = new SelectList(selectList, "Value", "Text");
-        //    TempData.Keep("Message");
-        //    ViewData["ResendMail"] = TempData["ResendMAil"];
-        //    return View(viewModel);
-        //}
 
 
 
-        /// <summary>
-        /// Dealer se related data handle karta hai.
-        /// </summary>
         /// <summary>
         /// Manages dealer-related operations.
         /// </summary>
@@ -13368,9 +12418,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
         /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
-        /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
         /// <returns>A <see cref="JsonResult"/> containing the serialized response data.</returns>
@@ -13388,9 +12435,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
-        /// <summary>
-        /// [GET] - Validates security pass and processes master-to-DLM balance transfer
-        /// </summary>
         /// <summary>
         /// Retrieves or updates balance information.
         /// </summary>
@@ -13476,13 +12520,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             diff1 = diff1 ?? 0;
 
                             decimal diff = Convert.ToDecimal(diff1);
-                            //if (amount1 > 0)
-                            //{
-                            //if (type == "Credit" || type == "Cash")
-                            //{
-                            //    ch = "";//db.Insert_Admin_To_SuperStokist(DealerId, Convert.ToDecimal(amount1), 0, type, comment,collectionby,bankname,adminacco, output).Single().msg;
-                            //}
-                            //   System.Data.Entity.Core.Objects.ObjectParameter output = new System.Data.Entity.Core.Objects.ObjectParameter("output", typeof(String));
                             ch = db.master_to_delaer_byAdmin(hdSuperstokistID, hdMDDLM, amount1, 0, type, comment, collectionby, bankname, adminacco, "Direct", transferid, output).SingleOrDefault().msg;
                             //  ch = db.Insert_Admin_To_SuperStokist(DealerId, Convert.ToDecimal(amount1), type, comment, collectionby, bankname, adminacco, "Direct", output).Single().msg;
 
@@ -13508,21 +12545,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                                 if (type == "Credit")
                                 {
-                                    //if (statusSendSmsMasterFundTransfer == "Y")
-                                    //{
-                                    //    try
-                                    //    {
-                                    //        string msgssss = "";
-                                    //        string tempid = "";
-                                    //        string urlss = "";
 
-                                    //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //        if (smsstypes != null)
-                                    //        {
-                                    //            msgssss = string.Format(smsstypes.Templates, amount1, remaindealer, diff1);
-                                    //            tempid = smsstypes.Templateid;
-                                    //            urlss = smsapionsts.smsapi;
 
                                     //            smssend.sendsmsallnew(DealerDetails.Mobile, msgssss, urlss, tempid);
                                     //        }
@@ -13534,19 +12557,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                                     smssend.sms_init(statusSendSmsMasterFundTransfer.Status, statusSendSmsMasterFundTransfer.Whatsapp_Status, "FUNDTRANSFERMESSAGE_CREDIT", DealerDetails.Mobile, amount1, remaindealer, diff1);
 
-                                    //if (statusSendSmsMasterToDlmFundTransferMaster == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SEND_SMS_CREDIT_TRANSFERREDTO" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, dealeremail, amount1, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(MasterDetails.Mobile, msgssss, urlss, tempid);
                                     //    }
@@ -13564,15 +12575,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                         smssend.SendEmailAll(MasterDetails.Email, "Credit Transferred To " + dealeremail + " Rs. " + amount1 + ".Total Credit(O/s) Balance is " + diff1 + "", "Fund Transfer", adminemail, 1000);
                                     }
 
-                                    //if (statusSendSmsMasterToDlmFundTransferMaster == "Y")
-                                    //{
-                                    //    SendPushNotification(adminemail, Url.Action("Admin_to_master_Dealer", "Home"), "Credit Trnf Rs. " + amount1 + "  to " + mastername + ", Pending Credit is " + diff1 + " . Bal is " + RemainAdmin + " . (" + string.Format("{0:dd-MMM hh:mm:ss}", DateTime.Now) + ")", "Fund Transfer ..");
-                                    //}
-                                    //if (statusMaster == "Y")
-                                    //{
-                                    //    SendPushNotification(dealeremail, Websitename + "/Master/Home/ReceiveFund", "Credit Recd frm " + Adminname + " Rs." + amount1 + ". Your pending credit is " + diff1 + " . New Balance is " + remainmaster + ". (" + string.Format("{0:dd-MMM hh:mm:ss}", DateTime.Now) + ")", "Fund Transfer ..");
-                                    //}
-                                    //  notify.sendmessage(dealeremail, "Credit Recd frm " + Adminname + " Rs." + amount1 + ". Your pending credit is " + diff1 + " . New Balance is " + remainmaster + ". (" + string.Format("{0:dd-MMM hh:mm:ss}", DateTime.Now) + ")");
                                     notify.sendmessage(dealeremail, "Credit Received Rs." + amount1 + ".New Balance is " + remaindealer + ".Your O/s Credit is " + diff1 + "");
                                     ch = "Fund Transfer Successful.";
                                     tp = "success";
@@ -13590,13 +12592,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                     //    string tempid = "";
                                     //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, amount1, mastername, remaindealer, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(DealerDetails.Mobile, msgssss, urlss, tempid);
                                     //    }
@@ -13605,19 +12600,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                                     smssend.sms_init(statusSendSmsMasterFundTransfer.Status, statusSendSmsMasterFundTransfer.Whatsapp_Status, "FUNDTRANSFERMESSAGE_CASH", DealerDetails.Mobile, amount1, mastername, remaindealer, diff1);
 
-                                    //if (statusSendSmsMasterToDlmFundTransferMaster == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SENDSMSMASTERTODLMFUNDTRANSFERMSGCASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, amount1, dealername, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(MasterDetails.Mobile, msgssss, urlss, tempid);
                                     //    }
@@ -13634,24 +12617,10 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                     {
                                         smssend.SendEmailAll(MasterDetails.Email, "Cash Recived Rs." + amount1 + " From " + dealername + ",his O/s Credit is " + diff1 + "", "Fund Transfer", adminemail, 1000);
                                     }
-                                    //if (statusMaster == "Y")
-                                    //{
-                                    //    SendPushNotification(email, Url.Action("SendFund", "Home"), "Cash Recived Rs." + amount + " From " + dealername + ",his O/s Credit is " + diff2 + "", "Fund Transfer ..");
-                                    //}
-                                    //if (statusDealer == "Y")
-                                    //{
-                                    //    SendPushNotification(useremail, Websitename + "/DEALER/Home/ReceiveFund", "Cash Paid Rs." + amount + " to " + mastername + ". New Balance is " + remaindealer + ". Your O/s Credit is " + diff2 + "", "Fund Transfer ..");
-                                    //}
                                     notify.sendmessage(dealeremail, "Cash Paid Rs." + amount1 + " to " + mastername + ". New Balance is " + remaindealer + ". Your O/s Credit is " + diff1 + "");
 
                                 }
                             }
-                            //}
-                            //else
-                            //{
-                            //    ch = "Amount should be not zero";
-                            //    tp = "error";
-                            //}
 
                             TempData["BalanceTransferMsg"] = ch;
                             TempData["BalanceTransfertype"] = tp;
@@ -13696,13 +12665,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             diff1 = diff1 ?? 0;
 
                             decimal diff = Convert.ToDecimal(diff1);
-                            //if (amount1 > 0)
-                            //{
-                            //if (type == "Credit" || type == "Cash")
-                            //{
-                            //    ch = "";//db.Insert_Admin_To_SuperStokist(DealerId, Convert.ToDecimal(amount1), 0, type, comment,collectionby,bankname,adminacco, output).Single().msg;
-                            //}
-                            //   System.Data.Entity.Core.Objects.ObjectParameter output = new System.Data.Entity.Core.Objects.ObjectParameter("output", typeof(String));
                             ch = db.fund_dealer_to_retailer_byAdmin(hdSuperstokistID, hdMDDLM, amount1, type, comment, collectionby, bankname, adminacco, "Direct", transferid, output).SingleOrDefault().msg;
                             //  ch = db.Insert_Admin_To_SuperStokist(DealerId, Convert.ToDecimal(amount1), type, comment, collectionby, bankname, adminacco, "Direct", output).Single().msg;
 
@@ -13724,13 +12686,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 var RetailerEmail = db.Dealer_Details.Where(p => p.DealerId == hdSuperstokistID).Single().Email;
                                 if (hdPaymentMode == "Credit")
                                 {
-                                    //if (statusSendSmsDlmToRetailerFundTransfer == "Y")
-                                    //{
-                                    //    try
-                                    //    {
-                                    //        string msgssss = "";
-                                    //        string tempid = "";
-                                    //        string urlss = "";
 
                                     //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                     //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SEND_SMS_CREDIT_RECEIVEDBY" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -13753,19 +12708,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                                     smssend.sms_init(statusSendSmsDlmToRetailerFundTransfer.Status, statusSendSmsDlmToRetailerFundTransfer.Whatsapp_Status, "SEND_SMS_CREDIT_RECEIVEDBY", RetailerMobile, DealerEmail, balance, remainretailer, diff1);
 
-                                    //if (statusSendSmsDlmToRetailerFundTransferDlm == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SEND_SMS_CREDIT_TRANSFERREDTO" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, RetailerEmail, balance, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(DealerMobile, msgssss, urlss, tempid);
                                     //    }
@@ -13791,19 +12734,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                                 {
                                     var retailername = db.Retailer_Details.Where(p => p.RetailerId == hdMDDLM).Single().RetailerName;
                                     var dealername = db.Dealer_Details.Where(p => p.DealerId == hdSuperstokistID).Single().DealerName;
-                                    //if (statusSendSmsDlmToRetailerFundTransfer == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, balance, dealername, remainretailer, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(RetailerMobile, msgssss, urlss, tempid);
                                     //    }
@@ -13813,19 +12744,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                                     smssend.sms_init(statusSendSmsDlmToRetailerFundTransfer.Status, statusSendSmsDlmToRetailerFundTransfer.Whatsapp_Status, "FUNDTRANSFERMESSAGE_CASH", RetailerMobile, balance, dealername, remainretailer, diff1);
 
-                                    //if (statusSendSmsDlmToRetailerFundTransferDlm == "Y")
-                                    //{
-                                    //    string msgssss = "";
-                                    //    string tempid = "";
-                                    //    string urlss = "";
 
-                                    //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                    //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SENDSMSMASTERTODLMFUNDTRANSFERMSGCASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                    //    if (smsstypes != null)
-                                    //    {
-                                    //        msgssss = string.Format(smsstypes.Templates, balance, retailername, diff1);
-                                    //        tempid = smsstypes.Templateid;
-                                    //        urlss = smsapionsts.smsapi;
 
                                     //        smssend.sendsmsallnew(DealerMobile, msgssss, urlss, tempid);
                                     //    }
@@ -13875,9 +12794,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
         /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
-        /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
         /// <returns>A <see cref="JsonResult"/> containing the serialized response data.</returns>
@@ -13895,9 +12811,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
-        /// <summary>
-        /// [GET] - Validates security pass and processes retailer-to-retailer balance transfer
-        /// </summary>
         /// <summary>
         /// Retrieves or updates balance information.
         /// </summary>
@@ -13917,25 +12830,8 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                 var userid = db.Retailer_Details.FirstOrDefault(a => a.RetailerId == hdSuperstokistID).RetailerId;
                 string useremail = db.Retailer_Details.Where(p => p.RetailerId == hdSuperstokistID).FirstOrDefault().Email;
-                //  string reatilerto = "";
-                // var chkmb = db.Retailer_Details.Where(a => a.Mobile == FromRetailerId || a.Email == FromRetailerId).Any();
-                //if (chkmb == false)
-                //{
-                //    TempData["error"] = "This User Not Exist";
-                //    return RedirectToAction("Retailer_to_retailer");
-                //}
                 var reatilerto = db.Retailer_Details.Where(p => p.RetailerId == hdMDDLM).FirstOrDefault().RetailerId;
                 var retaileremaillid = db.Retailer_Details.Where(p => p.RetailerId == hdMDDLM).FirstOrDefault().Email;
-                //if (remid.Any())
-                //{
-                //    reatilerto = remid.Single().RetailerId;
-                //    retaileremaillid = remid.Single().Email;
-                //}
-                //else
-                //{
-                //    reatilerto = db.Retailer_Details.Where(a => a.Email == RetailerId).SingleOrDefault().RetailerId;
-                //    retaileremaillid = RetailerId;
-                //}
                 var password = Encrypt(txtcode);
 
                 var tranpass = (from paa in db.admin_new_pass where paa.transpass == password select paa).Count();
@@ -13978,20 +12874,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                         if (ch == "Balance Transfer SuccessFully.")
                         {
-                            //if (statusSendSmsREMToREMFundTransferRetailer == "Y")
-                            //{
-                            //    string msgssss = "";
-                            //    string tempid = "";
-                            //    string urlss = "";
 
-                            //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                            //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERBALANCETRANSFER" +
-                            //    "" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                            //    if (smsstypes != null)
-                            //    {
-                            //        msgssss = string.Format(smsstypes.Templates, hdPaymentAmount, useremail, remainbalretailer);
-                            //        tempid = smsstypes.Templateid;
-                            //        urlss = smsapionsts.smsapi;
 
                             //        smssend.sendsmsallnew(RetailerMobileRetailerDetails.Mobile, msgssss, urlss, tempid);
                             //    }
@@ -14000,19 +12883,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
                             smssend.sms_init(statusSendSmsREMToREMFundTransferRetailer.Status, statusSendSmsREMToREMFundTransferRetailer.Whatsapp_Status, "FUNDTRANSFERBALANCETRANSFER", RetailerMobileRetailerDetails.Mobile, hdPaymentAmount, useremail, remainbalretailer);
 
-                            //if (statusSendSmsREMToREMFundTransfer == "Y")
-                            //{
-                            //    string msgssss = "";
-                            //    string tempid = "";
-                            //    string urlss = "";
 
-                            //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                            //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "RETAILERTORETAILERTOFUNDTRANSFER" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                            //    if (smsstypes != null)
-                            //    {
-                            //        msgssss = string.Format(smsstypes.Templates, retaileremaillid, hdPaymentAmount, remainbal);
-                            //        tempid = smsstypes.Templateid;
-                            //        urlss = smsapionsts.smsapi;
 
                             //        smssend.sendsmsallnew(RetailerMobileRetailerDetails.Mobile, msgssss, urlss, tempid);
                             //    }
@@ -14062,9 +12933,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Write")]
         /// <summary>
-        /// Fund transfer ya balance se related operation karta hai.
-        /// </summary>
-        /// <summary>
         /// Handles fund transfer or balance management.
         /// </summary>
         /// <returns>A <see cref="JsonResult"/> containing the serialized response data.</returns>
@@ -14084,9 +12952,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Read")]
-        /// <summary>
-        /// [GET] - Generates Excel report for user-to-user fund transfer history
-        /// </summary>
         /// <summary>
         /// Exports data to an Excel file.
         /// </summary>
@@ -14236,9 +13101,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "FUNDUSERTOUSER", permision = "Read")]
         /// <summary>
-        /// [GET] - Generates PDF report for user-to-user fund transfer history
-        /// </summary>
-        /// <summary>
         /// Generates and returns a PDF document.
         /// </summary>
         /// <param name="tabID">The tabID value.</param>
@@ -14276,9 +13138,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
 
-        /// <summary>
-        /// [GET] - Returns credit info for master-to-DLM transfer check
-        /// </summary>
         /// <summary>
         /// Handles credit-related operations.
         /// </summary>
@@ -14318,9 +13177,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         /// <summary>
-        /// [GET] - Returns credit info for DLM-to-RLM transfer check
-        /// </summary>
-        /// <summary>
         /// Handles credit-related operations.
         /// </summary>
         /// <param name="retailerid">The retailerid value.</param>
@@ -14358,9 +13214,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// Data fetch karke view mein dikhata hai.
-        /// </summary>
-        /// <summary>
         /// Retrieves data for the specified criteria.
         /// </summary>
         /// <param name="retID">The retID value.</param>
@@ -14373,9 +13226,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
-        /// <summary>
-        /// Retailer se related data handle karta hai.
-        /// </summary>
         /// <summary>
         /// Binds data to a UI element or dropdown.
         /// </summary>
@@ -14404,9 +13254,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         }
 
-        /// <summary>
-        /// Dealer se related data handle karta hai.
-        /// </summary>
         /// <summary>
         /// Binds data to a UI element or dropdown.
         /// </summary>
@@ -14450,9 +13297,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             return selectList;
         }
 
-        /// <summary>
-        /// Dealer se related data handle karta hai.
-        /// </summary>
         /// <summary>
         /// Populates a dropdown or list with data.
         /// </summary>
@@ -14550,9 +13394,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
         /// <summary>
-        /// [GET] - Displays flight ticket booking report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -14610,9 +13451,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
         /// <summary>
-        /// [POST] - Filters flight ticket report by date, status and user
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="txt_frm_date">The txt frm date value.</param>
@@ -14648,21 +13486,7 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                     //Retailer 
                     ViewBag.allretailer = new SelectList(db.select_retailer_for_ddl("Admin"), "RetailerId", "Frm_Name", null).ToList();
 
-                    //DateTime frm = Convert.ToDateTime(txt_frm_date);
-                    //DateTime to = Convert.ToDateTime(txt_to_date);
-                    //txt_frm_date = frm.ToString("dd-MM-yyyy");
-                    //txt_to_date = to.ToString("dd-MM-yyyy");
-                    //string[] formats = new[] { "MM/dd/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd", "dd-MM-yyyy", "dd MMM yyyy" };
-                    //DateTime dt = DateTime.ParseExact(txt_frm_date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None);
-                    //DateTime dt1 = DateTime.ParseExact(txt_to_date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None);
-                    //DateTime frm_date = dt.Date;
-                    //DateTime to_date = dt1.AddDays(1);
 
-                    //var proc_Response = db.proc_FlightReport(1,20, ddl_status, retailerid, DealerId, MasterId, null, null, PNR, null, null, frm_date, to_date).ToList();
-                    //ViewData["Totalofferfare"] = proc_Response.Where(s => s.TicketStatus.ToUpper().Contains("Success")).Sum(s => Convert.ToInt32(s.OfferedFare));
-                    //ViewData["totalf"] = proc_Response.Where(s => s.TicketStatus.ToUpper().Contains("FAILED")).Sum(s => Convert.ToInt32(s.FareAmount));
-                    //ViewData["totalp"] = proc_Response.Where(s => s.TicketStatus.ToUpper().Contains("Proccessed")).Sum(s => Convert.ToInt32(s.FareAmount));
-                    //return View(proc_Response);
                     return View();
                 }
             }
@@ -14674,9 +13498,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [ChildActionOnly]
-        /// <summary>
-        /// [GET] - Returns filtered ticket report as partial view
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -14776,17 +13597,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -14806,9 +13616,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
 
-        /// <summary>
-        /// [POST] - Loads next page of ticket report for infinite scroll
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -14908,17 +13715,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -14943,9 +13739,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Generates and downloads an Excel export of the ticket report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -15045,17 +13838,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -15138,9 +13920,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Generates and downloads a PDF export of the ticket report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -15239,17 +14018,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -15268,9 +14036,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
-        /// <summary>
-        /// [GET] - Calculates total amounts for ticket report filters
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -15369,17 +14134,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -15409,9 +14163,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
-        /// <summary>
-        /// [POST] - Fetches current live flight status from the provider
-        /// </summary>
         /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
@@ -15477,9 +14228,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
         /// <summary>
-        /// [GET] - Displays flight ticket cancellation report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -15530,9 +14278,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters cancellation report by date and status
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -15630,16 +14375,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
 
                     //}
                     if (ddlusers == "Admin")
@@ -15661,9 +14396,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
-        /// <summary>
-        /// [POST] - Processes a flight/hotel ticket cancellation status update
-        /// </summary>
         /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
@@ -15743,9 +14475,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
-        /// <summary>
-        /// [GET] - Displays a detailed flight ticket view with fare
-        /// </summary>
         /// <summary>
         /// Displays the detail view for the specified record.
         /// </summary>
@@ -15827,9 +14556,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
         /// <summary>
-        /// [GET] - Renders a printable flight ticket with fare details
-        /// </summary>
-        /// <summary>
         /// Generates a printable version of the document.
         /// </summary>
         /// <param name="idno">The idno value.</param>
@@ -15910,9 +14636,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
         /// <summary>
-        /// [GET] - Displays a flight ticket view without fare details
-        /// </summary>
-        /// <summary>
         /// Displays the detail view for the specified record.
         /// </summary>
         /// <param name="idno">The idno value.</param>
@@ -15992,9 +14715,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         [PermissioncheckingAttribute(servicename = "FLIGHT", permision = "Write")]
-        /// <summary>
-        /// [GET] - Renders a printable flight ticket without fare details
-        /// </summary>
         /// <summary>
         /// Generates a printable version of the document.
         /// </summary>
@@ -16160,9 +14880,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
         /// <summary>
-        /// Existing record ko update/edit karta hai.
-        /// </summary>
-        /// <summary>
         /// Updates an existing record.
         /// </summary>
         public void UpdateAuthToken()
@@ -16191,9 +14908,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         #region BusBooking
         [PermissioncheckingAttribute(servicename = "BUS", permision = "Read")]
-        /// <summary>
-        /// [GET] - Displays bus booking transaction report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -16250,9 +14964,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "BUS", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters bus booking report by date, status and user
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -16349,17 +15060,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -16383,9 +15083,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
             }
         }
 
-        /// <summary>
-        /// [GET] - Generates and downloads an Excel export of the bus booking report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -16483,17 +15180,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -16562,9 +15248,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
 
         }
-        /// <summary>
-        /// [GET] - Generates and downloads a PDF export of the bus booking report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -16661,17 +15344,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -16697,9 +15369,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "BUS", permision = "Write")]
-        /// <summary>
-        /// [POST] - Fetches bus booking details by trace ID from the provider
-        /// </summary>
         /// <summary>
         /// Retrieves data for the specified criteria.
         /// </summary>
@@ -16789,9 +15458,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
         /// <summary>
-        /// [GET] - Displays hotel booking report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -16846,9 +15512,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters hotel booking report by date and status
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -16927,9 +15590,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                 return RedirectToAction("Travel", "Home");
             }
         }
-        /// <summary>
-        /// [GET] - Generates and downloads an Excel export of the hotel booking report
-        /// </summary>
         /// <summary>
         /// Generates and displays a report.
         /// </summary>
@@ -17055,9 +15715,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
 
         /// <summary>
-        /// [GET] - Generates and downloads a PDF export of the hotel booking report
-        /// </summary>
-        /// <summary>
         /// Generates and displays a report.
         /// </summary>
         /// <param name="ddl_status">The ddl status value.</param>
@@ -17139,9 +15796,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
         /// <summary>
-        /// [GET] - Displays hotel cancellation request queue
-        /// </summary>
-        /// <summary>
         /// Cancels the specified request or transaction.
         /// </summary>
         /// <returns>An <see cref="ActionResult"/> representing the view or redirect response.</returns>
@@ -17199,9 +15853,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
-        /// <summary>
-        /// [POST] - Filters cancellation queue by date and status
-        /// </summary>
         /// <summary>
         /// Cancels the specified request or transaction.
         /// </summary>
@@ -17297,17 +15948,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
                             retailerid = allretailer;
                         }
                     }
-                    //if (ddlusers == "Whitelabel")
-                    //{
-                    //    if (allwhitelabel == "" || allwhitelabel.Contains("All Retailer") || allwhitelabel == null)
-                    //    {
-                    //        userid = "ALL";
-                    //    }
-                    //    else
-                    //    {
-                    //        userid = allwhitelabel;
-                    //    }
-                    //}
                     if (ddlusers == "Admin")
                     {
                         retailerid = null;
@@ -17332,9 +15972,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Write")]
-        /// <summary>
-        /// [POST] - Processes a flight/hotel ticket cancellation status update
-        /// </summary>
         /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
@@ -17428,9 +16065,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
         /// <summary>
-        /// [POST] - Returns guest details for a hotel booking
-        /// </summary>
-        /// <summary>
         /// Displays detailed information.
         /// </summary>
         /// <param name="TXNID">The TXNID value.</param>
@@ -17453,9 +16087,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Read")]
         /// <summary>
-        /// [POST] - Returns price breakdown for a hotel booking
-        /// </summary>
-        /// <summary>
         /// Displays detailed information.
         /// </summary>
         /// <param name="TXNID">The TXNID value.</param>
@@ -17477,9 +16108,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         }
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Write")]
-        /// <summary>
-        /// [POST] - Checks the current status of a hotel booking
-        /// </summary>
         /// <summary>
         /// Retrieves or updates the status.
         /// </summary>
@@ -17580,9 +16208,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
         [HttpGet]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Write")]
         /// <summary>
-        /// [GET] - Displays full details of a hotel booking
-        /// </summary>
-        /// <summary>
         /// Displays detailed information.
         /// </summary>
         /// <param name="TXNID">The TXNID value.</param>
@@ -17655,9 +16280,6 @@ namespace Vastwebmulti.Areas.Employee.Controllers
 
         [HttpPost]
         [PermissioncheckingAttribute(servicename = "HOTEL", permision = "Write")]
-        /// <summary>
-        /// [POST] - Initiates cancellation of a hotel booking
-        /// </summary>
         /// <summary>
         /// Handles the Booking Cancallation operation.
         /// </summary>
