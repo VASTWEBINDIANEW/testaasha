@@ -94,19 +94,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             //show News for Dealer
             var news = (from pp in db.Message_top where (pp.users == "Distributor" || pp.users == "All") where pp.status == "Y" select pp).ToList();
             ViewBag.newsdata = news;
-            //if (news.Any())
-            //{
-            //    ViewBag.news = news.FirstOrDefault().message;
-            //    ViewBag.Name = news.FirstOrDefault().name;
-            //    ViewBag.newimg = news.FirstOrDefault().image;
-            //}
-            //else
-            //{
-            //    ViewBag.news = null;
-            //    ViewBag.Name = null;
-            //    ViewBag.newimg = null;
-            //}
-            //Upcomming Holiday
             List<show_upcomming_holiday_Result> li = new List<show_upcomming_holiday_Result>();
             ViewBag.showholiday = li;
             ViewBag.msg = TempData["msg"];
@@ -233,19 +220,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     var diff1 = (db.admin_to_dealer.Where(aa => aa.dealerid == userid && aa.balance_from == adminid).OrderByDescending(aa => aa.idno).Select(c => c.cr).FirstOrDefault());
                                     if (automainmiumbal.types == "CREDIT")
                                     {
-                                        //if (statusSendSmsRetailerfundtransfer == "Y")
-                                        //{
-                                        //    string msgssss = "";
-                                        //    string tempid = "";
-                                        //    string urlss = "";
 
-                                        //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                        //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                        //    if (smsstypes != null)
-                                        //    {
-                                        //        msgssss = string.Format(smsstypes.Templates, automainmiumbal.Transferamount, TotalAmount, diff1);
-                                        //        tempid = smsstypes.Templateid;
-                                        //        urlss = smsapionsts.smsapi;
 
                                         //        smssend.sendsmsallnew(remdetailsallinform.Mobile, msgssss, urlss, tempid);
                                         //    }
@@ -262,19 +237,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     }
                                     else if (automainmiumbal.types == "Cash")
                                     {
-                                        //if (statusSendSmsRetailerfundtransfer == "Y")
-                                        //{
-                                        //    string msgssss = "";
-                                        //    string tempid = "";
-                                        //    string urlss = "";
 
-                                        //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                        //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                        //    if (smsstypes != null)
-                                        //    {
-                                        //        msgssss = string.Format(smsstypes.Templates, automainmiumbal.Transferamount, TotalAmount, diff1);
-                                        //        tempid = smsstypes.Templateid;
-                                        //        urlss = smsapionsts.smsapi;
 
                                         //        smssend.sendsmsallnew(remdetailsallinform.Mobile, msgssss, urlss, tempid);
                                         //    }
@@ -387,19 +350,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     var diff1 = (db.admin_to_dealer.Where(aa => aa.dealerid == userid && aa.balance_from == remdetailsallinform.SSId).OrderByDescending(aa => aa.idno).Select(c => c.cr).FirstOrDefault());
                                     if (automainmiumbalbymaster.types == "CREDIT")
                                     {
-                                        //if (statusSendSmsRetailerfundtransfer == "Y")
-                                        //{
-                                        //    string msgssss = "";
-                                        //    string tempid = "";
-                                        //    string urlss = "";
 
-                                        //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                        //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                        //    if (smsstypes != null)
-                                        //    {
-                                        //        msgssss = string.Format(smsstypes.Templates, automainmiumbalbymaster.Transferamount, TotalAmount, diff1);
-                                        //        tempid = smsstypes.Templateid;
-                                        //        urlss = smsapionsts.smsapi;
 
                                         //        smssend.sendsmsallnew(remdetailsallinform.Mobile, msgssss, urlss, tempid);
                                         //    }
@@ -416,19 +367,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     }
                                     else if (automainmiumbalbymaster.types == "Cash")
                                     {
-                                        //if (statusSendSmsRetailerfundtransfer == "Y")
-                                        //{
-                                        //    string msgssss = "";
-                                        //    string tempid = "";
-                                        //    string urlss = "";
 
-                                        //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
-                                        //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CREDIT" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
-                                        //    if (smsstypes != null)
-                                        //    {
-                                        //        msgssss = string.Format(smsstypes.Templates, automainmiumbalbymaster.Transferamount, TotalAmount, diff1);
-                                        //        tempid = smsstypes.Templateid;
-                                        //        urlss = smsapionsts.smsapi;
 
                                         //        smssend.sendsmsallnew(remdetailsallinform.Mobile, msgssss, urlss, tempid);
                                         //    }
@@ -690,7 +629,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         /// </summary>
         public ActionResult CHECKPASSCODEPASSWORD(string Passscodes)
         {
-            VastwebmultiEntities db = new VastwebmultiEntities();
             var userid = User.Identity.GetUserId();
             var expiredateSSS = db.passcodesettings.Where(x => x.userid == userid && x.passcode == Passscodes).SingleOrDefault();
 
@@ -716,7 +654,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         /// </summary>
         public ActionResult ResendPASSCODEPASSWORD()
         {
-            VastwebmultiEntities db = new VastwebmultiEntities();
             var userid = User.Identity.GetUserId();
             var rememailid = User.Identity.GetUserName();
             var expiredateSSS = db.passcodesettings.Where(x => x.userid == userid).SingleOrDefault();
@@ -1449,7 +1386,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                             {
                                 return client.Execute(request).Content;
                             });
-                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                             var resp = "";
                             if (isCompletedSuccessfully == true)
                             {
@@ -1490,31 +1427,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
                         //    VastBazaartoken Responsetoken = new VastBazaartoken();
 
-                        //    if (apinamechange.ToUpper().Contains("VASTBAZAAR.COM"))
-                        //    {
-                        //        var token = Responsetoken.gettoken();
-                        //        request.AddHeader("authorization", "bearer " + token);
-                        //        request.AddHeader("content-type", "application/json");
-                        //    }
-                        //    var task = Task.Run(() =>
-                        //    {
-                        //        return client.Execute(request).Content;
-                        //    });
-                        //    bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
-                        //    var resp = "";
-                        //    if (isCompletedSuccessfully == true)
-                        //    {
-                        //        resp = task.Result;
-                        //    }
 
-                        //    sms_api_entry sms = new sms_api_entry();
-                        //    sms.apiname = apinamechange;
-                        //    sms.msg = text;
-                        //    sms.m_date = System.DateTime.Now;
-                        //    sms.response = resp;
-                        //    sms.messagefor = details.UserId;
-                        //    db.sms_api_entry.Add(sms);
-                        //    db.SaveChanges();
                                                             
                         //}
                     }
@@ -1594,12 +1507,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                //var tokendelete = db.Reftkns.Where(aa => aa.Userid == userid).SingleOrDefault();
-                //if (tokendelete != null)
-                //{
-                //    db.Reftkns.Remove(tokendelete);
-                //    db.SaveChanges();
-                //}
                 TempData["success"] = "Your Password has been Changed Successfully..";
                 var tuple = new Tuple<ChangePasswordViewModel, ChangeTransactionViewModel>(new ChangePasswordViewModel(), new ChangeTransactionViewModel());
                 return RedirectToAction("ChangePassword", tuple);
@@ -2724,11 +2631,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     //if (statusSendSmsDlmToRetailerFundTransfer == "Y")
                                     //{
 
-                                    //    try
-                                    //    {
-                                    //        string msgssss = "";
-                                    //        string tempid = "";
-                                    //        string urlss = "";
 
                                     //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                     //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SEND_SMS_CREDIT_RECEIVEDBY" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -2739,22 +2641,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     //            tempid = smsstypes.Templateid;
                                     //            urlss = smsapionsts.smsapi;
 
-                                    //            smssend.sendsmsallnew(RetailerDetails.Mobile, msgssss, urlss, tempid);
-                                    //        }
-                                    //    }
-                                    //    catch { }
-                                    //    //  smssend.sendsmsall(RetailerDetails.Mobile, "Credit Received by " + email + " Rs." + balance + ".New Balance is " + remainretailer + ".Your O/s Credit is " + diff1 + "", "Fund Transfer");
-                                    //}
 
                                     smssend.sms_init(statusSendSmsDlmToRetailerFundTransfer.Status, statusSendSmsDlmToRetailerFundTransfer.Whatsapp_Status, "SEND_SMS_CREDIT_RECEIVEDBY", RetailerDetails.Mobile, email, balance, remainretailer, diff1);
 
-                                    //if (statusSendSmsDlmToRetailerFundTransferDlm == "Y")
-                                    //{
-                                    //    try
-                                    //    {
-                                    //        string msgssss = "";
-                                    //        string tempid = "";
-                                    //        string urlss = "";
 
                                     //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                     //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SEND_SMS_CREDIT_TRANSFERREDTO" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -2765,12 +2654,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     //            tempid = smsstypes.Templateid;
                                     //            urlss = smsapionsts.smsapi;
 
-                                    //            smssend.sendsmsallnew(DealerDetails.Mobile, msgssss, urlss, tempid);
-                                    //        }
-                                    //    }
-                                    //    catch { }
-                                    //    // smssend.sendsmsall(DealerDetails.Mobile, "Credit Transferred To " + useremail + " Rs. " + balance + ".Total Credit(O/s) Balance is " + diff1 + "", "Fund Transfer");
-                                    //}
 
                                     smssend.sms_init(statusSendSmsDlmToRetailerFundTransferDlm.Status, statusSendSmsDlmToRetailerFundTransferDlm.Whatsapp_Status, "SEND_SMS_CREDIT_RECEIVEDBY", DealerDetails.Mobile, useremail, balance, diff1);
 
@@ -2783,14 +2666,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                         smssend.SendEmailAll(DealerDetails.Email, "Credit Transferred To " + useremail + " Rs. " + balance + ".Total Credit(O/s) Balance is " + diff1 + "", "Fund by Dealer To CC", AdminEmail, 1000);
                                     }
 
-                                    //if (statusDealer == "Y")
-                                    //{
-                                    //    SendPushNotification(email, Url.Action("SendFund", "Home"), "Credit Transferred Rs. " + balance + ".Total Credit(O/s) Balance is " + diff1 + "", "Fund Transfer ..");
-                                    //}
-                                    //if (statusRetailer == "Y")
-                                    //{
-                                    //    SendPushNotification(useremail, Websitename + "/RETAILER/Home/FundRecive", "Credit Received Rs." + balance + ".New Balance is " + remainretailer + ".Your O/s Credit is " + diff1 + "", "Fund Transfer ..");
-                                    //}
                                     notify.sendmessage(useremail, "Credit Received Rs." + balance + ".New Balance is " + remainretailer + ".Your O/s Credit is " + diff1 + "");
                                     TempData["result"] = ch;
                                 }
@@ -2798,13 +2673,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                 {
                                     var retailername = db.Retailer_Details.Where(p => p.RetailerId == hdMDDLM).Single().RetailerName;
                                     var dealername = db.Dealer_Details.Where(p => p.DealerId == userid).Single().DealerName;
-                                    //if (statusSendSmsDlmToRetailerFundTransfer == "Y")
-                                    //{
-                                    //    try
-                                    //    {
-                                    //        string msgssss = "";
-                                    //        string tempid = "";
-                                    //        string urlss = "";
 
                                     //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                     //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -2829,11 +2697,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     //if (statusSendSmsDlmToRetailerFundTransferDlm == "Y")
                                     //{
 
-                                    //    try
-                                    //    {
-                                    //        string msgssss = "";
-                                    //        string tempid = "";
-                                    //        string urlss = "";
 
                                     //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                     //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SENDSMSMASTERTODLMFUNDTRANSFERMSGCASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -2863,14 +2726,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                     {
                                         smssend.SendEmailAll(DealerDetails.Email, "Cash Recived Rs." + balance + " From " + retailername + ",his O/s Credit is " + diff1 + "", "Fund by Dealer To CC", AdminEmail, 1000);
                                     }
-                                    //if (statusDealer == "Y")
-                                    //{
-                                    //    SendPushNotification(email, Url.Action("SendFund", "Home"), "Cash Recived Rs." + balance + " From " + retailername + ",his O/s Credit is " + diff1 + "", "Fund Transfer ..");
-                                    //}
-                                    //if (statusRetailer == "Y")
-                                    //{
-                                    //    SendPushNotification(useremail, Websitename + "/RETAILER/Home/FundRecive", "Cash Paid Rs." + balance + " to " + dealername + ". New Balance is " + remainretailer + ". Your O/s Credit is " + diff1 + "", "Fund Transfer ..");
-                                    //}
                                     notify.sendmessage(useremail, "Cash Paid Rs." + balance + " to " + dealername + ". New Balance is " + remainretailer + ". Your O/s Credit is " + diff1 + "");
                                     TempData["result"] = ch;
                                     return Json(ch, JsonRequestBehavior.AllowGet);
@@ -3109,7 +2964,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                             {
                                                 return client.Execute(request).Content;
                                             });
-                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                                             var resp = "";
                                             if (isCompletedSuccessfully == true)
                                             {
@@ -3154,7 +3009,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                             {
                                                 return client.Execute(request).Content;
                                             });
-                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                                             var resp = "";
                                             if (isCompletedSuccessfully == true)
                                             {
@@ -3234,7 +3089,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                             {
                                                 return client.Execute(request).Content;
                                             });
-                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                                             var resp = "";
                                             if (isCompletedSuccessfully == true)
                                             {
@@ -3279,7 +3134,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                             {
                                                 return client.Execute(request).Content;
                                             });
-                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                                             var resp = "";
                                             if (isCompletedSuccessfully == true)
                                             {
@@ -3330,7 +3185,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                             {
                                                 return client.Execute(request).Content;
                                             });
-                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                                             var resp = "";
                                             if (isCompletedSuccessfully == true)
                                             {
@@ -3374,7 +3229,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                             {
                                                 return client.Execute(request).Content;
                                             });
-                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                                            bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                                             var resp = "";
                                             if (isCompletedSuccessfully == true)
                                             {
@@ -3444,18 +3299,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                         return Json(ch, JsonRequestBehavior.AllowGet);
                         // return RedirectToAction("PurchaseOrder");
                     }
-                    //}
-                    //else
-                    //{
-                    //   // TempData["error"] = "Your purcharge Order Allready Pending.";
-                    //    ch = "Your purcharge Order Allready Pending.";
-                    //    return Json(ch, JsonRequestBehavior.AllowGet);
 
-                    //}
-                    //  FundRequestViewmodel vmodel = new FundRequestViewmodel();
-                    //  string dealerid = User.Identity.GetUserId();
-                    //  vmodel.SendPurchaserequest = db.select_dlm_pur_order(dealerid, "ALL", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(1)).ToList();
-                    //  return PartialView("_PurchaserequestDLMTOMDADMIN", vmodel);
 
                     //   return RedirectToAction("PurchaseOrder");
                     // return MDTODealer("Admin", null, null);
@@ -3610,13 +3454,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
                         if (ddl_fund_type == "Credit")
                         {
-                            //if (statusSendSmsDlmToRetailerFundTransfer == "Y")
-                            //{
-                            //    try
-                            //    {
-                            //        string msgssss = "";
-                            //        string tempid = "";
-                            //        string urlss = "";
 
                             //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                             //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SEND_SMS_CREDIT_RECEIVEDBY" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -3627,22 +3464,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                             //            tempid = smsstypes.Templateid;
                             //            urlss = smsapionsts.smsapi;
 
-                            //            smssend.sendsmsallnew(RetailerDetails.Mobile, msgssss, urlss, tempid);
-                            //        }
-                            //    }
-                            //    catch { }
-                            //    //  smssend.sendsmsall(RetailerDetails.Mobile, "Credit Received by " + email + " Rs." + balance + ".New Balance is " + remainretailer + ".Your O/s Credit is " + diff1 + "", "Fund Transfer");
-                            //}
 
                             smssend.sms_init(statusSendSmsDlmToRetailerFundTransfer.Status, statusSendSmsDlmToRetailerFundTransfer.Whatsapp_Status, "SEND_SMS_CREDIT_RECEIVEDBY", RetailerDetails.Mobile, email, balance, remainretailer, diff1);
 
-                            //if (statusSendSmsDlmToRetailerFundTransferDlm == "Y")
-                            //{
-                            //    try
-                            //    {
-                            //        string msgssss = "";
-                            //        string tempid = "";
-                            //        string urlss = "";
 
                             //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                             //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SEND_SMS_CREDIT_TRANSFERREDTO" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -3672,14 +3496,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                             {
                                 smssend.SendEmailAll(DealerDetails.Email, "Credit Transferred To " + useremail + " Rs. " + balance + ".Total Credit(O/s) Balance is " + diff1 + "", "Fund Transfer", AdminEmail);
                             }
-                            //if (statusDealer == "Y")
-                            //{
-                            //    SendPushNotification(email, Url.Action("SendFund", "Home"), "Credit Transferred Rs. " + balance + ".Total Credit(O/s) Balance is " + diff1 + "", "Fund Transfer ..");
-                            //}
-                            //if (statusRetailer == "Y")
-                            //{
-                            //    SendPushNotification(useremail, Websitename + "/RETAILER/Home/FundRecive", "Credit Received Rs." + balance + ".New Balance is " + remainretailer + ".Your O/s Credit is " + diff1 + "", "Fund Transfer ..");
-                            //}
                             notify.sendmessage(useremail, "Credit Received Rs." + balance + ".New Balance is " + remainretailer + ".Your O/s Credit is " + diff1 + "");
                             TempData["result"] = ch;
                         }
@@ -3690,11 +3506,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                             //if (statusSendSmsDlmToRetailerFundTransfer == "Y")
                             //{
 
-                            //    try
-                            //    {
-                            //        string msgssss = "";
-                            //        string tempid = "";
-                            //        string urlss = "";
 
                             //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                             //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "FUNDTRANSFERMESSAGE_CASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -3719,11 +3530,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                             //if (statusSendSmsDlmToRetailerFundTransferDlm == "Y")
                             //{
 
-                            //    try
-                            //    {
-                            //        string msgssss = "";
-                            //        string tempid = "";
-                            //        string urlss = "";
 
                             //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                             //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "SENDSMSMASTERTODLMFUNDTRANSFERMSGCASH" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -3734,12 +3540,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                             //            tempid = smsstypes.Templateid;
                             //            urlss = smsapionsts.smsapi;
 
-                            //            smssend.sendsmsallnew(DealerDetails.Mobile, msgssss, urlss, tempid);
-                            //        }
-                            //    }
-                            //    catch { }
-                            //    // smssend.sendsmsall(DealerDetails.Mobile, "Cash Recived Rs." + balance + " From " + retailername + ",his O/s Credit is " + diff1 + "", "Fund Transfer");
-                            //}
 
                             smssend.sms_init(statusSendSmsDlmToRetailerFundTransferDlm.Status, statusSendSmsDlmToRetailerFundTransferDlm.Whatsapp_Status, "SENDSMSMASTERTODLMFUNDTRANSFERMSGCASH", DealerDetails.Mobile, balance, retailername, diff1);
 
@@ -3751,14 +3551,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                             {
                                 smssend.SendEmailAll(DealerDetails.Email, "Cash Recived Rs." + balance + " From " + retailername + ",his O/s Credit is " + diff1 + "", "Fund Transfer", AdminEmail);
                             }
-                            //if (statusDealer == "Y")
-                            //{
-                            //    SendPushNotification(email, Url.Action("SendFund", "Home"), "Cash Recived Rs." + balance + " From " + retailername + ",his O/s Credit is " + diff1 + "", "Fund Transfer ..");
-                            //}
-                            //if (statusRetailer == "Y")
-                            //{
-                            //    SendPushNotification(useremail, Websitename + "/RETAILER/Home/FundRecive", "Cash Paid Rs." + balance + " to " + dealername + ". New Balance is " + remainretailer + ". Your O/s Credit is " + diff1 + "", "Fund Transfer ..");
-                            //}
                             notify.sendmessage(useremail, "Cash Paid Rs." + balance + " to " + dealername + ". New Balance is " + remainretailer + ". Your O/s Credit is " + diff1 + "");
                             TempData["result"] = ch;
                         }
@@ -3953,23 +3745,9 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
         }
 
 
-        //[HttpPost]
-        //public ActionResult ReceiveFund_GST(int idno)
-        //{
-        //    try
-        //    {
-        //        using (VastwebmultiEntities db = new VastwebmultiEntities())
-        //        {
 
         //            //TODO
 
-        //        }
-        //        return new ViewAsPdf("GST_PDF");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return RedirectToAction("Index");
-        //    }
 
 
         //}
@@ -4175,19 +3953,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             }
         }
 
-        //Check Old Credit pay
-        //public ActionResult D_Creditchk(string MID)
-        //{
-        //    string userid = User.Identity.GetUserId();
-        //    var from = "";
-        //    if (MID == "Master")
-        //    {
-        //        from = (db.Dealer_Details.Where(aa => aa.DealerId == userid).Single().SSId);
-        //    }
-        //    else
-        //    {
-        //        from = db.Admin_details.Single().userid;
-        //    }
 
         //    var diff1 = (db.admin_to_dealer.Where(aa => aa.dealerid == userid && aa.balance_from == from).OrderByDescending(aa => aa.idno).Select(c => c.cr).FirstOrDefault());
         //    diff1 = diff1 ?? 0;
@@ -4692,13 +4457,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                         if (ch.ToString() == "Register SuccessFully.")
                                         {
                                             string passsss = HttpUtility.UrlEncode(model.Password);
-                                            //if (statusSendSmsDealerToRetailerCreate == "Y")
-                                            //{
-                                            //    try
-                                            //    {
-                                            //        string msgssss = "";
-                                            //        string tempid = "";
-                                            //        string urlss = "";
 
                                             //        var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                                             //        var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "ADMIN_CREATE_NEW_RETAILER" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -4709,12 +4467,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                                             //            tempid = smsstypes.Templateid;
                                             //            urlss = smsapionsts.smsapi;
 
-                                            //            smssend.sendsmsallnew(model.Mobile, msgssss, urlss, tempid);
-                                            //        }
-                                            //    }
-                                            //    catch { }
-                                            //    //  smssend.sendsmsall(model.Mobile, "Dear Partner ! Welcome Your user Id " + model.Mobile + " and Password " + passsss + " and PIN " + model.Pin + ". Thanks For Your Business . ", "User Create");
-                                            //}
 
                                             smssend.sms_init(statusSendSmsDealerToRetailerCreate.Status, statusSendSmsDealerToRetailerCreate.Whatsapp_Status, "ADMIN_CREATE_NEW_RETAILER", model.Mobile, model.Mobile + " ", passsss + " ", model.Pin);
 
@@ -5270,33 +5022,7 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
 
 
-                        //    //var admin = db.Remain_dealer_balance.Where(a => a.DealerID == retailerdetails.DealerId).SingleOrDefault();
-                        //    //admin.Remainamount = Totalvalue;
-                        //    //db.SaveChanges();
-                        //    //db.delete_Retailer(RetailerId);
-                        //    //delete otp table
-                        //    //db.deleteOTP();
-                        //    //ledger.UserId = retailerdetails.RetailerId;
-                        //    //ledger.Role = "Retailer";
-                        //    //ledger.Particulars = "Retailer Id Delete By Distributor";
-                        //    //ledger.UserRemainAmount = retailerRemain;
-                        //    //ledger.Date = Convert.ToDateTime(DateTime.Now.ToString());
-                        //    //ledger.Amount = retailerRemain;
-                        //    //ledger.Credit = 0;
-                        //    //ledger.Debit = retailerRemain;
-                        //    //db.LedgerReports.Add(ledger);
-                        //    //db.SaveChanges();
 
-                        //    //ledger.UserId = retailerdetails.DealerId;
-                        //    //ledger.Role = "Dealer";
-                        //    //ledger.Particulars = "Retailer Id Delete By Distributor";
-                        //    //ledger.UserRemainAmount = Totalvalue;
-                        //    //ledger.Date = Convert.ToDateTime(DateTime.Now.ToString());
-                        //    //ledger.Amount = retailerRemain;
-                        //    //ledger.Credit = retailerRemain;
-                        //    //ledger.Debit = 0;
-                        //    //db.LedgerReports.Add(ledger);
-                        //    //db.SaveChanges();
 
                         //    return Json("Success", JsonRequestBehavior.AllowGet);
                     }
@@ -5921,18 +5647,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                          }).ToList();
 
 
-            //sb.Money = (from cust in db.imps_dealer_comm
-            //            where (cust.userid == userid)
-            //            select new money_comm
-            //            {
-            //                Verifycomm = cust.verify_comm,
-            //                comm_1000 = cust.comm_1000,
-            //                comm_2000 = cust.comm_2000,
-            //                comm_3000 = cust.comm_3000,
-            //                comm_4000 = cust.comm_4000,
-            //                comm_5000 = cust.comm_5000,
-            //                gst = cust.gst
-            //            }).ToList();
             sb.Pencard_comm = (from cust in db.Pancard_distributor_Common_comm
                                where (cust.userid == userid)
                                select new Pencard
@@ -6572,31 +6286,12 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 userid = allretailer;
                 ddlusers = "Retailer";
             }
-            //if (ddlusers == "Retailer")
-            //{
-            //    if (allretailer == "" || allretailer.Contains("All Retailer") || allretailer == null)
-            //    {
-            //        userid = "ALL";
-            //    }
-            //    else
-            //    {
-            //        userid = allretailer;
-            //    }
-            //}
 
 
             if (ddl_status == "Status")
             {
                 ddl_status = "ALL";
             }
-            //if (api_name == "Select Api Name"  || api_name.Contains("Select Api Name") || api_name == "")
-            //{
-            //    APIname = "ALL";
-            //}
-            //else
-            //{
-            //    APIname = api_name.ToUpper();
-            //}
             if (ddl_Type == null)
             {
                 ddl_Type = "ALL";
@@ -6650,31 +6345,12 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 userid = allretailer;
                 ddlusers = "Retailer";
             }
-            //if (ddlusers == "Retailer")
-            //{
-            //    if (allretailer == "" || allretailer.Contains("All Retailer") || allretailer == null)
-            //    {
-            //        userid = "ALL";
-            //    }
-            //    else
-            //    {
-            //        userid = allretailer;
-            //    }
-            //}
 
 
             if (ddl_status == "Status")
             {
                 ddl_status = "ALL";
             }
-            //if (api_name == "Select Api Name"  || api_name.Contains("Select Api Name") || api_name == "")
-            //{
-            //    APIname = "ALL";
-            //}
-            //else
-            //{
-            //    APIname = api_name.ToUpper();
-            //}
             if (ddl_Type == null)
             {
                 ddl_Type = "ALL";
@@ -6908,31 +6584,12 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 userid = allretailer;
                 ddlusers = "Retailer";
             }
-            //if (ddlusers == "Retailer")
-            //{
-            //    if (allretailer == "" || allretailer.Contains("All Retailer") || allretailer == null)
-            //    {
-            //        userid = "ALL";
-            //    }
-            //    else
-            //    {
-            //        userid = allretailer;
-            //    }
-            //}
 
 
             if (ddl_status == "Status")
             {
                 ddl_status = "ALL";
             }
-            //if (api_name == "Select Api Name"  || api_name.Contains("Select Api Name") || api_name == "")
-            //{
-            //    APIname = "ALL";
-            //}
-            //else
-            //{
-            //    APIname = api_name.ToUpper();
-            //}
             if (ddl_Type == null)
             {
                 ddl_Type = "ALL";
@@ -7169,17 +6826,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 userid = allretailer;
                 ddlusers = "Retailer";
             }
-            //if (ddlusers == "Retailer")
-            //{
-            //    if (allretailer == "" || allretailer.Contains("All Retailer") || allretailer == null)
-            //    {
-            //        userid = "ALL";
-            //    }
-            //    else
-            //    {
-            //        userid = allretailer;
-            //    }
-            //}
 
             if (Operator == null || Operator == "" || Operator.Contains("ALL OPERATORS"))
             {
@@ -9883,12 +9529,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 }
 
             }
-            //if (ddlusers == "Dealer")
-            //{
-            //    if (alldealer == "" || alldealer.Contains("Distubutor") || alldealer == null)
-            //    {
-            //        alldealer = null;
-            //    }
 
             //}
             if (ddlusers == "Retailer")
@@ -9917,14 +9557,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             {
                 ddl_status = null;
             }
-            //if (api_name == "Select Api Name" || api_name.Contains("Select Api Name") || api_name == "")
-            //{
-            //    APIname = null;
-            //}
-            //else
-            //{
-            //    APIname = api_name.ToUpper();
-            //}
             int ddltop = Convert.ToInt32(ddl_top);
             if (allretailer == "" || allretailer.Contains("All Retailer") || allretailer == null)
             {
@@ -9932,11 +9564,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
             }
 
             var ch = db.proc_report_IndoNepal(allretailer, userid, allmaster, null, ddltop, ddl_status, null, null, null, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date)).ToList();
-            //txtmob = txtmob.Trim();
-            //if (txtmob != "")
-            //{
-            //    ch = ch.Where(aa => aa.senderidnumber == txtmob || aa.Accountno == txtmob).ToList();
-            //}
 
             ViewData["totals"] = ch.Where(s => s.status.ToUpper().Contains("SUCCESS")).Sum(s => Convert.ToInt32(s.Amount));
             ViewData["totalf"] = ch.Where(s => s.status.ToUpper().Contains("FAILED")).Sum(s => Convert.ToInt32(s.Amount));
@@ -10557,12 +10184,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                 ViewBag.dealervalue = 0;
                 ViewBag.mastervalue = 0;
             }
-            //var dealers = dealrs.Select(a => new SelectListItem { Text = a.Email + " - " + a.Mobile, Value = a.DealerId }).ToList();
-            //ViewBag.ddlDealers = dealers;
-            //if (!string.IsNullOrWhiteSpace(dealerId) && dealerId != "ALL")
-            //{
-            //    entries = entries.Where(a => a.DealerId == dealerId);
-            //}
             return View(entries);
         }
 
@@ -11565,13 +11186,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
 
             string city = null;
             string address = null;
-            //string remlocationstatus = null;
-            //RetailerRemloclogic.checklocationbyRem(userid, "CHECK", out remlocationstatus, latss, longloc, ref city, ref address);
-            //if (remlocationstatus == "NOTALLOW")
-            //{
-            //    TempData["msg"] = "Getway Transfer not allowed at this location";
-            //    return RedirectToAction("GatewayTRANSFER");
-            //}
             if (ddl_type == "")
             {
                 TempData["msg"] = "Select Any Type";
@@ -12140,16 +11754,6 @@ namespace Vastwebmulti.Areas.DEALER.Controllers
                         {
                             db.Configuration.AutoDetectChangesEnabled = true;
                         }
-                        //foreach (var item in model2.UpdateDealer)
-                        //{
-                        //    db.update_All_prepaid_comm("Dealer", item.optcode, item.comm, "");
-                        //    if (Button == "Update Existing & New Users")
-                        //    {
-                        //        var entry = db.prepaid_common_comm.Single(a => a.optcode == item.optcode);
-                        //        entry.dlmcomm = item.comm;
-                        //        db.SaveChanges();
-                        //    }
-                        //}
                     }
                 }
             }
