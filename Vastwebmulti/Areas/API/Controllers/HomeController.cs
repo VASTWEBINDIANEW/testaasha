@@ -77,7 +77,6 @@ namespace Vastwebmulti.Areas.API.Controllers
         }
         public void SendPushNotification(string ReceiverMailID, string RedirectUrl, string Message, string Title)
         {
-            VastwebmultiEntities db = new VastwebmultiEntities();
             NotificationHub objNotifHub = new NotificationHub();
             Notification objNotif = new Notification();
             objNotif.SentTo = ReceiverMailID ?? "";
@@ -579,11 +578,6 @@ namespace Vastwebmulti.Areas.API.Controllers
             DateTime frm_date = Convert.ToDateTime(dt).Date;
             DateTime to_date = Convert.ToDateTime(dt1).Date.AddDays(1);
 
-            //if (ddl_status.ToUpper() == "PENDING")
-            //{
-            //    ddl_status = "REQ";
-            //}
-            // var chk = db.Recharge_info.Where(aa => aa.Rch_time >= frm_date && aa.Rch_time <= to_date && aa.Rstaus.Contains(ddl_status) && (Operator == "" ? aa.optcode.Contains(Operator) : aa.optcode == Operator) && aa.Mobile.Contains(txtmob)).ToList();
             var chk = db.Total_Recharge(frm_date, to_date, ddlst, "ALL", optname, "API", ddluserid).ToList();
             //var chk = db.proc_Recharge_operator_report_newPaging(1, 25000000, Convert.ToDateTime(frm_date), Convert.ToDateTime(to_date), "Admin", "All", ddlst, optname, txtmob, portname).ToList();
             // whitelabel_Recharge_Total_Succ_Failed '2020-02-21','2020-03-22','WAdmin','e20bd2df-b9a0-4741-b5f6-d94bfb83763c','ALL','ALL','ALL'
@@ -1082,17 +1076,6 @@ namespace Vastwebmulti.Areas.API.Controllers
             //show News for master
             var news = (from pp in db.Message_top where (pp.users == "Api" || pp.users == "All") where pp.status == "Y" select pp).ToList();
             ViewBag.news = news;
-            //if (news.Any())
-            //{
-            //    ViewBag.news = news.FirstOrDefault().message;
-            //    ViewBag.newimg = news.FirstOrDefault().image;
-            //}
-            //else
-            //{
-            //    ViewBag.news = null;
-            //    ViewBag.newimg = null;
-            //}
-            //Upcomming Holiday
 
             List<show_upcomming_holiday_Result> li = new List<show_upcomming_holiday_Result>();
             ViewBag.showholiday = li;
@@ -1667,7 +1650,7 @@ namespace Vastwebmulti.Areas.API.Controllers
                                         {
                                             return client.Execute(request).Content;
                                         });
-                                        bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                                        bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                                         var resp = "";
                                         if (isCompletedSuccessfully == true)
                                         {
@@ -1711,7 +1694,7 @@ namespace Vastwebmulti.Areas.API.Controllers
                                         {
                                             return client.Execute(request).Content;
                                         });
-                                        bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10000));
+                                        bool isCompletedSuccessfully = task.Wait(TimeSpan.FromSeconds(10));
                                         var resp = "";
                                         if (isCompletedSuccessfully == true)
                                         {
@@ -3464,7 +3447,6 @@ namespace Vastwebmulti.Areas.API.Controllers
         /// </summary>
         public ActionResult CHECKPASSCODEPASSWORD(string Passscodes)
         {
-            VastwebmultiEntities db = new VastwebmultiEntities();
             var userid = User.Identity.GetUserId();
             var expiredateSSS = db.passcodesettings.Where(x => x.userid == userid && x.passcode == Passscodes).SingleOrDefault();
 
@@ -3490,7 +3472,6 @@ namespace Vastwebmulti.Areas.API.Controllers
         /// </summary>
         public ActionResult ResendPASSCODEPASSWORD()
         {
-            VastwebmultiEntities db = new VastwebmultiEntities();
             var userid = User.Identity.GetUserId();
             var rememailid = User.Identity.GetUserName();
             var expiredateSSS = db.passcodesettings.Where(x => x.userid == userid).SingleOrDefault();
@@ -4115,11 +4096,6 @@ namespace Vastwebmulti.Areas.API.Controllers
                 db.OTP_IPAddress.Add(otpip);
                 db.SaveChanges();
                 ALLSMSSend sendsmsall = new ALLSMSSend();
-                //try
-                //{
-                //    string msgssss = "";
-                //    string tempid = "";
-                //    string urlss = "";
 
                 //    var smsapionsts = db.apisms.Where(x => x.sts == "Y").SingleOrDefault();
                 //    var smsstypes = db.Sending_SMS_Templates.Where(x => x.SMS_TYPE == "TOKENOTPFORIPADDRESS" && x.SMSAPIID == smsapionsts.id).SingleOrDefault();
@@ -4699,10 +4675,10 @@ namespace Vastwebmulti.Areas.API.Controllers
                                 up.uploadfile = "UploadGst/API/" + filenm;
                                 up.yearchk = Year;
                                 db.Api_upload_gst.Add(up);
-                                db.SaveChanges();
                             }
                         }
                     }
+                    db.SaveChanges(); // single call after all files processed
                     return Json("File Uploaded Successfully!");
                 }
                 catch (Exception ex)
@@ -5021,10 +4997,10 @@ namespace Vastwebmulti.Areas.API.Controllers
                                 up.uploadfile = "UploadGst/API/" + filenm;
                                 up.yearchk = Year;
                                 db.Api_Recharge_upload_gst.Add(up);
-                                db.SaveChanges();
                             }
                         }
                     }
+                    db.SaveChanges(); // single call after all files processed
                     return Json("File Uploaded Successfully!");
                 }
                 catch (Exception ex)
