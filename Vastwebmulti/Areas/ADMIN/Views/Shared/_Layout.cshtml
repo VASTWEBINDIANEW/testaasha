@@ -6,57 +6,34 @@
 <head>
 
     @{
-        var comnyname1 = "";
+        // Single DB context reused across the entire layout to minimize connections
         VastwebmultiEntities DB1 = new VastwebmultiEntities();
-        var companyname1 = DB1.Admin_details.AsNoTracking().ToList();
-        if (companyname1.Count > 0)
-        {
-            comnyname1 = companyname1.FirstOrDefault().Companyname;
-            ViewBag.companyname = comnyname1;
-        }
-        else
-        {
-            comnyname1 = "";
-        }
+        // Cache Admin_details once; reused throughout layout (avoids repeated queries)
+        var adminDetails = DB1.Admin_details.AsNoTracking().FirstOrDefault();
+        var comnyname1 = adminDetails != null ? (adminDetails.Companyname ?? "") : "";
+        ViewBag.companyname = comnyname1;
     }
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>@ViewBag.companyname</title>
-    <script src="https://kit.fontawesome.com/4eb3ded1c6.js" crossorigin="anonymous"></script>
-    <!-- Favicon-->
+    <!-- Favicon (uses DB1 from above block) -->
     @{
         var favimage = "";
-        VastwebmultiEntities db2 = new VastwebmultiEntities();
-        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
-        if (faviconlogo.Count() > 0)
+        // Reuse DB1 - no new connection needed
+        var faviconRec = DB1.tblfavicons.AsNoTracking().FirstOrDefault(p => p.Role == "ADMIN");
+        if (faviconRec != null)
         {
-            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
-            {
-                favimage = faviconlogo.SingleOrDefault().faviconimage;
-            }
+            favimage = faviconRec.faviconimage ?? "";
         }
-        else
-        {
-            <link rel="icon" href="" type="image/x-icon" />
-        }
-
-
-
-        //var admindetail = db2.Admin_details.ToList();
-        //string RYear = admindetail.FirstOrDefault().Date.ToString();
-        //string[] gg = RDate.Split('-');
-        //var RYear = gg[2].Split(' ')[0].ToString();
     }
     <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <!-- Google Fonts (combined into single request) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <!-- Font Awesome (single load) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
     <!-- Wait Me Css -->
     <link href="~/AdminDesign/plugins/waitme/waitMe.css" rel="stylesheet" />
@@ -109,8 +86,6 @@
 
     @*    .seven_design css link   *@
     <link href="~/MainFrontDesign/css/seven_design.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    @*    .seven_design css link   *@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -1159,14 +1134,11 @@
 
 
 
-    <!--- ikon-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 </head>
 @{
-    VastwebmultiEntities DB = new VastwebmultiEntities();
-    var color = DB.changecolors.FirstOrDefault(a => a.Role == "ADMIN");
+    // Reuse DB1 from head block - no new DB connection needed
+    var color = DB1.changecolors.AsNoTracking().FirstOrDefault(a => a.Role == "ADMIN");
     var col = "";
     if (color != null && color.ToString() != "")
     {
@@ -1178,7 +1150,7 @@
     }
 
     var image = "";
-    var backimage = DB.tblWhiteLabelLoginBackImages.AsNoTracking().FirstOrDefault(p => p.Role == "ADMIN");
+    var backimage = DB1.tblWhiteLabelLoginBackImages.AsNoTracking().FirstOrDefault(p => p.Role == "ADMIN");
     if (backimage != null)
     {
         image = backimage.ImageUrl;
@@ -1189,31 +1161,28 @@
     }
 
     var logoimage = "";
-    var logo = DB.tblHeaderLogoes.AsNoTracking().Where(p => p.Role == "ADMIN").ToList();
-    if (logo.Count > 0)
+    var logoRec = DB1.tblHeaderLogoes.AsNoTracking().FirstOrDefault(p => p.Role == "ADMIN");
+    if (logoRec != null)
     {
-        if (logo.SingleOrDefault().Role == "ADMIN")
-        {
-            logoimage = logo.Where(p => p.Role == "ADMIN").SingleOrDefault().LogoImage;
-        }
+        logoimage = logoRec.LogoImage ?? "images/Default_Logo.png";
     }
     else
     {
         logoimage = "images/Default_Logo.png";
     }
     var userid = User.Identity.GetUserId();
-    var cont = (from nm in DB.dispute_list where nm.sts == "Pending" select nm).Count();
-    var complant = (from nm in DB.complaint_request where nm.sts == "Open" select nm).Count();
-    var email = DB.Users.AsNoTracking().Where(a => a.UserId == userid).Single().Email;
+    var cont = DB1.dispute_list.Count(nm => nm.sts == "Pending");
+    var complant = DB1.complaint_request.Count(nm => nm.sts == "Open");
+    var email = DB1.Users.AsNoTracking().Where(a => a.UserId == userid).Select(a => a.Email).FirstOrDefault();
     //count purcahseorder request
-    var pp = DB.show_purchaserequest_totalcount(userid).SingleOrDefault();
+    var pp = DB1.show_purchaserequest_totalcount(userid).SingleOrDefault();
     ViewBag.purchasereq = pp.Totalcount;
-    //reneval date
-    var shoreneval = DB.showReniwaldaydiff().SingleOrDefault().Daydiff;
-    var ren_date = DB.Admin_details.FirstOrDefault().RenivalDate.ToString();
+    //renewal date - reuse adminDetails cached in block 1 (no extra query)
+    var shoreneval = DB1.showReniwaldaydiff().SingleOrDefault().Daydiff;
+    var ren_date = adminDetails != null ? adminDetails.RenivalDate.ToString() : DateTime.Now.ToString();
     var renewaldate = DateTime.Parse(ren_date).ToString("dd MMM yyy");
-    //ip address
-    var websiteurl = DB.Admin_details.FirstOrDefault().WebsiteUrl;
+    //ip address - reuse adminDetails cached in block 1
+    var websiteurl = adminDetails != null ? (adminDetails.WebsiteUrl ?? "") : "";
     dynamic ipaddress = "Not Found";
     try
     {
@@ -1223,31 +1192,32 @@
     { }
 
     //domain date
-    var expire = DB.Domain_Expiration.FirstOrDefault();
+    var expire = DB1.Domain_Expiration.AsNoTracking().FirstOrDefault();
     string expiredate;
 
     //master Purchase Total Count
-    var masteruser = (from m in DB.master_purchase where m.frm == userid && m.sts == "Pending" select m).Count();
+    var masteruser = DB1.master_purchase.Count(m => m.frm == userid && m.sts == "Pending");
     //Distributor Purchase Total Count
-    var dealeruser = (from m in DB.dlm_purchage where m.frm == userid && m.sts == "Pending" select m).Count();
+    var dealeruser = DB1.dlm_purchage.Count(m => m.frm == userid && m.sts == "Pending");
     //Retailer Purchase Total Count
-    var retaileruser = (from m in DB.rem_purchage where m.frm == userid && m.sts == "Pending" select m).Count();
+    var retaileruser = DB1.rem_purchage.Count(m => m.frm == userid && m.sts == "Pending");
     //API Purchase Total Count
-    var apiuser = (from m in DB.api_purchase where m.frm == userid && m.sts == "Pending" select m).Count();
+    var apiuser = DB1.api_purchase.Count(m => m.frm == userid && m.sts == "Pending");
     //whitelabel  Purchase Total Count
-    var whitelabeluser = (from m in DB.Whitelabel_master_purchase where m.frm == userid && m.sts == "Pending" select m).Count();
+    var whitelabeluser = DB1.Whitelabel_master_purchase.Count(m => m.frm == userid && m.sts == "Pending");
 
-    var WalletUloadCount = DB.WalletToBankAmountTransferRequests.Count(a => a.Status == "Pending");
-    var WalletUloadwhitelableCount = DB.Whitelabel_WalletToBankAmountTransferRequestsToAdmin.Count(a => a.Status == "Pending");
-    var WalletUloadVendorCount = DB.VendorWalletToBankAmountTransferRequests.Count(a => a.Status == "Pending");
-    var totalholdamount = db2.MicroAtm_Trans_info.Where(x => x.IsHold == true && x.status.ToUpper() == "SUCCESS" && x.transaction_type == "purchase").Sum(aa => aa.amount);
+    var WalletUloadCount = DB1.WalletToBankAmountTransferRequests.Count(a => a.Status == "Pending");
+    var WalletUloadwhitelableCount = DB1.Whitelabel_WalletToBankAmountTransferRequestsToAdmin.Count(a => a.Status == "Pending");
+    var WalletUloadVendorCount = DB1.VendorWalletToBankAmountTransferRequests.Count(a => a.Status == "Pending");
+    // Reuse DB1 instead of db2
+    var totalholdamount = DB1.MicroAtm_Trans_info.Where(x => x.IsHold == true && x.status.ToUpper() == "SUCCESS" && x.transaction_type == "purchase").Sum(aa => aa.amount);
 
     ViewBag.walletbankreq = WalletUloadCount + WalletUloadwhitelableCount + WalletUloadVendorCount;
 
-    var RetailerBank = DB.UpdateREMAccounts.Count(a => a.Status == "Pending");
+    var RetailerBank = DB1.UpdateREMAccounts.Count(a => a.Status == "Pending");
     ViewBag.RetailerAddBank = RetailerBank;
 
-    var Sellercomm = DB.operatorcommforsellStatus.Count(a => a.status.ToUpper() == "PENDING");
+    var Sellercomm = DB1.operatorcommforsellStatus.Count(a => a.status.ToUpper() == "PENDING");
     ViewBag.Sellercomm = Sellercomm;
 
     JSONReadWrite readWrite = new JSONReadWrite();
@@ -1256,19 +1226,21 @@
     int rchreportcount = 0;
     try
     {
-        rchreportcount = DB.Recharge_info_Failed_TO_Success_Reports.Where(x => x.ISREAD == false).Count();
+        rchreportcount = DB1.Recharge_info_Failed_TO_Success_Reports.Count(x => x.ISREAD == false);
     }
     catch { }
 
-    var ch = DB.Total_account().ToList();
-    ViewData["admin"] = ch.Single().totaladmin;
-    ViewData["Dlm"] = ch.Single().totaldlm;
-    ViewData["super"] = ch.Single().totalsuper;
-    ViewData["Rem"] = ch.Single().totalrem;
-    ViewData["API"] = ch.Single().totalapi;
-    ViewData["whitelabel"] = ch.Single().totalwhitelabel;
-    ViewData["posbal"] = ch.Single().totalposremain;
-    ViewData["total"] = ch.Single().total;
+    // Total_account() called once; result cached in variable (was calling ch.Single() 8 times)
+    var ch = DB1.Total_account().ToList();
+    var chResult = ch.Single();
+    ViewData["admin"] = chResult.totaladmin;
+    ViewData["Dlm"] = chResult.totaldlm;
+    ViewData["super"] = chResult.totalsuper;
+    ViewData["Rem"] = chResult.totalrem;
+    ViewData["API"] = chResult.totalapi;
+    ViewData["whitelabel"] = chResult.totalwhitelabel;
+    ViewData["posbal"] = chResult.totalposremain;
+    ViewData["total"] = chResult.total;
 }
 
 @{
@@ -8350,10 +8322,10 @@ padding: 19px 15px;font-size: 30px;margin-top: 1px;">
 
 
     @{
-        VastwebmultiEntities db = new VastwebmultiEntities();
-        var url = db.Admin_details.Single().WebsiteUrl;
-        var adminid = db.Admin_details.Single().userid;
-        var notificationlogo = db.logoimage(adminid, "ADMIN").FirstOrDefault();
+        // Reuse adminDetails and DB1 from head block - no new DB connection needed
+        var url = adminDetails != null ? (adminDetails.WebsiteUrl ?? "") : "";
+        var adminid = adminDetails != null ? adminDetails.userid : "";
+        var notificationlogo = DB1.logoimage(adminid, "ADMIN").FirstOrDefault();
         var notifilogo = notificationlogo == null ? "NO" : notificationlogo.logo;
         var baseurl = "";
         if (notifilogo != "NO")
