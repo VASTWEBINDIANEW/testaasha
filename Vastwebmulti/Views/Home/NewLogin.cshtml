@@ -12,6 +12,7 @@
 <html>
 <head>
     @{
+        // Single DB context for entire page
         var cname = "";
         VastwebmultiEntities db = new VastwebmultiEntities();
         string currenturl = HttpContext.Current.Request.Url.Authority;
@@ -20,48 +21,30 @@
         var whitelabelid = "";
         if (currenturl.Contains("LOCALHOST"))
         {
-            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+            whitelabelid = db.WhiteLabel_userList.AsNoTracking().Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
         }
         else
         {
-            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+            whitelabelid = db.WhiteLabel_userList.AsNoTracking().Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
         }
-        var admindetail = db.Admin_details.ToList();
-        var mailid = admindetail.SingleOrDefault().email;
-        var mobile = admindetail.SingleOrDefault().mobile;
-        var company = db.tblWhiteContactDatas.Where(p => p.UserId == whitelabelid).ToList();
-        if (company.Count > 0)
-        {
-            cname = company.SingleOrDefault().CompnayName;
-        }
-        else
-        {
-            cname = "";
-        }
-    }
-    <title>@cname</title>
-    @{
+        // FirstOrDefault() instead of ToList() + SingleOrDefault() - avoids loading entire table
+        var admindetail = db.Admin_details.AsNoTracking().FirstOrDefault();
+        var mailid = admindetail != null ? (admindetail.email ?? "") : "";
+        var mobile = admindetail != null ? (admindetail.mobile ?? "") : "";
+        // Filter pushed to SQL
+        var companyRec = db.tblWhiteContactDatas.AsNoTracking().FirstOrDefault(p => p.UserId == whitelabelid);
+        cname = companyRec != null ? (companyRec.CompnayName ?? "") : "";
+
+        // Reuse db - no second DB context needed
         var favimage = "";
-        VastwebmultiEntities db2 = new VastwebmultiEntities();
-        var faviconlogo = db2.tblfavicons.Where(p => p.UserId == whitelabelid).ToList();
-        if (faviconlogo.Count() > 0)
+        var faviconRec = db.tblfavicons.AsNoTracking().FirstOrDefault(p => p.UserId == whitelabelid);
+        if (faviconRec != null)
         {
-            favimage = faviconlogo.SingleOrDefault().faviconimage;
-        }
-        else
-        {
-            <link rel="icon" href="" type="image/x-icon" />
+            favimage = faviconRec.faviconimage ?? "";
         }
         var logoimage = "";
-        var logo = db.tblwhitelabelLoginContents.Where(aa => aa.UserId == whitelabelid).ToList();
-        if (logo.Count > 0)
-        {
-            logoimage = logo.SingleOrDefault().Image;
-        }
-        else
-        {
-            logoimage = "Login_Images/login22.png";
-        }
+        var logoRec = db.tblwhitelabelLoginContents.AsNoTracking().FirstOrDefault(aa => aa.UserId == whitelabelid);
+        logoimage = logoRec != null ? (logoRec.Image ?? "Login_Images/login22.png") : "Login_Images/login22.png";
     }
     <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -69,8 +52,9 @@
     <meta name="keywords" content="Tab Login Form widget template Responsive, Login form web template,Flat Pricing tables,Flat Drop downs  Sign up Web Templates, Flat Web Templates, Login signup Responsive web template, SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
     <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
     <link href="~/LoginFormDesign/css/style.css" rel="stylesheet" type="text/css" media="all" />
-    <link href='//fonts.googleapis.com/css?family=Signika:400,300,600,700' rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Righteous' rel='stylesheet' type='text/css'>
+    <!-- Google Fonts: combined 2 requests into 1 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&family=Righteous&display=swap" rel="stylesheet">
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/LoginFormDesign/js/easyResponsiveTabs.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">

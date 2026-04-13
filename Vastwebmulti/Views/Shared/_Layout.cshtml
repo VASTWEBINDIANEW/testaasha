@@ -355,25 +355,20 @@
     if (logoRec != null) { image1 = logoRec.LogoImage; }
     var vv = db.tblMenus.AsNoTracking().Where(tbl => tbl.Status == "Y" && tbl.UserId == whitelabelid).Select(tbl => new { tbl.MenuName });
     ViewBag.menuname = vv;
-    var admindetail = db.Admin_details.AsNoTracking().ToList();
-    var mailid = admindetail.SingleOrDefault().email;
-    var mobile = admindetail.SingleOrDefault().mobile;
+    // FirstOrDefault instead of ToList() + SingleOrDefault() - avoids loading full table
+    var admindetail = db.Admin_details.AsNoTracking().FirstOrDefault();
+    var mailid = admindetail != null ? (admindetail.email ?? "") : "";
+    var mobile = admindetail != null ? (admindetail.mobile ?? "") : "";
+    string RDate = admindetail != null ? admindetail.Date.ToString() : DateTime.Now.ToString();
 
-    string RDate = admindetail.FirstOrDefault().Date.ToString();
-    //string[] gg = RDate.Split('-');
-    //var RYear = gg[2].Split(' ')[0].ToString();
-
-    var whitelabelDetails = db.WhiteLabel_userList.AsNoTracking().Where(p => p.WhiteLabelID == whitelabelid).ToList();
-    //List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData> whitelabelDetails = new List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>();
-    //whitelabelDetails = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Vastwebmulti.Areas.WHITELABEL.Models.JsonFile.WhiteContactData>>(readWrite.Read("WhiteContactData.json", "~/Areas/WHITELABEL/Models/JsonFile/"));
-    //var companyname = whitelabelDetails.Where(p => p.UserId == whitelabelid).ToList();
-
-    var company_Name = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().websitename;
-    var phone = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().Support_Mobile;
-    var WMobile = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().Mobile;
-    var address = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().Address;
-    var email = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().Support_Email;
-    var Wemail = whitelabelDetails.Count == 0 ? "" : whitelabelDetails.SingleOrDefault().EmailId;
+    // Single query with FirstOrDefault; fields accessed from cached object
+    var wlRec = db.WhiteLabel_userList.AsNoTracking().FirstOrDefault(p => p.WhiteLabelID == whitelabelid);
+    var company_Name = wlRec != null ? (wlRec.websitename ?? "") : "";
+    var phone = wlRec != null ? (wlRec.Support_Mobile ?? "") : "";
+    var WMobile = wlRec != null ? (wlRec.Mobile ?? "") : "";
+    var address = wlRec != null ? (wlRec.Address ?? "") : "";
+    var email = wlRec != null ? (wlRec.Support_Email ?? "") : "";
+    var Wemail = wlRec != null ? (wlRec.EmailId ?? "") : "";
 
 
 
