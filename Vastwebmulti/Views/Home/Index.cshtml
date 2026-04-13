@@ -33,16 +33,17 @@
 
         if (currenturl.Contains("LOCALHOST"))
         {
-            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+            whitelabelid = db.WhiteLabel_userList.AsNoTracking().Where(aa => aa.localhost.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
         }
         else
         {
-            whitelabelid = db.WhiteLabel_userList.Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
+            whitelabelid = db.WhiteLabel_userList.AsNoTracking().Where(aa => aa.websitename.Replace("www.", "").Replace("https://", "").Replace("http://", "").ToLower() == currenturl.ToLower()).SingleOrDefault().WhiteLabelID;
         }
-        var color = db.changecolors.Where(p => p.UserId == whitelabelid).ToList();
-        if (color.Count > 0)
+        // Filter pushed to SQL via FirstOrDefault - avoids loading all rows
+        var colorRec = db.changecolors.AsNoTracking().FirstOrDefault(p => p.UserId == whitelabelid);
+        if (colorRec != null)
         {
-            col = color.SingleOrDefault().multipaloutercolor;
+            col = colorRec.multipaloutercolor;
             if (col != "")
             {
                 String s = col;
@@ -69,21 +70,22 @@
         {
             col = "";
         }
-        var image = db.tblSilderWhiteBackImages.Where(p => p.UserId == whitelabelid).ToList();
-        if (image.Count > 0)
+        // Single query instead of ToList() check + second FirstOrDefault() query (was 2 SQL calls)
+        var imageRec = db.tblSilderWhiteBackImages.AsNoTracking().FirstOrDefault(p => p.UserId == whitelabelid);
+        if (imageRec != null)
         {
-            var image2 = db.tblSilderWhiteBackImages.Where(p => p.UserId == whitelabelid).FirstOrDefault().SilderBackImage;
-            correctString = image2.Replace(@"\", @"/");
+            correctString = imageRec.SilderBackImage.Replace(@"\", @"/");
         }
         else
         {
             correctString = "";
         }
-        ViewBag.aboutimage1 = db.tblAboutUsContents.Where(p => p.UserId == whitelabelid).ToList();
-        ViewBag.alltravelbus1 = db.tblTravels.Where(p => p.UserId == whitelabelid).ToList();
-        ViewBag.companyname1 = db.tblWhiteContactDatas.Where(p => p.UserId == whitelabelid).ToList();
-        var silder = db.tblWhitlabelSilders.ToList();
-        ViewBag.silder = db.tblWhitlabelSilders.ToList();
+        ViewBag.aboutimage1 = db.tblAboutUsContents.AsNoTracking().Where(p => p.UserId == whitelabelid).ToList();
+        ViewBag.alltravelbus1 = db.tblTravels.AsNoTracking().Where(p => p.UserId == whitelabelid).ToList();
+        ViewBag.companyname1 = db.tblWhiteContactDatas.AsNoTracking().Where(p => p.UserId == whitelabelid).ToList();
+        // Cache slider data once - was queried twice (ToList() called 2x on same table)
+        var silder = db.tblWhitlabelSilders.AsNoTracking().ToList();
+        ViewBag.silder = silder;
         if (silder.Count > 0)
         {
             ViewBag.indexsilder = silder.Where(p => p.UserId == whitelabelid).ToList();

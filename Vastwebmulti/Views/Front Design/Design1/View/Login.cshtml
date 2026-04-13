@@ -4,18 +4,12 @@
     Layout = null;
 }
 @{
+    // Single DB context for entire page
     VastwebmultiEntities db = new VastwebmultiEntities();
-    var ccc = db.tblContects.ToList();
-    var companyname = ccc.Count == 0 ? "" : ccc.SingleOrDefault().CompnayName;
-    var loginimage = db.tblLoginContents.ToList();
-    if (loginimage.Count > 0)
-    {
-        ViewBag.loginimage = loginimage.FirstOrDefault().Image;
-    }
-    else
-    {
-        ViewBag.loginimage = "Login_Images/login22.png";
-    }
+    var firstContact = db.tblContects.AsNoTracking().FirstOrDefault();
+    var companyname = firstContact != null ? (firstContact.CompnayName ?? "") : "";
+    var loginImgRec = db.tblLoginContents.AsNoTracking().FirstOrDefault();
+    ViewBag.loginimage = loginImgRec != null ? loginImgRec.Image : "Login_Images/login22.png";
 
     var image1 = "";
     var fullpath = "";
@@ -23,25 +17,20 @@
     var repeat = "";
     var height = "";
     var backgroundImage = "";
-    var image = db.tblWhiteLabelLoginBackImages.Where(p => p.Role == "ADMIN").ToList();
+    var image = db.tblWhiteLabelLoginBackImages.AsNoTracking().Where(p => p.Role == "ADMIN").ToList();
     if (image.Count > 0)
     {
-        //if (image.SingleOrDefault(a=>a.UsedFor=="Repeat" && a.StatusCheck == "Y").otherimage == null)
         if (image.Where(a => a.UsedFor == "Repeat" && a.StatusCheck == "Y").SingleOrDefault() != null)
         {
-            //image1 = image.SingleOrDefault().ImageUrl;
-            //fullpath = "../FooterImages/" + image1;
             image1 = image.SingleOrDefault(a => a.UsedFor == "Repeat").otherimage;
             var ddd = image1.Replace(@"\", "/");
             fullpath = "../.." + ddd;
-
         }
         else if (image.Where(a => a.UsedFor == "Single" && a.StatusCheck == "Y").SingleOrDefault() != null)
         {
             image1 = image.SingleOrDefault(a => a.UsedFor == "Single").otherimage;
             var ddd = image1.Replace(@"\", "/");
             fullpath = "../.." + ddd;
-
             size = "cover";
             repeat = "no-repeat";
             height = "100vh";
@@ -57,32 +46,18 @@
         fullpath = "../FooterImages/" + image1;
         backgroundImage = "linear-gradient(to right , var(--main-bg-lcolor), var(--main-bg-rcolor)) !important";
     }
-    var admindetail = db.Admin_details.ToList();
-    var mailid = admindetail.SingleOrDefault().email;
-    var mobile = admindetail.SingleOrDefault().mobile;
+    // Cache Admin_details once; was ToList() + 3x SingleOrDefault()
+    var admindetail = db.Admin_details.AsNoTracking().FirstOrDefault();
+    var mailid = admindetail != null ? (admindetail.email ?? "") : "";
+    var mobile = admindetail != null ? (admindetail.mobile ?? "") : "";
     var background = fullpath;
-    var Firm_Name = admindetail.SingleOrDefault().Companyname;
-    //ViewBag.image = image.Count == 0 ? "" : image.SingleOrDefault().ImageUrl;
+    var Firm_Name = admindetail != null ? (admindetail.Companyname ?? "") : "";
 
-    //string RDate = admindetail.FirstOrDefault().Date.ToString();
-    //string[] gg = RDate.Split('-');
-    //var RYear = gg[2].Split(' ')[0].ToString();
-    /*************************************************************/
+    // Filter pushed to SQL instead of loading all rows
+    var colorRec = db.changecolors.AsNoTracking().FirstOrDefault(p => p.Role == "ADMIN");
+    var color = colorRec != null ? (colorRec.adminandouterheadercolor ?? "Gray") : "Gray";
 
-    var col = db.changecolors.ToList();
-    var color = "";
-    if (col.Count > 0)
-    {
-        color = col.SingleOrDefault(p => p.Role == "ADMIN").adminandouterheadercolor;
-    }
-    else
-    {
-        color = "Gray";
-    }
-    //var color = col.Count == 0 ? "" : col.SingleOrDefault(p => p.Role == "ADMIN").adminandouterheadercolor;
-
-    // New work
-    var entry = db.RetailerCreationCharges.FirstOrDefault();
+    var entry = db.RetailerCreationCharges.AsNoTracking().FirstOrDefault();
     bool isAdminFree = entry?.CreatedByAdminIsFree ?? false;
     bool isSignUpFree = entry?.CreatedBySignUpIsFree ?? false;
 }
@@ -92,23 +67,11 @@
 <html>
 <head>
     <title>@companyname</title>
-    <!-- Meta tag Keywords -->
     @{
+        // Reuse db from above block - no second DB connection needed
         var favimage = "";
-        VastwebmultiEntities db2 = new VastwebmultiEntities();
-        var faviconlogo = db2.tblfavicons.Where(p => p.Role == "ADMIN").ToList();
-        if (faviconlogo.Count() > 0)
-        {
-            if (faviconlogo.SingleOrDefault().Role == "ADMIN")
-            {
-                favimage = faviconlogo.SingleOrDefault().faviconimage;
-
-            }
-        }
-        else
-        {
-            <link rel="icon" href="" type="image/x-icon" />
-        }
+        var faviconRec = db.tblfavicons.AsNoTracking().FirstOrDefault(p => p.Role == "ADMIN");
+        if (faviconRec != null) { favimage = faviconRec.faviconimage ?? ""; }
     }
     <link rel="icon" href="@Url.Content("~/" + @favimage)" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -119,25 +82,20 @@
         function hideURLbar(){ window.scrollTo(0,1); } </script>
     <!-- Meta tag Keywords -->
     <!-- css files -->
+    <!-- Font Awesome via local file (single load - removes CDN duplicate) -->
     <link href="~/NewLoginDesign/css/font-awesome.css" rel="stylesheet" />
     <link href="~/NewLoginDesign/css/style.css" rel="stylesheet" />
-    @*<link href="~/CSS/aaaaa.css" rel="stylesheet" />*@
     <link href="~/NewLoginDesign/css/bootstrap-responsive.min.css" rel="stylesheet" />
-
-    <!-- Font-Awesome-Icons-CSS -->
-    <!-- //css files -->
-    <!-- Web-Fonts -->
     <link href="~/NewLoginDesign/css/owl.carousel.min.css" rel="stylesheet" />
-    <link href="//fonts.googleapis.com/css?family=Josefin+Sans:100,100i,300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto:100,400,400i,500,500i,700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: 3 requests combined into 1 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,300;0,400;0,600;0,700;1,100;1,300;1,400;1,600;1,700&family=Open+Sans:wght@300;400;600;700&family=Roboto:ital,wght@0,100;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <link href="~/MainFrontDesign/css/Custom-style.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="~/Scripts/owl.carousel.min.js"></script>
     <script defer src="~/Scripts/owl.carousel.js"></script>
 
